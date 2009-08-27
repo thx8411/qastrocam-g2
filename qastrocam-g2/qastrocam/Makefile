@@ -1,6 +1,6 @@
 include ../Makefile.vars
 
-PROG=qastrocam
+PROG=qastrocam-g2
 TMP_DESTDIR=../bin
 OBJ_QT =
 OBJ_cpp = main.o
