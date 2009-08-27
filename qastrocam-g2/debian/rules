@@ -62,7 +62,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/qastrocam.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/qastrocam/usr
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/qastrocam-g2/usr
 
 
 # Build architecture-independent files here.

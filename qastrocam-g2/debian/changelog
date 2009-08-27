@@ -1,3 +1,9 @@
+qastrocam-g2 (4.2.2beta20090827) jaunty; urgency=low
+
+  * package name changed
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 27 Aug 2009 19:30:02 +0200
+
 qastrocam (4.2.2beta20090826_BFC_Fork) jaunty; urgency=low
 
   * added file virtual telescope, to generate iris compatible tracking files
