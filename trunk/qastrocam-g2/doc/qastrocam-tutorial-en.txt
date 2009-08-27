@@ -1,0 +1,77 @@
+> I am a Linux(only) user.  I wish to use a QC 4000 at the scope.  I have
+> got it working using the pwc driver.  As far as I can find qastrocam is
+> the only program for this purpose running under linux.  The web site is
+> in french, which I don;t read.  Babelfish translation was not of much
+> help to me.
+> I can get the prog running and capturing frames, but don't seem to be
+> able to get it to stack them, though an option is there to do that.
+> Does anyone here use this?  If so, would you be willing to send me a
+> short tutorial?  Probably best to send it to me other than the list.
+
+Yes, the translation is not good, but the french documentation is not
+good too (it is for an old version). It is in my TODO list.
+Then here it is a brief tutorial :
+
+0) general things
+
+   Qastrocam captures a frame and throws it through a list of
+   modules that process it sequentially:
+   e.g.: capture->Swap rightLeft->center and crop->stack?
+   It can also control some telescopes to do guiding
+
+1) available options
+
+By running qastrocam without argument you are given a brief list of options.
+Here  is a short explanation:
+
+-db Display the images from the camera.
+
+-h  Display a histogram of the captured frames and some info to help
+    the focusing (higher is the focus line, sharper (=in focus) the image
+    should be)
+    can be enable at runtime.
+
+-M Enable the swap module, this will allow you to swap up/down, left/right
+-dM Display the images after mirror transformation.
+    can be enable at runtime.
+
+-a  Stack frames
+-da Display stacked frames
+    can be enable at runtime.
+
+-m  Special stacking system: This keeps the max of each pixel, this can be used to see the rotation of the stars in the sky
+    when the cam is on a fixed mount.
+-dm Display the images stacked with the "Max method"
+    can be enable at runtime.
+
+-c  Align frames (useful for stacking if your mount is not
+    good (or if you don't have an equatorial mount))
+    The image can also be cropped after centering
+    (useful when your target is small)
+-dc Display the centered/cropped images
+    can be enable at runtime.
+
+-dv <deviceName>  Set the V4L device name.
+    default is /dev/video0.
+-pc <port> IO port of the // port (in Hex).
+    default is 378 (=LPT1) (use 278 for LPT2).
+-t <type> Select the telescope type,
+   type 'help' will give the list of available telescopes
+-dt <deviceName> Set the telescope's device name.
+    default is /dev/ttyS0.
+
+2) samples:
+
+   To stack images and display only the stacked images:
+   $ qastrocam -s -ds 
+
+   To stack images after realignment and display the frames after each
+   transformation.
+   $ qastrocam -db -c -dc -s -ds 
+
+PS: checks and fixes to my English spelling are welcome.
+
+-- 
+Franck SICARD            <Franck.Sicard@3demi.net>           http://3demi.net/
+PGP key=DFDFA865 fingerprint=8E2E 167E 9503 461B AD76 D962 2EEE 9869 DFDF A865
+
