@@ -1,0 +1,634 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <LINK rel="stylesheet" href="qastrocam.css" type="text/css">
+  <title>Qastrocam</title>
+</head>
+<body background="images/fond.jpg">
+    <script language="JavaScript1.2" src="http://www.altavista.com/r?frtr"></script>
+    <img src="images/mascote-noir-med.png" border="0" align="right">
+    <h1>Contact</h1>
+    pour toute questions/bug report/patch ecrire à
+    <a href="mailto:qastrocam@3demi.net">qastrocam@3demi.net</a>
+    <h1>Presentation</h1>
+          <h2>introduction</h2>
+    Logiciel maison permettant d'accéder à tous les paramètres des webcams
+  Philips. Il est basé sur QT et devrait être petit à petit étendu avec des fonctionnalités
+  orientées astro (addition d'images temps réels, réglage automatique de l'expo et
+  du gain, ...).
+         <h2>Fonctionalités</h2>
+          <ul>
+            <li>integration automatique de plusieurs vues</li>
+            <li>sauvegarde de sequences d'images en PNG/BMP/JPG/...</li>
+            <li>aide a la mise au point et au reglages via:
+                <ul> <li>affichage de l'histograme.
+                        <li>indicateur de netté
+                </ul>
+          </ul>
+         <h2>dispositifs d'acquision supportés</h2>
+         <ul>
+           <li>
+                 (cf <a href="http://www.smcc.demon.nl/webcam/">http://www.smcc.demon.nl/webcam/</a>
+                 pour la liste complete) <li>
+           <li>tout device video4linux supportant l'une des palette suivante:
+                 <ul>
+                   <li>VIDEO_PALETTE_YUV420P</li>
+                   <li>VIDEO_PALETTE_YUV420</li>
+                   <li>VIDEO_PALETTE_RGB24</li>
+                 </ul>
+                 les webcam phillips on un support dedier qui donne acces a tous leurs parametres
+                 via le driver de <a href="http://www.smcc.demon.nl/webcam/">nemosoft</a>
+                 qui est maitenant incorporé dans les noyaux 2.4
+           </li>
+           <li> les webcam Vesta(pro) et toucam ayant subit ma modification de steve chambers (=possibilité de poses de plusieurs secondes).<br>
+                 cf les pages de <a href="http://home.clara.net/smunch/wintro.htm">steve Chambers</a> (la description originale)
+                 et de <a href="http://www.astrosurf.org/sweiller/VproDS.html">Sylvain Weiller</a>
+                 (pour une explication pas a pas).
+           </li>
+         </ul>
+    <h1>Versions</h1>
+    <table cellspacing="2" border="2">
+  <tr>
+    <th><div align="center">Version</div></td>
+    <th><div align="center">Description</div></td>
+    <th><div align="center">Sources</div></td>
+    <th><div align="center">Binaire recompilé*</div></td>
+  </tr>
+   <tr>
+     <th>current</th>
+     <td>
+	  <ul>
+	      <li>added support for compressed FITS</li>
+	      <li>Rewrite of FITS handling (use libcfitsio)</li>
+	      <li>Fix buil on non ia32 arch (tested only on amd 64)</li>
+	      <li>Preliminary work for jpeg only ov519 cameras (not working)</li>
+	      <li>New build system for QT detection</li>
+	  </ul>
+           <br>
+	   cvs acces on sourceforge is avaible password is 'anonymous'. (old cvs on 3demi.net is removed):<BR>
+          <div align="center">
+          <table border="1">
+            <tr><td>
+<pre>
+cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/qastrocam login 
+cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/qastrocam co -P qastrocam
+</pre>
+         </td></tr>
+         </table>  </div>
+     </td>
+     <td><a href="qastrocam-CURRENT.tar.gz">qastrocam-CURRENT.tar.gz</a></td>
+     <td><a href="qastrocam-CURRENT-binary.tar.gz">qastrocam-CURRENT-binary.tar.gz</a><br>(édition de lien <font color="red">dynamique (Ubuntu Feisty))</font>)</td>
+   </tr>   
+     <tr>
+     <th>4.0</th>
+     <td>
+	  <ul>
+	    <li> SDL display mode no more activated by default (generate a black window on some system).</li>
+	    <li> some enhacement for the tracking/aligment module: binning and better GUI
+	         for controlling tresh value.</li>
+	    <li> Stacking module: max stacked images moved to 512, "^5" display mode added</li>
+	    <li> added telecope guiding support for <A href="http://www.boxdoerfer.de/">MTS</a>
+	         (thank's to Vesa Kankare)
+	    <li> no more garbage display when mirroring a RAW color image.
+	    <li> Frame histogram no more wrongly displayed.
+	    <li> PNG is now the default format for frames.
+	    <li> minor reorganisation of the GUI of the tracking module.
+	    <li> added telecope guiding support for <A href="http://eq6.update.rajiva.de/eq6/update/indexs.html">MCU-Update kit by Anand Rajiva</a> (thank's to Gernot Stenz)
+	    <li> it is no more needed to have super user right (=root) to control the
+	         the SC mod through the parallel port if the 'ppdev' kernel module is avaible
+		 (thank's to Simon)
+	    <li> expert mode added ('--expert'). Must be activated to show some
+	         part of the control panel of the PWC camera familly.
+	    <li> sharpness, compression and noise reduction now set to 0 at
+	         launch time on PWC camera.
+	    <li>prototype for King method to help the telescope alignment is here (-K parameter)
+	    <li>Several display mode have been added (Greyscale, negated greyscale,
+	        false colors)</li>
+	    <li>Bayer transformation should be faster</li>
+	    <li>Camera can be connected after launch of qastrocam</li>
+	    <li>shift info written into a fifo (for temma telescope protocol)</li>
+	    <li>CSV compatible format for output of properties of frames of a sequence</li>
+	    <li>FITS field DATE-OBS and UTC-OBS added</li>
+	    <li>debian package generation (make deb).<br>
+	        With repository <a href="http://3demi.net/debian/debs/"><b>deb http://3demi.net/debian debs/./</b></a> here.</li>
+	    <li>AVI format output</li>
+	    <li>Raw color mode work with alignment and stacking modules</li>
+	    <li>Raw color display work with SDL display</li>
+	    <li>multi-language support of the GUI (french + english)</li>
+	    <li>rewrite of the handling of the setting of the size of the captured frames</li>
+	    <li>MIPS-HI and MIPS-LO field are now set in fits header</li>
+	    <li>support for raw RGB mode (raw data is converted to rgb)</li>
+	    <li>preliminary work fo support of Serial mod (WIP)</li>
+	  </ul>
+     </td>
+     <td><a href="qastrocam-4.0.tar.gz">qastrocam-4.0.tar.gz</a></td>
+     <td><a href="qastrocam-4.0-binary.tar.gz">qastrocam-4.0-binary.tar.gz</a><br>(édition de lien <font color="red">dynamique (debian sid)</font>)</td>
+     </tr>
+
+     <tr>
+     <th>3.9</th>
+     <td>
+	  <ul>
+	    <li>More tooltips added on GUI object</li>
+	    <li>Long exposure time is now set in seconds (allow unlimited lenght) (beta4) </li>
+	    <li>reticul is back in SDL display window (beta3)</li>
+	    <li>default image size of V4L devices should now be honored (ex: parameter "size=..." when loading pwc modul) (beta3)</li>
+	    <li>prefix for saved images can be set</li>
+	    <li>Sliders (gain/contrast/...) can be controlled with the keyboard</li>
+	    <li>color saturation slider displayed </li>
+	    <li>save/restore parameters in cam memory work a lot better</li>
+	    <li>SDL library is used to display images from CAM.
+	        Major speedup. (activated  with '--SDL' option)</li>
+	    <li>Long exposure widget displayed only if // port registered</li>
+	  </ul>
+     </td>
+     <td><a href="qastrocam-3.9-sources.tar.gz">qastrocam-3.9-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.9-binary.tar.gz">qastrocam-3.9-binary.tar.gz</a><br>(édition de lien <font color="red">dynamique (debian sid)</font>)</td>
+     </tr>
+     <tr>
+     <th>3.8.1</th>
+     <td>
+	  <ul>
+	    <li>date/time of each image in the .properties file.</li>
+	    <li>compilation fix for Redhat 9.0 </li>
+	    <li>compression quality set to 95 for jpeg files</li>
+	    <li>Red cross in display windows darker</li>
+	    <li>Save in FITS format (in B&W only at this time)</li>
+	    <li>Quit button must be pressed more than 1 seconds to be activated</li>
+	    <li>Several type of reticul in the display windows</li>
+	    <li>brightness of the reticul in the display windows can be controlled</li>
+	    <li>a double click in the reticul window will move the center of the reticul</li>
+	  </ul>
+     </td>
+     <td><a href="qastrocam-3.8.1-sources.tar.gz">qastrocam-3.8.1-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.8.1-binary.tar.gz">qastrocam-3.8.1-binary.tar.gz</a><br>(édition de lien <font color="red">dynamique (debian sid)</font>)</td>
+     </tr>
+     <th>3.7</th>
+     <td>
+	  <ul>
+	  <li> added button to display module images
+	  <li> added button to display histogram
+	  <li> PWC: display of settings was wrong after click on buttons "restore" and "restore factory"
+	  <li> GUI of telescope guiding rewitten
+	  <li> some beautiful icons and tooltips added
+	  <li> option "-pc" to select the // port was ignored most of the time.
+	  <li> "cancel" button when choosing a directory no more crash the program
+	  <li> better text for some labels
+	  <li> added option '--libdir' to indicate where are the icons
+	  </ul>
+     </td>
+     <td><a href="qastrocam-3.7-sources.tar.gz">qastrocam-3.7-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.7-binary.tar.gz">qastrocam-3.7-binary.tar.gz</a><br>(édition de lien <font color="red">dynamique (debian sid)</font>)</td>
+     </tr>
+     <tr>
+     <tr>
+     <th>3.6.2</th>
+     <td>
+	  <ul>
+	    <li>it is possible to define the directory where the images are saved. </li>
+	    <li>Backlight compensation and anti-flicker mode of PWC webcams is now supported.</li>
+	    <li>bug fix of automatic detection of QT directory</li>
+	  </ul>
+     </td>
+     <td><a href="qastrocam-3.6.2-sources.tar.gz">qastrocam-3.6.2-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.6.2-binary.tar.gz">qastrocam-3.6.2-binary.tar.gz</a><br>(édition de lien <font color="red">dynamique (debian sid)</font>)</td>
+     </tr>
+     <tr>
+     <th>3.6.1</th>
+     <td>
+	  <ul>
+	    <li>build system use autoconf (3.6.1)</li>
+	    <li>default noise reduction set to 66% for PWC cams (3.6.1)</li>
+	    <li>capture can be paused (3.6)</li>
+	    <li>Directory names are FAT friendly (3.6)</li>
+	    <li>mmap capture mode for Vesta familiy (pwc) webcam.
+	        <br>Will reduce CPU needs (3.6 beta).</li>
+	    <li> better support of OV511 webcams (mmap + hue + color + whiteness) (3.6 beta).
+	    <li> better support of generic V4L cameras (3.6 beta).
+	    <li> A new more up to date <a href="qastrocam-doc.html">HELP (in french), Thank's to Jean-Baptiste Butet.</a>
+	  </ul>
+     </td>
+     <td><a href="qastrocam-3.6.1-sources.tar.gz">qastrocam-3.6.1-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.6.1-binary.tar.gz">qastrocam-3.6.1-binary.tar.gz</a><br>(édition de lien <font color="red">dynamique (debian sid)</font>)</td>
+   </tr>
+     <tr>
+     <th>3.5</th>
+     <td>
+	  <ul>
+	    <li>Black & White mode for Vesta familiy (pwc) webcam</li>
+	    <li>Black & White mode Stacking module (-da)</li>
+	    <li>Better color saturation control for Stacking module</li>
+	  </ul>
+     </td>
+     <td><a href="qastrocam-3.5-sources.tar.gz">qastrocam-3.5-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.5-binary.tar.gz">qastrocam-3.5-binary.tar.gz</a><br>(édition de lien <font color="green">statique</font>)</td>
+   </tr>
+     <tr>
+     <th>3.4</th>
+     <td>
+          <ul>
+	      <li> Amelioration de l'algo d'autoguidage.<br>
+                   <ul>
+                      <li>mode unidirectionnel pour eviter les pb de backslash lore d'un changement de direction</li>
+                      <li>centrage automatique (la cible est center sur le capteur)</li>
+                   </ul>
+              </li>
+              <li>Vesta (et consor)
+                  <ul><li>ameliration du control de la balance des couleurs</li>
+                      <li>Le control de l'acentuation des contours fonctionne reelement maintenant</li>
+                  </ul>
+              </li>
+          </ul>
+     </td>
+     <td><a href="qastrocam-3.4-sources.tar.gz">qastrocam-3.4-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.4-binary.tar.gz">qastrocam-3.4-binary.tar.gz</a><br>(édition de lien <font color="green">statique</font>)</td>
+   </tr>
+     <tr>
+     <th>3.3</th>
+     <td>
+          <ul>
+	      <li> Support des TUC-USB a base 74HC00 (plus besoin de port parallel pour les poses longues)</li>
+	      <li> Ajout d'une interface de configuration pour le module d'autoalignement (-dc)</li>
+	      <li> Ajout du module "mirror" (-dM) qui permet d'inverser haut/bas, droite/gauche</li>
+          </ul>
+     </td>
+     <td><a href="qastrocam-3.3-sources.tar.gz">qastrocam-3.3-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.3-binary.tar.gz">qastrocam-3.3-binary.tar.gz</a><br>(édition de lien <font color="green">statique</font>)</td>
+   </tr>
+     <th>3.2</th>
+     <td>
+          <ul> <li>autoalignement possible des images avant "statcking" (pour ceux qui
+	           utilisent un trepied photo ou une une monture ayant la bougeote (ex: mon etx))<br>
+		   <tt>qastrocam -db -dc -da</tt>
+               <li>icone et mascote qastrocam (merci à Anne Esclangon et Youri Brachet)
+	       <li>un bouton QUIT
+	       <li>Les panneaux de controles sont regroupés dans une fenetre plus compactes avec des Tabs.
+	       <li>Quelques reorganisation interne du code pour faciliter l'amelioration de l'interface
+	           graphique.
+             <li> Toutes les cameras compatibles Philipps devrait etre detectées (ex: creative webcam5).</li>
+	      <li> En mode realignement automatique, un graph du decalage est affiché</li>
+        <li> Le changement du mode d'affichage (log, x^3,...) de la fenetre d'accumulation a maintenat un
+             effet instantané</li>
+	       <li>Attention, les options de lancement ont un peu changé.
+           </ul>
+     </td>
+     <td><a href="qastrocam-3.2-sources.tar.gz">qastrocam-3.2-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.2-binary.tar.gz">qastrocam-3.2-binary.tar.gz</a><br>(édition de lien <font color="green">statique</font>)</td>
+   </tr>
+      <tr>
+     <th>3.1.2</th>
+     <td>
+          <ul><li>mode d'integration "Max" qui sur une serie de frame, ne garde que le pixel de valeur maximale
+                        (pour faire de filé d'etoile. Devrait etre pas mal aussi pour les etoiles filantes)</li>
+                  <li> control des fonctions "shaprness" et "noise reduction" de la vesta.<br>
+                         leur desactivation semble augmenter la sensibilité de la camera</li>
+                  <li> Passage a QT 3 (compile toujours avec QT 2.2).
+	          <li> Il est possible de specifier le port parallel a utiliser.
+          </ul>
+     </td>
+     <td><a href="qastrocam-3.1.2-sources.tar.gz">qastrocam-3.1.2-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.1.2-binary.tar.gz">qastrocam-3.1.2-binary.tar.gz</a><br>(édition de lien <font color="green">statique</font>)</td>
+   </tr>
+   <tr>
+   <th>3.0</th>
+     <td>
+     <ul>
+            <li> Le nombre d'images consecutives sauvegardées lors d'une capture est definissable.
+            <li> Il est possible de faire des captures automatiques a intervales de temps reguliers (ex:10 images toutes les 120 secondes)
+     </ul>
+     </td>
+     <td><a href="qastrocam-3.0-sources.tar.gz">qastrocam-3.0-sources.tar.gz</a></td>
+     <td><a href="qastrocam-3.0-binary.tar.gz">qastrocam-3.0-binary.tar.gz</a><br>(édition de lien statique)</td>
+   </tr>
+    <tr>
+   <th>2.99.2</th>
+     <td>
+     <ul>
+            <li> la valeur des "slider" (gain, contraste, ...) est maintenant affichée.
+            <li> Les parametres de capture (gain, fps, ...) sont sauvegardés dans DIR/properties.txt.
+            <li> lors d'une capture, le changement d'un des parametres (gain, fps, taille, ...)change le repertoire
+                   de sauvegarde (toutes les images dans un certain repertoire ont étés capturées avec les meme parametres)
+          </ul>
+     </td>
+     <td><a href="qastrocam-2.99.2-sources.tar.gz">qastrocam-2.99.2-sources.tar.gz</a></td>
+     <td><a href="qastrocam-2.99.2-binary.tar.gz">qastrocam-2.99.2-binary.tar.gz</a><br>(édition de lien statique)</td>
+   </tr>
+   <tr>
+   <th>2.99</th>
+     <td>
+
+            <ul><li>framework pour le control d'une monture et pour le guidage
+                 <ul>
+                        <li>  support preliminaire de l'autostar de meade  (testé sur mon etx90)
+                        <li>  support preliminaire de l'interface APM (pas testé) sur les bit 4567 du port parallel)
+                 <li>raquette de commande electronique
+                 <li>tracking d'object brillant (manque de souplesse pour etre appele"guidage")
+                 </ul>
+                <li> <a href="API/index.html">DOC pour programmeur</a> (pour ajout de nouveaux modules)
+                <li>affichages des courbes focus et histograme via "double-buffering" (c'est plus joli)
+                <li>les fenetre d'histograme et de focus pevent etre agrandies
+                <li>grosses reecritures internes pour pouvoir ajouter simplement de nouveau telescope et algo de guidage.
+         </ul>
+     </td>
+     <td><a href="qastrocam-2.99-sources.tar.gz">qastrocam-2.99-sources.tar.gz</a></td>
+     <td><a href="qastrocam-2.99-binary.tar.gz">qastrocam-2.99-binary.tar.gz</a><br>(édition de lien statique)</td>
+   </tr>
+   <tr>
+     <th>2.0</th>
+     <td><ul>
+              <li> indicateur de niveau de mise au point dans la fenetre de l'histograme. <br>
+                      les barres noir representent le niveau instantané de l'image courante, la ligne rouge la moyenne mobile
+                      sur les frames -5 a +5.<br>
+                      Il ne necessite pas, a priori de pointer une étoile (il fonctionne sur l'integralité de l'image).<br>
+                      (le bouton 'reset' doit etre pressé quand les parametres d'aquisition changent.)
+              <li> indicateur de "seeing". Plus il est elevé plus les images sont stables. Attention il depend
+                      du temps de pose. Et est asser experimental.
+              </ul>
+     </td>
+     <td><a href="qastrocam-2.0.tar.gz">qastrocam-2.0.tar.gz</a></td>
+     <td><a href="qastrocam-2.0.bin.gz">qastrocam-2.0.bin.gz</a><br>(édition de lien statique)</td>
+   </tr>
+   <tr>
+     <th>1.6</th>
+     <td>
+         <ul>
+              <li> Visualisation possible de l'histograme de luminance de l'image pour faciliter le reglage du gain et de la gama
+                      <ul> <li>gama faible pour un object fortement contrasté
+                              <li>gama forte pour un objet faiblement contrasté
+                      </ul>
+              <li> choix du format de capture parmi tous les format sd'images gerés par QT
+              <li> possibilité de choisir le device video4linux à utiliser.<br>
+                     (permet de lancer plusieur qastrocam en meme temps pour piloter plusieurs webcams).
+         </ul>
+     </td>
+     <td><a href="qastrocam-1.6.tar.gz">qastrocam-1.6.tar.gz</a></td>
+     <td><a href="qastrocam-1.6.bin.gz">qastrocam-1.6.bin.gz</a><br>(édition de lien statique)</td>
+   </tr>
+   <tr>
+     <th>1.5</th>
+     <td>
+         <ul>
+           <li> Controle de la balance des couleurs (pour kenel >= 2.4.13):
+                  <ul><li>Automatique
+                         <li>interieur
+                         <li>exterieur
+                         <li>Néon
+                         <li>manuel (donne acces gain des canaux rouge et bleu)
+                  </ul>
+            <li>support de la modification 2 de la vesta (gestion du préampli)
+            <li>controle de la LED sur les TOUCAM pro (>=730) (elle clignote lors de la capture)
+            <li>Le nom des images sauvegardées contient maitenant la date et il y
+                  un prefix different pour les 2 fenetres d'affichage.
+            <li>on peut choisir au lancement si l'on veut ou pas la fenetre d'accumulation
+                  (cela economise des ressource sur les petites configuration)
+         </ul>
+     </td>
+     <td><a href="qastrocam-1.5.tar.gz">qastrocam-1.5.tar.gz</a></td>
+     <td><a href="qastrocam-1.5.bin.gz">qastrocam-1.5.bin.gz</a><br>(édition de lien statique)</td>
+   </tr>
+   <tr>
+     <th>1.4.1</th>
+     <td>
+        <ul>
+      <li>Le mapping de la palette en mode log/sqrt/^3... été un peu bogué.</li>
+      <li>Indicateur de progression quand on est en longue pose.</li>
+      <li>fenetre d'accumulation: fix sur un acces memoire invalide et aleatoire.</li>
+	</ul>
+     </td>
+     <td><a href="qastrocam-1.4.1.tar.gz">qastrocam-1.4.1.tar.gz</a></td>
+     <td><a href="qastrocam-1.4.1.bin.gz">qastrocam-1.4.1.bin.gz</a><br>(édition de lien statique)</td>
+   </tr>
+   <tr>
+     <th>1.4</th>
+     <td>
+        <ul>
+    <li> recadrage automatique des vue avant addition dans la fenetre d'accumulation
+           (guidage sur une zone brillante (>192) de l'image).<br>
+           la soustraction des dark est desactivée dans ce mode.<br>
+           La couleur est desactivée.
+   </li>
+       <li> ajout d'un indicateur de remplissage des buffer</li>
+       <li> plus besoin que le buffer soit plein pour que soit utilisables:
+              <ul>
+                <li> les images (elles ne sont plus vertes)</li>
+                <li>Ajout d'un bouton "reset" qui vide le buffer
+              </ul>
+        <li> Grosse fuite mémoire supprimeé lors du changement de la taille du buffer.</li>
+        <li>  "slider" FPS remplacé par un jeu de "boutons radio"
+                (plus d'autre modif de l'interaface (plus sexy?))
+        <li> en mode VESTA-SC le temps de pose est affiché.
+        <li> ajout de postraitement de l'image accumulée (log,negation,...)
+	</ul>
+     </td>
+     <td><a href="qastrocam-1.4.tar.gz">qastrocam-1.4.tar.gz</a></td>
+     <td><a href="qastrocam-1.4.bin.gz">qastrocam-1.4.bin.gz</a><br> (édition de lien statique)</td>
+   </tr>
+   <tr>
+     <th>1.3.1</th>
+     <td>
+        <ul>
+	   <li>La couleur est de retour dans la fenetre d'integration.</li>
+	   <li>Il n'y a plus qu'une fenetre de controle.</li>
+	</ul>
+     </td>
+     <td>qastrocam-1.3.1.tar.gz</td>
+     <td>qastrocam-1.3.1.bin.gz<br>(édition de lien statique)</td>
+   </tr>
+
+   <tr>
+     <th>1.3</th>
+     <td>
+         <ul>
+                <li>Ajout support vesta SC (longues pose). il faut jouer sur le slider "fps Mult".</li>
+                <li>Ajout du support générique de tout device video4linux</li>
+                <li>passage de la fentre d'accumulation en noir et blanc (plus rapide).</li>
+         </ul>
+	 Necessite que quastrocam soit setuid root pour l'acces au port parallele.
+     </td>
+     <td>qastrocam-1.3.tar.gz</td>
+     <td>qastrocam-1.3.bin.gz</td>
+   </tr>
+   <tr>
+     <th>1.2</th>
+     <td>Meilleur gestion des couleurs (rendu moins pales)</td>
+     <td>qastrocam-1.2.tar.gz</td>
+     <td>qastrocam-1.2.bin.gz</td>
+   </tr>
+   <tr>
+     <th>1.1</th>
+     <td>Ajout de la soustraction automatique d'un DARK</td>
+     <td>qastrocam-1.1.tar.gz</td>
+     <td>qastrocam-1.1.bin.gz</td>
+   </tr>
+   <tr>
+    <th>1.0.1</th>
+    <td>Sauvegarde en PNG (compression sans perte) au lieu
+           du JPEG.</td>
+    <td>qastrocam-1.0.1.tar.gz</td>
+     <td>qastrocam-1.0.1.bin.gz</td>
+  </tr>
+  <tr>
+    <th>1.0</th>
+    <td>Ajout d'une fenetre accumulant images</td>
+    <td>qastrocam-1.0.tar.gz</td>
+     <td>qastrocam-1.0.bin.gz</td>
+  </tr>
+  <tr>
+    <th>0.9</th>
+    <td>  Version initiale.</td>
+  </tr>
+</table>
+
+ *  le binaires on été compilés sur une DEBIAN "unstable" et peuvent
+           ne pas fonctionner sur d'autres distributrions Linux. </dl>
+
+    <h1>Compilation</h1>
+    il faut QT 2.
+   <table cellspacing="2" border="2">
+  <tr>
+    <td><pre>
+     $ tar xvzf qastrocam-VERSION.tar.gz
+     $ cd qastrocam/src
+     $ make
+     $ ./qastrocam</pre></td>
+  </tr>
+</table>
+    <h1>Mode d'emplois</h1>
+    <h2>Généralités</h2>
+    <h2>La fenetre de controle de la caméra</h2>
+    <img src="images/webcam-ctrl.png" width="202" height="482" border="0"><BR>
+    Pour tous les "sliders" la valeur minimale est à gauche (et donc la maximale à
+    droite :-) )
+    <table cellspacing="2" border="2">
+  <tr>
+    <th><div align="center">Elément</div></th>
+    <th><div align="center">Description</div></th>
+  </tr>
+  <tr>
+    <td>Bouton snapshot</td>
+    <td>capture la vue courante dans "qcam-snapshot.png".
+           Attention,  si une image existe déja, elle sera remplacée.</td>
+  </tr>
+  <tr>
+    <td>Bouton Capture</td>
+    <td>capture chaque nouvelle image dans "qcam-%0000d.png".
+           Où %0000d est un nombre strictement croissant. Attention,
+           si une image ayant le même numéro de sequence existe déja,
+           elle sera remplacée.</td>
+  </tr>
+  <tr>
+    <td>gama</td>
+    <td>gama correction.</td>
+  </tr>
+  <tr>
+    <td>gain</td>
+    <td>Niveau d'amplification du signal venant du CCD</td>
+  </tr>
+  <tr>
+    <td>Exp.</td>
+    <td>Exposure: temps de pose. Plus c'est faible, plus la camera sera sensible.<br>
+            le temps de pose resultant sera toujours inferieur a 1/FPS.
+    </td>
+  </tr>
+  <tr>
+    <td>Comp.</td>
+    <td>Compression: niveau de compression des images lors du transite de
+           la camera vers l'ordinateur. plus c'est faible, moins il y a de
+           compression.</td>
+  </tr>
+  <tr>
+    <td>Cont.</td>
+    <td>Contraste</td>
+  </tr>
+  <tr>
+    <td>Bri.</td>
+    <td>Brightness</td>
+  </tr>
+  <tr>
+    <td>fps.</td>
+    <td>Images/Seconde: plus c'est faible, plus la camera sera sensible</td>
+  </tr>
+  <tr>
+       <td>fps mult</td>
+       <td> si qastrocam est setuid root, ce menu permet de controler le mode
+                longue pose des <a href="http://home.clara.net/smunch/wintro.htm">VESTA-SC</a>.
+                cela indique par combien est multiplié le temps de pose<br>
+                ex: si l'on est en 5fps avec fpsMult a 64 on fait des poses de 1/5*64=12.8 secondes. Le temps
+                de pose resultant est affiché en dessous.
+  </tr>
+  <tr>
+      <td>fan</td>
+      <td> controle le ventilateur (connecté a la broche DATA8 du port paralelle)</td>
+  </tr>
+</table>
+    <h2>La fenetre de controle du module d'accumulation</h2>
+    <img src="images/cumul-ctrl.png" width="161" height="386" border="0"><BR>
+    <table cellspacing="2" border="2">
+    <tr>
+    <th><div align="center">Elément</div></th>
+    <th><div align="center">Description</div></th>
+  </tr>
+  <tr>
+    <td>Num Buf.</td>
+    <td>Nombre de buffer d'accumulation. L'indicateur de progression indique si tous les buffer
+           d'accumulation on bien été remplis. "reset" permet de vider les buffer pour recommencer
+           le remplissage a zero.</td>
+  </tr>
+  <tr>
+    <td>Max Lum.</td>
+    <td>specifie le niveau de luminausité qui sera mappé sur 255.</td>
+  </tr>
+  <tr>
+    <td>Min Lum.</td>
+    <td>spécifie le niveau de luminausité qui sera mappé sur 0</td>
+  </tr>
+  <tr>
+     <td>scale conversion</td>
+     <td>permet de choisir comment la palette de l'image accumuler et transformer
+             lors de sont affichage:<br>
+             <ul><li>none: transformation lineaire (simple regle de trois).
+                    <li>log10: on applique un log10 sur touts les pixel avant la regle de trois. (reduit le contraste)
+                     <li>log: on applique un log neperien sur touts les pixel avant la regle de trois. (reduit le contraste)
+                     <li>sqrt: on prend la racine carrée de chaque les pixel avant la regle de trois. (reduit le contraste)
+                     <li>^2: on eleve au carrée de chaque pixel avant la regle de trois.  (augmente le contraste)
+                     <li>^3: on eleve au cube de chaque pixel avant la regle de trois. (augmente le contraste)
+              </ul>
+       </td>
+   </tr>
+  <tr><td>negate</td>
+         <td>passe l'image en negatif</td>
+  </tr>
+  <tr>
+    <td>Save Dark</td>
+    <td>Sauvegarde une image qui servira de Dark.(il faut attendre que le buffer soit plein pour
+            pouvoir le faire).</td>
+  </tr>
+  <tr>
+    <td>Use Dark</td>
+    <td>Soustrait en temps réel le "dark" prealablement sauvegardé.</td>
+  </tr>
+  <tr><td>auto align</td>
+         <td>repere une zone brillante dans l'image et l'utlise pour recaler chaque image avant
+                sont intregration dans le buffer d'accumulation.le bouton "recenter" permet de recalculer
+                le point de repere.</td>
+  <tr>
+</table>
+<h2>Utilisation des dark</h2>
+<div align="center"><table cellspacing="2" border="2">
+  <tr>
+    <td><img src="images/sans-dark-2.jpg" alt="pas d'utilisation d'un DARK" width=352 height=288 border=0></td>
+  </tr>
+  <tr>
+    <td><div align="center">pas d'utilisation d'un DARK</div></td>
+  </tr>
+</table></div>
+<div align="center"><table cellspacing="2" border="2">
+  <tr>
+    <td><img src="images/avec-dark.jpg" alt="utilisation d'un DARK" width=352 height=288 border=0></td>
+  </tr>
+  <tr>
+    <td><div align="center">utilisation d'un DARK</div></td>
+  </tr>
+</table></div>
+</body>
+</html>

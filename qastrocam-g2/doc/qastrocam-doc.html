@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <LINK rel="stylesheet" href="qastrocam.css" type="text/css">
+  <title>aide qastrocam, logiciel de capture astronomique sous Linux</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
+  <meta name="GENERATOR" content="Quanta Plus">
+</head>
+<body>
+
+<script language="JavaScript1.2" src="http://www.altavista.com/r?frtr"></script>
+<img src="images/mascote-noir-med.png" border="0" align="right">
+
+<center><H1>
+  Aide Qastrocam, logiciel de capture astronomique sous Linux<br>
+  Version: 0.0.1 Alpha<br>
+  Auteur: Jean-Baptiste Butet<br>
+</H1></center>
+
+
+Installation de la camera<br>
+Se reporter aux sites d'aide pour l'installation <br>
+Pour les webcam philipps, si vous voulez avoir acces à d'autres résolution que celle proposée par défaut (grandement conseillé), il faut se procurer le module de décompression pwcx.<br>
+
+Installation de Qastrocam<br>
+2 possibilités :<br>
+Soit vous pouvez le compiler (make, make install) <br>
+Soit vous utilisez les binaires produits à cet effet.<br>
+<br>
+Les modules de Qastrocam.<br>
+Si vous ne savez pas où vous en êtes il suffit de taper dans une console "qastrocam" pour que l'aide s'affiche (en anglais :) )<br>
+<br>
+-db : Permet de voir l'image provenant de la caméra<br>
+-h : Active le module d'aide à la focalisation<br>
+-M : Inverse le haut, le bas, la droite et la gauche de l'image<br>
+-a : Additionne les images (stack)<br>
+-da : Affiche l'image après l'addtion<br>
+-m : Ssimule une exposition ultra longue : Utilise le max de chaque pixel<br>
+-dm : ???<br>
+-c  : Active le module de suivi de l'image<br>
+-dc : Affiche l'image après alignement<br>
+-dv point de montage : Choix du point de montage de la webcam (par défaut /dev/video0)<br>
+-pc port : Port I/O du port parallele. Defaut : 378 -> LPT1 (278 pour LPT2)<br>
+-t type : selectionne le type de telescope. Taper 'help' pour de plus amples informations<br>
+-dt point de montage : Choisi le port du telescope (defaut : /dev/ttyS0)<br><br>
+
+Exemple d'utilisation :<br>
+Pour avoir le module d'aide à la focalisation et le module d'alignement et voir l'image avec une camera branchée en /dev/video1 :<br><br>
+
+qastrocam -h -c -db -dv /dev/video1<br><br>
+
+
+Module de mise au point de la focalisation<br>
+Commande :<br>
+qastrocam -h<br><br>
+
+Il y a 2 fenetres, la première renseigne sur une certain "taux" de focalisation qui doit être le plus elevé possible.<br>
+Le seconde présente l'histogramme de l'image.<br>
+A chaque fois que vous aurez changé quelque chose (gain, gamma, brillance, couleur, exposition.... et SURTOUT la mise au point), il faudra réinitialiser le calcul en faisant un reset<br>
+<br>
+L'utilisation est très simple.<br> Pour le moment, ce module fontionne bien pour la lune et les planète mais le stellaire n'est pas encore tip top.
+<br><br>
+
+Module de préalignement-suivi<br>
+Commande :<br>
+qastrocam -c -dc<br>Ainsi on peut mettre ne route le module et visualiser l'image produite (utile...)<br>
+<br>
+La prise en main de ce module nécessite un peu de temps mais c'est vraiment agréable de ne pas trop encombrer son disque dur.<br>
+Vous pouvez choisir le type de fichier image tout comme dans le module principal.<br><br>
+Le bouton Reset permet de remettre à zéro, non pas les paramètres que vous avez mis 1/4 d'heure à trouver, mais seulement les calculs inhérants à la recherche de l'objet.<br>
+A utiliser quand l'objet est perdu.<br><br>
+La fenêtre "hotspot" permet de régler 2 paramètres pour la recherche du spot lumineux.<br>
+Seuil : de 1 à 100 détermine la valeur des pixels qui doivent être pris en compte. Si vous objet sature presque, ce sera proche de 100. Pour l planétaire c'est proche de 70, pour le stellaire moins.<br>
+Le seuil doit être régler de manière à ce que l'image de bouge quasiment plus.<br><br>
+Low : Entre 0 et 100, précise la largeur de la fenêtre sur laquelle le calcul doit être fait. Attention : plus LOW est grand plus c'est groumand en ressource !!! A manipuler avec parcimonie.<br>
+<br>
+Crop : Ajuste la taille de la fenêtre de sortie. Doit contenir au moins l'objet.<br>
+<br><br>
+Attention, si votre ordinateur n'est pas tres puissant, des freezes peuvent se produire si la valeur de LOW est trop grande. La redescendre et faire un Reset.
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
