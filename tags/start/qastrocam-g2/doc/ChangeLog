@@ -1,0 +1,27 @@
+4.2.2 beta BFC Fork
+
+  You may generate tracking files, compatible with iris files, with "-t file -dt <filename>"
+  Can be used with PEAS
+
+4.2.1 beta BFC Fork
+
+  The SCmod serial device can now be choosen with the -dx option
+  Some spelling error corrected
+
+4.2.0 beta BFC Fork
+  Added serial SC mod support unsing F. Sicard previous work (roots version, to be "cleaned")
+  Type mismatch correction in LED SCmod
+  Some spelling error corrected
+  
+4.1.0 pre 17082009 
+
+...
+
+...
+
+release 1.0.1
+  JPEG format (used for saved images) changed to PNG.
+release 1.0
+  added integration buffer
+release 0.9
+  initial release
