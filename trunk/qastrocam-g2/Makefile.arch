@@ -41,7 +41,7 @@ show-avaible-arch:
 	@exit 1
 
 configure-generic: configure
-	MOC=$(QT_BASE)/bin/moc QT_INC_DIR=$(QT_BASE)/include QT_LIB_DIR=$(QT_BASE)/lib QT_LIBS=-lqt$(QT_MT) CFITSIO_INC="-I $(CFITSIO_BASE)/include" CFITSIO_LINK="-L $(CFITSIO_BASE)/lib -lcfitsio" ./configure --prefix=/opt/qastrocam 
+	MOC=$(QT_BASE)/bin/moc QT_INC_DIR=$(QT_BASE)/include QT_LIB_DIR=$(QT_BASE)/lib QT_LIBS=-lqt$(QT_MT) CFITSIO_INC="-I $(CFITSIO_BASE)/include" CFITSIO_LINK="-L $(CFITSIO_BASE)/lib -lcfitsio" ./configure --prefix=/opt/qastrocam-g2 
 	touch configure_done
 
 #debian

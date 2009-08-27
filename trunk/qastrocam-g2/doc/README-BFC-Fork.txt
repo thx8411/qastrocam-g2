@@ -2,6 +2,8 @@ Qastrocam is really a great tool, but sadly, it seams that Franck Sicard don't h
 some new features (Serial SCmod support), and contacted F.Sicard, but he didn't respond, so i decided to write these
 feature on my one, forking from de last F. Sicard version (4.1 pre 18072009), naming this version 4.2
 
+Software has changed for qastrocam-g2
+
 Features : 
 
 * SCmod Serial :
@@ -12,7 +14,7 @@ Features :
 
 * file virtual telescope :
 
-	- qastrocm tracking system can now generate iris compatible files
+	- qastrocam tracking system can now generate iris compatible files
 	- options : -t file -dt <filename>
 	- you may use PEAS with these files
 
