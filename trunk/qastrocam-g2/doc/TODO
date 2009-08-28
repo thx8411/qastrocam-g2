@@ -1,17 +1,18 @@
-DONE - 4.2.2 - adding a virtual telescope to order to generate an "iris like" auto-tracking file
+- rewrite documentation
 - Telescope configuration GUI (port, protocole)
-DONE - 4.2.1 - long exposure serial device choice using -dx option
 - Autoguide GUI (on / off)
 - king module GUI
+- save camera / telescope / autoguide / stack / king parameters for next run
 Later - dark/flat support
 Later - viewport support for V4L module
-DONE - 4.2.0 - serial control of SCmod
 Later - croping in raw window camera
 Later - binning in boxsize of hotspot search
 Later - binning module
 Later - static build
 Later - Multi language support
-- save camera / telescope / autoguide parameters for next run
+DONE - 4.2.2 - adding a virtual telescope to order to generate an "iris like" auto-tracking file
+DONE - 4.2.1 - long exposure serial device choice using -dx option
+DONE - 4.2.0 - serial control of SCmod
 DONE - 3.11  - be able to connect the camera after the launch of qastrocam
 DONE - 3.9   - [PWC] set long pose mode in secondes
 DONE - 3.9   - save restore options (of the pwc driver)
