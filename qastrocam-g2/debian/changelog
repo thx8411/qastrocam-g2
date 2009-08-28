@@ -1,3 +1,9 @@
+qastrocam-g2 (4.2.2beta20090828) jaunty; urgency=low
+
+  * sources cleaned
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 28 Aug 2009 04:52:04 +0200
+
 qastrocam-g2 (4.2.2beta20090827) jaunty; urgency=low
 
   * package name changed
