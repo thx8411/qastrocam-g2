@@ -1,7 +1,7 @@
 Source: qastrocam-g2
 Section: graphics
 Priority: optional
-Maintainer: Blaise-Florentin Collin <nomail@thistime>
+Maintainer: Blaise-Florentin Collin <thx8411@users.sourceforge.net>
 Build-Depends: debhelper (>= 4.0.0), libqt3-dev|libqt3-mt-dev, libsdl-dev, libavifile-0.7-dev|libavifile0.7-dev, libcfitsio3-dev, libdts-dev
 Standards-Version: 3.6.0
 
