@@ -1,3 +1,9 @@
+qastrocam-g2 (4.2.2rc1) jaunty; urgency=low
+
+  * Bug #2846342 corrected
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 28 Aug 2009 21:37:38 +0200
+
 qastrocam-g2 (4.2.2beta20090828) jaunty; urgency=low
 
   * sources cleaned
