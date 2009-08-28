@@ -17,7 +17,6 @@ release::
 clean::configure_done
 	$(MAKE) -C qastrolib clean
 	$(MAKE) -C qastrocam clean
-	$(MAKE) -C qastroscope clean
 distclean::
 	(test -f configure_done && $(MAKE) clean ) || true
 	rm -f configure_done Makefile.vars
@@ -27,7 +26,6 @@ distclean::
 depend dep::configure_done
 	$(MAKE) -C qastrolib depend
 	$(MAKE) -C qastrocam depend
-	$(MAKE) -C qastroscope depend
 package::release
 	#fakeroot ./debian/rules binary
 	strip bin/* || true
