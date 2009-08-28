@@ -55,9 +55,9 @@ dep depend:
 	$(SILENT)rm -f dep
 	$(SILENT)$(CXX) $(CXXFLAGS) -MM -MG > dep $(SRC)
 	$(SILENT)echo done
-doc: Doxyfile  $(SRC) *.hpp
-	doxygen
-	touch doc
+#doc: Doxyfile  $(SRC) *.hpp
+#	doxygen
+#	touch doc
 
 $(TMP_DESTDIR):
 	install -d $(TMP_DESTDIR)

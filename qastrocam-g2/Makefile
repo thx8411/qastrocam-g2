@@ -1,5 +1,6 @@
 SHELL=/bin/bash
-SUBDIRS=qastrolib qastrocam doc
+SUBDIRS=qastrolib qastrocam
+#SUBDIRS+=doc
 #SUBDIRS+=alignlib qastrostack qastroscope
 
 -include Makefile.vars
