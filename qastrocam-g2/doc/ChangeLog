@@ -1,3 +1,5 @@
+4.2.2 : project renamed to qastrocam-g2
+
 4.2.2 beta BFC Fork
 
   You may generate tracking files, compatible with iris files, with "-t file -dt <filename>"
