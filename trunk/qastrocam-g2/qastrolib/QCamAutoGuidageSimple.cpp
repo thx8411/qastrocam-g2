@@ -27,6 +27,7 @@ TrackingControl::TrackingControl(QString label, QWidget * parent, const char * n
            this,SLOT(setMin(const QString&)));
    connect(&maxShift_,SIGNAL(textChanged(const QString&)),
            this,SLOT(setMax(const QString&)));
+   label_.setMinimumWidth(30);
 }
 
 void TrackingControl::setShift(double shift) {
