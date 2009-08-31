@@ -1,4 +1,4 @@
-qastrocam-g2 (4.2.2rc1) jaunty; urgency=low
+qastrocam-g2 (4.2.2rc120090831) jaunty; urgency=low
 
   * Bug #2846342 fixed
   * QTelescopeFile rewritten, fixing bugs #2847809, #2846660, #2846437
