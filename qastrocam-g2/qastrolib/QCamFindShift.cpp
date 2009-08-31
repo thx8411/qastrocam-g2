@@ -19,6 +19,7 @@ void QCamFindShift::reset() {
 
    cout << "reset tracker"<<endl;
    firstFrameRegistered_=false;
+   if (scope_!=NULL) scope_->Reset();
 }
 
 void QCamFindShift::camDisconnected() {

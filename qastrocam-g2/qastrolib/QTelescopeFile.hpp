@@ -15,6 +15,7 @@ class QTelescopeFile : public QTelescope {
 public:
    QTelescopeFile(const char * filePath);
    virtual void Update();
+   virtual void Reset();
    virtual void setTrack(bool tracking);
    public slots:
    virtual void goE(float shift);
