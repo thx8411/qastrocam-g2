@@ -39,6 +39,9 @@ void QTelescopeFile::Update()
    }
 }
 
+void QTelescopeFile::Reset() {
+}
+
 void QTelescopeFile::setTrack(bool tracking) {
    tracking_=tracking;
 }
