@@ -320,7 +320,7 @@ int main(int argc, char ** argv) {
    
    if (theTelescope || autoAlign) {
       //QCamFindShift * baryShift=new QCamFindShift_barycentre();
-      findShift=new QCamFindShift_hotSpot();
+      findShift=new QCamFindShift_hotSpot(theTelescope);
       findShift->connectCam(*camSrc);
    }
    QCamAutoGuidage * tracker=NULL;

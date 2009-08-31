@@ -1,6 +1,7 @@
 #ifndef _QCamFindShift_hpp_
 #define _QCamFindShift_hpp_
 
+#include "QTelescope.hpp"
 #include "QCamClient.hpp"
 #include "QCamFrame.hpp"
 #include "ShiftInfo.hpp"
@@ -13,6 +14,7 @@ class QCamFindShift : public QCamClient {
    Q_OBJECT;
 public:
    QCamFindShift();
+   QCamFindShift(QTelescope * scope);
    virtual QCamFrame image() const;
    ShiftInfo currentShift() const { return currentShift_;}
    virtual QWidget * buildGUI(QWidget *parent);
@@ -42,5 +44,6 @@ private:
    /** will be used for an automatic reset
        if the frame size from the QCam changes.*/
    QSize currentFrameSize_;
+   QTelescope* scope_;
 };
 #endif
