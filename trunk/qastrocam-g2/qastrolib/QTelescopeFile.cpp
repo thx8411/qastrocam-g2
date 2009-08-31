@@ -7,38 +7,40 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <iostream>
-#include <time.h>
+#include <sys/time.h>
 #include <math.h>
 
 using namespace std;
 
-float QTelescopeFile::getTime()
+double QTelescopeFile::getTime()
 {
-   return((float)clock()/(float)CLOCKS_PER_SEC);
+   double t;
+   struct timeval tv;
+   gettimeofday(&tv,NULL);
+   t=(float)tv.tv_usec/(float)1000000;
+   t+=tv.tv_sec;
+   return(t);
 }
 
-void QTelescopeFile::writeToFile()
+void QTelescopeFile::Update()
 {
-   float newTime;
-   if (sessionTime==0.0) sessionTime=getTime();
-   newTime=fabs(getTime()-sessionTime);
-   newTime=(roundf(newTime*100)/100);
-   if(newTime!=lastTime)
-   {
-      lastTime=newTime;
+   if(tracking_) {
+      double newTime;
+      if (sessionTime==0.0) sessionTime=getTime();
+      newTime=fabs(getTime()-sessionTime);
       descriptorx_=fopen(filePathx.c_str(),"a");
-      if (descriptorx_==NULL) {
-        perror(filePathx.c_str());
-      }
-      fprintf(descriptorx_,"%.3f %.3f\r\n",newTime,lastxShift);
+      if (descriptorx_==NULL) perror(filePathx.c_str());
+      fprintf(descriptorx_,"%.3f %.3f\r\n",newTime,xPosition);
       fclose(descriptorx_);
       descriptory_=fopen(filePathy.c_str(),"a");
-      if (descriptory_==NULL) {
-         perror(filePathy.c_str());
-      }
-      fprintf(descriptory_,"%.3f %.3f\r\n",newTime,lastyShift);
+      if (descriptory_==NULL) perror(filePathy.c_str());
+      fprintf(descriptory_,"%.3f %.3f\r\n",newTime,yPosition);
       fclose(descriptory_);
    }
+}
+
+void QTelescopeFile::setTrack(bool tracking) {
+   tracking_=tracking;
 }
 
 QTelescopeFile::QTelescopeFile(const char * filePath) :
@@ -47,24 +49,17 @@ QTelescopeFile::QTelescopeFile(const char * filePath) :
    filePathy=filePath;
 
    sessionTime=0.0;
+   xPosition=0.0;
+   yPosition=0.0;
 
    filePathx+="x.dat";
    filePathy+="y.dat";
-   descriptorx_=fopen(filePathx.c_str(),"a");
-   if (descriptorx_==NULL) {
-      perror(filePathx.c_str());
-   }
-   descriptory_=fopen(filePathy.c_str(),"a");
-   if (descriptory_==NULL) {
-      perror(filePathy.c_str());
-   }
-   fclose(descriptorx_);
-   fclose(descriptory_);
+
+   tracking_=false;
 }
 
 void QTelescopeFile::goE(float shift) {
-	lastxShift=shift;
-	writeToFile();
+	xPosition=shift;
 }
 
 void QTelescopeFile::goW(float shift) {
@@ -72,8 +67,7 @@ void QTelescopeFile::goW(float shift) {
 }
 
 void QTelescopeFile::goN(float shift) {
-	lastyShift=shift;
-	writeToFile();
+	yPosition=shift;
 }
 
 void QTelescopeFile::goS(float shift) {

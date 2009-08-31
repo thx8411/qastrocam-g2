@@ -3,6 +3,7 @@
 
 #include "QCamFindShift.hpp"
 #include "Vector2D.hpp"
+#include "QTelescope.hpp"
 
 class QVGroupBox;
 class QCamSlider;
@@ -14,6 +15,7 @@ class QCamFindShift_hotSpot : public QCamFindShift {
    Q_OBJECT;
 public:
    QCamFindShift_hotSpot();
+   QCamFindShift_hotSpot(QTelescope*);
    QWidget * buildGUI(QWidget *);
    virtual QCamFrame image() const;
 public slots:

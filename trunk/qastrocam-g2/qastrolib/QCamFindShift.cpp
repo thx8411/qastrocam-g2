@@ -8,6 +8,11 @@
 #include <qlabel.h>
 
 QCamFindShift::QCamFindShift(){
+   scope_=NULL;
+}
+
+QCamFindShift::QCamFindShift(QTelescope* scope){
+   scope_=scope;
 }
 
 void QCamFindShift::reset() {
@@ -42,6 +47,7 @@ void QCamFindShift::newFrame() {
    } else {
       firstFrameRegistered_=registerFirstFrame();
    }
+   if(scope_!=NULL) scope_->Update();
 }
 
 QCamFrame QCamFindShift::image() const {

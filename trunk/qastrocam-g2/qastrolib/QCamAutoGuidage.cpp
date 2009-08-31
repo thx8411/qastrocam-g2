@@ -36,6 +36,7 @@ void QCamAutoGuidage::track(bool mode) {
       tracker_->connectCam(*cam_);
       connect(tracker_,SIGNAL(shift(const ShiftInfo&)),
               this,SLOT(frameShift(const ShiftInfo&)));
+      telescope_->setTrack(true);
    } else {
       tracker_->disconnectCam();
       disconnect(tracker_,SIGNAL(shift(const ShiftInfo&)),
@@ -44,6 +45,7 @@ void QCamAutoGuidage::track(bool mode) {
       telescope_->stopW();
       telescope_->stopS();
       telescope_->stopN();
+      telescope_->setTrack(false);
    }
 }
 

@@ -14,6 +14,8 @@ class QTelescopeFile : public QTelescope {
    Q_OBJECT;
 public:
    QTelescopeFile(const char * filePath);
+   virtual void Update();
+   virtual void setTrack(bool tracking);
    public slots:
    virtual void goE(float shift);
    virtual void goW(float shift);
@@ -26,15 +28,15 @@ public:
    virtual double setSpeed(double speed) {return speed; }
    virtual bool setTracking(bool activated) {return true; }
   private:
-   float getTime();
+   double getTime();
+   double sessionTime;
    void writeToFile();
-   float lastTime;
    string filePathx;
    string filePathy;
    FILE* descriptorx_;
    FILE* descriptory_;
-   float sessionTime;
-   float lastxShift;
-   float lastyShift;
+   float xPosition;
+   float yPosition;
+   bool tracking_;
 };
 #endif
