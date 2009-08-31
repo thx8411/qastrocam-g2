@@ -3,6 +3,7 @@
 
 #include "QCamFindShift.hpp"
 #include "Vector2D.hpp"
+#include "QTelescope.hpp"
 
 /** Find the shift between two frame by computing the barycenter
     of the frame. */
@@ -10,6 +11,7 @@ class QCamFindShift_barycentre : public QCamFindShift {
    Q_OBJECT;
 public:
    QCamFindShift_barycentre();
+   QCamFindShift_barycentre(QTelescope* scope);
 protected:
    bool registerFirstFrame();
    bool findShift(ShiftInfo & shift);

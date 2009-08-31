@@ -2,9 +2,14 @@
 #include "QCam.hpp"
 #include "QStreamTranslator.hpp"
 #include "ShiftInfo.hpp"
+#include "QTelescope.hpp"
 
 QCamFindShift_barycentre::QCamFindShift_barycentre() {
    average_=0;
+}
+
+QCamFindShift_barycentre::QCamFindShift_barycentre(QTelescope* scope) : QCamFindShift(scope) {
+	QCamFindShift_barycentre();
 }
 
 bool QCamFindShift_barycentre::findBarycentre(Vector2D & center) {
