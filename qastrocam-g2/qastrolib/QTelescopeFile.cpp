@@ -40,6 +40,27 @@ void QTelescopeFile::Update()
 }
 
 void QTelescopeFile::Reset() {
+   char buff[30];
+
+   filePathx=genericFilePath;
+   filePathy=genericFilePath;
+
+   time_t timet;
+   time(&timet);
+   struct tm * t=gmtime(&timet);
+   snprintf(buff,30,"%04d.%02d.%02d-%02dh%02dm%02ds",
+            t->tm_year+1900,t->tm_mon+1,t->tm_mday,
+            t->tm_hour,t->tm_min,t->tm_sec);
+
+
+   sessionTime=0.0;
+   xPosition=0.0;
+   yPosition=0.0;
+
+   filePathx=filePathx + '-' + buff + '-' + "x.dat";
+   filePathy=filePathy + '-' + buff + '-' + "y.dat";
+
+   tracking_=false;
 }
 
 void QTelescopeFile::setTrack(bool tracking) {
@@ -48,15 +69,26 @@ void QTelescopeFile::setTrack(bool tracking) {
 
 QTelescopeFile::QTelescopeFile(const char * filePath) :
    QTelescope() {
-   filePathx=filePath;
-   filePathy=filePath;
+   char buff[30];
+
+   genericFilePath=filePath;
+   filePathx=genericFilePath;
+   filePathy=genericFilePath;
+
+   time_t timet;
+   time(&timet);
+   struct tm * t=gmtime(&timet);
+   snprintf(buff,30,"%04d.%02d.%02d-%02dh%02dm%02ds",
+            t->tm_year+1900,t->tm_mon+1,t->tm_mday,
+            t->tm_hour,t->tm_min,t->tm_sec);
+
 
    sessionTime=0.0;
    xPosition=0.0;
    yPosition=0.0;
 
-   filePathx+="x.dat";
-   filePathy+="y.dat";
+   filePathx=filePathx + '-' + buff + '-' + "x.dat";
+   filePathy=filePathy + '-' + buff + '-' + "y.dat";
 
    tracking_=false;
 }
