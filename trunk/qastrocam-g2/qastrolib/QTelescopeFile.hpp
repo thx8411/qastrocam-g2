@@ -32,6 +32,7 @@ public:
    double getTime();
    double sessionTime;
    void writeToFile();
+   string genericFilePath;
    string filePathx;
    string filePathy;
    FILE* descriptorx_;
