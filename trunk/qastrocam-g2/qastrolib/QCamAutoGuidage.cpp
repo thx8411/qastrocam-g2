@@ -50,18 +50,18 @@ void QCamAutoGuidage::track(bool mode) {
 }
 
 QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
-   QVBox * main = new QVBox(parent);
+   QVBox * mainBox = new QVBox(parent);
    if (parent == 0) {
-      QCamUtilities::setQastrocamIcon(main);
+      QCamUtilities::setQastrocamIcon(mainBox);
    }
-   QHBox * buttons=new QHBox(main);
+   QHBox * buttons=new QHBox(mainBox);
    QPushButton * trackButton = new QPushButton(tr("track"),buttons);
    trackButton->setToggleButton(true);
    connect(trackButton,SIGNAL(toggled(bool)),this,SLOT(track(bool)));
    QPushButton * resetButton = new QPushButton(tr("reset"),buttons);
    connect(resetButton,SIGNAL(pressed()),tracker_,SLOT(reset()));
-   main->show();
-   return main;
+   mainBox->show();
+   return mainBox;
 }
 
 void QCamAutoGuidage::moveAsc(MoveDir EWmove) {

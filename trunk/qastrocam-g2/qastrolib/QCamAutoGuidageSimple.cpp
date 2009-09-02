@@ -83,11 +83,11 @@ QCamAutoGuidageSimple::QCamAutoGuidageSimple() {
 }
 
 QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
-   QWidget * main = QCamAutoGuidage::buildGUI(parent);
+   QWidget * mainBox = QCamAutoGuidage::buildGUI(parent);
 
    cout << "QCamAutoGuidageSimple::buildGUI()"<<endl;
    
-   QHBox * buttons=new QHBox(main);
+   QHBox * buttons=new QHBox(mainBox);
    QCheckBox * swapEWb = new QCheckBox(tr("swap E/W"),buttons);
    connect(swapEWb,SIGNAL(toggled(bool)),this,SLOT(swapEW(bool)));
    QCheckBox* swapNSb = new QCheckBox(tr("swap N/S"),buttons);
@@ -95,13 +95,13 @@ QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    QCheckBox* centerb = new QCheckBox(tr("Center"),buttons);
    connect(centerb,SIGNAL(toggled(bool)),this,SLOT(setCenter(bool)));
 
-   TrackingControl * trAlt = new TrackingControl(tr("Alt."),main);
+   TrackingControl * trAlt = new TrackingControl(tr("Alt."),mainBox);
    connect(this,SIGNAL(shiftAlt(double)),trAlt,SLOT(setShift(double)));
    connect(trAlt,SIGNAL(minChanged(int)),this,SLOT(setMinShift(int)));
    connect(trAlt,SIGNAL(maxChanged(int)),this,SLOT(setMaxShift(int)));
    connect(this,SIGNAL(altMove(MoveDir)),trAlt,SLOT(setMoveDir(MoveDir)));
 
-   TrackingControl * trAsc = new TrackingControl(tr("Asc."),main);
+   TrackingControl * trAsc = new TrackingControl(tr("Asc."),mainBox);
    connect(this,SIGNAL(shiftAsc(double)),trAsc,SLOT(setShift(double)));
    connect(trAsc,SIGNAL(minChanged(int)),this,SLOT(setMinShift(int)));
    connect(trAsc,SIGNAL(maxChanged(int)),this,SLOT(setMaxShift(int)));
@@ -113,8 +113,8 @@ QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    buttons->show();
    trAlt->show();
    trAsc->show();
-   main->show();
-   return main;
+   mainBox->show();
+   return mainBox;
 }
 
 void QCamAutoGuidageSimple::frameShift(const ShiftInfo & shift) {
