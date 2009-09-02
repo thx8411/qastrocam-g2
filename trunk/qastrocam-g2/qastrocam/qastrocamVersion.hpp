@@ -2,7 +2,7 @@
 #define _qastrocamVersion_hpp_
 
 const char * const qastroCamVersion ="4.2.2rc1";
-const int          qastrocamBuild   =9;
+const int          qastrocamBuild   =10;
 const char * const qastrocamWeb = "http://sourceforge.net/projects/qastrocam-g2/";
 const char * const qastrocamMail = "thx8411@users.sourceforge.net";
 const char * const qastrocamName = "Qastrocam-g2";
