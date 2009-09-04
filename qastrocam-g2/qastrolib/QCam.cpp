@@ -387,7 +387,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    */
    maxCaptureInSequenceW_->show();
 
-   connect(snapshot_,SIGNAL(pressed()),this,SLOT(snapshot()));
+   connect(snapshot_,SIGNAL(released()),this,SLOT(snapshot()));
    connect(capture_,SIGNAL(toggled(bool)),this,SLOT(setCapture(bool)));
    connect(pauseCapture_,SIGNAL(toggled(bool)),this,SLOT(setPauseCapture(bool)));
 
