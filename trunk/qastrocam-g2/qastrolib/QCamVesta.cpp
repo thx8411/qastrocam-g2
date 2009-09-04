@@ -715,13 +715,13 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    QToolTip::add(settings,tr("save/restore settings of gain,exposure & white balance"));
    QPushButton *saveSettingsB =new QPushButton(tr("save"),settings);
    QToolTip::add(saveSettingsB,tr("Save User settings (gain,exposure & white balance)"));
-   connect(saveSettingsB,SIGNAL(pressed()),this,SLOT(saveSettings()));
+   connect(saveSettingsB,SIGNAL(released()),this,SLOT(saveSettings()));
    QPushButton *restoreSettingsB =new QPushButton(tr("restore"),settings);
    QToolTip::add(restoreSettingsB,tr("Restore User settings"));
-   connect(restoreSettingsB,SIGNAL(pressed()),this,SLOT(restoreSettings()));
+   connect(restoreSettingsB,SIGNAL(released()),this,SLOT(restoreSettings()));
    QPushButton *restoreFactorySettingsB =new QPushButton(tr("factory"),settings);
    QToolTip::add(restoreFactorySettingsB,tr("Restore factory default settings"));
-   connect(restoreFactorySettingsB,SIGNAL(pressed()),this,SLOT(restoreFactorySettings()));
+   connect(restoreFactorySettingsB,SIGNAL(released()),this,SLOT(restoreFactorySettings()));
 
    initRemoteControlLongExposure(remoteCTRLframeRate_);
 
