@@ -1,9 +1,11 @@
 4.2.2rc1
 
   - Bug #2846342 fixed
-  - Bugs #2847809, #2846660, #2846437 fixed
+  - Bugs #2847809, #2846660, #2846661, #2846437 fixed
   - Bugs #2847888, #2847886 fixed
   - Sources cleaned
+  - Bug #2851998 fixed
+  - Bug #2836340 fixed
 
 4.2.2 : project renamed to qastrocam-g2
 
