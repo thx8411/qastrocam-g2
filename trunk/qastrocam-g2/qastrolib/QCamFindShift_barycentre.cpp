@@ -9,7 +9,7 @@ QCamFindShift_barycentre::QCamFindShift_barycentre() {
 }
 
 QCamFindShift_barycentre::QCamFindShift_barycentre(QTelescope* scope) : QCamFindShift(scope) {
-	QCamFindShift_barycentre();
+   average_=0;
 }
 
 bool QCamFindShift_barycentre::findBarycentre(Vector2D & center) {

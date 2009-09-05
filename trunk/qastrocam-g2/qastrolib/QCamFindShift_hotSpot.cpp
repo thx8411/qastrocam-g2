@@ -26,7 +26,16 @@ QCamFindShift_hotSpot::QCamFindShift_hotSpot(){
 }
 
 QCamFindShift_hotSpot::QCamFindShift_hotSpot(QTelescope* scope) : QCamFindShift(scope) {
-   QCamFindShift_hotSpot();
+   searchBoxSize_=30;
+   seuil_=0;
+   autoSeuil_=true;
+   lastBrightness_=0;
+   binning_=1;
+
+   mainBox_=NULL;
+   seuilSlider_=NULL;
+   bigBoxSlider_=NULL;
+   dispImgCenter_=NULL;
 }
 
 double QCamFindShift_hotSpot::computeBarycenter(const Vector2D & from,
