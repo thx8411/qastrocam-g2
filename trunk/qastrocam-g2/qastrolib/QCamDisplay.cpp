@@ -71,7 +71,8 @@ void QCamDisplay::commonInit(QWidget * parent) {
                                          displayValuesLabel);
    connect(displayModeButton_,SIGNAL(change(int)),this,SLOT(setDisplayMode(int)));
 
-   crossLabel_= new QLabel("Reticule",buttonsContainer_);
+   crossLabel_= new QLabel("Reticle : ",buttonsContainer_);
+   crossLabel_->setAlignment(AlignRight|AlignVCenter);
 
    int crossValues[]={None,Cross,Circle};
    const char * crossValuesLabel[]={"none","cross","circle"};
