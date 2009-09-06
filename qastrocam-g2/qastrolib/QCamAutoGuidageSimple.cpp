@@ -149,6 +149,7 @@ void QCamAutoGuidageSimple::frameShift(const ShiftInfo & shift) {
 
    emit(shiftAsc(vs.x()));
    emit(shiftAlt(vs.y()));
+   telescope_->Update(vs.x(),vs.y());
    
    switch (asc) {
    case NotMoved:

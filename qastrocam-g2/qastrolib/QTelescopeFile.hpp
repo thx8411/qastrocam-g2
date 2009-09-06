@@ -14,14 +14,14 @@ class QTelescopeFile : public QTelescope {
    Q_OBJECT;
 public:
    QTelescopeFile(const char * filePath);
-   virtual void Update();
+   virtual void Update(double x, double y);
    virtual void Reset();
    virtual void setTrack(bool tracking);
    public slots:
-   virtual void goE(float shift);
-   virtual void goW(float shift);
-   virtual void goS(float shift);
-   virtual void goN(float shift);
+   virtual void goE(float shift){};
+   virtual void goW(float shift){};
+   virtual void goS(float shift){};
+   virtual void goN(float shift){};
    virtual void stopW() {}
    virtual void stopE() {}
    virtual void stopN() {} 

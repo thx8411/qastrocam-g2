@@ -48,7 +48,6 @@ void QCamFindShift::newFrame() {
    } else {
       firstFrameRegistered_=registerFirstFrame();
    }
-   if(scope_!=NULL) scope_->Update();
 }
 
 QCamFrame QCamFindShift::image() const {
