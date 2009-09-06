@@ -11,6 +11,7 @@
 #include <qtooltip.h>
 #include "QCamComboBox.hpp"
 #include "QTelescope.hpp"
+#include "QCamUtilities.hpp"
 
 QCamFindShift_hotSpot::QCamFindShift_hotSpot(){
    searchBoxSize_=30;
@@ -190,6 +191,7 @@ bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
 
 QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    mainBox_= new QVGroupBox("Hot Spot",parent);
+   QCamUtilities::setQastrocamIcon(mainBox_);
    QHBox * hbox=new QHBox(mainBox_);
    dispImgCenter_ = new QFrameDisplay(hbox,tr("center"));
    QVBox * vbox = new QVBox (hbox);
