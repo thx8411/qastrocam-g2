@@ -1,8 +1,9 @@
 qastrocam-g2 (4.2.3beta) jaunty; urgency=low
 
-  * Now quit on button released
+  * now quit on button released
+  * bug #2853068 fixed
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 06 Sep 2009 18:53:58 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 06 Sep 2009 20:16:01 +0200
 
 qastrocam-g2 (4.2.2rc1) jaunty; urgency=low
 
