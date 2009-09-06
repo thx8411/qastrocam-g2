@@ -26,7 +26,6 @@
 #include "QTelescopeFile.hpp"
 #include "QTelescopeMTS.cpp"
 #include "PPort.hpp"
-#include "QSlowPushButton.hpp"
 #include "QKingClient.hpp"
 
 const string BrutDisplayString("-db");
@@ -237,8 +236,8 @@ int main(int argc, char ** argv) {
    QCamUtilities::setLocale(app);
 
    QVBox mainWindow;
-   QSlowPushButton quit( 1, QObject::tr("Quit"), &mainWindow);
-   QObject::connect( &quit, SIGNAL(slowClicked()), &app, SLOT(quit()) );
+   QPushButton quit(&mainWindow,"Quit");
+   QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
    quit.setPixmap(*QCamUtilities::getIcon("exit.png"));
    app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
