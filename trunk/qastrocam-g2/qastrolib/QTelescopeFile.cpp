@@ -22,10 +22,12 @@ double QTelescopeFile::getTime()
    return(t);
 }
 
-void QTelescopeFile::Update()
+void QTelescopeFile::Update(double x, double y)
 {
    if(tracking_) {
       double newTime;
+      xPosition=x;
+      yPosition=y;
       if (sessionTime==0.0) sessionTime=getTime();
       newTime=fabs(getTime()-sessionTime);
       descriptorx_=fopen(filePathx.c_str(),"a");
@@ -92,21 +94,3 @@ QTelescopeFile::QTelescopeFile(const char * filePath) :
 
    tracking_=false;
 }
-
-void QTelescopeFile::goE(float shift) {
-	xPosition=shift;
-}
-
-void QTelescopeFile::goW(float shift) {
-   goE(shift);
-}
-
-void QTelescopeFile::goN(float shift) {
-	yPosition=shift;
-}
-
-void QTelescopeFile::goS(float shift) {
-   goN(shift);
-}
-
-
