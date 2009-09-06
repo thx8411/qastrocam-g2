@@ -16,7 +16,7 @@ public:
    static void computePathName(const char * pathToBinary);
    static const string & basePathName() { return basePath_;}
    static const string getVersionId();
-   static void setQastrocamIcon(QWidget *,bool color=false);
+   static void setQastrocamIcon(QWidget *);
    static void basePathName(const string & path) {basePath_=path;}
    static void useSDL(bool val) { useSDL_=val;}
    static bool useSDL() {return useSDL_;}
