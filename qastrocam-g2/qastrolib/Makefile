@@ -13,7 +13,7 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
          QCamAutoGuidage.o QCamAutoGuidageSimple.o QCamAutoAlign.o \
          QCamMax.o QCamFindShift_hotSpot.o QVectorMap.o QCamComboBox.o \
          QCamTrans.o  FrameMirror.o FrameAlgo.o QCamOV511.o \
-         QGridBox.o QDirectoryChooser.o QSlowPushButton.o \
+         QGridBox.o QDirectoryChooser.o \
          QCamDisplayImplSDL.o SCmodParPort.o SCmodParPortPPdev.o QTelescopeFifo.o \
 	 QKingClient.o QTelescopeMCU.o QTelescopeMTS.o QTelescopeFile.o
 
