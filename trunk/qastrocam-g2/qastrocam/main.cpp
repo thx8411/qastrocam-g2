@@ -401,6 +401,7 @@ int main(int argc, char ** argv) {
    QCamUtilities::setQastrocamIcon(&mainWindow);
    mainWindow.show();
    mainWindow.adjustSize();
+
    getAllRemoteCTRL()->show();
    getAllRemoteCTRL()->adjustSize();
    
