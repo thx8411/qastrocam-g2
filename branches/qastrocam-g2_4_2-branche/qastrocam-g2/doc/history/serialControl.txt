@@ -1,0 +1,49 @@
+---------------------- HOWTO -----------------------
+
+    The hardware modem control lines can be monitored or modified by
+    the `ioctl(2)` system call.  A set of comparable `tc*` calls
+    apparentlty do not exist.  The form of this call is:
+
+       int ioctl( `fd`, COMMAND, (int *)flags );
+
+    The bit pattern of `flags` refer to the following control lines:
+       TIOCM_LE      Line enable
+       TIOCM_DTR     Data Terminal Ready
+       TIOCM_RTS     Request to send
+       TIOCM_ST      Secondary transmit
+       TIOCM_SR      Secondary receive
+       TIOCM_CTS     Clear to send
+       TIOCM_CAR     Carrier detect
+       TIOCM_RNG     Ring
+       TIOCM_DSR     Data set ready
+
+    The COMMANDS and their action are:
+       TIOCMBIS  turn on control lines depending upon which bits
+                 are set in `flags`.
+       TIOCMBIC  turn off control lines depending upon which bits
+                 are set in `flags`.
+       TIOCMGET  the appropiate bits are set in `flags` according
+                 to the current status 
+       TIOCMSET  the state of the UART is changed according to which
+                 bits are set/unset in `flags`
+
+----------------------- End HOWTO ----------------------
+
+Read my `serial_suite.tgz`.  This is a collection of blurbs about the
+care and feeding of the serial ports and some simple programs.  There is
+a file demonstrating how the lock files should be programmed. There
+is a simple getty, a dialer for ppp connections and some other misc
+programs.
+
+Via ftp:
+
+ftp scicom.alphacdc.com
+
+Login as "anonymous" then use your full e-mail address as the password.
+For me, that is `<EMAIL: PROTECTED>`.
+
+cd pub/linux
+
+or:
+
+URL ftp://scicom.alphacdc.com/pub/linux
