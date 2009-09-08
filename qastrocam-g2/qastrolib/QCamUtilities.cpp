@@ -66,9 +66,10 @@ const string QCamUtilities::getVersionId() {
    return versionId;
 }
 
-void QCamUtilities::setQastrocamIcon(QWidget *widget) {
+void QCamUtilities::setQastrocamIcon(QWidget *widget,bool color) {
+   static QPixmap * iconColor=QCamUtilities::getIcon("qastrocam-icon-color.png");
    static QPixmap * iconNb=QCamUtilities::getIcon("qastrocam-icon-nb.png");
-   widget->setIcon(*iconNb);
+   widget->setIcon(color?*iconColor:*iconNb);
    //cout << "setting icon "<<(color?"color":"nb")<<endl;
 }
 

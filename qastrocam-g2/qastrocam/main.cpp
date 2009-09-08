@@ -26,8 +26,8 @@
 #include "QTelescopeFile.hpp"
 #include "QTelescopeMTS.cpp"
 #include "PPort.hpp"
+#include "QSlowPushButton.hpp"
 #include "QKingClient.hpp"
-#include "SettingsBackup.hpp"
 
 const string BrutDisplayString("-db");
 const string PPortOptionString("-pc");
@@ -51,8 +51,6 @@ const string SDLoff("--noSDL");
 const string ExpertMode("--expert");
 
 extern string longexposureDeviceName;
-
-settingsBackup settings;
 
 void usage(const char * progName) {
    cerr << "usage: "
@@ -127,8 +125,6 @@ int main(int argc, char ** argv) {
    cout << "* " << qastrocamWeb << endl;
    cout << "* " << qastrocamMail << endl;
    
-   settings.deSerialize();
-
    for (int i=1;i <argc;++i) {
       if (BrutDisplayString == argv[i]) {
          brutDisplay=true;
@@ -241,8 +237,8 @@ int main(int argc, char ** argv) {
    QCamUtilities::setLocale(app);
 
    QVBox mainWindow;
-   QPushButton quit(&mainWindow,"Quit");
-   QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
+   QSlowPushButton quit( 1, QObject::tr("Quit"), &mainWindow);
+   QObject::connect( &quit, SIGNAL(slowClicked()), &app, SLOT(quit()) );
    quit.setPixmap(*QCamUtilities::getIcon("exit.png"));
    app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
@@ -404,11 +400,8 @@ int main(int argc, char ** argv) {
       }
    }
    QCamUtilities::setQastrocamIcon(&mainWindow);
-
-   //mainWindow.move(0,0);
    mainWindow.show();
    mainWindow.adjustSize();
-
    getAllRemoteCTRL()->show();
    getAllRemoteCTRL()->adjustSize();
    

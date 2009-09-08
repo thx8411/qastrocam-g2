@@ -17,7 +17,7 @@ public:
        if it is overloaded, parents buildGUI should be called
        by new version. */
    virtual void buildGUI(QWidget * parent=0);
-   virtual void Update(double, double) {};
+   virtual void Update() {};
    virtual void Reset() {};
    virtual void setTrack(bool) {};
    virtual ~QTelescope();

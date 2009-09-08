@@ -470,7 +470,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
            this,SLOT(setMode(int)));
    
    if (options_ & haveContrast) {
-      remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
+      remoteCTRLcontrast_=new QCamSlider("Cont",false,hbox);
       //hbox->add(remoteCTRLcontrast_);
       connect(this,SIGNAL(contrastChange(int)),
               remoteCTRLcontrast_,SLOT(setValue(int)));
