@@ -400,7 +400,7 @@ int main(int argc, char ** argv) {
    }
    QCamUtilities::setQastrocamIcon(&mainWindow);
 
-   mainWindow.move(0,0);
+   //mainWindow.move(0,0);
    mainWindow.show();
    mainWindow.adjustSize();
 
