@@ -27,6 +27,7 @@
 #include "QTelescopeMTS.cpp"
 #include "PPort.hpp"
 #include "QKingClient.hpp"
+#include "SettingsBackup.hpp"
 
 const string BrutDisplayString("-db");
 const string PPortOptionString("-pc");
@@ -50,6 +51,8 @@ const string SDLoff("--noSDL");
 const string ExpertMode("--expert");
 
 extern string longexposureDeviceName;
+
+settingsBackup settings;
 
 void usage(const char * progName) {
    cerr << "usage: "
@@ -124,6 +127,8 @@ int main(int argc, char ** argv) {
    cout << "* " << qastrocamWeb << endl;
    cout << "* " << qastrocamMail << endl;
    
+   settings.deSerialize();
+
    for (int i=1;i <argc;++i) {
       if (BrutDisplayString == argv[i]) {
          brutDisplay=true;

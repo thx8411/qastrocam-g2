@@ -20,7 +20,7 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
 OBJ_cpp = QCamV4LbestDevice.o port.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o PPort.o Vector2D.o ShiftInfo.o QCamFrame.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
-          QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o
+          QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o SettingsBackup.o
 
 ifeq ($(ARCHTYPE)_DISABLED, ia32)
   OBJ_asm = ccvt_mmx_old.o
