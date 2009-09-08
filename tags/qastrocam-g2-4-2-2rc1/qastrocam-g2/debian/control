@@ -1,0 +1,17 @@
+Source: qastrocam-g2
+Section: graphics
+Priority: optional
+Maintainer: Blaise-Florentin Collin <thx8411@users.sourceforge.net>
+Build-Depends: debhelper (>= 4.0.0), libqt3-dev|libqt3-mt-dev, libsdl-dev, libavifile-0.7-dev|libavifile0.7-dev, libcfitsio3-dev, libdts-dev
+Standards-Version: 3.6.0
+
+Package: qastrocam-g2
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Webcam capture program for astronomy
+ qastrocam-g2 is a capture program for linux that can handle any V4L device.
+ it can handle the special feature of the vesta camera (VP-SC, VP-SC-NB,
+ VP-SC-USB, ...) and has special modules to do guiding (with meade
+ telescope), stacking, and others things. This version is a fork from the F. Sicard's version.
+
+

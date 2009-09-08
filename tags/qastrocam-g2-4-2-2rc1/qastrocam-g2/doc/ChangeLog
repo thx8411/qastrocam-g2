@@ -1,0 +1,38 @@
+4.2.2rc1
+
+  - Bug #2846342 fixed
+  - Bugs #2847809, #2846660, #2846661, #2846437 fixed
+  - Bugs #2847888, #2847886 fixed
+  - Sources cleaned
+  - Bug #2851998 fixed
+  - Bug #2836340 fixed
+
+4.2.2 : project renamed to qastrocam-g2
+
+4.2.2 beta BFC Fork
+
+  You may generate tracking files, compatible with iris files, with "-t file -dt <filename>"
+  Can be used with PEAS
+
+4.2.1 beta BFC Fork
+
+  The SCmod serial device can now be choosen with the -dx option
+  Some spelling error corrected
+
+4.2.0 beta BFC Fork
+  Added serial SC mod support unsing F. Sicard previous work (roots version, to be "cleaned")
+  Type mismatch correction in LED SCmod
+  Some spelling error corrected
+  
+4.1.0 pre 17082009 
+
+...
+
+...
+
+release 1.0.1
+  JPEG format (used for saved images) changed to PNG.
+release 1.0
+  added integration buffer
+release 0.9
+  initial release
