@@ -63,8 +63,8 @@ $(TMP_DESTDIR):
 	install -d $(TMP_DESTDIR)
 install:: all
 	install -d $(DESTDIR)/bin
-	install -d $(DESTDIR)/lib
+#	install -d $(DESTDIR)/lib
 	test -z "$(PROG)" || install $(PROG) $(DESTDIR)/bin
-	test -z "$(LIB)" || install $(LIB) $(DESTDIR)/lib/
+#	test -z "$(LIB)" || install $(LIB) $(DESTDIR)/lib/
 	(test -d icons/ && ( iconsDir="$(DESTDIR)/share/`basename $(PROG)`/icons"; install -d $$iconsDir; install icons/*.png $$iconsDir)) || true
 -include dep
