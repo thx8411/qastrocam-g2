@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Qastrocam-g2
+Comment="Webcam capture tool for astronomy"
+Exec=qastrocam-g2
+Terminal=false
+Icon=qastrocam-icon-nb.png
+X-MultipleArgs=false
+Type=Application
+Categories=Education;Science;Astronomy
