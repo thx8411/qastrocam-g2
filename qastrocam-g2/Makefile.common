@@ -62,9 +62,12 @@ doc: Doxyfile  $(SRC) *.hpp
 $(TMP_DESTDIR):
 	install -d $(TMP_DESTDIR)
 install:: all
+	install debian/qastrocam-g2.desktop /usr/share/applications
+	install icons/qastrocam-icon-nb.png /usr/share/icons
 	install -d $(DESTDIR)/bin
 #	install -d $(DESTDIR)/lib
 	test -z "$(PROG)" || install $(PROG) $(DESTDIR)/bin
 #	test -z "$(LIB)" || install $(LIB) $(DESTDIR)/lib/
 	(test -d icons/ && ( iconsDir="$(DESTDIR)/share/`basename $(PROG)`/icons"; install -d $$iconsDir; install icons/*.png $$iconsDir)) || true
 -include dep
+
