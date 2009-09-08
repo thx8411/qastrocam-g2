@@ -1,4 +1,4 @@
-qastrocam-g2 (4.2.3beta20090906) jaunty; urgency=low
+qastrocam-g2 (4.2.2rc2) jaunty; urgency=low
 
   * now quit on button released
   * bug #2853068 fixed
