@@ -9,8 +9,9 @@ using namespace std;
 
 class settingsBackup {
 	private :
+		int end_record;
 		string fileName;
-		string datas[NB_RECORDS][2];
+		string datas[2][NB_RECORDS];
 		int findKey(const char* key);
 		void addKey(const char* key, const char* val);
 		void serialize();
