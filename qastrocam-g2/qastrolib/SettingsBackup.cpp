@@ -18,35 +18,28 @@ int settingsBackup::findKey(const char* key) {
 }
 
 void settingsBackup::addKey(const char* key, const char* val) {
-	int i;
-
 #ifdef _DEBUG_
-        cout << "adding key : '" << key << "' value : '" << val << "' position : ";
+        cout << "adding key : '" << key << "' value : '" << val << "' position : " << end_record << endl;
 #endif
-	while((i<NB_RECORDS)&&(datas[0][i]!="")) i++;
-#ifdef _DEBUG_
-	cout << i << endl;
-#endif
-	if(i==NB_RECORDS) cout << "Settings tab full\n";
+	if(end_record==NB_RECORDS) cout << "Settings tab full\n";
 	else {
-		datas[0][i]=key;
-		datas[1][i]=val;
+		datas[0][end_record]=key;
+		datas[1][end_record]=val;
+		end_record++;
 	}
 }
 
 void settingsBackup::serialize() {
 	FILE* fd;
-	int i=0;
+	int i;
 
 #ifdef _DEBUG_
 	cout << "Writing settings\n";
 #endif
 	fd=fopen(fileName.c_str(),"w");
 	if(fd!=NULL) {
-		while(datas[0][i]!="") {
-			fprintf(fd,"%s %s",datas[0][i].c_str(),datas[1][i].c_str());
-			i++;
-		}
+		for(i=0;i<end_record;i++)
+			fprintf(fd,"%s\t%s\n",datas[0][i].c_str(),datas[1][i].c_str());
 		fclose(fd);
 	}
 #ifdef _DEBUG_
@@ -58,7 +51,9 @@ void settingsBackup::serialize() {
 }
 
 settingsBackup::settingsBackup() {
+	end_record=0;
 	fileName=".qastrocam-g2-settings";
+	for(int i=0;i<NB_RECORDS;i++) datas[0][i]="";
 }
 
 void settingsBackup::setKey(const char* key, const char* val) {
@@ -80,7 +75,6 @@ const char* settingsBackup::getKey(const char* key) {
 
 void settingsBackup::deSerialize() {
 	FILE* fd;
-	int i=0;
 	char key[256];
 	char value[256];
 
@@ -89,12 +83,13 @@ void settingsBackup::deSerialize() {
 #endif
 	fd=fopen(fileName.c_str(),"r");
 	if(fd!=NULL) {
+		end_record=0;
 		while(!feof(fd)) {
 			fscanf(fd,"%s",key);
 			fscanf(fd,"%s",value);
-			datas[0][i]=key;
-			datas[1][i]=value;
-			i++;
+			datas[0][end_record]=key;
+			datas[1][end_record]=value;
+			end_record++;
 		}
 		fclose(fd);
 	}
@@ -102,7 +97,7 @@ void settingsBackup::deSerialize() {
 	else {
                 perror("file error");
         }
-	cout << "reading " << i << " entries\n"; 
+	cout << "reading " << end_record-1 << " entries\n"; 
 #endif
 }
 
