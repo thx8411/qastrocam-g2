@@ -34,9 +34,12 @@
 #include "FitsImage.hpp"
 #include "QCamMovieAvi.hpp"
 #include "QCamMovieSeq.hpp"
+#include "SettingsBackup.hpp"
 
 #include <sys/time.h>
 //#include <time.h>
+
+extern settingsBackup settings;
 
 QCam::QCam() {
    doCapture_=false;
@@ -318,13 +321,24 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    fileFormatCurrent_=shift;
 
-   for(int i=0;i<size;++i) {
-      if (!strcasecmp(fileFormatList_[i],"png")) {
-         fileFormatCurrent_=i;
-         // png is good, not trying to find a better one
-         break;
-      } else if (!strcasecmp(fileFormatList_[i],"bmp")) {
-         fileFormatCurrent_=i;
+   if(settings.haveKey("FILE_FORMAT")) {
+      for(int i=0;i<size;++i) {
+         if (!strcasecmp(fileFormatList_[i],settings.getKey("FILE_FORMAT"))) {
+            fileFormatCurrent_=i;
+            break;
+         }
+      }
+   } else {
+      for(int i=0;i<size;++i) {
+         if (!strcasecmp(fileFormatList_[i],"PNG")) {
+            fileFormatCurrent_=i;
+            // png is good, not trying to find a better one
+            settings.setKey("FILE_FORMAT","PNG");
+            break;
+         } else if (!strcasecmp(fileFormatList_[i],"BMP")) {
+            fileFormatCurrent_=i;
+            settings.setKey("FILE_FORMAT","BMP");
+         }
       }
    }
    
@@ -528,6 +542,11 @@ void QCam::writeProperties(const string & fileName) const {
       fprintf(file,"%s=%s\n",it->first.c_str(),it->second.c_str());
    }
    fclose(file);
+}
+
+void QCam::updateFileFormat(int value) {
+   fileFormatCurrent_=value;
+   settings.setKey("FILE_FORMAT",getSaveFormat());
 }
 
 void QCam::maxCaptureInSequenceUpdated(const QString &newMaxStr) {
