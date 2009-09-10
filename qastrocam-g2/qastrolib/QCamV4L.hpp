@@ -84,6 +84,7 @@ private:
    void mmapSync();
    uchar * mmapLastFrame() const;
 
+   QCamComboBox*  frameModeB;
    QCamFrame yuvBuffer_;
    uchar * tmpBuffer_;
    // to probe the cam for new frame

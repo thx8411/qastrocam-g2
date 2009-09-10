@@ -3,7 +3,7 @@
 
 #include <qcombobox.h>
 
-/** Handle a QComboBox like a QCamRadioBox.
+/** Handles a QComboBox like a QCamRadioBox.
 */
 
 class QCamComboBox: public QComboBox {
@@ -16,6 +16,7 @@ public:
                 const char *  labelList[]=NULL /** labels of the buttons */);
    ~QCamComboBox();
    int value() const { return currentValue_; }
+   int getPosition(const char* item);
 public slots:
 
   /** set the state of the radiobox.
