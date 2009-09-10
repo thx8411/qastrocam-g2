@@ -3,6 +3,7 @@
 #include <qhbox.h>
 #include <qbuttongroup.h>
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 
@@ -26,6 +27,11 @@ QCamComboBox::~QCamComboBox() {
    delete valueList_;
 }
 
+int QCamComboBox::getPosition(const char* item) {
+   for(int i=0; i<numOfButton_;i++)
+	if(QString(item)==text(i)) return(i);
+   return(-1);
+}
 
 void QCamComboBox::update(int value) {
    for (int i=0;i<numOfButton_;++i) {

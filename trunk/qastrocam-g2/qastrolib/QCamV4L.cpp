@@ -16,6 +16,9 @@
 #include "ccvt.h"
 #include "QGridBox.hpp"
 #include "QCamComboBox.hpp"
+#include "SettingsBackup.hpp"
+
+extern settingsBackup settings;
 
 const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor|haveWhiteness);
 
@@ -465,10 +468,17 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    */
    int frameModeTable[]={YuvFrame,GreyFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
    const char* frameModeLabel[]={"RGB", "Grey", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
-   QCamComboBox * frameModeB= new QCamComboBox("frame type",remoteCTRL,6,frameModeTable,frameModeLabel);
+   frameModeB= new QCamComboBox("frame type",remoteCTRL,6,frameModeTable,frameModeLabel);
    connect(frameModeB,SIGNAL(change(int)),
            this,SLOT(setMode(int)));
-   
+
+   if(settings.haveKey("RAW_MODE")) {
+	int index=frameModeB->getPosition(settings.getKey("RAW_MODE"));
+	//cout << "setting mode " << settings.getKey("RAW_MODE") << endl;
+	if (index!=-1) setMode(index);
+	frameModeB->setCurrentItem(index);
+   }
+
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
       //hbox->add(remoteCTRLcontrast_);
@@ -514,6 +524,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 }
 
 void  QCamV4L::setMode(int  val) {
+   QString value=frameModeB->text(val);
+   settings.setKey("RAW_MODE",value.data());
+   //cout << "setting mode " << value.data() << endl;
    setMode((ImageMode)val);
 }
 
