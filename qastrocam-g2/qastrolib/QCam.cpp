@@ -460,6 +460,10 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       }
 
       sizeCombo=new QCamComboBox("Frame size",remoteCTRL_,size,valueList,labelList);
+
+      if(settings.haveKey("FRAME_RESOLUTION"))
+         indexOfCurrentSize=sizeCombo->getPosition(settings.getKey("FRAME_RESOLUTION"));
+
       if (indexOfCurrentSize==-1) {
          cout << "warning current capture size "
             "not foud in  getAllowedSize()\n";
@@ -618,4 +622,9 @@ void QCam::setTime() {
 void QCam::annotate(const Vector2D & pos) const {
    annotationEnabled_=true;
    annotationPos_=pos;
+}
+
+void QCam::setSizeFromAllowed(int index) {
+   settings.setKey("FRAME_RESOLUTION",sizeCombo->text(index));
+   resize(getAllowedSize()[index]);
 }

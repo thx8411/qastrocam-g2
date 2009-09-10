@@ -1,8 +1,9 @@
-qastrocam-g2 (4.3beta20090908) jaunty; urgency=low
+qastrocam-g2 (4.3beta200909010) jaunty; urgency=low
 
-  * Entry added in gnome menu 
+  * file format, raw mode, telescope device, lx device, lx levels now saved
+  * supports level inversion for serial and led SCmod via cmd-line
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 08 Sep 2009 19:18:36 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 10 Sep 2009 18:21:25 +0200
 
 qastrocam-g2 (4.2rc2) jaunty; urgency=low
 
