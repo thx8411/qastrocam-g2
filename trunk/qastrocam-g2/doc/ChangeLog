@@ -1,6 +1,7 @@
-4.3beta20090908
+4.3beta20090910
 
-  - Entry added in gnome menu
+  - file format, raw mode, level inversion, telescope device and lx device are now stored and restored
+  - now supports level inversion on serial and led SCmod via command line
 
 4.2rc2
 

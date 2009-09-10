@@ -167,7 +167,7 @@ private:
    void periodicCapture(int mode);
    void timebetweenCaptureTimeout();
    void setDirectory(const QString & dir);
-   void setSizeFromAllowed(int index) { resize(getAllowedSize()[index]);}
+   void setSizeFromAllowed(int index);
 };
 
 #endif
