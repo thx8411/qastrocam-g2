@@ -12,7 +12,7 @@ Later - binning in boxsize of hotspot search
 Later - binning module
 Later - static build
 Later - Multi language support
-DONE - 4.3   - file format, raw mode, level inversion, telescope device and lx device now stored and restored
+DONE - 4.3   - file format, raw mode, resolution, level inversion, telescope device and lx device now stored and restored
 DONE - 4.3   - SCmod level control via cmd-line for serial and led mods.
 DONE - 4.2.2 - adding a virtual telescope to order to generate an "iris like" auto-tracking file
 DONE - 4.2.1 - long exposure serial device choice using -dx option

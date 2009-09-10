@@ -1,7 +1,8 @@
 4.3beta20090910
 
-  - file format, raw mode, level inversion, telescope device and lx device are now stored and restored
-  - now supports level inversion on serial and led SCmod via command line
+  - file format, raw mode, resolution, level inversion, telescope device and lx device 
+    are now stored and restored (feature #2846348, to be finished)
+  - now supports level inversion on serial and led SCmod via command line (feature #2856135)
 
 4.2rc2
 
