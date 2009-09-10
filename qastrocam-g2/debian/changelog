@@ -1,4 +1,4 @@
-qastrocam-g2 (4.3beta200909010) jaunty; urgency=low
+qastrocam-g2 (4.3beta20090910) jaunty; urgency=low
 
   * file format, raw mode, resolution, telescope device, lx device, lx levels now saved
   * supports level inversion for serial and led SCmod via cmd-line
