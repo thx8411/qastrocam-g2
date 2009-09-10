@@ -61,15 +61,27 @@ void settingsBackup::setKey(const char* key, const char* val) {
 
 	i=findKey(key);
 	if(i<0) addKey(key,val);
-	else
+	else {
 		datas[1][i]=val;
+#ifdef _DEBUG_
+        cout << "key '" << key << " modified, new value : '" << val << "'\n";
+#endif
+	}
 	serialize();
+}
+
+bool settingsBackup::haveKey(const char* key) {
+	return(getKey(key)!=NULL);
 }
 
 const char* settingsBackup::getKey(const char* key) {
 	int i;
+
 	i=findKey(key);
 	if(i<0) return(NULL);
+#ifdef _DEBUG_
+        cout << "reading key " << key << " value : '" << datas[1][i].c_str() << "'\n";
+#endif
 	return(datas[1][i].c_str());
 }
 
@@ -87,17 +99,21 @@ void settingsBackup::deSerialize() {
 		while(!feof(fd)) {
 			fscanf(fd,"%s",key);
 			fscanf(fd,"%s",value);
+#ifdef _DEBUG_
+        		cout << "reading  " << key << " value : '" << value << "'\n";
+#endif
 			datas[0][end_record]=key;
 			datas[1][end_record]=value;
 			end_record++;
 		}
+                end_record--;
 		fclose(fd);
 	}
 #ifdef _DEBUG_
 	else {
                 perror("file error");
         }
-	cout << "reading " << end_record-1 << " entries\n"; 
+	cout << "reading " << end_record << " entries\n"; 
 #endif
 }
 

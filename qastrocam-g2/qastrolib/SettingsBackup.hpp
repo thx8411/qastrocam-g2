@@ -17,6 +17,7 @@ class settingsBackup {
 		void serialize();
 	public :
 		settingsBackup();
+		bool haveKey(const char* key);
 		void setKey(const char* key, const char* val);
 		const char* getKey(const char* key);
 		void deSerialize();

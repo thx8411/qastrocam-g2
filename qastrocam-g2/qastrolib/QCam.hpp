@@ -160,7 +160,7 @@ private:
  signals:
    void newFrame();
  private slots:
-   void updateFileFormat(int value) {fileFormatCurrent_=value;}
+   void updateFileFormat(int value);
    void maxCaptureInSequenceUpdated(const QString&);
    void timebetweenCaptureUpdated(const QString&);
    void periodicCapture(int mode);
