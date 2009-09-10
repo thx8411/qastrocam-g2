@@ -12,6 +12,9 @@ public:
    virtual void startAccumulation()=0;
    virtual ~SCmod() {}
    virtual QWidget * buildGUI(QWidget * parent) { return parent; }
+   void setLevels(bool polarity);
+protected :
+   bool inverted_;
 };
 
 
