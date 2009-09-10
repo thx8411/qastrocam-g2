@@ -45,7 +45,8 @@ const string VideoDeviceOptionString("-dv");
 const string TelescopeTypeOption("-t");
 const string TelescopeDeviceOptionString("-dt");
 const string LongexposureDeviceOptionString("-dx");
-const string LevelsOptionString("--inverted");
+const string LevelsInvertedOptionString("--levels-inverted");
+const string LevelsNormalOptionString("--levels-normal");
 const string LibDirOptionString("--libdir");
 const string SDLon("--SDL");
 const string SDLoff("--noSDL");
@@ -86,7 +87,8 @@ void usage(const char * progName) {
 	<< "     default is /dev/ttyS0.\n";
    cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n"
         << "     default is /dev/ttyS1.\n";
-   cerr << "  "<<LevelsOptionString<<" to invert polarity levels for serial and LED SCmods\n";
+   cerr << "  "<<LevelsInvertedOptionString<<" to invert polarity levels for serial and LED SCmods\n";
+   cerr << "  "<<LevelsNormalOptionString<<" reset levels to non-inverted\n";
    cerr << "  "<<LibDirOptionString<<" <directory> to set the library directory\n";
    cerr << "  "<<SDLon<<" use lib SDL to display frames (fast display).\n";
    cerr << "  "<<SDLoff<<" don't use lib SDL to display frames (slow display).\n";
@@ -130,6 +132,9 @@ int main(int argc, char ** argv) {
    cout << "* " << qastrocamMail << endl;
    
    settings.deSerialize();
+
+   if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
+   if(settings.haveKey("LX_DEVICE")) longexposureDeviceName=settings.getKey("LX_DEVICE");
 
    for (int i=1;i <argc;++i) {
       if (BrutDisplayString == argv[i]) {
@@ -184,6 +189,7 @@ int main(int argc, char ** argv) {
             exit(1);
          }
 	 telescopeDeviceName=argv[i];
+         settings.setKey("TELESCOPE_DEVICE",argv[i]);
       } else if ( LongexposureDeviceOptionString == argv[i]) {
 	 ++i;
 	  if(i==argc) {
@@ -191,8 +197,11 @@ int main(int argc, char ** argv) {
             exit(1);
 	 }
          longexposureDeviceName=argv[i];
-      // else if ( LevelsOptionString == argv[i]) {
-      //   settings.setKey("LX_LEVELS_INVERTED","yes");
+         settings.setKey("LX_DEVICE",argv[i]);
+      } else if ( LevelsInvertedOptionString == argv[i]) {
+         settings.setKey("LX_LEVELS_INVERTED","yes");
+      } else if ( LevelsNormalOptionString == argv[i]) {
+         settings.setKey("LX_LEVELS_INVERTED","no");
       } else if ( PPortOptionString == argv[i]) {
          ++i;
          if (i==argc) {
