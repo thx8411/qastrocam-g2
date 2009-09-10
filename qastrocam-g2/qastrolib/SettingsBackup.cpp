@@ -87,6 +87,9 @@ const char* settingsBackup::getKey(const char* key) {
 
 void settingsBackup::deSerialize() {
 	FILE* fd;
+	int i;
+	int j;
+	char buffer[256];
 	char key[256];
 	char value[256];
 
@@ -97,14 +100,32 @@ void settingsBackup::deSerialize() {
 	if(fd!=NULL) {
 		end_record=0;
 		while(!feof(fd)) {
-			fscanf(fd,"%s",key);
-			fscanf(fd,"%s",value);
+			i=0;
+			j=0;
+			fgets(buffer,255,fd);
+			while(buffer[i]!='\t'&&buffer[i]!='\0') {
+				key[j]=buffer[i];
+				i++; j++;
+			}
+			if(buffer[i]=='\0') {
+				cout <<  "Invalid record : '" << buffer << "'\n" ;
+				break;
+			} else {
+				i++;
+				key[j]='\0';
+				j=0;
+				while(buffer[i]!='\n') {
+					value[j]=buffer[i];
+					i++; j++;
+				}
+				value[j]='\0';
 #ifdef _DEBUG_
-        		cout << "reading  " << key << " value : '" << value << "'\n";
+        			cout << "reading  " << key << " value : '" << value << "'\n";
 #endif
-			datas[0][end_record]=key;
-			datas[1][end_record]=value;
-			end_record++;
+				datas[0][end_record]=key;
+				datas[1][end_record]=value;
+				end_record++;
+			}
 		}
                 end_record--;
 		fclose(fd);
