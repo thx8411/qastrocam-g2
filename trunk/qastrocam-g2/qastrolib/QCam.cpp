@@ -459,8 +459,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
          }
       }
 
-      QCamComboBox * sizeCombo
-         =new QCamComboBox("Frame size",remoteCTRL_,size,valueList,labelList);
+      sizeCombo=new QCamComboBox("Frame size",remoteCTRL_,size,valueList,labelList);
       if (indexOfCurrentSize==-1) {
          cout << "warning current capture size "
             "not foud in  getAllowedSize()\n";

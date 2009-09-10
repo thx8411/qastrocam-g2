@@ -1,5 +1,6 @@
 #include "SCmod.hpp"
 #include "QCamVesta.hpp"
+#include "SettingsBackup.hpp"
 
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -8,7 +9,19 @@
 #include <sys/errno.h>
 #include <fcntl.h>
 
+extern settingsBackup settings;
+
+void SCmod::setLevels(bool polarity) {
+   inverted_=polarity;
+   if (inverted_) settings.setKey("LX_LEVELS_INVERTED","yes");
+   else settings.setKey("LX_LEVELS_INVERTED","no");
+}
+
 SCmodTucLed::SCmodTucLed(QCamVesta & cam) : cam_(cam) {
+   if(settings.haveKey("LX_LEVELS_INVERTED"))
+      inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+   else
+      inverted_=false;
    stopAccumulation();
 }
 
@@ -21,17 +34,27 @@ void SCmodTucLed::leaveLongPoseMode() {
 }
 
 void SCmodTucLed::stopAccumulation() {
-   cam_.setLed(0,1000); // switching led OFF for TUC USB
+   if (inverted_) 
+      cam_.setLed(1000,0);
+   else 
+      cam_.setLed(0,1000); // switching led ON/OFF for TUC USB
 }
 
 void SCmodTucLed::startAccumulation() {
-   cam_.setLed(1000,0); // switching led ON  for TUC USB
+   if (inverted_) 
+      cam_.setLed(0,1000);
+   else 
+      cam_.setLed(1000,0); // switching led ON  for TUC USB
 }
 
 
 
 
 SCmodSerialPort::SCmodSerialPort(const char * device) {
+   if(settings.haveKey("LX_LEVELS_INVERTED"))
+      inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+   else
+      inverted_=false;
    device_=open(device,O_WRONLY);
    if (device_<0) {
       perror(device);
@@ -49,34 +72,43 @@ void SCmodSerialPort::leaveLongPoseMode() {
 
 void SCmodSerialPort::stopAccumulation() {
    int flag;
+   int function;
 
-	int err;
+   if (inverted_) 
+      function=TIOCMBIC;
+   else 
+      function=TIOCMBIS;
 
    // set preamp on
    flag=TIOCM_DTR;
-   if (ioctl(device_,TIOCMBIC,&flag)) {
+   if (ioctl(device_,function,&flag)) {
       perror("set dtr");
    }
    usleep(800);
    // unblock exposure
    flag=TIOCM_RTS;
-   if (ioctl(device_,TIOCMBIC,&flag)) {
+   if (ioctl(device_,function,&flag)) {
       perror("set rts");
    }
 }
 
 void SCmodSerialPort::startAccumulation() {
    int flag;
+   int function;
 
+   if (inverted_) 
+      function=TIOCMBIS;
+   else 
+      function=TIOCMBIC;
    // block exposure
    flag=TIOCM_RTS;
-   if (ioctl(device_,TIOCMBIS,&flag)) {
+   if (ioctl(device_,function,&flag)) {
       perror("set rts");
    }   
 
    // switch preamp off
    flag=TIOCM_DTR;
-   if (ioctl(device_,TIOCMBIS,&flag)) {
+   if (ioctl(device_,function,&flag)) {
       perror("set dtr");
    }
 }

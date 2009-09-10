@@ -133,6 +133,7 @@ private:
    CamHistogram * displayHistogramWindow_;
    QDirectoryChooser * dirChooser_;
    QCamComboBox * imgFormatBox_;
+   QCamComboBox * sizeCombo;
    QPushButton * snapshot_;
    QPushButton * pauseCapture_;
    QPushButton * capture_;
