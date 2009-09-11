@@ -22,12 +22,6 @@ OBJ_cpp = QCamV4LbestDevice.o port.o FitsImage.o QCamUtilities.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o SettingsBackup.o
 
-ifeq ($(ARCHTYPE)_DISABLED, ia32)
-  OBJ_asm = ccvt_mmx_old.o
-  OBJ_c = #ccvt_c.o
-else
-  OBJ_asm = #ccvt_mmx_old.o
-  OBJ_c = ccvt_c_old.o
-endif
+OBJ_c = ccvt_c2.o
 
 include ../Makefile.common
