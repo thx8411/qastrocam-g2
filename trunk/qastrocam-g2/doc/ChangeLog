@@ -1,5 +1,6 @@
-4.3beta20090910
+4.3beta20090911
 
+  - ccvt updated to 0.3 (no more asm)
   - file format, raw mode, resolution, level inversion, telescope device and lx device 
     are now stored and restored (feature #2846348, to be finished)
   - now supports level inversion on serial and led SCmod via command line (feature #2856135)
