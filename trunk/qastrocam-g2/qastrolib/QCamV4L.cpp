@@ -101,7 +101,20 @@ void QCamV4L::init(int preferedPalette) {
    }
    if (preferedPalette == 0) {
       do {
-         /* trying VIDEO_PALETTE_YUV420P (Planar) */
+	 /* trying VIDEO_PALETTE_RGB24 */
+         picture_.palette=VIDEO_PALETTE_RGB24;
+         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+            cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
+            break;
+         }
+         cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
+	 /* trying VIDEO_PALETTE_YUYV */
+         //picture_.palette=VIDEO_PALETTE_YUYV;
+         //if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+         //   cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
+         //   break;
+         //}
+	 /* trying VIDEO_PALETTE_YUV420P (Planar) */
          picture_.palette=VIDEO_PALETTE_YUV420P;
          if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
             cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
@@ -116,23 +129,14 @@ void QCamV4L::init(int preferedPalette) {
             break;
          }
          cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
-
-         /* trying VIDEO_PALETTE_RGB24 */
-         picture_.palette=VIDEO_PALETTE_RGB24;
-         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-            cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
-         
-         /* trying VIDEO_PALETTE_GREY */
+	 /* trying VIDEO_PALETTE_GREY */
          picture_.palette=VIDEO_PALETTE_GREY;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
             cout << "found palette VIDEO_PALETTE_GREY"<<endl;
             break;
          }
          cout <<"VIDEO_PALETTE_GREY not supported.\n";
-         
+
          cerr <<"could not find a supported palette.\n";
          exit(1);
       }
