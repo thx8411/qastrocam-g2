@@ -234,7 +234,7 @@ bool QCamV4L::setSize(int x, int y) {
 }
 
 bool QCamV4L::dropFrame() {
-   static char nullBuff[640*480*4];
+   static char nullBuff[720*576*4];
    int bufSize;
    if (mmap_buffer_) {
       mmapCapture();
@@ -261,7 +261,7 @@ bool QCamV4L::dropFrame() {
 }
 
 bool QCamV4L::updateFrame() {
-   static char nullBuf[640*480];
+   static char nullBuf[720*576];
    bool res;
    void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
    //cout <<"O"<<flush;
