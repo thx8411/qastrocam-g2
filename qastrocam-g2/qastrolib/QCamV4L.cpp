@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/mman.h>
+#include <string>
 #include <qtabwidget.h>
 #include <qsocketnotifier.h>
 #include <qtimer.h> 
@@ -58,6 +59,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
       init(preferedPalette);
    }
 
+   cout << "device name : " << capability_.name << endl;
+
    /* available inputs */
    cout << endl << "available inputs : " << endl;
    input.index=0;
@@ -66,9 +69,27 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
       input.index++;
    }
 
-   /* temp : using CVBS */
-   //input_index=1;
-   //ioctl (device_, VIDIOC_S_INPUT, &input_index);
+   /* choosing stored source */
+   int res;
+   string keyName("SOURCE_");
+   keyName+=capability_.name;
+   if(settings.haveKey(keyName.c_str())) {
+      cout << "found stored source : " << settings.getKey(keyName.c_str()) << endl ;
+      string source=settings.getKey(keyName.c_str());
+      input.index=0;
+      do {
+         res=ioctl(device_,VIDIOC_ENUMINPUT,&input);
+         input.index++;
+         //cout << source.c_str() << ":" << input.name << " : " << strcasecmp(source.c_str(),(char*)input.name) << endl;
+      } while((res==0)&&(strcasecmp(source.c_str(),(char*)input.name)!=0));
+      if(res==-1)
+	cout << "source '" << settings.getKey(keyName.c_str()) << "' not found, using default" << endl;
+      else {
+         input_index=input.index-1;
+         ioctl (device_, VIDIOC_S_INPUT, &input_index);
+         //cout << "setting stored source : " << input.name << endl;
+      }
+   }
 
    /* reading input */
    ioctl(device_,VIDIOC_G_INPUT,&input_index);
@@ -76,9 +97,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
    cout << "using : " << input.name << endl << endl; 
 
-   /* temp : using CVBS */
-   input_index=1;
-   ioctl (device_, VIDIOC_S_INPUT, &input_index);
+   /* storing default source */ 
+   settings.setKey(keyName.c_str(),(char*)input.name);
 
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
 
@@ -298,7 +318,6 @@ bool QCamV4L::updateFrame() {
    static char nullBuf[720*576];
    bool res;
    void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
-   //cout <<"O"<<flush;
    YBuf=(void*)yuvBuffer_.YforOverwrite();
    switch(mode_) {
    case GreyFrame:
@@ -314,10 +333,7 @@ bool QCamV4L::updateFrame() {
    }
 
    if (mmap_buffer_) {
-      //cout <<"c"<<flush;
       mmapCapture();
-
-      //cout <<"s"<<flush;
       mmapSync();
       setTime();
       res=true;
