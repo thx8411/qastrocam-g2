@@ -25,6 +25,7 @@ const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor
 QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
                  unsigned long options /* cf QCamV4L::options */) {
    v4l2_input input;
+   v4l2_capability device_cap;
    int input_index=0;
 
    options_=options;
@@ -43,6 +44,9 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
    }
    if (device_ != -1) {
       if (-1 == ioctl(device_,VIDIOCGCAP,&capability_)) {
+         perror ("ioctl (VIDIOCGCAP)");
+      }
+      if (-1 == ioctl(device_,VIDIOC_QUERYCAP,&device_cap)) {
          perror ("ioctl (VIDIOCGCAP)");
       }
       if (-1 == ioctl (device_, VIDIOCGWIN, &window_)) {
@@ -76,8 +80,18 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
    input_index=1;
    ioctl (device_, VIDIOC_S_INPUT, &input_index);
 
-
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
+
+   if(device_cap.capabilities&V4L2_CAP_STREAMING)
+      cout << "Streaming available" << endl;
+   else
+      cout << "Streaming unavailable" << endl;
+
+   mmap_buffer_=NULL;
+   if (mmapInit()) {
+      mmapCapture();
+   }
+
    notifier_=NULL;
    timer_=NULL;
    if (options_&ioUseSelect) {
@@ -89,10 +103,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
       connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
       timer_->start(1000/frameRate_) ; // value 0 => called every time event loop is empty
       cout << "Using timer to wait new frames.\n";
-   }
-   mmap_buffer_=NULL;
-   if (mmapInit()) {
-      mmapCapture();
    }
    label(capability_.name);
 }
@@ -464,6 +474,10 @@ int QCamV4L::getWhiteness() const {
 
 QCamV4L::~QCamV4L() {
    delete tmpBuffer_;
+
+   if(mmap_buffer_!=NULL)
+      munmap(mmap_buffer_,mmap_mbuf_.size);
+
    close(device_);
 }
 
@@ -578,16 +592,29 @@ void  QCamV4L::setMode(ImageMode val) {
 }
 
 bool QCamV4L::mmapInit() {
+   struct v4l2_requestbuffers stream_buffers;
+
    mmap_mbuf_.size = 0;
    mmap_mbuf_.frames = 0;
    mmap_last_sync_buff_=-1;
    mmap_last_capture_buff_=-1;
    mmap_buffer_=NULL;
 
+   /* request streaming mode */
+   //stream_buffers.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   //stream_buffers.count=8;
+   //stream_buffers.memory=V4L2_MEMORY_MMAP;
+   //if (ioctl(device_, VIDIOC_REQBUFS,&stream_buffers)) {
+   //   perror("ioctl");
+   //   cout << "streaming not supported" << endl;
+   //   return(false);
+   //}
+
    if (ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_)) {
-      // mmap not supported
+      cout << "mmap not supported" << endl;
       return false;
    }
+
    mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
    if (mmap_buffer_ == MAP_FAILED) {
       perror("mmap");
