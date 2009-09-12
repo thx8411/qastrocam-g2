@@ -1,5 +1,6 @@
-4.3beta20090911
+4.3beta20090912
 
+  - V4L generic devices source can now be choosen. Choice is stored for each device
   - ccvt updated to 0.3 (no more asm)
   - file format, raw mode, resolution, level inversion, telescope device and lx device 
     are now stored and restored (feature #2846348, to be finished)
