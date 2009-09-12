@@ -24,6 +24,9 @@ const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor
 
 QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
                  unsigned long options /* cf QCamV4L::options */) {
+   v4l2_input input;
+   int input_index=0;
+
    options_=options;
    tmpBuffer_=NULL;
    remoteCTRLbrightness_=NULL;
@@ -51,9 +54,21 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
       init(preferedPalette);
    }
 
-#if 1
+   /* available inputs */
+   cout << endl << "available inputs : " << endl;
+   input.index=0;
+   while(!ioctl(device_,VIDIOC_ENUMINPUT,&input)) {
+      cout << "input #" << input.index << " : " << input.name << endl;
+      input.index++;
+   }
+
+   /* reading input */
+   ioctl(device_,VIDIOC_G_INPUT,&input_index);
+   input.index=input_index;
+   ioctl(device_,VIDIOC_ENUMINPUT,&input);
+   cout << "using :" << input.name << endl << endl; 
+
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
-#endif
    notifier_=NULL;
    timer_=NULL;
    if (options_&ioUseSelect) {
@@ -572,15 +587,11 @@ bool QCamV4L::mmapInit() {
       mmap_buffer_=NULL;
       return false;
    }
-   cout << "mmap() in use: "
+   cout << "mmap() in use : "
         << "frames="<<mmap_mbuf_.frames
-      //<<" size="<<mmap_mbuf_.size
-        <<"\n";
-   /*
-   for(int i=0;i<mmap_mbuf_.frames;++i) {
-      cout << i<<"="<<mmap_mbuf_.offsets[i]<<"  ";
-   }
-   */
+        <<" size="<<mmap_mbuf_.size
+        << endl;
+
    cout <<"\n";
    return true;
 }
