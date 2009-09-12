@@ -62,11 +62,20 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
       input.index++;
    }
 
+   /* temp : using CVBS */
+   //input_index=1;
+   //ioctl (device_, VIDIOC_S_INPUT, &input_index);
+
    /* reading input */
    ioctl(device_,VIDIOC_G_INPUT,&input_index);
    input.index=input_index;
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
-   cout << "using :" << input.name << endl << endl; 
+   cout << "using : " << input.name << endl << endl; 
+
+   /* temp : using CVBS */
+   input_index=1;
+   ioctl (device_, VIDIOC_S_INPUT, &input_index);
+
 
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
    notifier_=NULL;
