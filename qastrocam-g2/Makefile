@@ -12,6 +12,8 @@ full:: all
 install:: all 
 	for i in $(SUBDIRS); do $(MAKE) -C $$i install TARBALLS= ; done
 	iconsDir="$(DESTDIR)/share/qastrocam/icons"; install -d "$$iconsDir"; install icons/*.png "$$iconsDir"
+	gnomeMenuDir="$(DESTDIR)/share/applications"; install -d "$$gnomeMenuDir"; install qastrocam-g2.desktop "$$gnomeMenuDir"
+	gnomeIconDir="$(DESTDIR)/share/icons"; install -d "$$gnomeIconDir"; install icons/qastrocam-icon.png "$$gnomeIconDir"
 
 release::
 	$(MAKE) all OPTFLAGS="-O3"
