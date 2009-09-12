@@ -32,9 +32,10 @@ public:
    };
    static const int DefaultOptions;
    
-   static QCam * openBestDevice(const char * devpath = "/dev/video0");
+   static QCam * openBestDevice(const char * devpath = "/dev/video0",const char * devsource = "");
    QCamV4L(const char * devpath="/dev/video0",
            int preferedPalette = 0 /* auto palette*/,
+           const char* devsource=NULL,
            unsigned long options =  DefaultOptions /* cf QCamV4L::options */);
    QCamFrame yuvFrame() const { return yuvBuffer_; }
    const QSize & size() const;

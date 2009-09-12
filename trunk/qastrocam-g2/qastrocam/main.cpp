@@ -51,6 +51,7 @@ const string LibDirOptionString("--libdir");
 const string SDLon("--SDL");
 const string SDLoff("--noSDL");
 const string ExpertMode("--expert");
+const string DeviceSource("-i");
 
 extern string longexposureDeviceName;
 
@@ -78,6 +79,7 @@ void usage(const char * progName) {
         << " display the frame after the Align process\n";
    cerr << "  "<<VideoDeviceOptionString << " <deviceName> to choose the V4L device name.\n"
 	<< "     default is /dev/video0.\n";
+   cerr << "  "<<DeviceSource<< " <source> to set the V4L device source.\n";
    cerr << "  "<<PPortOptionString << " <port> IO port of the // port (in Hexa).\n"
 	<< "     default is 378 (=LPT1) (use 278 for LPT2).\n"
         << "     * Only for APM interface *\n";
@@ -118,6 +120,7 @@ int main(int argc, char ** argv) {
    bool histogram=false,telescope=false;
    bool kingOption=false;
    string videoDeviceName("/dev/video0");
+   string videoDeviceSource;
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS0");
    string libPath;
@@ -174,6 +177,13 @@ int main(int argc, char ** argv) {
             exit(1);
          }
 	 videoDeviceName=argv[i];
+      } else if ( DeviceSource == argv[i]) {
+         i++;
+         if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         videoDeviceSource=argv[i];
       } else if ( TelescopeTypeOption == argv[i]) {
          ++i;
          if (i==argc) {
@@ -298,7 +308,7 @@ int main(int argc, char ** argv) {
    QCam  * cam =NULL;
 	   
    do {
-      cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
+      cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),videoDeviceSource.c_str());
       if (cam == NULL) {
          static QMessageBox mb("Qastrocam",
 			      QMessageBox::tr("No camera detected (did you plug it?)"),

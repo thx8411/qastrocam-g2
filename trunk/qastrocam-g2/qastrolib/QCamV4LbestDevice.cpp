@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <linux/videodev.h>
 
-QCam * QCamV4L::openBestDevice(const char * devpath) {
+QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
    int cam_fd;
    QCam * camFound=NULL;
 
@@ -64,7 +64,7 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
              "Using generic V4L driver.\n",
              vcap.name);
       close(cam_fd);
-      camFound = new QCamV4L(devpath,false);
+      camFound = new QCamV4L(devpath,false,devsource);
       goto exit;
    }
 exit:

@@ -23,7 +23,7 @@ extern settingsBackup settings;
 
 const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor|haveWhiteness);
 
-QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
+QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource,
                  unsigned long options /* cf QCamV4L::options */) {
    v4l2_input input;
    v4l2_capability device_cap;
@@ -73,6 +73,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
    int res;
    string keyName("SOURCE_");
    keyName+=capability_.name;
+
+   if(strlen(devsource)) settings.setKey(keyName.c_str(),devsource);
    if(settings.haveKey(keyName.c_str())) {
       cout << "found stored source : " << settings.getKey(keyName.c_str()) << endl ;
       string source=settings.getKey(keyName.c_str());
@@ -89,7 +91,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
          ioctl (device_, VIDIOC_S_INPUT, &input_index);
          //cout << "setting stored source : " << input.name << endl;
       }
-   }
+   } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
 
    /* reading input */
    ioctl(device_,VIDIOC_G_INPUT,&input_index);
