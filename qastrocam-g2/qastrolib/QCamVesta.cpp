@@ -31,7 +31,7 @@
 string longexposureDeviceName("/dev/ttyS1");
 
 QCamVesta::QCamVesta(const char * devpath):
-   QCamV4L(devpath,VIDEO_PALETTE_YUV420P, (ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
+   QCamV4L(devpath,VIDEO_PALETTE_YUV420P, "",(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
    SCmodCtrl_=NULL;
    exposureTimeLeft_=NULL;
 
