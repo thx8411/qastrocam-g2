@@ -109,10 +109,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    else
       cout << "Streaming unavailable" << endl;
 
-   mmap_buffer_=NULL;
-   if (mmapInit()) {
-      mmapCapture();
-   }
+   streamSupported=mmapInit();
+   mmapCapture();
 
    notifier_=NULL;
    timer_=NULL;
@@ -158,12 +156,12 @@ void QCamV4L::init(int preferedPalette) {
    if (preferedPalette == 0) {
       do {
 	 /* trying VIDEO_PALETTE_RGB24 */
-         picture_.palette=VIDEO_PALETTE_RGB24;
-         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-            cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
+         //picture_.palette=VIDEO_PALETTE_RGB24;
+         //if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+         //   cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
+         //   break;
+         //}
+         //cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
 	 /* trying VIDEO_PALETTE_YUYV */
          //picture_.palette=VIDEO_PALETTE_YUYV;
          //if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
@@ -200,9 +198,9 @@ void QCamV4L::init(int preferedPalette) {
    }
    
    mode_ = (picture_.palette==VIDEO_PALETTE_GREY)?GreyFrame:YuvFrame;
-   if (ioctl(device_, VIDIOCGPICT, &picture_)) {
-      perror ("ioctl(VIDIOCGPICT)");
-   }
+   //if (ioctl(device_, VIDIOCGPICT, &picture_)) {
+   //   perror ("ioctl(VIDIOCGPICT)");
+   //}
    
    allocBuffers();
 
@@ -225,12 +223,11 @@ void QCamV4L::allocBuffers() {
    case VIDEO_PALETTE_YUV420P:
       tmpBuffer_=new uchar[(int)window_.width * window_.height * 3/2 ];
       break;
-#if 0
-   case VIDEO_PALETTE_YUV422:
-   case VIDEO_PALETTE_YUYV:
-      tmpBuffer_=new uchar[(int)window_.width * window_.height * 2];
-      break;
-#endif
+
+   //case VIDEO_PALETTE_YUV422:
+   //case VIDEO_PALETTE_YUYV:
+   //   tmpBuffer_=new uchar[(int)window_.width * window_.height * 2];
+   //   break;
    default:
       tmpBuffer_=NULL;
    }
@@ -275,10 +272,8 @@ bool QCamV4L::setSize(int x, int y) {
    static char buff[11];
    snprintf(buff,10,"%dx%d",x,y);
    setProperty("FrameSize",buff,true);
-#if 1
    cout << "x=" << window_.width
         << " " << "y=" << window_.height <<endl;
-#endif
    if (ioctl (device_, VIDIOCSWIN, &window_)) {
        perror ("ioctl(VIDIOCSWIN)");
    }
@@ -353,7 +348,6 @@ bool QCamV4L::updateFrame() {
                 mmapLastFrame()+ window_.width * window_.height+(window_.width/2) * (window_.height/2),
                 (window_.width/2) * (window_.height/2));
          break;
-#if 1
       case VIDEO_PALETTE_YUV420:
          ccvt_420i_420p(window_.width,window_.height,
                            mmapLastFrame(),
@@ -368,7 +362,6 @@ bool QCamV4L::updateFrame() {
                          UBuf,
                          VBuf);
          break;
-#endif
 
       default:
          cerr << "invalid palette "<<picture_.palette<<endl;
@@ -386,7 +379,6 @@ bool QCamV4L::updateFrame() {
       res = res && (0 < read(device_,UBuf,(window_.width/2) * (window_.height/2)));
       res = res && (0 < read(device_,VBuf,(window_.width/2) * (window_.height/2)));
       break;
-#if 1
    case VIDEO_PALETTE_YUV420:
       res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height *3/2);
       if (res) {
@@ -409,7 +401,6 @@ bool QCamV4L::updateFrame() {
                          VBuf);
       }
       break;
-#endif
    default:
       cerr << "invalid palette "<<picture_.palette<<endl;
       exit(1);
@@ -493,8 +484,10 @@ int QCamV4L::getWhiteness() const {
 QCamV4L::~QCamV4L() {
    delete tmpBuffer_;
 
-   if(mmap_buffer_!=NULL)
+   if(streamSupported)
       munmap(mmap_buffer_,mmap_mbuf_.size);
+   else
+      free(mmap_buffer_);
 
    close(device_);
 }
@@ -610,8 +603,6 @@ void  QCamV4L::setMode(ImageMode val) {
 }
 
 bool QCamV4L::mmapInit() {
-   struct v4l2_requestbuffers stream_buffers;
-
    mmap_mbuf_.size = 0;
    mmap_mbuf_.frames = 0;
    mmap_last_sync_buff_=-1;
@@ -619,26 +610,26 @@ bool QCamV4L::mmapInit() {
    mmap_buffer_=NULL;
 
    /* request streaming mode */
-   //stream_buffers.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
-   //stream_buffers.count=8;
-   //stream_buffers.memory=V4L2_MEMORY_MMAP;
-   //if (ioctl(device_, VIDIOC_REQBUFS,&stream_buffers)) {
-   //   perror("ioctl");
-   //   cout << "streaming not supported" << endl;
-   //   return(false);
-   //}
-
    if (ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_)) {
       cout << "mmap not supported" << endl;
+      cout << "Using read/write mode" << endl;
+      mmap_buffer_=(uchar*)malloc(mmap_mbuf_.size);
+      if(mmap_buffer_==NULL) {
+         cout << "Fatal : enable to allocate buffer" << endl;
+         exit(1);
+      }
       return false;
    }
 
    mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
    if (mmap_buffer_ == MAP_FAILED) {
       perror("mmap");
-      mmap_mbuf_.size = 0;
-      mmap_mbuf_.frames = 0;
-      mmap_buffer_=NULL;
+      cout << "mmap trouble, using read/write mode" << endl;
+      mmap_buffer_=(uchar*)malloc(mmap_mbuf_.size);
+      if(mmap_buffer_==NULL) {
+         cout << "Fatal : enable to allocate buffer" << endl;
+         exit(1);       
+      }
       return false;
    }
    cout << "mmap() in use : "
@@ -651,9 +642,15 @@ bool QCamV4L::mmapInit() {
 }
 
 void QCamV4L::mmapSync() {
-   mmap_last_sync_buff_=(mmap_last_sync_buff_+1)%mmap_mbuf_.frames;
-   if (ioctl(device_, VIDIOCSYNC, &mmap_last_sync_buff_) < 0) {
-      perror("QCamV4L::mmapSync()");
+   if(streamSupported) {
+      mmap_last_sync_buff_=(mmap_last_sync_buff_+1)%mmap_mbuf_.frames;
+      if (ioctl(device_, VIDIOCSYNC, &mmap_last_sync_buff_) < 0) {
+         perror("QCamV4L::mmapSync()");
+      }
+   } else {
+   //
+   //
+   //
    }
 }
 
@@ -671,18 +668,24 @@ uchar * QCamV4L::mmapLastFrame() const {
 }
 
 void QCamV4L::mmapCapture() {
-   struct video_mmap vm;
-   mmap_last_capture_buff_=(mmap_last_capture_buff_+1)%mmap_mbuf_.frames;
-   vm.frame = mmap_last_capture_buff_;
-   vm.format = picture_.palette;
-   vm.width = window_.width;
-   vm.height = window_.height;
-   if (ioctl(device_, VIDIOCMCAPTURE, &vm) < 0) {
-      perror("QCamV4L::mmapCapture");
-      // AEW: try and do something sensible here - the V4L source 
-      // has gone away
-      close(device_);
-      exit(0);
+   if(streamSupported) {
+      struct video_mmap vm;
+      mmap_last_capture_buff_=(mmap_last_capture_buff_+1)%mmap_mbuf_.frames;
+      vm.frame = mmap_last_capture_buff_;
+      vm.format = picture_.palette;
+      vm.width = window_.width;
+      vm.height = window_.height;
+      if (ioctl(device_, VIDIOCMCAPTURE, &vm) < 0) {
+         perror("QCamV4L::mmapCapture");
+         // AEW: try and do something sensible here - the V4L source 
+         // has gone away
+         close(device_);
+         exit(0);
+      }
+   } else {
+   //
+   //
+   //
    }
 }
 
