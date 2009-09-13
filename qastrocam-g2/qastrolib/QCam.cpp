@@ -466,7 +466,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
       if (indexOfCurrentSize==-1) {
          cout << "warning current capture size "
-            "not foud in  getAllowedSize()\n";
+            "not found in  getAllowedSize()\n";
       } else {
          sizeCombo->update(indexOfCurrentSize);
       }
