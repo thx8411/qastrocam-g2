@@ -684,7 +684,9 @@ void QCamV4L::mmapCapture() {
       }
    } else {
    //
-   //
+   int res;
+   res=read(device_,mmap_buffer_,mmap_mbuf_.size);
+   
    //
    }
 }
