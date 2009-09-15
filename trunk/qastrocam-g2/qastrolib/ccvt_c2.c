@@ -204,7 +204,35 @@ void ccvt_420i_420p(int width, int height, const void *src, void *dsty, void *ds
 	} /* ..for line */
 }
 
+void ccvt_rgb24_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
+   assert(0);
+}
+
 void ccvt_bgr24_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
    assert(0);
+}
+
+
+
+/**********************************/
+
+
+
+void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
+   int x,y;
+   unsigned char pixel[2];
+   unsigned char* sPlan;
+   unsigned char* yPlan;
+
+   sPlan=(unsigned char*)src;
+   yPlan=(unsigned char*)dsty;
+   for(y=0;y<height;y++) {
+      for(x=0;x<width;x++) {
+         pixel[0]=sPlan[(y*width+x)*2];
+         pixel[1]=sPlan[(y*width+x)*2+1];
+         yPlan[y*width+x]=pixel[0];
+      }
+   }
+   //assert(0);
 }
 
