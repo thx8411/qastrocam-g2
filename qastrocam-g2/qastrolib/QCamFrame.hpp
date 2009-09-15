@@ -15,10 +15,10 @@ class QImage;
 using namespace std;
 
 enum ImageMode {
-   YuvFrame,
    GreyFrame,
    /* GR
       BG */
+   YuvFrame,
    RawRgbFrame1,
    /* RG
       GB */

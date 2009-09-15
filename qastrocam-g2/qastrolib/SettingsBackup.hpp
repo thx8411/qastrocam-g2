@@ -5,7 +5,7 @@
 
 using namespace std;
 
-#define NB_RECORDS	16
+#define NB_RECORDS	32
 
 class settingsBackup {
 	private :

@@ -165,26 +165,26 @@ void QCamV4L::init(int preferedPalette) {
          //}
          //cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
 	 /* trying VIDEO_PALETTE_YUYV */
-         //picture_.palette=VIDEO_PALETTE_YUYV;
-         //if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-         //   cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
+         picture_.palette=VIDEO_PALETTE_YUYV;
+         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+            cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
+            break;
+         }
+         cout <<"VIDEO_PALETTE_YUYV not supported.\n";
+	 /* trying VIDEO_PALETTE_YUV420P (Planar) */
+         //picture_.palette=VIDEO_PALETTE_YUV420P;
+         //if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
+         //   cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
          //   break;
          //}
-	 /* trying VIDEO_PALETTE_YUV420P (Planar) */
-         picture_.palette=VIDEO_PALETTE_YUV420P;
-         if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
-            cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_YUV420P not supported.\n";
-         
+         //cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
          /* trying VIDEO_PALETTE_YUV420 (interlaced) */
-         picture_.palette=VIDEO_PALETTE_YUV420;
-         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-            cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
+         //picture_.palette=VIDEO_PALETTE_YUV420;
+         //if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+         //   cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
+         //   break;
+         //}
+         //cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
 	 /* trying VIDEO_PALETTE_GREY */
          picture_.palette=VIDEO_PALETTE_GREY;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
@@ -222,12 +222,10 @@ void QCamV4L::allocBuffers() {
    case VIDEO_PALETTE_YUV420P:
       tmpBuffer_=new uchar[(int)window_.width * window_.height * 3/2 ];
       break;
-#if 0
    case VIDEO_PALETTE_YUV422:
    case VIDEO_PALETTE_YUYV:
       tmpBuffer_=new uchar[(int)window_.width * window_.height * 2];
       break;
-#endif
    default:
       tmpBuffer_=NULL;
    }
@@ -305,6 +303,10 @@ bool QCamV4L::dropFrame() {
       case VIDEO_PALETTE_RGB24:
          bufSize=window_.width * window_.height *3;
          break;
+      case VIDEO_PALETTE_YUV422:
+      case VIDEO_PALETTE_YUYV:
+         bufSize=window_.width * window_.height *2;
+         break;
       default:
          cerr << "invalid palette "<<picture_.palette<<endl;
          exit(1);
@@ -350,7 +352,6 @@ bool QCamV4L::updateFrame() {
                 mmapLastFrame()+ window_.width * window_.height+(window_.width/2) * (window_.height/2),
                 (window_.width/2) * (window_.height/2));
          break;
-#if 1
       case VIDEO_PALETTE_YUV420:
          ccvt_420i_420p(window_.width,window_.height,
                            mmapLastFrame(),
@@ -359,13 +360,19 @@ bool QCamV4L::updateFrame() {
                            VBuf);
          break;
       case VIDEO_PALETTE_RGB24:
+         // trouble
          ccvt_bgr24_420p(window_.width,window_.height,
                             mmapLastFrame(),
                          YBuf,
                          UBuf,
                          VBuf);
          break;
-#endif
+      case VIDEO_PALETTE_YUV422:
+      case VIDEO_PALETTE_YUYV:
+         // to be done
+         memcpy(YBuf,mmapLastFrame(),window_.width * window_.height);
+         //
+         break;
 
       default:
          cerr << "invalid palette "<<picture_.palette<<endl;
@@ -383,7 +390,6 @@ bool QCamV4L::updateFrame() {
       res = res && (0 < read(device_,UBuf,(window_.width/2) * (window_.height/2)));
       res = res && (0 < read(device_,VBuf,(window_.width/2) * (window_.height/2)));
       break;
-#if 1
    case VIDEO_PALETTE_YUV420:
       res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height *3/2);
       if (res) {
@@ -406,7 +412,16 @@ bool QCamV4L::updateFrame() {
                          VBuf);
       }
       break;
-#endif
+   case VIDEO_PALETTE_YUV422:
+   case VIDEO_PALETTE_YUYV:
+      res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 2);
+      if (res) {
+          setTime();
+          // to be done
+          memcpy(YBuf,tmpBuffer_,window_.width * window_.height*2);
+          //
+      }
+      break;
    default:
       cerr << "invalid palette "<<picture_.palette<<endl;
       exit(1);
@@ -523,11 +538,16 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
      QCheckBox * greyModeB = new QCheckBox("B&W",hbox);
      connect(greyModeB,SIGNAL(toggled(bool)),this,SLOT(setGrey(bool)));
    */
-   int frameModeTable[]={YuvFrame,GreyFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
-   const char* frameModeLabel[]={"RGB", "Grey", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
-   frameModeB= new QCamComboBox("frame type",remoteCTRL,6,frameModeTable,frameModeLabel);
-   connect(frameModeB,SIGNAL(change(int)),
-           this,SLOT(setMode(int)));
+   int labelNumber;
+   if(picture_.palette==VIDEO_PALETTE_GREY)
+      labelNumber=1;
+   else
+      labelNumber=6;
+
+   int frameModeTable[]={GreyFrame,YuvFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
+   const char* frameModeLabel[]={"Grey", "RGB", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
+   frameModeB= new QCamComboBox("frame type",remoteCTRL,labelNumber,frameModeTable,frameModeLabel);
+   connect(frameModeB,SIGNAL(change(int)),this,SLOT(setMode(int)));
 
    if(settings.haveKey("RAW_MODE")) {
 	int index=frameModeB->getPosition(settings.getKey("RAW_MODE"));
