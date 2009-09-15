@@ -168,23 +168,23 @@ void QCamV4L::init(int preferedPalette) {
          picture_.palette=VIDEO_PALETTE_YUYV;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
             cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
-            break;
+           break;
          }
          cout <<"VIDEO_PALETTE_YUYV not supported.\n";
 	 /* trying VIDEO_PALETTE_YUV420P (Planar) */
-         //picture_.palette=VIDEO_PALETTE_YUV420P;
-         //if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
-         //   cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
-         //   break;
-         //}
-         //cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
+         picture_.palette=VIDEO_PALETTE_YUV420P;
+         if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
+            cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
+            break;
+         }
+         cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
          /* trying VIDEO_PALETTE_YUV420 (interlaced) */
-         //picture_.palette=VIDEO_PALETTE_YUV420;
-         //if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-         //   cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
-         //   break;
-         //}
-         //cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
+         picture_.palette=VIDEO_PALETTE_YUV420;
+         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+            cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
+            break;
+         }
+         cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
 	 /* trying VIDEO_PALETTE_GREY */
          picture_.palette=VIDEO_PALETTE_GREY;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
@@ -361,7 +361,7 @@ bool QCamV4L::updateFrame() {
          break;
       case VIDEO_PALETTE_RGB24:
          // trouble
-         ccvt_bgr24_420p(window_.width,window_.height,
+         ccvt_rgb24_420p(window_.width,window_.height,
                             mmapLastFrame(),
                          YBuf,
                          UBuf,
@@ -369,9 +369,11 @@ bool QCamV4L::updateFrame() {
          break;
       case VIDEO_PALETTE_YUV422:
       case VIDEO_PALETTE_YUYV:
-         // to be done
-         memcpy(YBuf,mmapLastFrame(),window_.width * window_.height);
-         //
+         ccvt_yuyv_420p(window_.width,window_.height,
+                         tmpBuffer_,
+                         YBuf,
+                         UBuf,
+                         VBuf);
          break;
 
       default:
@@ -417,9 +419,11 @@ bool QCamV4L::updateFrame() {
       res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 2);
       if (res) {
           setTime();
-          // to be done
-          memcpy(YBuf,tmpBuffer_,window_.width * window_.height*2);
-          //
+          ccvt_yuyv_420p(window_.width,window_.height,
+                         tmpBuffer_,
+                         YBuf,
+                         UBuf,
+                         VBuf);
       }
       break;
    default:
