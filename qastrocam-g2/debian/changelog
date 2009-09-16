@@ -1,12 +1,13 @@
-qastrocam-g2 (4.3beta20090913) jaunty; urgency=low
+qastrocam-g2 (4.3beta20090916) jaunty; urgency=low
 
   * file format, raw mode, resolution, telescope device, lx device, lx levels now saved
   * supports level inversion for serial and led SCmod via cmd-line
   * ccvt updated to 0.3 (no more asm)
   * V4L generic devices sources choise and restoration
   * gnome menu entry and icon added
+  * yuyv pallette support
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Sat, 12 Sep 2009 23:40:51 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 16 Sep 2009 02:38:06 +0200
 
 qastrocam-g2 (4.2rc2) jaunty; urgency=low
 
