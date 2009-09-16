@@ -26,7 +26,6 @@ const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor
 QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource,
                  unsigned long options /* cf QCamV4L::options */) {
    v4l2_input input;
-   //v4l2_capability device_cap;
    int input_index=0;
 
    options_=options;
@@ -47,9 +46,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       if (-1 == ioctl(device_,VIDIOCGCAP,&capability_)) {
          perror ("ioctl (VIDIOCGCAP)");
       }
-      //if (-1 == ioctl(device_,VIDIOC_QUERYCAP,&device_cap)) {
-      //   perror ("ioctl (VIDIOCGCAP)");
-      //}
       if (-1 == ioctl (device_, VIDIOCGWIN, &window_)) {
          perror ("ioctl (VIDIOCGWIN)");
       }
@@ -82,14 +78,12 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       do {
          res=ioctl(device_,VIDIOC_ENUMINPUT,&input);
          input.index++;
-         //cout << source.c_str() << ":" << input.name << " : " << strcasecmp(source.c_str(),(char*)input.name) << endl;
       } while((res==0)&&(strcasecmp(source.c_str(),(char*)input.name)!=0));
       if(res==-1)
 	cout << "source '" << settings.getKey(keyName.c_str()) << "' not found, using default" << endl;
       else {
          input_index=input.index-1;
          ioctl (device_, VIDIOC_S_INPUT, &input_index);
-         //cout << "setting stored source : " << input.name << endl;
       }
    } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
 
@@ -103,11 +97,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    settings.setKey(keyName.c_str(),(char*)input.name);
 
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
-
-   //if(device_cap.capabilities&V4L2_CAP_STREAMING)
-   //   cout << "Streaming available" << endl;
-   //else
-   //   cout << "Streaming unavailable" << endl;
 
    mmap_buffer_=NULL;
    if (mmapInit()) {
@@ -130,14 +119,12 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 }
 
 void QCamV4L::resize(const QSize & s) {
-#if 1
    cout << "QCamV4L::resize("
         << s.width()
         << "x"
         << s.height()
         << ")"
         << endl;
-#endif
    setSize(s.width(),s.height());
 }
 
@@ -270,10 +257,8 @@ bool QCamV4L::setSize(int x, int y) {
    static char buff[11];
    snprintf(buff,10,"%dx%d",x,y);
    setProperty("FrameSize",buff,true);
-#if 1
    cout << "x=" << window_.width
         << " " << "y=" << window_.height <<endl;
-#endif
    if (ioctl (device_, VIDIOCSWIN, &window_)) {
        perror ("ioctl(VIDIOCSWIN)");
    }
@@ -360,7 +345,7 @@ bool QCamV4L::updateFrame() {
                            VBuf);
          break;
       case VIDEO_PALETTE_RGB24:
-         // trouble
+         // trouble, rgb24_420p not yet available
          ccvt_rgb24_420p(window_.width,window_.height,
                             mmapLastFrame(),
                          YBuf,
@@ -404,9 +389,10 @@ bool QCamV4L::updateFrame() {
       }
       break;
    case VIDEO_PALETTE_RGB24:
+      // trouble, rgb24_420p not yet available
       res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 3);
       if (res) {
-         setTime(); 
+         setTime();
          ccvt_bgr24_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
@@ -433,7 +419,6 @@ bool QCamV4L::updateFrame() {
    }
    if (res) {
       newFrameAvaible();
-      //cout <<"b"<<flush;
       /*
         if (options_ & haveBrightness) emit brightnessChange(getBrightness());
         if (options_ & haveContrast) emit contrastChange(getContrast());
@@ -441,13 +426,11 @@ bool QCamV4L::updateFrame() {
         if (options_ & haveColor) emit colorChange(getColor());
         if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
       */
-      //cerr << "+";
    } else {
       //newFrameAvaible();
       //perror("updateFrame");
       //cerr << ".";
    }
-   //cout <<"k"<<flush;
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
       frameRate_=newFrameRate;
@@ -555,7 +538,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 
    if(settings.haveKey("RAW_MODE")) {
 	int index=frameModeB->getPosition(settings.getKey("RAW_MODE"));
-	//cout << "setting mode " << settings.getKey("RAW_MODE") << endl;
 	if (index!=-1) setMode(index);
 	frameModeB->setCurrentItem(index);
    }
@@ -607,7 +589,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 void  QCamV4L::setMode(int  val) {
    QString value=frameModeB->text(val);
    settings.setKey("RAW_MODE",value.data());
-   //cout << "setting mode " << value.data() << endl;
    setMode((ImageMode)val);
 }
 
@@ -638,16 +619,6 @@ bool QCamV4L::mmapInit() {
    mmap_last_sync_buff_=-1;
    mmap_last_capture_buff_=-1;
    mmap_buffer_=NULL;
-
-   /* request streaming mode */
-   //stream_buffers.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
-   //stream_buffers.count=8;
-   //stream_buffers.memory=V4L2_MEMORY_MMAP;
-   //if (ioctl(device_, VIDIOC_REQBUFS,&stream_buffers)) {
-   //   perror("ioctl");
-   //   cout << "streaming not supported" << endl;
-   //   return(false);
-   //}
 
    if (ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_)) {
       cout << "mmap not supported" << endl;
@@ -680,15 +651,13 @@ void QCamV4L::mmapSync() {
 
 uchar * QCamV4L::mmapLastFrame() const {
    return mmap_buffer_ + mmap_mbuf_.offsets[mmap_last_sync_buff_];
-#if 0
-   if (mmap_curr_buff_ == 1 ) {
-      return mmap_buffer_;
-   } else {
-      return mmap_buffer_ + mmap_mbuf_.offsets[1];
-   }
-   return mmap_buffer_ + mmap_mbuf_.offsets[(mmap_curr_buff_-1)% mmap_mbuf_.frames];
+   //if (mmap_curr_buff_ == 1 ) {
+   //   return mmap_buffer_;
+   //} else {
+   //   return mmap_buffer_ + mmap_mbuf_.offsets[1];
+   //}
+   //return mmap_buffer_ + mmap_mbuf_.offsets[(mmap_curr_buff_-1)% mmap_mbuf_.frames];
    //return mmap_buffer_ + mmap_mbuf_.size*((mmap_curr_buff_-1)%mmap_mbuf_.frames);
-#endif
 }
 
 void QCamV4L::mmapCapture() {
@@ -706,5 +675,3 @@ void QCamV4L::mmapCapture() {
       exit(0);
    }
 }
-
-
