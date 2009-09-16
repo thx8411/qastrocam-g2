@@ -1,7 +1,7 @@
 4.3beta20090913
 
   - YUYV pallette support
-  - gnome menu entry and incon included in the debian package
+  - gnome menu entry and icon included in the debian package
   - V4L generic devices source can now be choosen. Choice is stored for each device
   - ccvt updated to 0.3 (no more asm)
   - file format, raw mode, resolution, level inversion, telescope device and lx device 

@@ -26,7 +26,9 @@ const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor
 QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource,
                  unsigned long options /* cf QCamV4L::options */) {
    v4l2_input input;
-   int input_index=0;
+   v4l2_std_id _id;
+   v4l2_standard standard;
+   int _index=0;
 
    options_=options;
    tmpBuffer_=NULL;
@@ -82,19 +84,39 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       if(res==-1)
 	cout << "source '" << settings.getKey(keyName.c_str()) << "' not found, using default" << endl;
       else {
-         input_index=input.index-1;
-         ioctl (device_, VIDIOC_S_INPUT, &input_index);
+         _index=input.index-1;
+         ioctl (device_, VIDIOC_S_INPUT, &_index);
       }
    } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
 
    /* reading input */
-   ioctl(device_,VIDIOC_G_INPUT,&input_index);
-   input.index=input_index;
+   ioctl(device_,VIDIOC_G_INPUT,&_index);
+   input.index=_index;
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
    cout << "using : " << input.name << endl << endl; 
 
    /* storing default source */ 
    settings.setKey(keyName.c_str(),(char*)input.name);
+
+   /* getting video standard */
+   if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
+      perror("Getting Standard"); 
+   };
+   //cout << _index << endl;
+
+   standard.index=0;
+   res=0;
+   while((res!=-1)&&(standard.id!=_id)) {
+      res=ioctl(device_,VIDIOC_ENUMSTD,&standard);
+      standard.index++;
+   }
+   if(res!=0)
+      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s\n" ;  
+   else {
+      cout << "Video standard : " << standard.name << endl;
+      frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
+      cout <<  "Using Framerate : " << frameRate_ << endl;
+   }
 
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
 
@@ -419,17 +441,15 @@ bool QCamV4L::updateFrame() {
    }
    if (res) {
       newFrameAvaible();
-      /*
         if (options_ & haveBrightness) emit brightnessChange(getBrightness());
         if (options_ & haveContrast) emit contrastChange(getContrast());
         if (options_ & haveHue) emit hueChange(getHue());
         if (options_ & haveColor) emit colorChange(getColor());
         if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
-      */
    } else {
+      //cout << "frame dropped" << endl;
       //newFrameAvaible();
       //perror("updateFrame");
-      //cerr << ".";
    }
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
@@ -631,6 +651,7 @@ bool QCamV4L::mmapInit() {
       mmap_mbuf_.size = 0;
       mmap_mbuf_.frames = 0;
       mmap_buffer_=NULL;
+      cout << "Trouble with mmap, using read/write mode" << endl;
       return false;
    }
    cout << "mmap() in use : "
