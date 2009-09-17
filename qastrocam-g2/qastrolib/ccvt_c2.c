@@ -244,12 +244,14 @@ void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *ds
          uv_offset2=(uv_offset+x)/2;
          yPlan[s_offset2]=sPlan[s_offset];
          s_offset++;
-         uPlan[uv_offset2]=sPlan[s_offset];
+         uPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+width+width])/2;
+         //uPlan[uv_offset2]=sPlan[s_offset];
          s_offset++;
          s_offset2++;
          yPlan[s_offset2]=sPlan[s_offset];
          s_offset++;
-         vPlan[uv_offset2]=sPlan[s_offset];
+         vPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+width+width])/2;
+         //vPlan[uv_offset2]=sPlan[s_offset];
       }
    }
     /*int x,y;
