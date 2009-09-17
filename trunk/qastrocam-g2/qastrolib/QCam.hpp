@@ -90,7 +90,7 @@ public:
    bool guiBuild() const { return remoteCTRL_ != NULL; }
    QWidget * gui() { return remoteCTRL_;}
    const QString & label() const;
-   /** wrtite the properties associated to the camera */
+   /** write the properties associated to the camera */
    void writeProperties(const string & fileName) const;
    /** save the current frame with the current selected format */
    bool saveFrame(const string& file) const;
