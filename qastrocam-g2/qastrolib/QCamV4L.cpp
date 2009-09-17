@@ -449,9 +449,9 @@ bool QCamV4L::updateFrame() {
         if (options_ & haveColor) emit colorChange(getColor());
         if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
    } else {
+      perror("updateFrame");
       cout << "frame dropped" << endl;
       newFrameAvaible();
-      perror("updateFrame");
    }
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
