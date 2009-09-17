@@ -137,6 +137,10 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       timer_->start(1000/frameRate_) ; // value 0 => called every time event loop is empty
       cout << "Using timer to wait new frames.\n";
    }
+
+   setProperty("CameraName",capability_.name);
+   setProperty("FrameRateSecond",frameRate_);
+
    label(capability_.name);
 }
 
@@ -211,8 +215,6 @@ void QCamV4L::init(int preferedPalette) {
    mode_ = (picture_.palette==VIDEO_PALETTE_GREY)?GreyFrame:YuvFrame;
    
    allocBuffers();
-
-   setProperty("CameraName",capability_.name);
 }
 
 void QCamV4L::allocBuffers() {
@@ -447,9 +449,9 @@ bool QCamV4L::updateFrame() {
         if (options_ & haveColor) emit colorChange(getColor());
         if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
    } else {
-      //cout << "frame dropped" << endl;
-      //newFrameAvaible();
-      //perror("updateFrame");
+      cout << "frame dropped" << endl;
+      newFrameAvaible();
+      perror("updateFrame");
    }
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
