@@ -562,7 +562,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 	int index=frameModeB->getPosition(settings.getKey("RAW_MODE"));
 	if (index!=-1) setMode(index);
 	frameModeB->setCurrentItem(index);
-   }
+   } else setMode(0);
 
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
