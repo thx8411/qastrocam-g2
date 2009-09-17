@@ -226,6 +226,7 @@ void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *ds
    int uv_offset2;
    int s_offset;
    int s_offset2;
+   int line_offset;
    unsigned char* sPlan;
    unsigned char* yPlan;
    unsigned char* uPlan;
@@ -235,7 +236,8 @@ void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *ds
    yPlan=(unsigned char*)dsty;
    uPlan=(unsigned char*)dstu;
    vPlan=(unsigned char*)dstv;
-   for(y=0;y<height;y++) {
+   line_offset=2*width;
+   for(y=0;y<height;y+=2) {
       y_offset=y*width;
       uv_offset=y/2*width;
       for(x=0;x<width;x+=2) {
@@ -243,39 +245,16 @@ void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *ds
          s_offset=s_offset2*2;
          uv_offset2=(uv_offset+x)/2;
          yPlan[s_offset2]=sPlan[s_offset];
+         yPlan[s_offset2+width]=sPlan[s_offset+line_offset];
          s_offset++;
-         uPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+width+width])/2;
-         //uPlan[uv_offset2]=sPlan[s_offset];
+         uPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+line_offset])/2;
          s_offset++;
          s_offset2++;
          yPlan[s_offset2]=sPlan[s_offset];
+         yPlan[s_offset2+width]=sPlan[s_offset+line_offset];
          s_offset++;
-         vPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+width+width])/2;
-         //vPlan[uv_offset2]=sPlan[s_offset];
+         vPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+line_offset])/2;
       }
    }
-    /*int x,y;
-    unsigned char pixel[4];
-    unsigned char* sPlan;
-    unsigned char* yPlan;
-    unsigned char* uPlan;
-    unsigned char* vPlan;
- 
-    sPlan=(unsigned char*)src;
-    yPlan=(unsigned char*)dsty;
-    uPlan=(unsigned char*)dstu;
-    vPlan=(unsigned char*)dstv;
-    for(y=0;y<height;y++) {
-       for(x=0;x<width;x+=2) {
-          pixel[0]=sPlan[(y*width+x)*2];
-          pixel[1]=sPlan[(y*width+x)*2+1];
-          pixel[2]=sPlan[(y*width+x)*2+2];
-          pixel[3]=sPlan[(y*width+x)*2+3];
-          yPlan[y*width+x]=pixel[0];
-          yPlan[y*width+x+1]=pixel[2];
-          uPlan[(y/2*width+x)/2]=pixel[1];
-          vPlan[(y/2*width+x)/2]=pixel[3];
-       }
-    }*/
 }
 
