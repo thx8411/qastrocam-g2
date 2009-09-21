@@ -185,9 +185,9 @@ void QCam::setCaptureFile(const QString & afile) {
 }
 
 void QCam::newFrameAvaible() {
-   if (getProperty("TIME")=="N/A") {
+   //if (getProperty("TIME")=="N/A") {
       setTime();
-   }
+   //}
    yuvFrame().setAllProperies(properties_);
    if (doCapture_ && !capturePaused_) {
       if (movieWritter_->add(yuvFrame(),*this)) {
