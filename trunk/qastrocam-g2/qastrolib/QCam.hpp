@@ -47,7 +47,7 @@ public:
    /** return the size of the current frame. */
    virtual const QSize & size() const =0;
    /** try to resize the current frame.
-       it can failed. size() must be called to know the real
+       it can faile. size() must be called to know the real
        new size. */
    virtual void resize(const QSize & s)=0;
    /** return an array of supported size of th capture window.

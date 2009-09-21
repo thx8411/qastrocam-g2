@@ -40,7 +40,13 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    sizeTable_=NULL;
    frameRate_=10;
    device_=-1;
-   if (-1 == (device_=open(devpath,
+   window_.x=0;
+   window_.y=0;
+   window_.clips=NULL;
+   window_.clipcount=0;
+   devpath_=devpath;
+
+   if (-1 == (device_=open(devpath_.c_str(),
                            O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0)))) {
       perror(devpath);
    }
@@ -145,12 +151,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 }
 
 void QCamV4L::resize(const QSize & s) {
-   cout << "QCamV4L::resize("
-        << s.width()
-        << "x"
-        << s.height()
-        << ")"
-        << endl;
    setSize(s.width(),s.height());
 }
 
@@ -244,19 +244,30 @@ void QCamV4L::allocBuffers() {
 
 const QSize * QCamV4L::getAllowedSize() const {
    if (sizeTable_==NULL) {
-      QSize min=QSize(capability_.minwidth,capability_.minheight);
-      QSize current=size();
-      QSize max=QSize(capability_.maxwidth,capability_.maxheight);
       int currentIndex=0;
-      sizeTable_=new QSize[4];
-      sizeTable_[currentIndex++]=min;
-      if (min!=current) {
-         sizeTable_[currentIndex++]=current;
+      int currentx=capability_.maxwidth;
+      int currenty=capability_.maxheight;
+      struct video_window testWindow;
+      sizeTable_=new QSize[8];
+
+      cout << "Frame size detection" << endl;
+
+      testWindow.x=0;
+      testWindow.y=0;
+      while((currentIndex<7)&&(currentx>capability_.minwidth)&&(currenty>capability_.minheight)) {
+         testWindow.width=currentx;
+         testWindow.height=currenty;
+         if (ioctl(device_, VIDIOCSWIN, &testWindow)!=-1) {
+            if(ioctl(device_, VIDIOCGWIN, &testWindow)!=-1) {
+               sizeTable_[currentIndex]=QSize(testWindow.width,testWindow.height);
+               currentIndex++;
+               cout << "Adding " << testWindow.width << "x" << testWindow.height<< endl;
+            }
+         }
+         currentx/=2;
+         currenty/=2;
+         sizeTable_[currentIndex]=QSize(0,0);
       }
-      if (max!=current) {
-         sizeTable_[currentIndex++]=max;
-      }
-      sizeTable_[currentIndex]=QSize(0,0);
    }
    return sizeTable_;
 }
@@ -272,21 +283,30 @@ void QCamV4L::checkSize(int & x, int & y) const {
 }
 
 bool QCamV4L::setSize(int x, int y) {
+   static char buff[11];
 
    checkSize(x,y);
-   
+   window_.x=0;
+   window_.y=0;
    window_.width=x;
    window_.height=y;
 
-   static char buff[11];
-   snprintf(buff,10,"%dx%d",x,y);
-   setProperty("FrameSize",buff,true);
-   cout << "x=" << window_.width
+   cout << "trying x=" << window_.width
         << " " << "y=" << window_.height <<endl;
-   if (ioctl (device_, VIDIOCSWIN, &window_)) {
+   if(ioctl(device_, VIDIOCSWIN, &window_)) {
        perror ("ioctl(VIDIOCSWIN)");
+   } 
+   if(ioctl(device_, VIDIOCGWIN, &window_)) {
+       perror ("ioctl(VIDIOCGWIN)");
    }
-   ioctl (device_, VIDIOCGWIN, &window_);
+   cout << "set to x=" << window_.width
+        << " " << "y=" << window_.height <<endl;
+   snprintf(buff,10,"%dx%d",window_.width,window_.height);
+   setProperty("FrameSize",buff,true);
+
+   if((x!=window_.width)||(y!=window_.height)) {
+      cout << "Some devices refuse hot-resizing,\nYou should quit to get the new size" << endl;
+   }
 
    allocBuffers();
    

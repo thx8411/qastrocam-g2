@@ -469,6 +469,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
             "not found in  getAllowedSize()\n";
       } else {
          sizeCombo->update(indexOfCurrentSize);
+         setSizeFromAllowed(indexOfCurrentSize);
       }
       connect(sizeCombo,
               SIGNAL(change(int)),this,SLOT(setSizeFromAllowed(int)));

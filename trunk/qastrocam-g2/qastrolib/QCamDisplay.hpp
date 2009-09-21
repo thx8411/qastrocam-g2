@@ -15,7 +15,7 @@ class QCamSlider;
 class QHBox;
 class QLabel;
 
-/** display the frame emeited by the cam.
+/** display the frame emited by the cam.
  */
 class QCamDisplay : public QCamClient {
    Q_OBJECT

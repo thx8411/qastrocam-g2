@@ -77,6 +77,7 @@ protected:
    virtual int getFrameRate() const { return 10;}
    
 private:
+   string devpath_;
    bool setSize(int x, int y);
    void init(int preferedPalette);
    void allocBuffers();
