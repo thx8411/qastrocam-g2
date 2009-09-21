@@ -1,4 +1,4 @@
-4.3beta20090921
+4.3beta20090922
 
   - YUYV pallette support
   - gnome menu entry and icon included in the debian package
@@ -8,6 +8,7 @@
     are now stored and restored (feature #2846348, to be finished)
   - now supports level inversion on serial and led SCmod via command line (feature #2856135)
   - fixed : #2862323
+  - enhanced V4L generic frame size support (bug #2859701)
 
 4.2rc2
 
