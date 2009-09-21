@@ -14,6 +14,8 @@
 #include <avm_creators.h>
 #include <avm_except.h>
 
+#define _CODEC_	RIFFINFO_I420
+
 QCamMovieAvi::QCamMovieAvi() {
    aviFile_ = 0;
    aviStream_ = 0;
@@ -34,10 +36,7 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    aviFile_ = avm::CreateWriteFile((seqName+".avi").c_str());
    
    BITMAPINFOHEADER bi;
-   fourcc_t codec = RIFFINFO_I420;
-   //fourcc_t codec = fccHFYU;
-   //fourcc_t codec = RIFFINFO_DX50;
-   //fourcc_t codec = RIFFINFO_MPG2;
+   fourcc_t codec = _CODEC_;
    
    memset(&bi, 0, sizeof(bi));
    bi.biSize = sizeof(bi);
@@ -76,6 +75,8 @@ void QCamMovieAvi::closeImpl() {
 bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    BITMAPINFOHEADER bi;
    
+   fourcc_t codec= _CODEC_;
+
    memset(&bi, 0, sizeof(bi));
    bi.biSize = sizeof(bi);
    bi.biWidth = newFrame.size().width();
@@ -83,7 +84,7 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    bi.biSizeImage = (bi.biWidth * bi.biHeight * 3) / 2;
    bi.biPlanes = 3;
    bi.biBitCount = 12;
-   bi.biCompression = fccI420;
+   bi.biCompression = codec;
    
    if(deinterlaceBuf_) {
       memcpy(deinterlaceBuf_, newFrame.Y(), bi.biWidth * bi.biHeight);
