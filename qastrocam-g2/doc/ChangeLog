@@ -1,4 +1,4 @@
-4.3beta20090919
+4.3beta20090921
 
   - YUYV pallette support
   - gnome menu entry and icon included in the debian package
@@ -7,6 +7,7 @@
   - file format, raw mode, resolution, level inversion, telescope device and lx device 
     are now stored and restored (feature #2846348, to be finished)
   - now supports level inversion on serial and led SCmod via command line (feature #2856135)
+  - fixed : #2862323
 
 4.2rc2
 
