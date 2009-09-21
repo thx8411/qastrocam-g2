@@ -171,12 +171,12 @@ void QCamV4L::init(int preferedPalette) {
    if (preferedPalette == 0) {
       do {
 	 /* trying VIDEO_PALETTE_RGB24 */
-         //picture_.palette=VIDEO_PALETTE_RGB24;
-         //if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-         //   cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
-         //   break;
-         //}
-         //cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
+         picture_.palette=VIDEO_PALETTE_RGB24;
+         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+            cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
+            break;
+         }
+         cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
 	 /* trying VIDEO_PALETTE_YUYV */
          picture_.palette=VIDEO_PALETTE_YUYV;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
@@ -437,7 +437,7 @@ bool QCamV4L::updateFrame() {
       res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 3);
       if (res) {
          setTime();
-         ccvt_bgr24_420p(window_.width,window_.height,
+         ccvt_rgb24_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
