@@ -113,7 +113,7 @@ void QCamDisplay::newFrame() {
    if (yuvFrame_.size() != widget_->size()) {
       widget_->setMinimumSize(yuvFrame_.size());
       widget_->setMaximumSize(yuvFrame_.size());
-      cout << "newFrame resize()\n";
+      //cout << "newFrame resize()\n";
       widget_->resize(yuvFrame_.size());
       widget_->updateGeometry();
       crossButton_->updateGeometry();
@@ -126,7 +126,7 @@ void QCamDisplay::newFrame() {
 }
 
 void QCamDisplay::camConnected() {
-   cout << "connected cam : "<< cam().size().width() <<"x"<<cam().size().height()<<"\n";
+   //cout << "connected cam : "<< cam().size().width() <<"x"<<cam().size().height()<<"\n";
    widget_->firtsFrameReceived_=false;
    widget_->resize(cam().size());
    widget_->updateGeometry();
