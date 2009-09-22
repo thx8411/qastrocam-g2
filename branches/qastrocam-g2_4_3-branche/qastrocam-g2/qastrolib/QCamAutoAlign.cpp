@@ -1,0 +1,255 @@
+#include "QCamAutoAlign.moc"
+#include "QCamFindShift.hpp"
+#include <math.h>
+#include <qimage.h>
+#include <qpushbutton.h>
+#include <qhgroupbox.h>
+#include <qtooltip.h>
+#include <qcheckbox.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#include "QHistogram.hpp"
+#include "QVectorMap.hpp"
+#include "QCamSlider.hpp"
+#include "QFrameDisplay.hpp"
+
+
+QCamAutoAlign::QCamAutoAlign() {
+   tracker_=NULL;
+   //initRemoteControl(remoteCTRL_);
+   label(tr("Align"));
+#if ONE_MAP
+   shiftMap_=NULL;
+#else
+   shiftXhisto_=NULL;
+   shiftYhisto_=NULL;
+#endif
+   scaleSlider_=NULL;
+   findShiftCtrl_=NULL;
+   findShiftWidget_=NULL;
+   center_=false;
+   cropValue_=0.8;
+   fifoName_="/tmp/qastrocam_shift.fifo";
+   cout << "trying fifo "<<fifoName_<<"..."<<flush;
+   fifo_=NULL;
+   int fifoDescriptor=open(fifoName_.c_str(),O_RDWR|O_NONBLOCK);
+   if (fifoDescriptor != -1) {
+      struct stat fifoStats;
+      fstat(fifoDescriptor,&fifoStats);
+      if (S_ISFIFO(fifoStats.st_mode)) {
+         fifo_=fdopen(fifoDescriptor,"r+");
+         cout << "done"<<endl;
+      } else {
+         cout << "not a fifo"<<endl;
+         close(fifoDescriptor);
+      }
+   } else {
+      perror(fifoName_.c_str());
+   }
+}
+
+QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
+   QSizePolicy sizePolicyMax;
+   sizePolicyMax.setVerData(QSizePolicy::Expanding);
+   sizePolicyMax.setHorData(QSizePolicy::Expanding);
+   
+   QSizePolicy sizePolicyMin;
+   sizePolicyMin.setVerData(QSizePolicy::Minimum);
+   sizePolicyMin.setHorData(QSizePolicy::Minimum);
+   
+   QWidget * remoteCTRL= QCam::buildGUI(parent);
+   QPushButton * resetCenter = new QPushButton(tr("reset"),remoteCTRL);
+   connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
+   findShiftWidget_=new QHGroupBox(tr("Find Shift Ctrl"),remoteCTRL);
+   if (tracker_) {
+      findShiftCtrl_=tracker_->buildGUI(findShiftWidget_);
+   }
+
+   cropSlider_=new QCamSlider(tr("crop"),false,remoteCTRL,1,100);
+   cropSlider_->setSizePolicy(sizePolicyMin);
+   connect(cropSlider_, SIGNAL(valueChange(int)),
+           this,SLOT(setCropValue(int)));
+   cropSlider_->setValue((int)round(cropValue_*100));
+   QToolTip::add(cropSlider_,tr("% of image to keep when crooping"));
+   centerButton_=new QCheckBox(tr("Center image"),remoteCTRL);
+   connect(centerButton_,SIGNAL(toggled(bool)),
+           this,SLOT(setImageCenter(bool)));
+   QToolTip::add(centerButton_,
+                 tr("Center shifted images on the center of the frame"));
+
+#if ONE_MAP
+   scaleSlider_=new QCamSlider(tr("Display scale"),false,remoteCTRL,1,100);
+   scaleSlider_->setSizePolicy(sizePolicyMin);
+   QToolTip::add(scaleSlider_,
+                 tr("Scale of the shift history Map"));
+
+   
+   shiftMap_= new QVectorMap(remoteCTRL);
+   shiftMap_->setSizePolicy(sizePolicyMax);
+   shiftMap_->setMode(DrawLine);
+   connect(scaleSlider_, SIGNAL(valueChange(int)),
+           shiftMap_,SLOT(setScale(int)));
+   QToolTip::add(shiftMap_,
+                 tr("Show the history of the frame shift"));
+#else
+   shiftXhisto_ = new QHistogram(remoteCTRL);
+   shiftXhisto_->setDataSize(200);
+   shiftXhisto_->setAutoShift(true);
+   shiftXhisto_->setAverage(4);
+   
+   shiftYhisto_ = new QHistogram(remoteCTRL);
+   shiftYhisto_->setDataSize(200);
+   shiftYhisto_->setAutoShift(true);
+   shiftYhisto_->setAverage(4);
+#endif
+   
+   resetCenter->show();
+
+   return remoteCTRL;
+}
+
+void QCamAutoAlign::reset() {
+   if (tracker_) {
+      tracker_->reset();
+   }
+#if ONE_MAP
+   if (shiftMap_) {
+      shiftMap_->reset();
+   }
+#endif
+ }
+
+const QSize & QCamAutoAlign::size() const {
+   return yuvFrame_.size();
+}
+
+void QCamAutoAlign::resize(const QSize &s) {
+   // do nothing
+}
+
+void QCamAutoAlign::setTracker(QCamFindShift * tracker) {
+   unConnectEveryThing();
+   tracker_=tracker;
+   connectEveryThing();
+}
+
+void QCamAutoAlign::unConnectEveryThing() {
+   if (tracker_) {
+      disconnect(tracker_,SIGNAL(shift(const ShiftInfo & )),this,SLOT(shifted(const ShiftInfo & )));
+      tracker_=NULL;
+      if (findShiftCtrl_) {
+         delete findShiftCtrl_;
+         findShiftCtrl_=NULL;
+      }
+   }
+}
+
+bool QCamAutoAlign::connectEveryThing() {
+   if (tracker_ == NULL) {
+      return false;
+   }
+   tracker_->pause();
+   connect(tracker_,SIGNAL(shift(const ShiftInfo & )),this,SLOT(shifted(const ShiftInfo & )));
+   tracker_->resume();
+   if (findShiftWidget_) {
+      findShiftCtrl_=tracker_->buildGUI(findShiftWidget_);
+   }
+   return true;
+}
+
+void QCamAutoAlign::shifted(const ShiftInfo & shift) {
+   if (false && currentSize_ != tracker_->cam().size()) {
+      currentSize_=tracker_->cam().size();
+      cout << "reset tracker: "
+           <<currentSize_.width()<<"x"<<currentSize_.height()
+           <<" "
+           <<tracker_->cam().size().width()<<tracker_->cam().size().height()<<endl;
+      reset();
+   } else {
+      currentShift_ = shift;
+      shiftFrame(currentShift_,tracker_->cam().yuvFrame(),yuvFrame_,
+                 cropValue_,center_);
+#if ONE_MAP
+      if (shiftMap_) shiftMap_->add(shift.shift());
+#else
+      if (shiftXhisto_) shiftXhisto_->setValue(shift.shift().x());
+      if (shiftYhisto_) shiftYhisto_->setValue(shift.shift().y());
+#endif                                          
+      importProperties(tracker_->cam());
+      setProperty("shift X",shift.shift().x());
+      setProperty("shift Y",shift.shift().y());
+      setProperty("shift rotation",shift.angle());
+      setProperty("Center X",shift.center().x());
+      setProperty("Center Y",shift.center().y());
+      if (fifo_) {
+         int res=fprintf(fifo_,"%f %f\n",shift.shift().x(),shift.shift().y());
+         if (res >= 0) {
+            fflush(fifo_);
+         } else {
+            char buff[30];
+            snprintf(buff,30,"writting fifo (%d)",res);
+            perror(buff);
+         }
+      }
+      
+      newFrameAvaible();
+   }
+}
+
+QCamFrame QCamAutoAlign::yuvFrame() const {
+   return yuvFrame_;
+}
+
+void QCamAutoAlign::shiftFrame(const ShiftInfo & shift,const QCamFrame orig,
+                               QCamFrame & shifted,float crop,bool center) {
+   
+
+   int shiftX=(int)shift.shift().x();
+   int shiftY=(int)shift.shift().y();
+
+   int cropX=(int)(orig.size().width()*(1.0-crop));
+   int cropY=(int)(orig.size().height()*(1.0-crop));
+
+   // field rotation not handled
+   if (shift.angle() != 0) {
+      cout << "Rotation not handled by QCamAutoAlign::shiftFrame().\n"
+           << " Ignoring it\n";
+   }
+   if (shiftX == 0
+       && shiftY == 0
+       && shift.angle() == 0
+       && crop >=1.0) {
+      //no translation
+      shifted = orig;
+      return;
+   }
+   
+   /* black background */
+   
+   shifted.setSize(QSize(orig.size().width()-cropX,
+                         orig.size().height()-cropY));
+   shifted.clear();
+   shifted.setMode(orig.getMode());
+   if (!center) {
+      shifted.copy(orig,
+                   shiftX+(cropX/2),shiftY+(cropY/2),
+                   orig.size().width()+shiftX-(cropX/2),
+                   orig.size().height()+shiftY-(cropY/2),
+                   0,0);
+   } else {
+      int keepX=(orig.size().width()-cropX)/2;
+      int keepY=(orig.size().height()-cropY)/2;
+      shifted.copy(orig,
+                   (int)round(shift.center().x()-keepX),
+                   (int)round(shift.center().y()-keepY),
+                   (int)round(shift.center().x()+keepX),
+                   (int)round(shift.center().y()+keepY),
+                   0,0);
+   }
+   //shifted.rotate(shifted.size().width()/2,shifted.size().height()/2,0.5);
+   return;
+}

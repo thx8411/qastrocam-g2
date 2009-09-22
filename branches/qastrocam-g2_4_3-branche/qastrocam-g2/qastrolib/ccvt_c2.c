@@ -1,0 +1,325 @@
+/*
+ * Convert an image from yuv colourspace to rgb 
+ *
+ * Code by Tony Hague (C) 2001.
+ */
+
+#include <assert.h>
+
+#include "ccvt.h"
+#include "ccvt_types.h"
+
+/* by suitable definition of PIXTYPE, can do yuv to rgb or bgr, with or
+without word alignment */
+
+/* This doesn't exactly earn a prize in a programming beauty contest. */
+
+#define WHOLE_FUNC2RGB(type) 			\
+	const unsigned char *y1, *y2, *u, *v; 	\
+	PIXTYPE_##type *l1, *l2;		\
+	int r, g, b, cr, cg, cb, yp, j, i;	\
+						\
+	if ((width & 1) || (height & 1))	\
+		return;				\
+						\
+	l1 = (PIXTYPE_##type *)dst;		\
+	l2 = l1 + width;			\
+	y1 = (unsigned char *)src;		\
+	y2 = y1 + width;			\
+	u = (unsigned char *)src + width * height;		\
+	v = u + (width * height) / 4;		\
+	j = height / 2;				\
+	while (j--) {				\
+		i = width / 2;			\
+		while (i--) {			\
+			/* Since U & V are valid for 4 pixels, repeat code 4 	\
+			   times for different Y */				\
+			cb = ((*u-128) * 454)>>8;				\
+			cr = ((*v-128) * 359)>>8;				\
+			cg = ((*v-128) * 183 + (*u-128) * 88)>>8;		\
+						\
+			yp = *(y1++);		\
+			r = yp + cr; 		\
+			b = yp + cb;		\
+			g = yp - cg;            \
+			SAT(r);                 \
+			SAT(g);                 \
+			SAT(b);                 \
+			l1->b = b;		\
+			l1->g = g;              \
+			l1->r = r;              \
+			l1++;                   \
+                                                \
+			yp = *(y1++);           \
+			r = yp + cr;            \
+			b = yp + cb;            \
+			g = yp - cg;            \
+			SAT(r);                 \
+			SAT(g);                 \
+			SAT(b);                 \
+			l1->b = b;		\
+			l1->g = g;		\
+			l1->r = r;		\
+			l1++;			\
+						\
+			yp = *(y2++);		\
+			r = yp + cr; 		\
+			b = yp + cb;		\
+			g = yp - cg;		\
+			SAT(r);			\
+			SAT(g);			\
+			SAT(b);			\
+			l2->b = b;		\
+			l2->g = g;		\
+			l2->r = r;		\
+			l2++;			\
+						\
+			yp = *(y2++);		\
+			r = yp + cr; 		\
+			b = yp + cb;		\
+			g = yp - cg;		\
+			SAT(r);			\
+			SAT(g);			\
+			SAT(b);			\
+			l2->b = b;		\
+			l2->g = g;		\
+			l2->r = r;		\
+			l2++;			\
+						\
+			u++;			\
+			v++;			\
+		}				\
+		y1 = y2;			\
+		y2 += width;			\
+		l1 = l2;			\
+		l2 += width;			\
+	}
+
+
+
+
+//void ccvt_420p_bgr32(int width, int height, const void *src, void *dst)
+//{
+//	WHOLE_FUNC2RGB(bgr32)
+//}
+
+void ccvt_420p_bgr24(int width, int height, const void *src, void *dst)
+{
+	WHOLE_FUNC2RGB(bgr24)
+}
+
+void ccvt_420p_rgb32(int width, int height, const void *src, void *dst)
+{
+	WHOLE_FUNC2RGB(rgb32)
+}
+
+void ccvt_420p_rgb24(int width, int height, const void *src, void *dst)
+{
+	WHOLE_FUNC2RGB(rgb24)
+}
+
+#define MAX(_a, _b) ((_a)>(_b) ? (_a) : (_b))
+#define MIN(_a, _b) ((_a)<(_b) ? (_a) : (_b))
+
+/* CJM, 11/5/05 : it's not very fast, but it works. Doing two columns
+   per pass doesn't help either, so I just kept it simple.
+*/
+void ccvt_420p_bgr32(int width, int height, const void *srcy, const void *srcu, const void *srcv, void *dst)
+{ unsigned char  *py, *pu, *pv, *lastY, *d;
+  int    y, u, v, yy, vr, ug, vg, ub;
+  int    r, g, b, row, col, w2;
+
+  py=(unsigned char *)srcy;
+  pu=(unsigned char *)srcu; 
+  pv=(unsigned char *)srcv;
+  d=dst;
+  lastY = &py[width*height-1];
+
+
+  row = col=0;
+  w2 = width/2;
+  u = *pu - 128; ug = 88*u;  ub = 454*u;
+  v = *pv - 128; vg = 183*v; vr = 359 * v;
+  col=1; /* Makes the col%2 test easier if we count from 1 instead of 0. */
+  while (py<lastY) {
+    y = *py - 16;  
+    yy = y<<8;
+    r = (yy+vr)>>8;
+    g = (yy - ug - vg) >> 8;
+    b = (yy + ub) >> 8;        
+    /* This clamping is expensive, and should be done in a better way. */
+    r = MAX(MIN(255, r), 0);
+    g = MAX(MIN(255, g), 0);
+    b = MAX(MIN(255, b), 0);
+    *d++ = (char)b; 
+    *d++ = (char)g; 
+    *d++ = (char)r; 
+    *d++ = 0; /* filler byte for alpha */
+    col++;
+    py++;
+
+    if (col&1) {
+      pu++; pv++;
+      u = *pu - 128; 
+      v = *pv - 128; 
+      ug = 88*u;  
+      ub = 454*u;
+      vg = 183*v; 
+      vr = 359 * v;
+    }
+
+    if (col ==width) {
+      col=1;
+      row++;
+      if ((row&1)==0) {
+        pu -= w2;
+        pv -= w2;
+      } else {
+        pu++; pv++;
+      }
+      u = *pu - 128; ug = 88*u;  ub = 454*u;
+      v = *pv - 128; vg = 183*v; vr = 359 * v;
+    } 
+  }
+}
+
+void ccvt_420i_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv)
+{
+	short *s, *dy, *du, *dv;
+	int line, col;
+
+	s = (short *)src;
+	dy = (short *)dsty;
+	du = (short *)dstu;
+	dv = (short *)dstv;
+	for (line = 0; line < height; line++) {
+		for (col = 0; col < width; col += 4) {
+			*dy++ = *s++;
+			*dy++ = *s++;
+			if (line & 1)
+				*dv++ = *s++;
+			else
+				*du++ = *s++;
+		} /* ..for col */
+	} /* ..for line */
+}
+
+
+/************************************/
+/* added by Blaise-Florentin Collin */
+/*             (c) 2009             */
+/************************************/
+
+void ccvt_bgr24_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
+   assert(0);
+}
+
+void ccvt_rgb24_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
+   int x,y;
+   int half_height;
+   int half_width;
+   unsigned char* sPlan;
+   unsigned char* yPlan;
+   unsigned char* uPlan;
+   unsigned char* vPlan;
+
+   unsigned char R[4];
+   unsigned char G[4];
+   unsigned char B[4];
+   unsigned char Y[4];
+   unsigned char U;
+   unsigned char V;
+   unsigned char meanR;
+   unsigned char meanG;
+   unsigned char meanB;
+
+   sPlan=(unsigned char*)src;
+   yPlan=(unsigned char*)dsty;
+   uPlan=(unsigned char*)dstu;
+   vPlan=(unsigned char*)dstv;
+
+   half_height=height/2;
+   half_width=width/2;
+   for(y=0;y<half_height;y++) {
+      for(x=0;x<half_width;x++) {
+         R[0]=sPlan[y*2*width+2*x];
+         R[1]=sPlan[y*2*width+2*x+1];
+         R[2]=sPlan[(y*2+1)*width+2*x];
+         R[3]=sPlan[(y*2+1)*width+2*x+1];
+
+         G[0]=sPlan[y*2*width+(width*height)+2*x];
+         G[1]=sPlan[y*2*width+(width*height)+2*x+1];
+         G[2]=sPlan[(y*2+1)*width+(width*height)+2*x];
+         G[3]=sPlan[(y*2+1)*width+(width*height)+2*x+1];
+
+         B[0]=sPlan[y*2*width+(width*height*2)+2*x];
+         B[1]=sPlan[y*2*width+(width*height*2)+2*x+1];
+         B[2]=sPlan[(y*2+1)*width+(width*height*2)+2*x];
+         B[3]=sPlan[(y*2+1)*width+(width*height*2)+2*x+1];
+
+         Y[0]=((66*R[0]+129*G[0]+25*B[0]+128)>>8)+16;
+         Y[1]=((66*R[1]+129*G[1]+25*B[1]+128)>>8)+16;
+         Y[2]=((66*R[2]+129*G[2]+25*B[2]+128)>>8)+16;
+         Y[3]=((66*R[3]+129*G[3]+25*B[3]+128)>>8)+16;
+
+         yPlan[y*2*width+2*x]=Y[0];
+         yPlan[y*2*width+2*x+1]=Y[1];
+         yPlan[(y*2+1)*width+2*x]=Y[2];
+         yPlan[(y*2+1)*width+2*x+1]=Y[3];
+
+         //meanR=(R[0]+R[1]+R[2]+R[3])/4;
+         //meanG=(G[0]+G[1]+G[2]+G[3])/4;
+         //meanB=(B[0]+B[1]+B[2]+B[3])/4;
+
+         //U=((-38*meanR-74*meanG+112*meanB+128)>>8)+128;
+         //V=((112*meanR-94*meanG-18*meanB+128)>>8)+128;
+
+         //uPlan[y*width+x]=U;
+         //vPlan[y*width+x]=V;
+      }
+   }
+}
+
+void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
+   int x,y;
+   int y_offset;
+   int uv_offset;
+   int uv_offset2;
+   int s_offset;
+   int s_offset2;
+   int line_offset;
+   int half_width;
+   int half_height;
+   unsigned char* sPlan;
+   unsigned char* yPlan;
+   unsigned char* uPlan;
+   unsigned char* vPlan;
+
+   sPlan=(unsigned char*)src;
+   yPlan=(unsigned char*)dsty;
+   uPlan=(unsigned char*)dstu;
+   vPlan=(unsigned char*)dstv;
+   line_offset=2*width;
+   half_width=width/2;
+   half_height=height/2;
+   for(y=0;y<half_height;y++) {
+      y_offset=y*width*2;
+      uv_offset=y*half_width;
+      for(x=0;x<half_width;x++) {
+         s_offset2=(y_offset+x*2);
+         s_offset=s_offset2*2;
+         uv_offset2=uv_offset+x;
+         yPlan[s_offset2]=sPlan[s_offset];
+         yPlan[s_offset2+width]=sPlan[s_offset+line_offset];
+         s_offset++;
+         uPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+line_offset])/2;
+         s_offset++;
+         s_offset2++;
+         yPlan[s_offset2]=sPlan[s_offset];
+         yPlan[s_offset2+width]=sPlan[s_offset+line_offset];
+         s_offset++;
+         vPlan[uv_offset2]=(sPlan[s_offset]+sPlan[s_offset+line_offset])/2;
+      }
+   }
+}
+
