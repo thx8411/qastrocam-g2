@@ -1,6 +1,10 @@
+4.3rc2
+
+  - RGB palette support (only for grey), untested
+
 4.3rc1
 
-  - YUYV pallette support
+  - YUYV palette support
   - gnome menu entry and icon included in the debian package
   - V4L generic devices source can now be choosen. Choice is stored for each device
   - ccvt updated to 0.3 (no more asm)

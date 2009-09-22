@@ -12,6 +12,7 @@ Later - binning in boxsize of hotspot search
 Later - binning module
 Later - static build
 Later - Multi language support
+DONE - 4.3   - partial RGB support (grey only, untested)
 DONE - 4.3   - V4L generic frame size detection, hot-resizing capability message
 DONE - 4.3   - YUYV pallette support
 DONE - 4.3   - gnome menu entry and icon included in the debian package
