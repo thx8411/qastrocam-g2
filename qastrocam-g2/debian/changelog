@@ -1,3 +1,9 @@
+qastrocam-g2 (4.3rc2) jaunty; urgency=low
+
+  * RGB palette partial support (grey only), untested
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 22 Sep 2009 16:19:31 +0200
+
 qastrocam-g2 (4.3rc1) jaunty; urgency=low
 
   * file format, raw mode, resolution, telescope device, lx device, lx levels now saved
