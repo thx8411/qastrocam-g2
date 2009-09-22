@@ -214,69 +214,26 @@ void ccvt_bgr24_420p(int width, int height, const void *src, void *dsty, void *d
    assert(0);
 }
 
+/* luminance only */
 void ccvt_rgb24_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
-   int x,y;
-   int half_height;
-   int half_width;
+   int p,size;
    unsigned char* sPlan;
    unsigned char* yPlan;
-   unsigned char* uPlan;
-   unsigned char* vPlan;
 
-   unsigned char R[4];
-   unsigned char G[4];
-   unsigned char B[4];
-   unsigned char Y[4];
-   unsigned char U;
-   unsigned char V;
-   unsigned char meanR;
-   unsigned char meanG;
-   unsigned char meanB;
+   unsigned short R;
+   unsigned short G;
+   unsigned short B;
 
    sPlan=(unsigned char*)src;
    yPlan=(unsigned char*)dsty;
-   uPlan=(unsigned char*)dstu;
-   vPlan=(unsigned char*)dstv;
 
-   half_height=height/2;
-   half_width=width/2;
-   for(y=0;y<half_height;y++) {
-      for(x=0;x<half_width;x++) {
-         R[0]=sPlan[y*2*width+2*x];
-         R[1]=sPlan[y*2*width+2*x+1];
-         R[2]=sPlan[(y*2+1)*width+2*x];
-         R[3]=sPlan[(y*2+1)*width+2*x+1];
+   size=height*width;
+   for(p=0;p<size;p++) {
+         R=sPlan[p*3];
+         G=sPlan[p*3+1];
+         B=sPlan[p*3+2];
 
-         G[0]=sPlan[y*2*width+(width*height)+2*x];
-         G[1]=sPlan[y*2*width+(width*height)+2*x+1];
-         G[2]=sPlan[(y*2+1)*width+(width*height)+2*x];
-         G[3]=sPlan[(y*2+1)*width+(width*height)+2*x+1];
-
-         B[0]=sPlan[y*2*width+(width*height*2)+2*x];
-         B[1]=sPlan[y*2*width+(width*height*2)+2*x+1];
-         B[2]=sPlan[(y*2+1)*width+(width*height*2)+2*x];
-         B[3]=sPlan[(y*2+1)*width+(width*height*2)+2*x+1];
-
-         Y[0]=((66*R[0]+129*G[0]+25*B[0]+128)>>8)+16;
-         Y[1]=((66*R[1]+129*G[1]+25*B[1]+128)>>8)+16;
-         Y[2]=((66*R[2]+129*G[2]+25*B[2]+128)>>8)+16;
-         Y[3]=((66*R[3]+129*G[3]+25*B[3]+128)>>8)+16;
-
-         yPlan[y*2*width+2*x]=Y[0];
-         yPlan[y*2*width+2*x+1]=Y[1];
-         yPlan[(y*2+1)*width+2*x]=Y[2];
-         yPlan[(y*2+1)*width+2*x+1]=Y[3];
-
-         //meanR=(R[0]+R[1]+R[2]+R[3])/4;
-         //meanG=(G[0]+G[1]+G[2]+G[3])/4;
-         //meanB=(B[0]+B[1]+B[2]+B[3])/4;
-
-         //U=((-38*meanR-74*meanG+112*meanB+128)>>8)+128;
-         //V=((112*meanR-94*meanG-18*meanB+128)>>8)+128;
-
-         //uPlan[y*width+x]=U;
-         //vPlan[y*width+x]=V;
-      }
+         yPlan[p]=(unsigned char)(((66*R+129*G+25*B+128)>>8)+16);
    }
 }
 
