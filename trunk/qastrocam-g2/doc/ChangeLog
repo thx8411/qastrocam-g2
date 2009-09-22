@@ -1,4 +1,8 @@
-4.3rc1
+4.4beta20090922
+
+  -
+
+4.3
 
   - YUYV pallette support
   - gnome menu entry and icon included in the debian package
