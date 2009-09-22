@@ -1,0 +1,59 @@
+4.3rc1
+
+  - YUYV pallette support
+  - gnome menu entry and icon included in the debian package
+  - V4L generic devices source can now be choosen. Choice is stored for each device
+  - ccvt updated to 0.3 (no more asm)
+  - file format, raw mode, resolution, level inversion, telescope device and lx device 
+    are now stored and restored (feature #2846348, to be finished)
+  - now supports level inversion on serial and led SCmod via command line (feature #2856135)
+  - fixed : #2862323
+  - enhanced V4L generic frame size support (bug #2859701)
+
+4.2rc2
+
+  - My Version naming system was stupid, vers. 4.2.2rc2 becomes 4.2rc2
+
+4.2.2rc2
+
+  - Quit button now quit on release
+  - Bug #2853068 fixed
+
+4.2.2rc1
+
+  - Bug #2846342 fixed
+  - Bugs #2847809, #2846660, #2846661, #2846437 fixed
+  - Bugs #2847888, #2847886 fixed
+  - Sources cleaned
+  - Bug #2851998 fixed
+  - Bug #2836340 fixed
+
+4.2.2 : project renamed to qastrocam-g2
+
+4.2.2 beta BFC Fork
+
+  You may generate tracking files, compatible with iris files, with "-t file -dt <filename>"
+  Can be used with PEAS
+
+4.2.1 beta BFC Fork
+
+  The SCmod serial device can now be choosen with the -dx option
+  Some spelling error corrected
+
+4.2.0 beta BFC Fork
+  Added serial SC mod support unsing F. Sicard previous work (roots version, to be "cleaned")
+  Type mismatch correction in LED SCmod
+  Some spelling error corrected
+  
+4.1.0 pre 17082009 
+
+...
+
+...
+
+release 1.0.1
+  JPEG format (used for saved images) changed to PNG.
+release 1.0
+  added integration buffer
+release 0.9
+  initial release
