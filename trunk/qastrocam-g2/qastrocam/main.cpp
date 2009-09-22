@@ -310,7 +310,7 @@ int main(int argc, char ** argv) {
    do {
       cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),videoDeviceSource.c_str());
       if (cam == NULL) {
-         static QMessageBox mb("Qastrocam",
+         static QMessageBox mb("Qastrocam-g2",
 			      QMessageBox::tr("No camera detected (did you plug it?)"),
 			      QMessageBox::Critical,
 			      QMessageBox::Retry | QMessageBox::Default,
