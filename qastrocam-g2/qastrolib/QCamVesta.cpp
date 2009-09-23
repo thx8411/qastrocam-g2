@@ -24,11 +24,8 @@
 #include "pwc-ioctl.h"
 #include "qlineedit.h"
 #include "SCmod.hpp"
-#include "SCmodParPort.hpp"
 #include "SCmodParPortPPdev.hpp"
 #include "QCamUtilities.hpp"
-
-string longexposureDeviceName("/dev/ttyS1");
 
 QCamVesta::QCamVesta(const char * devpath):
    QCamV4L(devpath,VIDEO_PALETTE_YUV420P, "",(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
@@ -518,23 +515,16 @@ void QCamVesta::setSCmod(int value) {
    case SCmodNone:
       // already cleared
       break;
-   case SCmodPPort: {
-      SCmodParPort * scMod=new SCmodParPort();
-      scMod->setPPort(0x378);
-      setSCmodImpl(scMod);
-   }
-      break;
    case SCmodLed:
       setSCmodImpl(new SCmodTucLed(*this));          
       break;
    case SCmodSerial:{
-      SCmodSerialPort * modSerial=new SCmodSerialPort(longexposureDeviceName.c_str());
+      SCmodSerialPort * modSerial=new SCmodSerialPort();
       setSCmodImpl(modSerial);          
    }
       break;
    case SCmodPPort2:{
       SCmodParPortPPdev * scMod=new SCmodParPortPPdev();
-      scMod->setPPort(0);
       setSCmodImpl(scMod);
    }
       break;
@@ -661,9 +651,9 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
            this,SLOT(setFrameRate(int)));
    remoteCTRLframeRate2_->show();
 
-   int scModeTable[]={SCmodNone,SCmodPPort2,SCmodLed,SCmodPPort,SCmodSerial};
-   const char* scModeLabel[]={"SC mod : None","SC mod : // port (ppdev)","SC mod : TUC led","SC mod : // port (old)","SC mod : serial"};
-   SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,5,scModeTable,scModeLabel);
+   int scModeTable[]={SCmodNone,SCmodPPort2,SCmodLed,SCmodSerial};
+   const char* scModeLabel[]={"SC mod : None","SC mod : // port","SC mod : TUC led","SC mod : serial"};
+   SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,4,scModeTable,scModeLabel);
    connect(SCmodSelector_,SIGNAL(change(int)),
            this,SLOT(setSCmod(int)));
    

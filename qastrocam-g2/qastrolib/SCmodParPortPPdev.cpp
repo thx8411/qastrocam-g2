@@ -24,51 +24,24 @@
 #include <linux/parport.h>
 #include <linux/ppdev.h>
 
-SCmodParPortPPdev::SCmodParPortPPdev() {
-   ppdev_fd = -1;
-   ioPortSelect_=NULL;
-}
+#include "SettingsBackup.hpp"
+
+extern settingsBackup settings;
 
 SCmodParPortPPdev::~SCmodParPortPPdev() {
    if (ppdev_fd != -1) {
       close(ppdev_fd);
    }
-   if (ioPortSelect_) {
-      delete ioPortSelect_;
-   }
 }
 
-void SCmodParPortPPdev::setPPort(int port) {
-   if (ppdev_fd != -1) {
-      close(ppdev_fd);
-   }
-   
-   if (port==0)
-      ppdev_fd = open("/dev/parport0", O_RDWR, 0);
-   else if (port==1)
-      ppdev_fd = open("/dev/parport1", O_RDWR, 0);
-   else if (port==2)
-      ppdev_fd = open("/dev/parport2", O_RDWR, 0);
-   else {
-      static QMessageBox mb("Qastrocam",
-                            QMessageBox::tr("Invalid // port defined"),
-                            QMessageBox::Critical,
-                            QMessageBox::Abort  | QMessageBox::Escape,
-                            QMessageBox::NoButton,
-                            QMessageBox::NoButton);
-      mb.exec();
-      return;
-   }
-   
+SCmodParPortPPdev::SCmodParPortPPdev() {
+   if(settings.haveKey("LX_DEVICE"))
+      device=settings.getKey("LX_DEVICE");
+   else
+      device="/dev/parport0";
+   ppdev_fd = open(device.c_str(), O_RDWR, 0);
    if (ppdev_fd == -1) {
-      static QMessageBox mb("Qastrocam",
-                            QMessageBox::tr("Failed to open pdev"),
-                            QMessageBox::Critical,
-                            QMessageBox::Abort  | QMessageBox::Escape,
-                            QMessageBox::NoButton,
-                            QMessageBox::NoButton);
-      mb.exec();
-      return;
+      perror(device.c_str());
    }
    
    //claim ppdev:
@@ -76,27 +49,13 @@ void SCmodParPortPPdev::setPPort(int port) {
       perror("ioctl PPCLAIM");
       close(ppdev_fd);
       ppdev_fd = -1;
-      static QMessageBox mb("Qastrocam",
-                            QMessageBox::tr("pport can't be claimed.\n"
-                                            "Is the ppdev module loaded?"),
-                            QMessageBox::Critical,
-                            QMessageBox::Abort  | QMessageBox::Escape,
-                            QMessageBox::NoButton,
-                            QMessageBox::NoButton);
-      mb.exec();
-      return;
    }
    
    if (ppdev_fd != -1) {
       //set direction to OUTPUT on d0-d7:
       int outputmode=0;
       if (ioctl(ppdev_fd, PPDATADIR, &outputmode) != 0){
-         static QMessageBox mb("Qastrocam",
-                               QMessageBox::tr("pport: failed to set port direction"),
-                               QMessageBox::Critical,
-                               QMessageBox::Abort  | QMessageBox::Escape,
-                               QMessageBox::NoButton,
-                               QMessageBox::NoButton);
+         perror("ioctl PPDATADIR");
       }
    }
    
@@ -152,7 +111,7 @@ void SCmodParPortPPdev::startAccumulation() {
 }
 
 
-QWidget * SCmodParPortPPdev::buildGUI(QWidget * parent) {
+/*QWidget * SCmodParPortPPdev::buildGUI(QWidget * parent) {
    int portTable[]={0,1,2};
    const char * portLabel[]={"/dev/parport0","/dev/parport1","/dev/parport2"};
    ioPortSelect_=new QCamComboBox("PPort",parent,3,portTable,portLabel);
@@ -160,4 +119,4 @@ QWidget * SCmodParPortPPdev::buildGUI(QWidget * parent) {
            this,SLOT(setPPort(int)));
    ioPortSelect_->show();
    return parent;
-}
+}*/

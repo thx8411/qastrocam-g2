@@ -1,6 +1,7 @@
-4.4beta20090922
+4.4beta20090923
 
-  -
+  - removed obsolete parport LX control
+  - V4L generic palette can be forced using -p option
 
 4.3
 

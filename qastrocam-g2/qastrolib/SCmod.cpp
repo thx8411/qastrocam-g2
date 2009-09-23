@@ -50,14 +50,20 @@ void SCmodTucLed::startAccumulation() {
 
 
 
-SCmodSerialPort::SCmodSerialPort(const char * device) {
+SCmodSerialPort::SCmodSerialPort() {
    if(settings.haveKey("LX_LEVELS_INVERTED"))
       inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
    else
       inverted_=false;
-   device_=open(device,O_WRONLY);
+
+   if(settings.haveKey("LX_DEVICE"))
+      device=settings.getKey("LX_DEVICE");
+   else
+      device="/dev/ttyS0";
+
+   device_=open(device.c_str(),O_WRONLY);
    if (device_<0) {
-      perror(device);
+      perror(device.c_str());
    }
    stopAccumulation();
 }

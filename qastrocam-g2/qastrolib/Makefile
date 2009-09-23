@@ -14,7 +14,7 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
          QCamMax.o QCamFindShift_hotSpot.o QVectorMap.o QCamComboBox.o \
          QCamTrans.o  FrameMirror.o FrameAlgo.o QCamOV511.o \
          QGridBox.o QDirectoryChooser.o \
-         QCamDisplayImplSDL.o SCmodParPort.o SCmodParPortPPdev.o QTelescopeFifo.o \
+         QCamDisplayImplSDL.o SCmodParPortPPdev.o QTelescopeFifo.o \
 	 QKingClient.o QTelescopeMCU.o QTelescopeMTS.o QTelescopeFile.o
 
 OBJ_cpp = QCamV4LbestDevice.o port.o FitsImage.o QCamUtilities.o \

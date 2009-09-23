@@ -2,6 +2,11 @@
 #define _SCmod_hpp_
 /** Abstract class to control an SC moded webcam
  */
+
+#include <string>
+
+using namespace std;
+
 class QWidget;
 
 class SCmod {
@@ -32,12 +37,13 @@ private:
 
 class SCmodSerialPort : public SCmod {
 public:
-   SCmodSerialPort(const char * device);
+   SCmodSerialPort();
    void enterLongPoseMode();
    void leaveLongPoseMode();
    void stopAccumulation();
    void startAccumulation();
 private:
+   string device;
    int device_;
 };
 
