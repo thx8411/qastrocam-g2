@@ -1,8 +1,9 @@
-qastrocam-g2 (4.4beta20090922) jaunty; urgency=low
+qastrocam-g2 (4.4beta20090923) jaunty; urgency=low
 
-  * 
+  * V4L generic palette can be forced using -p option
+  * removed obsolete parport LX control
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 22 Sep 2009 03:19:20 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 23 Sep 2009 03:14:34 +0200
 
 qastrocam-g2 (4.3) jaunty; urgency=low
 

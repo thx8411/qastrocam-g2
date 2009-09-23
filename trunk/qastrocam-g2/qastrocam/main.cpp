@@ -52,8 +52,7 @@ const string SDLon("--SDL");
 const string SDLoff("--noSDL");
 const string ExpertMode("--expert");
 const string DeviceSource("-i");
-
-extern string longexposureDeviceName;
+const string DevicePalette("-p");
 
 settingsBackup settings;
 
@@ -80,15 +79,16 @@ void usage(const char * progName) {
    cerr << "  "<<VideoDeviceOptionString << " <deviceName> to choose the V4L device name.\n"
 	<< "     default is /dev/video0.\n";
    cerr << "  "<<DeviceSource<< " <source> to set the V4L device source.\n";
+   cerr << "  "<<DevicePalette<<" <palette> to force the V4L device palette.\n";
    cerr << "  "<<PPortOptionString << " <port> IO port of the // port (in Hexa).\n"
 	<< "     default is 378 (=LPT1) (use 278 for LPT2).\n"
         << "     * Only for APM interface *\n";
    cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n"
 	<< "     type 'help' will give the list of avaible telescope type\n";
    cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope serial port control.\n"
-	<< "     default is /dev/ttyS0.\n";
+	<< "     default is /dev/ttyS1.\n";
    cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n"
-        << "     default is /dev/ttyS1.\n";
+        << "     default is /dev/ttyS0 or /dev/parport0.\n";
    cerr << "  "<<LevelsInvertedOptionString<<" to invert polarity levels for serial and LED SCmods\n";
    cerr << "  "<<LevelsNormalOptionString<<" reset levels to non-inverted\n";
    cerr << "  "<<LibDirOptionString<<" <directory> to set the library directory\n";
@@ -122,7 +122,7 @@ int main(int argc, char ** argv) {
    string videoDeviceName("/dev/video0");
    string videoDeviceSource;
    string telescopeType;
-   string telescopeDeviceName("/dev/ttyS0");
+   string telescopeDeviceName("/dev/ttyS1");
    string libPath;
    
    int pportNumber=0x378;
@@ -137,7 +137,6 @@ int main(int argc, char ** argv) {
    settings.deSerialize();
 
    if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
-   if(settings.haveKey("LX_DEVICE")) longexposureDeviceName=settings.getKey("LX_DEVICE");
 
    for (int i=1;i <argc;++i) {
       if (BrutDisplayString == argv[i]) {
@@ -184,6 +183,13 @@ int main(int argc, char ** argv) {
             exit(1);
          }
          videoDeviceSource=argv[i];
+      } else if ( DevicePalette == argv[i]) {
+         i++;
+         if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("PALETTE",argv[i]);
       } else if ( TelescopeTypeOption == argv[i]) {
          ++i;
          if (i==argc) {
@@ -206,7 +212,6 @@ int main(int argc, char ** argv) {
 	    usage(argv[0]);
             exit(1);
 	 }
-         longexposureDeviceName=argv[i];
          settings.setKey("LX_DEVICE",argv[i]);
       } else if ( LevelsInvertedOptionString == argv[i]) {
          settings.setKey("LX_LEVELS_INVERTED","yes");
@@ -259,6 +264,7 @@ int main(int argc, char ** argv) {
 	   cout << "SDL display enabled. (If only a black windows is displayed,"
                 << " try option "<<SDLoff<<" when launchnig qastrocam)\n";
    }
+
    QApplication app(argc,argv);
    
    QCamUtilities::setLocale(app);

@@ -8,9 +8,13 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/videodev.h>
+#include "SettingsBackup.hpp"
+
+extern settingsBackup settings;
 
 QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
    int cam_fd;
+   int palette;
    QCam * camFound=NULL;
 
    if (-1 == (cam_fd=open(devpath,O_RDONLY))) {
@@ -64,7 +68,26 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
              "Using generic V4L driver.\n",
              vcap.name);
       close(cam_fd);
-      camFound = new QCamV4L(devpath,false,devsource);
+      
+      if(settings.haveKey("PALETTE")) {
+         string palette_=settings.getKey("PALETTE");
+         if(strcasecmp(palette_.c_str(),"rgb24")==0) {
+            palette=VIDEO_PALETTE_RGB24; 
+         } else if(strcasecmp(palette_.c_str(),"yuyv")==0){
+            palette=VIDEO_PALETTE_YUYV;
+         } else if(strcasecmp(palette_.c_str(),"yuv420p")==0){
+            palette=VIDEO_PALETTE_YUV420P;
+         } else if(strcasecmp(palette_.c_str(),"yuv420")==0){
+            palette=VIDEO_PALETTE_YUV420;
+         } else if(strcasecmp(palette_.c_str(),"grey")==0){
+            palette=VIDEO_PALETTE_GREY;
+         } else {
+            palette=0;
+         }
+      } else { 
+         palette=0;
+      }
+      camFound = new QCamV4L(devpath,palette,devsource);
       goto exit;
    }
 exit:

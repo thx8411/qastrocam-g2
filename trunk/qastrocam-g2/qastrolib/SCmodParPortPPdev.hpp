@@ -4,6 +4,10 @@
 #include "SCmod.hpp"
 #include "qobject.h"
 
+#include <string>
+
+using namespace std;
+
 class PPort;
 class QCamComboBox;
 
@@ -16,9 +20,7 @@ public:
    void leaveLongPoseMode();
    void stopAccumulation();
    void startAccumulation();
-   QWidget * buildGUI(QWidget * parent);
-public slots:
-   void setPPort(int ioPort);
+   //QWidget * buildGUI(QWidget * parent);
 private:
    enum pportBit {evenLinesTransferOn=0,
                   oddLinesTransferOn=1,
@@ -28,7 +30,7 @@ private:
    void activatePPort();
    int ppdev_fd;
    int data_out;
-   QCamComboBox * ioPortSelect_;
+   string device;
 };
 
 #endif
