@@ -14,13 +14,14 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
          QCamMax.o QCamFindShift_hotSpot.o QVectorMap.o QCamComboBox.o \
          QCamTrans.o  FrameMirror.o FrameAlgo.o QCamOV511.o \
          QGridBox.o QDirectoryChooser.o \
-         QCamDisplayImplSDL.o SCmodParPortPPdev.o QTelescopeFifo.o \
+         QCamDisplayImplSDL.o QTelescopeFifo.o \
 	 QKingClient.o QTelescopeMCU.o QTelescopeMTS.o QTelescopeFile.o
 
 OBJ_cpp = QCamV4LbestDevice.o port.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o PPort.o Vector2D.o ShiftInfo.o QCamFrame.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
-          QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o SettingsBackup.o
+          QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o SettingsBackup.o \
+	  SCmodParPortPPdev.o
 
 OBJ_c = ccvt_c2.o
 

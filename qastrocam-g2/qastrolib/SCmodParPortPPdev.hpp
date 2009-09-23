@@ -8,11 +8,7 @@
 
 using namespace std;
 
-class PPort;
-class QCamComboBox;
-
-class SCmodParPortPPdev : public QObject, public SCmod {
-   Q_OBJECT
+class SCmodParPortPPdev : public SCmod {
 public:
    SCmodParPortPPdev();
    virtual ~SCmodParPortPPdev();
@@ -20,7 +16,6 @@ public:
    void leaveLongPoseMode();
    void stopAccumulation();
    void startAccumulation();
-   //QWidget * buildGUI(QWidget * parent);
 private:
    enum pportBit {evenLinesTransferOn=0,
                   oddLinesTransferOn=1,

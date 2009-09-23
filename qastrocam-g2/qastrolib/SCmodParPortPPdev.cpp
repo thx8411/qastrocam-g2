@@ -1,38 +1,16 @@
-#include "SCmodParPortPPdev.moc"
-#include "PPort.hpp"
 #include <unistd.h>
-#include <qwidget.h>
 #include <iostream>
-#include "QCamComboBox.hpp"
-#include <qmessagebox.h>
-
-/*****************************************************
- * rewrite of SCmodParPort.cpp
- * - use ppdev to access the pport
- *   -> no need for suid root
- * (works only for PC-style pports i think)
- *
- * >>>> make sure to load the ppdev kerneldriver
- *      (modprobe ppdev)
- *
- *                by simon '05  devel at auctionant.de
- *****************************************************/
-
 #include <signal.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <linux/parport.h>
 #include <linux/ppdev.h>
 
+#include "SCmodParPortPPdev.hpp"
+
 #include "SettingsBackup.hpp"
 
 extern settingsBackup settings;
-
-SCmodParPortPPdev::~SCmodParPortPPdev() {
-   if (ppdev_fd != -1) {
-      close(ppdev_fd);
-   }
-}
 
 SCmodParPortPPdev::SCmodParPortPPdev() {
    if(settings.haveKey("LX_DEVICE"))
@@ -60,6 +38,12 @@ SCmodParPortPPdev::SCmodParPortPPdev() {
    }
    
    activatePPort();
+}
+
+SCmodParPortPPdev::~SCmodParPortPPdev() {
+   if (ppdev_fd != -1) {
+      close(ppdev_fd);
+   }
 }
 
 void SCmodParPortPPdev::activatePPort() {
