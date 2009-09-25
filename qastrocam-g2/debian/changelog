@@ -1,7 +1,11 @@
-qastrocam-g2 (4.4beta20090923) jaunty; urgency=low
+qastrocam-g2 (4.4beta20090925) jaunty; urgency=low
 
+  * levels (inverted/normal) can be set for APM telescope
+  * levels (inverted/normal) can be set for // port LX
+  * APM telescope and // port LX may now share the same port with ppdev and lp devices
   * V4L generic palette can be forced using -p option
   * removed obsolete parport LX control
+  * supports ppdev and standard lp ports witch the "latch" mod (for "usb to //" devices)
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 23 Sep 2009 03:14:34 +0200
 

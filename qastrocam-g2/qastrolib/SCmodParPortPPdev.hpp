@@ -2,7 +2,7 @@
 #define _SCmodParPortPPdev_hpp_
 
 #include "SCmod.hpp"
-#include "qobject.h"
+#include "PPort.hpp"
 
 #include <string>
 
@@ -17,14 +17,13 @@ public:
    void stopAccumulation();
    void startAccumulation();
 private:
-   enum pportBit {evenLinesTransferOn=0,
-                  oddLinesTransferOn=1,
-                  preampOn=2,
-                  shutterOn=3};
-   void sendPportCmd();
-   void activatePPort();
-   int ppdev_fd;
-   int data_out;
+   enum pportBit {evenLinesTransfer=0,
+                  oddLinesTransfer=1,
+                  preamp=2,
+                  shutter=3};
+   int portEntry;
+   PPort* paralPort;
+   bool inverted;
    string device;
 };
 

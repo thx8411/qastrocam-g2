@@ -45,8 +45,10 @@ const string VideoDeviceOptionString("-dv");
 const string TelescopeTypeOption("-t");
 const string TelescopeDeviceOptionString("-dt");
 const string LongexposureDeviceOptionString("-dx");
-const string LevelsInvertedOptionString("--levels-inverted");
-const string LevelsNormalOptionString("--levels-normal");
+const string LxLevelsInvertedOptionString("--lx-levels-inverted");
+const string LxLevelsNormalOptionString("--lx-levels-normal");
+const string TsLevelsInvertedOptionString("--ts-levels-inverted");
+const string TsLevelsNormalOptionString("--ts-levels-normal");
 const string LibDirOptionString("--libdir");
 const string SDLon("--SDL");
 const string SDLoff("--noSDL");
@@ -80,17 +82,16 @@ void usage(const char * progName) {
 	<< "     default is /dev/video0.\n";
    cerr << "  "<<DeviceSource<< " <source> to set the V4L device source.\n";
    cerr << "  "<<DevicePalette<<" <palette> to force the V4L device palette.\n";
-   cerr << "  "<<PPortOptionString << " <port> IO port of the // port (in Hexa).\n"
-	<< "     default is 378 (=LPT1) (use 278 for LPT2).\n"
-        << "     * Only for APM interface *\n";
    cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n"
 	<< "     type 'help' will give the list of avaible telescope type\n";
-   cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope serial port control.\n"
+   cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope control device or file.\n"
 	<< "     default is /dev/ttyS1.\n";
    cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n"
         << "     default is /dev/ttyS0 or /dev/parport0.\n";
-   cerr << "  "<<LevelsInvertedOptionString<<" to invert polarity levels for serial and LED SCmods\n";
-   cerr << "  "<<LevelsNormalOptionString<<" reset levels to non-inverted\n";
+   cerr << "  "<<LxLevelsInvertedOptionString<<" to invert polarity levels for serial and LED long exposure mods\n";
+   cerr << "  "<<LxLevelsNormalOptionString<<" reset long exposure levels to non-inverted\n";
+   cerr << "  "<<TsLevelsInvertedOptionString<<" to invert polarity levels for APM telescope\n";
+   cerr << "  "<<TsLevelsNormalOptionString<<" reset APM levels to non-inverted\n";
    cerr << "  "<<LibDirOptionString<<" <directory> to set the library directory\n";
    cerr << "  "<<SDLon<<" use lib SDL to display frames (fast display).\n";
    cerr << "  "<<SDLoff<<" don't use lib SDL to display frames (slow display).\n";
@@ -124,9 +125,6 @@ int main(int argc, char ** argv) {
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
    string libPath;
-   
-   int pportNumber=0x378;
-   PPort * paralPort=NULL;
    
    cout << qastrocamName << " " << qastroCamVersion
         << " (build "<<qastrocamBuild<<")"<<endl;
@@ -213,18 +211,14 @@ int main(int argc, char ** argv) {
             exit(1);
 	 }
          settings.setKey("LX_DEVICE",argv[i]);
-      } else if ( LevelsInvertedOptionString == argv[i]) {
+      } else if ( LxLevelsInvertedOptionString == argv[i]) {
          settings.setKey("LX_LEVELS_INVERTED","yes");
-      } else if ( LevelsNormalOptionString == argv[i]) {
+      } else if ( LxLevelsNormalOptionString == argv[i]) {
          settings.setKey("LX_LEVELS_INVERTED","no");
-      } else if ( PPortOptionString == argv[i]) {
-         ++i;
-         if (i==argc) {
-            usage(argv[0]);
-            exit(1);
-         }
-         sscanf(argv[i],"%x",&pportNumber);
-         cout << "using // port 0x"<<hex<<pportNumber<<dec<<endl;
+      } else if ( TsLevelsInvertedOptionString == argv[i]) {
+         settings.setKey("TS_LEVELS_INVERTED","yes");
+      } else if ( TsLevelsNormalOptionString == argv[i]) {
+         settings.setKey("TS_LEVELS_INVERTED","no");
       } else if ( LibDirOptionString == argv[i]) {
          ++i;
          if (i==argc) {
@@ -292,8 +286,7 @@ int main(int argc, char ** argv) {
       } else if (telescopeType=="mcu") {
          theTelescope = new QTelescopeMCU(telescopeDeviceName.c_str());
       } else if (telescopeType=="apm") {
-         paralPort=PPort::getPPort(pportNumber);
-         theTelescope = new QTelescopeAPM(paralPort);
+         theTelescope = new QTelescopeAPM(telescopeDeviceName.c_str());
       } else if (telescopeType=="fifo") {
          theTelescope = new QTelescopeFifo(telescopeDeviceName.c_str());
       } else if (telescopeType=="mts") { 

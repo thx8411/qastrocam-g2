@@ -3,15 +3,16 @@
 
 #include "QTelescope.hpp"
 
-class PPort;
-/** Telescope implementation for APM interface.
-    see 
- */
+#include "PPort.hpp"
+
+/** Telescope implementation for APM interface. **/
+
 class QTelescopeAPM : public QTelescope {
    Q_OBJECT;
 public:
-   QTelescopeAPM(PPort * pport);
-   public slots:
+   QTelescopeAPM(const char * pport);
+   ~QTelescopeAPM();
+public slots:
    virtual void goE(float shift);
    virtual void goW(float shift);
    virtual void goS(float shift);
@@ -23,7 +24,11 @@ public:
    virtual double setSpeed(double speed);
    virtual bool setTracking(bool activated);
 private:
+   bool go;
+   bool stop;
+   int portEntry;
+   const char* portName;
+   PPort* paralPort;
    enum BitControl { EastBit=4,WestBit=5,NorthBit=6,SouthBit=7};
-   PPort * paralPort;
 };
 #endif
