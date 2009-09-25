@@ -1,7 +1,11 @@
-4.4beta20090923
+4.4beta20090925
 
   - removed obsolete parport LX control
+  - levels (inverted/normal) can be set for APM telescope
+  - levels (inverted/normal) can be set for // port LX
+  - APM telescope and // port LX may now share the same port with ppdev and lp devices
   - V4L generic palette can be forced using -p option
+  - supports ppdev and standard lp ports witch the "latch" mod (for "usb to //" devices)
 
 4.3
 

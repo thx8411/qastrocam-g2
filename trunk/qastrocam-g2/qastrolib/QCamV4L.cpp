@@ -254,6 +254,7 @@ const QSize * QCamV4L::getAllowedSize() const {
 
       testWindow.x=0;
       testWindow.y=0;
+
       while((currentIndex<7)&&(currentx>capability_.minwidth)&&(currenty>capability_.minheight)) {
          testWindow.width=currentx;
          testWindow.height=currenty;

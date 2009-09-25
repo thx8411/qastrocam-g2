@@ -17,11 +17,11 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
          QCamDisplayImplSDL.o QTelescopeFifo.o \
 	 QKingClient.o QTelescopeMCU.o QTelescopeMTS.o QTelescopeFile.o
 
-OBJ_cpp = QCamV4LbestDevice.o port.o FitsImage.o QCamUtilities.o \
-          QStreamTranslator.o PPort.o Vector2D.o ShiftInfo.o QCamFrame.o \
+OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
+          QStreamTranslator.o Vector2D.o ShiftInfo.o QCamFrame.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o SettingsBackup.o \
-	  SCmodParPortPPdev.o
+	  SCmodParPortPPdev.o PPort.o
 
 OBJ_c = ccvt_c2.o
 

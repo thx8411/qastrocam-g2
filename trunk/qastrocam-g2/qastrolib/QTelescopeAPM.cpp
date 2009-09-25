@@ -1,61 +1,70 @@
 #include "QTelescopeAPM.moc"
 
-#include "PPort.hpp"
 #include <iostream>
+#include <string.h>
+
+#include "SettingsBackup.hpp"
 
 using namespace std;
 
-QTelescopeAPM::QTelescopeAPM(PPort * pport) :
-   QTelescope() {
-   paralPort=pport;
-   if (!paralPort->registerBit(this,EastBit)) { cerr << "cant' register bit "<<EastBit<<" on // port\n";}
-   if (!paralPort->registerBit(this,WestBit)) { cerr << "cant' register bit "<<WestBit<<" on // port\n";}
-   if (!paralPort->registerBit(this,NorthBit)) { cerr << "cant' register bit "<<NorthBit<<" on // port\n";}
-   if (!paralPort->registerBit(this,SouthBit)) { cerr << "cant' register bit "<<SouthBit<<" on // port\n";}
+extern settingsBackup settings;
+
+QTelescopeAPM::QTelescopeAPM(const char * pport) : QTelescope() {
+   portName=pport;
+   paralPort=PPort::instance();
+
+   portEntry=paralPort->getAccess(portName);
+   if(portEntry==-1) {
+      cerr << "unable to get access to " << portName << endl;
+   }
+
+   if(settings.haveKey("TS_LEVELS_INVERTED")&&(strcasecmp(settings.getKey("TS_LEVELS_INVERTED"),"yes")==0)) {
+      go=false;
+      stop=true;
+   } else {
+      go=true;
+      stop=false;
+   }
+}
+
+QTelescopeAPM::~QTelescopeAPM() {
+   paralPort->destroy();
 }
 
 void QTelescopeAPM::goE(float shift) {
-   paralPort->setBit(this,EastBit,true);
-   paralPort->setBit(this,WestBit,false);
-   paralPort->commit();
+   stopW();
+   paralPort->setBit(EastBit,go,portEntry);
 }
 
 void QTelescopeAPM::goW(float shift) {
-   paralPort->setBit(this,EastBit,false);
-   paralPort->setBit(this,WestBit,true);
-   paralPort->commit();
+   stopE();
+   paralPort->setBit(WestBit,go,portEntry);
 }
 
 void QTelescopeAPM::goS(float shift) {
-   paralPort->setBit(this,NorthBit,false);
-   paralPort->setBit(this,SouthBit,true);
-   paralPort->commit();
+   stopN();
+   paralPort->setBit(SouthBit,go,portEntry);
 }
 
 void QTelescopeAPM::goN(float shift) {
-   paralPort->setBit(this,NorthBit,true);
-   paralPort->setBit(this,SouthBit,false);
-   paralPort->commit();
+   stopS();
+   paralPort->setBit(NorthBit,go,portEntry);
 }
 
 void QTelescopeAPM::stopE() {
-   paralPort->setBit(this,EastBit,false);
-   paralPort->commit();
+   paralPort->setBit(EastBit,stop,portEntry);
 }
 
 void QTelescopeAPM::stopN() {
-   paralPort->setBit(this,NorthBit,false);
-   paralPort->commit();
+   paralPort->setBit(NorthBit,stop,portEntry);
 }
 
 void QTelescopeAPM::stopW() {
-   paralPort->setBit(this,WestBit,false);
-   paralPort->commit();
+   paralPort->setBit(WestBit,stop,portEntry);
 }
 
 void QTelescopeAPM::stopS() {
-   paralPort->setBit(this,SouthBit,false);
-   paralPort->commit();
+   paralPort->setBit(SouthBit,stop,portEntry);
 }
 
 double QTelescopeAPM::setSpeed(double speed) {
@@ -63,6 +72,6 @@ double QTelescopeAPM::setSpeed(double speed) {
 }
 
 bool QTelescopeAPM::setTracking(bool activated) {
-   /// always tracking ?
+   // always tracking ?
    return activated;
 }

@@ -1,101 +1,114 @@
 #include "PPort.hpp"
-#include "port.hpp"
 
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <linux/ppdev.h>
+
 #include <iostream>
 
-using namespace std;
+PPort* PPort::instance_=NULL;
 
-map<int,PPort *> PPort::allocatedPort_;
+PPort* PPort::instance() {
+   if(instance_==NULL)
+      instance_=new PPort();
+   return(instance_);
+}
 
-#define TEST_VALIDITY {if (this==NULL) return false;}
+void PPort::destroy() {
+   if(instance_!=NULL)
+      delete instance_;
+   instance_=NULL;
+}
 
 PPort::PPort() {
-   reset();
+   pportTableSize=0;
 }
 
-PPort::PPort(int ioPort) {
-   reset();
-   setPort(ioPort);
+PPort::~PPort() {
+   int i;
+   for(i=0;i<pportTableSize;i++)
+      close(pportTable[i].fd);
 }
 
-void PPort::reset() {
-   bitArray=0;
-   for (int i=0;i<8;++i) {
-      assignedBit[i]=NULL;
+int PPort::pportFind(const char* name) {
+   int i=0;
+   while((i<pportTableSize)&&(pportTable[i].name!=name))
+      i++;
+   if(i!=pportTableSize)
+      return(i);
+   else
+      return(-1);
+}
+
+int PPort::getAccess(const char* device) {
+   int index;
+   index=pportFind(device);
+
+   if(index!=-1)
+      return(pportTable[index].fd);
+   else {
+      if(pportTableSize=PPORT_TABLE_SIZE-1) {
+            cerr << "no more space left in the pport table" << endl;
+            return(-1);
+         }
+
+      pportTable[pportTableSize].fd=open(device,O_WRONLY);
+      if(pportTable[pportTableSize].fd<0) {
+         cerr << "unable to open device " << device << endl;
+         return(-1);
+      }
+
+      pportTable[pportTableSize].name=device;
+      pportTable[pportTableSize].data=0;
+
+      if (ioctl(pportTable[pportTableSize].fd, PPCLAIM, 0) != 0) {
+         cout << "Not a ppdev device, using standard lp access" << endl;
+         pportTable[pportTableSize].type=LP_TYPE;
+         pportTableSize++;
+         return(pportTableSize-1);
+      }
+
+      int outputmode=0;
+      if (ioctl(pportTable[pportTableSize].fd, PPDATADIR, &outputmode) != 0) {
+         cout << "Unable to set the port direction, using it as a standard lp port" << endl;
+         pportTable[pportTableSize].type=LP_TYPE;
+         pportTableSize++;
+         return(pportTableSize-1);
+      }
+
+      pportTable[pportTableSize].type=PPDEV_TYPE;
+      pportTableSize++;
+      return(pportTableSize-1);
    }
-   currentPort=NULL;
 }
 
-bool PPort::setPort(int ioPort) {
-   TEST_VALIDITY;
-   if (geteuid() != 0) {
-      cerr << "must be setuid root control parallel port"<<endl;
-      return false;
-   }
-   if (currentPort) {
-      delete currentPort;
-   }
-   reset();
-   currentPort=new port_t(ioPort);
-   return commit();
-}
+bool  PPort::setBit(int bit,bool value, int entry) {
+   int res;
+   unsigned char data;
 
-bool PPort::commit() {
-   TEST_VALIDITY;
-   if (currentPort) {
-      currentPort->write_data(bitArray);
-      return true;
+   if((entry<0)||(entry>=pportTableSize)) {
+      cerr << "wrong entry number for pport " << endl;
+      return(false); 
+   }
+
+   if(value)
+      pportTable[entry].data|=1<<bit;
+   else
+      pportTable[entry].data&=0xFE<<bit;
+   
+   data=pportTable[entry].data;
+   if(pportTable[entry].type==LP_TYPE)
+      res=write(pportTable[entry].fd,&data,1);
+   else if(pportTable[entry].type==PPDEV_TYPE) {
+      res=ioctl(pportTable[entry].fd, PPWDATA, &data);
+      if(res==0) res=1;
    } else {
-      return false;
-   }
-}
-
-bool  PPort::setBit(const void * ID,int bit,bool stat) {
-   TEST_VALIDITY;
-   if (ID != assignedBit[bit]) {
-      return false;
+      cerr << "unsupported device type" << endl;
+      return(false);
    }
 
-   if (stat) {
-      bitArray |= (1<<bit);
-   } else {
-      bitArray &= ~(1<<bit);
-   }
-   return true;
+   return(res==1);
 }
 
-bool PPort::registerBit(const void * ID,int bit) {
-   TEST_VALIDITY;
-   if (assignedBit[bit] || currentPort==NULL) {
-      return false;
-   }
-   assignedBit[bit]=ID;
-   return true;
-}
-
-bool PPort::unregisterBit(const void * ID,int bit) {
-   TEST_VALIDITY;
-   if (assignedBit[bit] != ID) {
-      return false;
-   }
-   assignedBit[bit]=NULL;
-   return true;
-}
-
-bool PPort::isRegisterBit(const void * ID,int bit) const {
-   TEST_VALIDITY;
-   return (assignedBit[bit] == ID);
-}
-
-PPort * PPort::getPPort(int ioport) {
-   map<int,PPort *>::iterator it=allocatedPort_.find(ioport);
-   if (it==allocatedPort_.end()) {
-      PPort * newP=new PPort(ioport);
-      allocatedPort_[ioport]=newP;
-      return newP;
-   } else {
-      return it->second;
-   }
-}
