@@ -492,7 +492,7 @@ void QCam::importProperties(const QCam & other) {
    for(map<string,string>::const_iterator it=other.properties_.begin();
        it !=other.properties_.end();
        ++it) {
-      properties_.insert(*it);
+      properties_[it->first]=it->second;
    }
 }
 
