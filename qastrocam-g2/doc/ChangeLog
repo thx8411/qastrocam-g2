@@ -1,5 +1,6 @@
-4.4beta20090926
+4.4beta20090927
 
+  - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
   - levels (inverted/normal) can be set for APM telescope
   - levels (inverted/normal) can be set for // port LX
