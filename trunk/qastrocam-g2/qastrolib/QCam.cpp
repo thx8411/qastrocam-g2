@@ -92,18 +92,14 @@ bool QCam::saveFrame(const string& file) const {
    }  else if (fileFormat=="FITS-GZ") {
       FitsImageCFITSIO fit= FitsImageCFITSIO(file+".fit.gz");
       return fit.save(yuvFrame());
-   } else {
-      if (fileFormat=="JPEG" || fileFormat=="JPG") {
-         // AEW: Set quality to max (95) 
-         quality=95;
-      } else {
-         quality=-1;
-      }
+   } else if (fileFormat=="AVI") {
+      cout << "AVI snapshots unsupported, using BMP instead" << endl;
+      return yuvFrame().colorImage().save((file+"."+"bmp"),"BMP", quality);
+   } else
       return yuvFrame().colorImage().save((file
                                            +"."
                                            +QString(fileFormat).lower().latin1()).c_str(),
                                           fileFormat.c_str(), quality);
-   }
 }
 
 void QCam::snapshot() const {
@@ -273,7 +269,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QToolTip::add(displayFramesButton_,"display frames");
    displayFramesButton_->setToggleButton(true);
    displayFramesButton_->setPixmap(*QCamUtilities::getIcon("displayFrames.png"));
-   //displayFramesButton_->setIconSet(QIconSet(*QCamUtilities::getIcon("displayFrames.png")));
    if (displayWindow_ && displayWindow_->isActive()) {
       cout << "set displayFramesButton_ on\n";
       displayFramesButton_->setOn(true);
@@ -284,42 +279,42 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QToolTip::add(displayHistogramButton_,"display frames histograms,\nand focus information");
    displayHistogramButton_->setToggleButton(true);
    displayHistogramButton_->setPixmap(*QCamUtilities::getIcon("displayHistogram.png"));
-   //displayHistogramButton_->setIconSet(QIconSet(*QCamUtilities::getIcon("displayHistogram.png")));
    if (displayHistogramWindow_ && displayHistogramWindow_->isActive()) {
       cout << "set displayHistogramButton_ on\n";
       displayHistogramButton_->setOn(true);
    }
    connect(displayHistogramButton_,SIGNAL(toggled(bool)),this,SLOT(displayHistogram(bool)));
-   
+
    QStringList formatList =QImage::outputFormatList();
+
    int size=0;
-   for(QStringList::Iterator it=formatList.begin();
-       it != formatList.end();
-       ++it) {
+   int tmpTab[16];
+
+   fileFormatList_= new const char*[16];
+
+   fileFormatList_[size]="FITS";
+   tmpTab[size]=size;
+   ++size;
+   fileFormatList_[size]="FITS-GZ";
+   tmpTab[size]=size;
+   ++size;
+#if HAVE_AVIFILE_H
+   fileFormatList_[size]="AVI";
+   tmpTab[size]=size;
+   ++size;
+#endif
+   if(formatList.findIndex("BMP")!=-1) {
+      fileFormatList_[size]="BMP";
+      tmpTab[size]=size;
       ++size;
    }
-   int tmpTab[100];
-
-   fileFormatList_= new const char*[size+3];
-   int shift=0;
-   fileFormatList_[shift]="FITS";
-   tmpTab[shift]=shift;
-   ++shift;
-   fileFormatList_[shift]="FITS-GZ";
-   tmpTab[shift]=shift;
-   ++shift;
-#if HAVE_AVIFILE_H
-   fileFormatList_[shift]="AVI";
-   tmpTab[shift]=shift;
-   ++shift;
-#endif
-
-   for (int i=shift;i<size+shift;++i) {
-      fileFormatList_[i]=strdup(formatList[i-shift].latin1());
-      tmpTab[i]=i;
+   if(formatList.findIndex("PNG")!=-1) {
+      fileFormatList_[size]="PNG";
+      tmpTab[size]=size;
+      ++size;
    }
 
-   fileFormatCurrent_=shift;
+   fileFormatCurrent_=0;
 
    if(settings.haveKey("FILE_FORMAT")) {
       for(int i=0;i<size;++i) {
@@ -343,11 +338,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    }
    
    QVGroupBox * saveGroup = new QVGroupBox("Save Images",remoteCTRL_);
-   /*
-     imgFormatBox_ = new QCamRadioBox("Save Format",remoteCTRL_,
-     size,tmpTab,
-     fileFormatList_,3);
-   */
    buttons_=new QHBox(saveGroup); 
 
    new QLabel("Prefix:",buttons_);
@@ -362,7 +352,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    connect(dirChooser_,SIGNAL(directoryChanged(const QString &)),this,SLOT(setDirectory(const QString &)));
    
    imgFormatBox_ = new QCamComboBox("Save Format",buttons_,
-                                    size+1,tmpTab,
+                                    size,tmpTab,
                                     fileFormatList_);
    connect(imgFormatBox_,SIGNAL(change(int)),
            this,SLOT(updateFileFormat(int)));
