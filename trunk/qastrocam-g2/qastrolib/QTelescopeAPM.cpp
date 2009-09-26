@@ -21,10 +21,17 @@ QTelescopeAPM::QTelescopeAPM(const char * pport) : QTelescope() {
    if(settings.haveKey("TS_LEVELS_INVERTED")&&(strcasecmp(settings.getKey("TS_LEVELS_INVERTED"),"yes")==0)) {
       go=false;
       stop=true;
+      //cout << "APM inverted" << endl;
    } else {
       go=true;
       stop=false;
+      //cout << "APM not inverted" << endl;
    }
+
+   stopE();
+   stopW();
+   stopN();
+   stopS();
 }
 
 QTelescopeAPM::~QTelescopeAPM() {

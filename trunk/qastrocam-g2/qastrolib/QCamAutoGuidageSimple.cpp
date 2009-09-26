@@ -85,7 +85,7 @@ QCamAutoGuidageSimple::QCamAutoGuidageSimple() {
 QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    QWidget * mainBox = QCamAutoGuidage::buildGUI(parent);
 
-   cout << "QCamAutoGuidageSimple::buildGUI()"<<endl;
+   //cout << "QCamAutoGuidageSimple::buildGUI()"<<endl;
    
    QHBox * buttons=new QHBox(mainBox);
    QCheckBox * swapEWb = new QCheckBox(tr("swap E/W"),buttons);
