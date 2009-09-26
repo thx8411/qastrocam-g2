@@ -1,5 +1,0 @@
-(12:41:20) JB: ch'tite chose : la fenetre de QAstrocam + la fenetre en 640X480 se chevauchent sur un ecran en 1024... dommage :-(
-(13:07:29) JB: Nickel : en align+stack, je n'ai plus de plantages. Le redimensionnement, moyennant un "reset" de l'alignement passe impec. Bref, elle est nickel cette version.
-
-Juste une chose : (ca doit etre faisable... mais un peu ch** a programmer)
-quand on fait une "save sequence" dans la partie "stack". exemple 10. et bien ca prend 10 images issues de la cam et non pas (comme on pourrait s'y attendre pour une option stack) 10 resultats du stacking. (soit 10 X1 image brute au lieu de 10 X ImageobtenueavecNbrutes)

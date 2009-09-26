@@ -189,7 +189,7 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
                            bool swapLeftRight,bool swapUpDown) {
 
    if (getMode() != src.getMode()) {
-      cout << "not same mode for frame copy\n";
+      //cout << "not same mode for frame copy\n";
       return;
    }
    bool colorMode=(getMode()==YuvFrame && src.getMode()==YuvFrame);

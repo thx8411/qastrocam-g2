@@ -1,4 +1,4 @@
-qastrocam-g2 (4.4beta20090925) jaunty; urgency=low
+qastrocam-g2 (4.4beta20090926) jaunty; urgency=low
 
   * levels (inverted/normal) can be set for APM telescope
   * levels (inverted/normal) can be set for // port LX

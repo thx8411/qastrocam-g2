@@ -1,11 +1,11 @@
-4.4beta20090925
+4.4beta20090926
 
   - removed obsolete parport LX control
   - levels (inverted/normal) can be set for APM telescope
   - levels (inverted/normal) can be set for // port LX
   - APM telescope and // port LX may now share the same port with ppdev and lp devices
   - V4L generic palette can be forced using -p option
-  - supports ppdev and standard lp ports witch the "latch" mod (for "usb to //" devices)
+  - supports ppdev and standard lp ports witch the "latch mod" (for "usb to //" devices)
 
 4.3
 
@@ -50,7 +50,7 @@
   Some spelling error corrected
 
 4.2.0 beta BFC Fork
-  Added serial SC mod support unsing F. Sicard previous work (roots version, to be "cleaned")
+  Added serial SC mod support using F. Sicard previous work (roots version, to be "cleaned")
   Type mismatch correction in LED SCmod
   Some spelling error corrected
   
