@@ -1,4 +1,4 @@
-qastrocam-g2 (4.4beta20090927) jaunty; urgency=low
+qastrocam-g2 (4.4beta20090928) jaunty; urgency=low
 
   * levels (inverted/normal) can be set for APM telescope
   * levels (inverted/normal) can be set for // port LX
@@ -7,8 +7,9 @@ qastrocam-g2 (4.4beta20090927) jaunty; urgency=low
   * removed obsolete parport LX control
   * supports ppdev and standard lp ports witch the "latch" mod (for "usb to //" devices)
   * removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
+  * small yuyv to yuv420p speed improvement
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 27 Sep 2009 01:51:37 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Mon, 28 Sep 2009 20:13:38 +0200
 
 qastrocam-g2 (4.3) jaunty; urgency=low
 

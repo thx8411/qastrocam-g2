@@ -1,4 +1,4 @@
-4.4beta20090927
+4.4beta20090928
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
@@ -7,6 +7,7 @@
   - APM telescope and // port LX may now share the same port with ppdev and lp devices
   - V4L generic palette can be forced using -p option
   - supports ppdev and standard lp ports witch the "latch mod" (for "usb to //" devices)
+  - small yuyv to yuv420p speed improvement
 
 4.3
 
