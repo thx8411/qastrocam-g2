@@ -3,11 +3,13 @@
 
 #include <qobject.h>
 #include <qimage.h>
+#include <qhgroupbox.h>
+#include <qlineedit.h>
+#include <qprogressbar.h>
 
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <linux/types.h>
 #include <linux/videodev.h>
 
 #include "QCam.hpp"
@@ -15,6 +17,10 @@
 class QCamSlider;
 class QTimer;
 class QSocketNotifier;
+
+#define	lxNone	0
+#define lxPar	1
+#define lxSer	2
 
 /** QCam implementation to acces a basic Video4Linux device.*/
 class QCamV4L : public QCam {
@@ -75,7 +81,9 @@ protected:
        is used if the select() system call is not avaible,
        by the timer used to probe the camera for a new frame */
    virtual int getFrameRate() const { return 10;}
-   
+
+   QHGroupBox * remoteCTRLlx;
+
 private:
    string devpath_;
    bool setSize(int x, int y);
@@ -100,7 +108,15 @@ private:
    QCamSlider * remoteCTRLhue_;
    QCamSlider * remoteCTRLcolor_;
    QCamSlider * remoteCTRLwhiteness_;
-   
+
+   //QHGroupBox * remoteCTRLlx;   -> cf. protected
+   QLabel * lxLabel1;
+   QLabel * lxRate;
+   QCamComboBox * lxSelector;
+   QLabel * lxLabel2;
+   QLineEdit * lxTime;
+   QProgressBar * lxBar;
+
    ImageMode mode_;
    int frameRate_;
    
