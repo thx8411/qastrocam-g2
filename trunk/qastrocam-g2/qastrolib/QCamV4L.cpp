@@ -1,5 +1,6 @@
 #include "QCamV4L.moc"
 #include <iostream>
+#include <sstream>
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -626,6 +627,25 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    //greyModeB->show();
    //remoteCTRLcontrast_->show();
    //remoteCTRLbrightness_->show();
+
+   stringstream sb;
+   sb << frameRate_;
+   remoteCTRLlx= new QHGroupBox(tr("long exposure"),remoteCTRL);
+   lxLabel1= new QLabel("fps :",remoteCTRLlx);
+   lxRate= new QLabel(sb.str(),remoteCTRLlx);
+   lxRate->setAlignment(AlignLeft|AlignVCenter);
+   lxRate->setMinimumWidth(32);
+   int lxTable[]={lxNone,lxPar,lxSer};
+   const char* lxLabel[]={"lx : none","lx : // port","lx : serial"};   
+   lxSelector=new QCamComboBox(tr("lxMode"),remoteCTRLlx,3,lxTable,lxLabel);
+   lxLabel2=new QLabel("Delay (s) :",remoteCTRLlx);
+   lxTime=new QLineEdit(remoteCTRLlx);
+   lxTime->setMaximumWidth(48);
+   lxTime->setEnabled(false);
+   lxBar=new QProgressBar(remoteCTRLlx);
+
+   //
+
    return remoteCTRL;
 }
 
