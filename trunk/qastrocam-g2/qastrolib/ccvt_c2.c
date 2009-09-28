@@ -238,19 +238,20 @@ void ccvt_rgb24_420p(int width, int height, const void *src, void *dsty, void *d
 }
 
 void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *dstu, void *dstv) {
-   int x,y;
-   int y_offset;
-   int uv_offset;
-   int uv_offset2;
-   int s_offset;
-   int s_offset2;
-   int line_offset;
-   int half_width;
-   int half_height;
-   unsigned char* sPlan;
-   unsigned char* yPlan;
-   unsigned char* uPlan;
-   unsigned char* vPlan;
+   static int x,y;
+   static int y_offset;
+   static int uv_offset;
+   static int uv_offset2;
+   static int s_offset;
+   static int s_offset2;
+   static int line_offset;
+   static int half_width;
+   static int half_height;
+   static int double_width;
+   static unsigned char* sPlan;
+   static unsigned char* yPlan;
+   static unsigned char* uPlan;
+   static unsigned char* vPlan;
 
    sPlan=(unsigned char*)src;
    yPlan=(unsigned char*)dsty;
@@ -259,8 +260,9 @@ void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *ds
    line_offset=2*width;
    half_width=width/2;
    half_height=height/2;
+   double_width=width*2;
    for(y=0;y<half_height;y++) {
-      y_offset=y*width*2;
+      y_offset=y*double_width;
       uv_offset=y*half_width;
       for(x=0;x<half_width;x++) {
          s_offset2=(y_offset+x*2);
