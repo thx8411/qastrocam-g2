@@ -644,6 +644,8 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxTime->setEnabled(false);
    lxBar=new QProgressBar(remoteCTRLlx);
 
+   // temp, not finished
+   remoteCTRLlx->hide();
    //
 
    return remoteCTRL;
