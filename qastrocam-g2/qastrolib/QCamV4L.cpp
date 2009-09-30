@@ -29,7 +29,6 @@ const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor
 
 QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource,
                  unsigned long options /* cf QCamV4L::options */) {
-   v4l2_input input;
    v4l2_std_id _id;
    v4l2_standard standard;
    int _index=0;
@@ -163,6 +162,7 @@ void QCamV4L::init(int preferedPalette) {
    if (preferedPalette) {
       picture_.palette=preferedPalette;
       if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
+         palette="prefered";
          cout << "found preferedPalette "
               << preferedPalette << endl;
       } else {
@@ -177,6 +177,7 @@ void QCamV4L::init(int preferedPalette) {
 	 /* trying VIDEO_PALETTE_RGB24 */
          picture_.palette=VIDEO_PALETTE_RGB24;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+            palette="rgb24";
             cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
             break;
          }
@@ -184,13 +185,15 @@ void QCamV4L::init(int preferedPalette) {
 	 /* trying VIDEO_PALETTE_YUYV */
          picture_.palette=VIDEO_PALETTE_YUYV;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-            cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
+           palette="yuyv";
+           cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
            break;
          }
          cout <<"VIDEO_PALETTE_YUYV not supported.\n";
 	 /* trying VIDEO_PALETTE_YUV420P (Planar) */
          picture_.palette=VIDEO_PALETTE_YUV420P;
          if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
+            palette="yuv420p";
             cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
             break;
          }
@@ -198,6 +201,7 @@ void QCamV4L::init(int preferedPalette) {
          /* trying VIDEO_PALETTE_YUV420 (interlaced) */
          picture_.palette=VIDEO_PALETTE_YUV420;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+            palette="yuv420";
             cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
             break;
          }
@@ -205,6 +209,7 @@ void QCamV4L::init(int preferedPalette) {
 	 /* trying VIDEO_PALETTE_GREY */
          picture_.palette=VIDEO_PALETTE_GREY;
          if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+            palette="grey";
             cout << "found palette VIDEO_PALETTE_GREY"<<endl;
             break;
          }
@@ -580,7 +585,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 
    int frameModeTable[]={GreyFrame,YuvFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
    const char* frameModeLabel[]={"Grey", "RGB", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
-   frameModeB= new QCamComboBox("frame type",remoteCTRL,labelNumber,frameModeTable,frameModeLabel);
+   infoBox=new QHGroupBox(tr("Source"),remoteCTRL);
+   frameModeB= new QCamComboBox("frame type",infoBox,labelNumber,frameModeTable,frameModeLabel);
+   frameModeB->setMaximumWidth(136);
    connect(frameModeB,SIGNAL(change(int)),this,SLOT(setMode(int)));
 
    if(settings.haveKey("RAW_MODE")) {
@@ -631,6 +638,24 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    //remoteCTRLcontrast_->show();
    //remoteCTRLbrightness_->show();
 
+   // palette and input display
+   infoLabel1=new QLabel(infoBox);
+   infoLabel1->setText("Input :");
+   infoLabel1->setMaximumWidth(48);
+   infoInput=new QLabel(infoBox);
+   infoInput->setAlignment(AlignLeft|AlignVCenter);
+   infoInput->setText((char*)input.name);
+   infoLabel2=new QLabel(infoBox);
+   infoLabel2->setText("Palette :");
+   infoLabel2->setMaximumWidth(56);
+   infoPalette=new QLabel(infoBox);
+   infoPalette->setText(palette);
+   infoPalette->setAlignment(AlignLeft|AlignVCenter);
+
+   QToolTip::add(infoInput,"V4L input used");
+   QToolTip::add(infoPalette,"V4L palette used");
+
+   // V4L generic long exposure
    remoteCTRLlx= new QHGroupBox(tr("long exposure"),remoteCTRL);
    lxLabel1= new QLabel("fps :",remoteCTRLlx);
    lxRate= new QLabel(QString().sprintf("%i",frameRate_),remoteCTRLlx);
