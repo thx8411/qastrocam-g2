@@ -6,6 +6,7 @@ SUBDIRS=qastrolib qastrocam
 -include Makefile.vars
 
 all:: configure_done
+	$(MAKE) -C doc/sources
 	for i in $(SUBDIRS) ; do $(MAKE) $(FAST_FLAGS) -C $$i || exit 1; done
 full:: all
 
@@ -20,6 +21,7 @@ release::
 clean::configure_done
 	$(MAKE) -C qastrolib clean
 	$(MAKE) -C qastrocam clean
+	$(MAKE) -C doc/sources clean
 distclean::
 	(test -f configure_done && $(MAKE) clean ) || true
 	rm -f configure_done Makefile.vars
