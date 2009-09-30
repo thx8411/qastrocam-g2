@@ -13,12 +13,15 @@
 #include <qtabwidget.h>
 #include <qsocketnotifier.h>
 #include <qtimer.h> 
+#include <qtooltip.h>
 
 #include "QCamSlider.hpp"
 #include "ccvt.h"
 #include "QGridBox.hpp"
 #include "QCamComboBox.hpp"
 #include "SettingsBackup.hpp"
+
+#include "SCmodParPortPPdev.hpp"
 
 extern settingsBackup settings;
 
@@ -39,7 +42,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    remoteCTRLcolor_=NULL;
    remoteCTRLwhiteness_=NULL;
    sizeTable_=NULL;
-   frameRate_=10;
    device_=-1;
    window_.x=0;
    window_.y=0;
@@ -117,9 +119,10 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       res=ioctl(device_,VIDIOC_ENUMSTD,&standard);
       standard.index++;
    }
-   if(res!=0)
+   if(res!=0) {
+      frameRate_=10;
       cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s\n" ;  
-   else {
+   } else {
       cout << "Video standard : " << standard.name << endl;
       frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
       cout <<  "Using Framerate : " << frameRate_ << endl;
@@ -475,11 +478,11 @@ bool QCamV4L::updateFrame() {
       cout << "frame dropped" << endl;
       newFrameAvaible();
    }
-   int newFrameRate=getFrameRate();
+   /*int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
       frameRate_=newFrameRate;
       if (timer_) timer_->changeInterval(1000/frameRate_);
-   }
+   }*/
    return res;
 }
 
@@ -628,24 +631,38 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    //remoteCTRLcontrast_->show();
    //remoteCTRLbrightness_->show();
 
-   stringstream sb;
-   sb << frameRate_;
    remoteCTRLlx= new QHGroupBox(tr("long exposure"),remoteCTRL);
    lxLabel1= new QLabel("fps :",remoteCTRLlx);
-   lxRate= new QLabel(sb.str(),remoteCTRLlx);
+   lxRate= new QLabel(QString().sprintf("%i",frameRate_),remoteCTRLlx);
    lxRate->setAlignment(AlignLeft|AlignVCenter);
    lxRate->setMinimumWidth(32);
    int lxTable[]={lxNone,lxPar,lxSer};
    const char* lxLabel[]={"lx : none","lx : // port","lx : serial"};   
    lxSelector=new QCamComboBox(tr("lxMode"),remoteCTRLlx,3,lxTable,lxLabel);
-   lxLabel2=new QLabel("Delay (s) :",remoteCTRLlx);
+   lxLabel2=new QLabel("Delay :",remoteCTRLlx);
    lxTime=new QLineEdit(remoteCTRLlx);
    lxTime->setMaximumWidth(48);
    lxTime->setEnabled(false);
+   lxTime->setText(QString().sprintf("%4.2f",1.0/(double)frameRate_));
+   lxSet=new QPushButton("Set",remoteCTRLlx);
+   lxSet->setMaximumWidth(32);
+   lxSet->setEnabled(false);
    lxBar=new QProgressBar(remoteCTRLlx);
 
+   QToolTip::add(lxRate,"Current frame rate");
+   QToolTip::add(lxSelector,"Long exposure mode");
+   QToolTip::add(lxTime,"Integration time in seconds (min 0.2s)");
+   QToolTip::add(lxSet,"Set integration time");
+   QToolTip::add(lxBar,"Integration progress bar");
+
+   lxDelay=0.2;
+   lxControler=NULL;
+
+   connect(lxSelector,SIGNAL(change(int)),this,SLOT(setLXmode(int)));
+   connect(lxSet,SIGNAL(released()),this,SLOT(setLXtime()));
+
    // temp, not finished
-   remoteCTRLlx->hide();
+   //remoteCTRLlx->hide();
    //
 
    return remoteCTRL;
@@ -674,6 +691,53 @@ void  QCamV4L::setMode(ImageMode val) {
       break;
    }
    yuvBuffer_.setMode(mode_);
+}
+
+void QCamV4L::setLXmode(int value) {
+   if(lxControler) {
+      delete(lxControler);
+      lxControler=NULL;
+   }
+   switch(value) {
+      case lxNone :
+         // object allready deleted
+         lxRate->setText(QString().sprintf("%i",frameRate_));
+         lxTime->setText(QString().sprintf("%4.2f",1.0/(double)frameRate_));
+         lxTime->setEnabled(false);
+         lxSet->setEnabled(false);
+         //cout << "lxNone" << endl;
+         break;
+      case lxPar :
+         lxRate->setText("N/A");
+         lxControler=new SCmodParPortPPdev();
+         lxTime->setText(QString().sprintf("%4.2f",lxDelay));
+         lxTime->setEnabled(true);
+         lxSet->setEnabled(true);
+         //cout << "lxPar" << endl;
+         break;
+      case lxSer :
+         lxRate->setText("N/A");
+         lxControler=new SCmodSerialPort();
+         lxTime->setText(QString().sprintf("%4.2f",lxDelay));
+         lxTime->setEnabled(true);
+         lxSet->setEnabled(true);
+         //cout << "lxSer" << endl;
+         break;
+   }
+}
+
+void QCamV4L::setLXtime() {
+   float val;
+   QString str=lxTime->text();
+   if (sscanf(str.latin1(),"%f",&val)!=1) {
+      val=0.2;
+   }
+   if(val<0.2)
+      val=0.2;
+
+   lxDelay=val;
+   //cout << "new delay : " << lxDelay << endl;
+   lxTime->setText(QString().sprintf("%4.2f",lxDelay));
 }
 
 bool QCamV4L::mmapInit() {
