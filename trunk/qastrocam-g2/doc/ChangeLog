@@ -9,6 +9,7 @@
   - supports ppdev and standard lp ports witch the "latch mod" (for "usb to //" devices)
   - small yuyv to yuv420p speed improvement
   - documentation about the "latch" // mod added
+  - active V4L input and palette displayed in gui
 
 4.3
 

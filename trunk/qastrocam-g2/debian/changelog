@@ -9,8 +9,9 @@ qastrocam-g2 (4.4beta20091001) jaunty; urgency=low
   * removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   * small yuyv to yuv420p speed improvement
   * documentation about the "latch" // mod added
+  * active V4L input and palette displayed in gui
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 29 Sep 2009 06:53:49 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 30 Sep 2009 21:26:34 +0200
 
 qastrocam-g2 (4.3) jaunty; urgency=low
 
