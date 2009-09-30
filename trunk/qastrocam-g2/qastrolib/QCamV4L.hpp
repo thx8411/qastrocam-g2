@@ -88,6 +88,9 @@ protected:
    QHGroupBox * remoteCTRLlx;
 
 private:
+   v4l2_input input;
+   QString palette;
+
    string devpath_;
    bool setSize(int x, int y);
    void init(int preferedPalette);
@@ -111,6 +114,13 @@ private:
    QCamSlider * remoteCTRLhue_;
    QCamSlider * remoteCTRLcolor_;
    QCamSlider * remoteCTRLwhiteness_;
+
+   // palette and input display
+   QHGroupBox * infoBox;
+   QLabel * infoLabel1;
+   QLabel * infoPalette;
+   QLabel * infoLabel2;
+   QLabel * infoInput;
 
    //QHGroupBox * remoteCTRLlx;   -> cf. protected
    QLabel * lxLabel1;
