@@ -6,6 +6,7 @@
 #include <qhgroupbox.h>
 #include <qlineedit.h>
 #include <qprogressbar.h>
+#include <qpushbutton.h>
 
 
 #include <stdio.h>
@@ -13,6 +14,8 @@
 #include <linux/videodev.h>
 
 #include "QCam.hpp"
+
+#include "SCmod.hpp"
 
 class QCamSlider;
 class QTimer;
@@ -115,10 +118,13 @@ private:
    QCamComboBox * lxSelector;
    QLabel * lxLabel2;
    QLineEdit * lxTime;
+   QPushButton * lxSet;
    QProgressBar * lxBar;
 
    ImageMode mode_;
    int frameRate_;
+   SCmod* lxControler;
+   float lxDelay;
    
 public slots:
    void setContrast(int value);
@@ -127,7 +133,9 @@ public slots:
    void setHue(int value);
    void setWhiteness(int value);
    void setMode(ImageMode val);
-   void setMode(int val) /* proxy to ' void setMode(ImageMode val)' */;
+   void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */
+   void setLXmode(int val);
+   void setLXtime();
 protected slots:
    virtual bool updateFrame();
 signals:

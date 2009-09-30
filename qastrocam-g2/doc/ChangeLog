@@ -1,4 +1,4 @@
-4.4beta20090929
+4.4beta20090930
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
