@@ -12,6 +12,7 @@ Later - binning in boxsize of hotspot search
 Later - binning module
 Later - static build
 Later - Multi language support
+DONE - 4.4   - LX mode for V4L generic added (serial and //)  
 DONE - 4.4   - active V4L input and palette displayed in gui
 DONE - 4.4   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
 DONE - 4.4   - supports ppdev and standard lp ports witch the "latch" mod (for "usb to //" devices)
