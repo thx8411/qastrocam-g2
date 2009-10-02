@@ -1,4 +1,4 @@
-4.4beta20091001
+4.4beta20091002
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
@@ -10,6 +10,8 @@
   - small yuyv to yuv420p speed improvement
   - documentation about the "latch" // mod added
   - active V4L input and palette displayed in gui
+  - LX mode for V4L generic added (serial and //)
+  - user manual started
 
 4.3
 
