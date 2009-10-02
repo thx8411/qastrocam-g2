@@ -23,19 +23,144 @@
 \begin{document}
 
 \maketitle
+
 \tableofcontents
 
 \chapter{Pr\'esentation}
 
+\paragraph*{}
+Qastrocam-g2 est un logiciel dont le but est de permettre la capture d'images
+astronomiques sous Linux. Il s'agit d'une variante du logiciel Qastrocam d\'evelopp\'e
+par F. Sicard et modif\'ee par moi-m\^eme pour mes propres besoins. Qastrocam-g2 \'etant
+assez cibl\'e sur mon propre mat\'eriel, je vous recommande d'utiliser le Qastrocam
+original si vous rencontrez quelques soucis, celui-ci pr\'esentant sans doute une
+meilleure stabilit\'e. Bien que travaillant sur deux variantes du m\^eme logiciel, F.
+Sicard et moi-m\^eme \'echangeont afin d'enrichir le logiciel original.
+
+\paragraph*{}
+Qastrocam et Qastrocam-g2 sont h\'eberg\'es sur SourceForge aux adresses suivantes :
+
+\paragraph*{}
+\begin{itemize}
+\item \url{http://sourceforge.net/projects/qastrocam/}
+\item \url{http://sourceforge.net/projects/qastrocam-g2/}
+\end{itemize}
+
+\paragraph*{}
+Qastrocam-g2 est sous licence GPL version 2.
+
+\paragraph*{Historique}
+\paragraph*{}
+\renewcommand\labelitemi{\textbullet}
+\begin{itemize}
+\item vers. 4.4
+\begin{itemize}
+\item Removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
+\item Removed obsolete parport LX control
+\item Levels (inverted/normal) can be set for APM telescope
+\item Levels (inverted/normal) can be set for // port LX
+\item APM telescope and // port LX may now share the same port with ppdev and lp devices
+\item V4L generic palette can be forced using -p option
+\item Supports ppdev and standard lp ports witch the "latch mod" (for "usb to //" devices)
+\item Small yuyv to yuv420p speed improvement
+\item Documentation about the "latch" // mod added
+\item Active V4L input and palette displayed in gui
+\item User manual added
+\end{itemize}
+\paragraph*{}
+\item vers. 4.3
+\begin{itemize}
+\item YUYV palette support
+\item Gnome menu entry and icon included in the debian package
+\item V4L generic devices source can now be choosen. Choice is stored for each device
+\item ccvt updated to 0.3 (no more asm)
+\item File format, raw mode, resolution, level inversion, telescope device and lx device 
+ are now stored and restored
+\item Now supports level inversion on serial and led SCmod via command line
+\item Enhanced V4L generic frame size support
+\item Bugs fixed
+\end{itemize}
+\paragraph*{}
+\item vers. 4.2rc2
+\begin{itemize}
+\item Version numbering changed vers. 4.2.2rc2 becomes 4.2rc2
+\end{itemize}
+\paragraph*{}
+\item vers. 4.2.2rc2
+\begin{itemize}
+\item Quit button now quit on release
+\item Bugs fixed
+\end{itemize}
+\paragraph*{}
+\item vers. 4.2.2rc1
+\begin{itemize}
+\item Many bugs fixed
+\item Sources cleaned
+\end{itemize}
+\paragraph*{}
+\item vers. 4.2.2 beta BFC Fork
+\begin{itemize}
+\item You may generate tracking files, compatible with iris files, with "-t file -dt <filename>"
+  Can be used with PEAS
+\item Project renamed to qastrocam-g2
+\end{itemize}
+\paragraph*{}
+\item vers. 4.2.1 beta BFC Fork
+\begin{itemize}
+\item The SCmod serial device can now be choosen with the -dx option
+\item Some spelling error fixed
+\end{itemize}
+\paragraph*{}
+\item vers. 4.2.0 beta BFC Fork
+\begin{itemize}
+\item Added serial SC mod support using F. Sicard previous work (roots version, to be "cleaned")
+\item Type mismatch correction in LED SCmod
+\item Some spelling errors fixed
+\end{itemize}
+\paragraph*{}  
+\item vers. 4.1.0 pre 17082009 : original qastrocam sources used
+\end{itemize}
+
 \chapter{Capture}
 
+\section{Mat\'eriel support\'e}
+
+\paragraph*{}
+Qastrocam-g2 supporte deux types de p\'eriph\'eriques de capture, les p\'eriph\'eriques V4L1 
+g\'en\'eriques ainsi que les sp\'ecificit\'e de certains pilotes (notamment pour les webcams
+CCD philipps). Le passage aux pilotes V4L2 est pr\'evu pour la version 4.5.
+
+\subsection{P\'eriph\'eriques V4L g\'en\'eriques}
+
+\subsubsection{Modes d'acc\`es}
+
+\subsubsection{R\'esolutions}
+
+\subsubsection{Palettes}
+
+\subsubsection{Contr\^oles}
+
+\subsubsection{Nombre d'images par secondes}
+
+\subsection{Webcams "VESTA"}
+
+\subsection{Webcams "OV511"}
+
+\section{Options de ligne de commande}
+
+\section{Interface}
+
 \chapter{Enregistrement}
+
+\section*{Formats}
 
 \chapter{Autoguidage}
 
 \chapter{Accumulation}
 
 \chapter{Alignement}
+
+\chapter{Le fichier de configuration}
 
 \appendix
 
