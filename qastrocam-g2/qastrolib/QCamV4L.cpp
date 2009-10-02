@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <math.h>
 #include <sys/mman.h>
 #include <string>
 #include <qtabwidget.h>
@@ -359,6 +360,10 @@ bool QCamV4L::updateFrame() {
    bool res;
    void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
    YBuf=(void*)yuvBuffer_.YforOverwrite();
+
+   // lx support
+
+
    switch(mode_) {
    case GreyFrame:
    case RawRgbFrame1:
@@ -673,10 +678,14 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
    lxBar=new QProgressBar(remoteCTRLlx);
+   //lxBar->setEnabled(false);
+   lxBar->setCenterIndicator(true);
+   lxBar->setTotalSteps(0);
+   lxBar->reset();
 
    QToolTip::add(lxRate,"Current frame rate");
    QToolTip::add(lxSelector,"Long exposure mode");
-   QToolTip::add(lxTime,"Integration time in seconds (min 0.2s)");
+   QToolTip::add(lxTime,"Integration time in seconds (0.2s steps)");
    QToolTip::add(lxSet,"Set integration time");
    QToolTip::add(lxBar,"Integration progress bar");
 
@@ -730,22 +739,29 @@ void QCamV4L::setLXmode(int value) {
          lxTime->setText(QString().sprintf("%4.2f",1.0/(double)frameRate_));
          lxTime->setEnabled(false);
          lxSet->setEnabled(false);
+         //lxBar->setEnabled(false);
+         lxBar->setTotalSteps(0);
+         setProperty("FrameRateSecond",frameRate_);
          //cout << "lxNone" << endl;
          break;
       case lxPar :
          lxRate->setText("N/A");
          lxControler=new SCmodParPortPPdev();
-         lxTime->setText(QString().sprintf("%4.2f",lxDelay));
+         setLXtime();
          lxTime->setEnabled(true);
          lxSet->setEnabled(true);
+         //lxBar->setEnabled(true);
+         lxBar->reset();
          //cout << "lxPar" << endl;
          break;
       case lxSer :
          lxRate->setText("N/A");
          lxControler=new SCmodSerialPort();
-         lxTime->setText(QString().sprintf("%4.2f",lxDelay));
+         setLXtime();
          lxTime->setEnabled(true);
          lxSet->setEnabled(true);
+         //lxBar->setEnabled(true);
+         lxBar->reset();
          //cout << "lxSer" << endl;
          break;
    }
@@ -759,10 +775,13 @@ void QCamV4L::setLXtime() {
    }
    if(val<0.2)
       val=0.2;
-
+   val=round(val*5)/5;
    lxDelay=val;
+   lxBar->setTotalSteps((int)(lxDelay*1000000));
+   lxBar->reset();
    //cout << "new delay : " << lxDelay << endl;
    lxTime->setText(QString().sprintf("%4.2f",lxDelay));
+   setProperty("FrameRateSecond",1.0/lxDelay);
 }
 
 bool QCamV4L::mmapInit() {

@@ -135,7 +135,7 @@ private:
    int frameRate_;
    SCmod* lxControler;
    float lxDelay;
-   
+
 public slots:
    void setContrast(int value);
    void setBrightness(int value);

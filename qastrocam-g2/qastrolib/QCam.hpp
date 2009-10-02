@@ -66,8 +66,8 @@ public:
    }
 
    /** Set the value of a properties.
-       Properties are dumped is file "<dirName>/properties.txt" in sequence capture mode.
-       Properties are dumped is file "<fileName>.properties" in snapshot capture mode.
+       Properties are dumped in file "<dirName>/properties.txt" in sequence capture mode.
+       Properties are dumped in file "<fileName>.properties" in snapshot capture mode.
    */
    void setProperty(const string & prop, const string & val,
                     bool resetCapture=false);
