@@ -98,6 +98,7 @@ private:
    bool mmapInit();
    void mmapCapture();
    void mmapSync();
+   double getTime();
    uchar * mmapLastFrame() const;
 
    QCamComboBox*  frameModeB;
@@ -130,11 +131,15 @@ private:
    QLineEdit * lxTime;
    QPushButton * lxSet;
    QProgressBar * lxBar;
+   QTimer * lxTimer;
 
    ImageMode mode_;
    int frameRate_;
    SCmod* lxControler;
-   float lxDelay;
+   double lxDelay;
+   double lxBaseTime;
+   bool lxEnabled;
+   bool lxReady;
 
 public slots:
    void setContrast(int value);
@@ -146,6 +151,7 @@ public slots:
    void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */
    void setLXmode(int val);
    void setLXtime();
+   void LXframeReady();
 protected slots:
    virtual bool updateFrame();
 signals:

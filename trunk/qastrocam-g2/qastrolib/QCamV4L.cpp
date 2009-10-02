@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <sys/time.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -152,6 +153,15 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    setProperty("FrameRateSecond",frameRate_);
 
    label(capability_.name);
+
+   lxDelay=0.2;
+   lxControler=NULL;
+   lxEnabled=false;
+   lxBaseTime=getTime();
+   lxReady=false;
+   lxTimer=new QTimer(this);
+   lxTimer->stop();
+   connect(lxTimer,SIGNAL(timeout()),this,SLOT(LXframeReady()));
 }
 
 void QCamV4L::resize(const QSize & s) {
@@ -358,23 +368,35 @@ bool QCamV4L::dropFrame() {
 bool QCamV4L::updateFrame() {
    static char nullBuf[720*576];
    bool res;
+   double currentTime;
    void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
    YBuf=(void*)yuvBuffer_.YforOverwrite();
 
    // lx support
-
+   if(lxEnabled) {
+      lxBar->setProgress((int)((getTime()-lxBaseTime)*1000));
+      if(!lxReady) {
+         dropFrame();
+         cout << "dropping frame" << endl;
+         return(0);
+      }
+      lxReady=false;
+      lxControler->startAccumulation();
+      lxBaseTime=getTime();
+      cout << "reading frame" << endl;
+   }
 
    switch(mode_) {
-   case GreyFrame:
-   case RawRgbFrame1:
-   case RawRgbFrame2:
-   case RawRgbFrame3:
-   case RawRgbFrame4:
-      UBuf=VBuf=nullBuf;
-      break;
-   case YuvFrame:
-      UBuf=(void*)yuvBuffer_.UforOverwrite();
-      VBuf=(void*)yuvBuffer_.VforOverwrite();
+      case GreyFrame:
+      case RawRgbFrame1:
+      case RawRgbFrame2:
+      case RawRgbFrame3:
+      case RawRgbFrame4:
+         UBuf=VBuf=nullBuf;
+         break;
+      case YuvFrame:
+         UBuf=(void*)yuvBuffer_.UforOverwrite();
+         VBuf=(void*)yuvBuffer_.VforOverwrite();
    }
 
    if (mmap_buffer_) {
@@ -384,45 +406,44 @@ bool QCamV4L::updateFrame() {
       res=true;
       
       switch (picture_.palette) {
-      case VIDEO_PALETTE_GREY:
-         memcpy(YBuf,mmapLastFrame(),window_.width * window_.height);
-         break;
-      case VIDEO_PALETTE_YUV420P:
-         memcpy(YBuf,mmapLastFrame(), window_.width * window_.height);
-         memcpy(UBuf,
+         case VIDEO_PALETTE_GREY:
+            memcpy(YBuf,mmapLastFrame(),window_.width * window_.height);
+            break;
+         case VIDEO_PALETTE_YUV420P:
+            memcpy(YBuf,mmapLastFrame(), window_.width * window_.height);
+            memcpy(UBuf,
                 mmapLastFrame()+ window_.width * window_.height,
                 (window_.width/2) * (window_.height/2));
-         memcpy(VBuf,
+            memcpy(VBuf,
                 mmapLastFrame()+ window_.width * window_.height+(window_.width/2) * (window_.height/2),
                 (window_.width/2) * (window_.height/2));
-         break;
-      case VIDEO_PALETTE_YUV420:
-         ccvt_420i_420p(window_.width,window_.height,
+            break;
+         case VIDEO_PALETTE_YUV420:
+            ccvt_420i_420p(window_.width,window_.height,
                            mmapLastFrame(),
                            YBuf,
                            UBuf,
                            VBuf);
-         break;
-      case VIDEO_PALETTE_RGB24:
-         // trouble, rgb24_420p not yet available
-         ccvt_rgb24_420p(window_.width,window_.height,
+            break;
+         case VIDEO_PALETTE_RGB24:
+            ccvt_rgb24_420p(window_.width,window_.height,
                             mmapLastFrame(),
                          YBuf,
                          UBuf,
                          VBuf);
-         break;
-      case VIDEO_PALETTE_YUV422:
-      case VIDEO_PALETTE_YUYV:
-         ccvt_yuyv_420p(window_.width,window_.height,
+            break;
+         case VIDEO_PALETTE_YUV422:
+         case VIDEO_PALETTE_YUYV:
+            ccvt_yuyv_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
                          VBuf);
-         break;
+            break;
 
-      default:
-         cerr << "invalid palette "<<picture_.palette<<endl;
-         exit(1);
+         default:
+            cerr << "invalid palette "<<picture_.palette<<endl;
+            exit(1);
       }
    } else {
    switch (picture_.palette) {
@@ -448,7 +469,6 @@ bool QCamV4L::updateFrame() {
       }
       break;
    case VIDEO_PALETTE_RGB24:
-      // trouble, rgb24_420p not yet available
       res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 3);
       if (res) {
          setTime();
@@ -485,7 +505,7 @@ bool QCamV4L::updateFrame() {
         if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
    } else {
       perror("updateFrame");
-      cout << "frame dropped" << endl;
+      //cout << "frame dropped" << endl;
       newFrameAvaible();
    }
    /*int newFrameRate=getFrameRate();
@@ -695,10 +715,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    connect(lxSelector,SIGNAL(change(int)),this,SLOT(setLXmode(int)));
    connect(lxSet,SIGNAL(released()),this,SLOT(setLXtime()));
 
-   // temp, not finished
-   //remoteCTRLlx->hide();
-   //
-
    return remoteCTRL;
 }
 
@@ -742,6 +758,9 @@ void QCamV4L::setLXmode(int value) {
          //lxBar->setEnabled(false);
          lxBar->setTotalSteps(0);
          setProperty("FrameRateSecond",frameRate_);
+         lxEnabled=false;
+         lxTimer->stop();
+         lxControler->leaveLongPoseMode();
          //cout << "lxNone" << endl;
          break;
       case lxPar :
@@ -752,6 +771,9 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          //lxBar->setEnabled(true);
          lxBar->reset();
+         lxEnabled=true;
+         lxTimer->start((int)(lxDelay*1000));
+         lxControler->enterLongPoseMode();
          //cout << "lxPar" << endl;
          break;
       case lxSer :
@@ -762,6 +784,9 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          //lxBar->setEnabled(true);
          lxBar->reset();
+         lxEnabled=true;
+         lxTimer->start((int)(lxDelay*1000));
+         lxControler->enterLongPoseMode();
          //cout << "lxSer" << endl;
          break;
    }
@@ -777,11 +802,19 @@ void QCamV4L::setLXtime() {
       val=0.2;
    val=round(val*5)/5;
    lxDelay=val;
-   lxBar->setTotalSteps((int)(lxDelay*1000000));
+   lxBar->setTotalSteps((int)(lxDelay*1000));
    lxBar->reset();
+   lxTimer->stop();
+   lxTimer->start((int)(lxDelay*1000));
    //cout << "new delay : " << lxDelay << endl;
    lxTime->setText(QString().sprintf("%4.2f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
+}
+
+void QCamV4L::LXframeReady() {
+   lxReady=true;
+   lxControler->stopAccumulation();
+   cout << "lx timer timeout" << endl;
 }
 
 bool QCamV4L::mmapInit() {
@@ -848,4 +881,13 @@ void QCamV4L::mmapCapture() {
       close(device_);
       exit(0);
    }
+}
+
+double QCamV4L::getTime() {
+   double t;
+   struct timeval tv;
+   gettimeofday(&tv,NULL);
+   t=(float)tv.tv_usec/(float)1000000;
+   t+=tv.tv_sec;
+   return(t);
 }
