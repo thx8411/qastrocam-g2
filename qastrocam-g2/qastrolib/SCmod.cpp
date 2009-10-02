@@ -11,6 +11,11 @@
 
 extern settingsBackup settings;
 
+SCmod::~SCmod() {
+   stopAccumulation();
+   leaveLongPoseMode();
+}
+
 void SCmod::setLevels(bool polarity) {
    inverted_=polarity;
    if (inverted_) settings.setKey("LX_LEVELS_INVERTED","yes");

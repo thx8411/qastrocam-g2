@@ -140,6 +140,8 @@ private:
    double lxBaseTime;
    bool lxEnabled;
    bool lxReady;
+   int lxFramesToWait;
+   int lxPaddingFrames;
 
 public slots:
    void setContrast(int value);
