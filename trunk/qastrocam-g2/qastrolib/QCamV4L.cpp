@@ -154,6 +154,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    label(capability_.name);
 
+   lxPaddingFrames=2;
    lxDelay=0.2;
    lxControler=NULL;
    lxEnabled=false;
@@ -379,10 +380,16 @@ bool QCamV4L::updateFrame() {
          dropFrame();
          cout << "dropping frame" << endl;
          return(0);
+      } else {
+         if(lxFramesToWait!=0) {
+            lxFramesToWait--;
+            dropFrame();
+            cout << "dropping frame" << endl;
+            return(0);
+         } else {
+            lxFramesToWait=lxPaddingFrames;
+         }
       }
-      lxReady=false;
-      lxControler->startAccumulation();
-      lxBaseTime=getTime();
       cout << "reading frame" << endl;
    }
 
@@ -505,14 +512,22 @@ bool QCamV4L::updateFrame() {
         if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
    } else {
       perror("updateFrame");
-      //cout << "frame dropped" << endl;
-      newFrameAvaible();
+      cout << "frame dropped" << endl;
+      //newFrameAvaible();
    }
+
    /*int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
       frameRate_=newFrameRate;
       if (timer_) timer_->changeInterval(1000/frameRate_);
    }*/
+
+   if(lxEnabled) {
+      lxReady=false;
+      lxControler->startAccumulation();
+      lxBaseTime=getTime();
+   }
+
    return res;
 }
 
@@ -745,6 +760,7 @@ void  QCamV4L::setMode(ImageMode val) {
 
 void QCamV4L::setLXmode(int value) {
    if(lxControler) {
+      lxControler->leaveLongPoseMode();
       delete(lxControler);
       lxControler=NULL;
    }
@@ -755,12 +771,11 @@ void QCamV4L::setLXmode(int value) {
          lxTime->setText(QString().sprintf("%4.2f",1.0/(double)frameRate_));
          lxTime->setEnabled(false);
          lxSet->setEnabled(false);
-         //lxBar->setEnabled(false);
          lxBar->setTotalSteps(0);
+         lxBar->reset();
          setProperty("FrameRateSecond",frameRate_);
          lxEnabled=false;
          lxTimer->stop();
-         lxControler->leaveLongPoseMode();
          //cout << "lxNone" << endl;
          break;
       case lxPar :
@@ -769,11 +784,11 @@ void QCamV4L::setLXmode(int value) {
          setLXtime();
          lxTime->setEnabled(true);
          lxSet->setEnabled(true);
-         //lxBar->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
          lxTimer->start((int)(lxDelay*1000));
          lxControler->enterLongPoseMode();
+         lxFramesToWait=lxPaddingFrames;
          //cout << "lxPar" << endl;
          break;
       case lxSer :
@@ -782,11 +797,11 @@ void QCamV4L::setLXmode(int value) {
          setLXtime();
          lxTime->setEnabled(true);
          lxSet->setEnabled(true);
-         //lxBar->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
          lxTimer->start((int)(lxDelay*1000));
          lxControler->enterLongPoseMode();
+         lxFramesToWait=lxPaddingFrames;
          //cout << "lxSer" << endl;
          break;
    }
@@ -812,8 +827,9 @@ void QCamV4L::setLXtime() {
 }
 
 void QCamV4L::LXframeReady() {
-   lxReady=true;
    lxControler->stopAccumulation();
+   //usleep(40);
+   lxReady=true;
    cout << "lx timer timeout" << endl;
 }
 

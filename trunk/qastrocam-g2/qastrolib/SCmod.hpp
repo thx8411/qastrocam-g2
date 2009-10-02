@@ -11,11 +11,11 @@ class QWidget;
 
 class SCmod {
 public:
-   virtual void enterLongPoseMode()=0;
-   virtual void leaveLongPoseMode()=0;
-   virtual void stopAccumulation()=0;
-   virtual void startAccumulation()=0;
-   virtual ~SCmod() {}
+   virtual void enterLongPoseMode() {};
+   virtual void leaveLongPoseMode() {};
+   virtual void stopAccumulation() {};
+   virtual void startAccumulation() {};
+   virtual ~SCmod();
    virtual QWidget * buildGUI(QWidget * parent) { return parent; }
    void setLevels(bool polarity);
 protected :
