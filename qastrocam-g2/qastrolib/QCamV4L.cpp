@@ -522,7 +522,9 @@ bool QCamV4L::updateFrame() {
       if (timer_) timer_->changeInterval(1000/frameRate_);
    }*/
 
+   // lx support
    if(lxEnabled) {
+      //usleep((int)(1.0/(float)(frameRate_*2.0*1000.0)));
       lxReady=false;
       lxControler->startAccumulation();
       lxBaseTime=getTime();
