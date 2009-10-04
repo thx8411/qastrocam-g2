@@ -58,7 +58,6 @@ QCamVesta::QCamVesta(const char * devpath):
    multiplicateur_=1;
    if (exposureTimeLeft_) exposureTimeLeft_->hide();
    skippedFrame_=0;
-     
    liveWhiteBalance_=false /* set to true to show dynamicaly white balance
                               setting (slow) */;
    refreshGui_=true;
@@ -145,7 +144,7 @@ bool QCamVesta::updateFrame() {
 void QCamVesta::refreshPictureSettings() {
    QCamV4L::refreshPictureSettings();
    QCamV4L::refreshPictureSettings(); // second call needed. if not some value are not properly restored.
-   
+
    int tmp;
    emit(sharpnessChange(getSharpness()));
    emit(noiseRemovalChange(getNoiseRemoval()));
@@ -156,7 +155,7 @@ void QCamVesta::refreshPictureSettings() {
 
    setProperty("Gama",tmp=getGama());
    emit gamaChange(tmp);
-   
+
    getWhiteBalance();
 }
 
@@ -190,7 +189,6 @@ void QCamVesta::setGain(int val) {
    } else {
       lastGain_=val;
    }
-   //cout << "setGain "<<val<<endl;
 }
 
 int QCamVesta::getGain() const {
@@ -206,16 +204,13 @@ int QCamVesta::getGain() const {
       }
    } else {
       ++cpt;
-      gain=lastGain_; 
+      gain=lastGain_;
    }
-   //cout << "get gain "<<gain<<endl;
    if (gain < 0) gain*=-1;
    return gain;
 }
 
 void QCamVesta::setExposure(int val) {
-   //cout << "set exposure "<<val<<"\n";
-   
    if (-1==ioctl(device_, VIDIOCPWCSSHUTTER, &val)) {
       perror("VIDIOCPWCSSHUTTER");
    } else {
@@ -231,8 +226,9 @@ int QCamVesta::getExposure() const {
    return gain;
 }
 */
+
 void QCamVesta::setCompression(int val) {
-   ioctl(device_, VIDIOCPWCSCQUAL, &val); 
+   ioctl(device_, VIDIOCPWCSCQUAL, &val);
 }
 
 int QCamVesta::getCompression() const {
@@ -246,9 +242,7 @@ void QCamVesta::setNoiseRemoval(int val) {
    if (-1 == ioctl(device_, VIDIOCPWCSDYNNOISE, &val)) {
        perror("VIDIOCPWCGDYNNOISE");
    }
-
    emit(sharpnessChange(getSharpness()));
-   //cout <<"set noise = "<<val<<endl;
 }
 
 int QCamVesta::getNoiseRemoval() const {
@@ -264,9 +258,7 @@ void QCamVesta::setSharpness(int val) {
    if (-1 == ioctl(device_, VIDIOCPWCSCONTOUR, &val)) {
        perror("VIDIOCPWCSCONTOUR");
    }
-
    emit(noiseRemovalChange(getNoiseRemoval()));
-   //cout <<"set sharpness = "<<val<<endl;
 }
 
 int QCamVesta::getSharpness() const {
@@ -310,26 +302,6 @@ bool QCamVesta::getFlicker() const {
    return val !=0;
 }
 
-#if 0
-void QCamVesta::activateRawBayerMode(bool val) {
-   rawBayerMode_=val;
-   if (rawBayerMode_) {
-      setFrameRate(5);
-      window_.flags |= PWC_FPS_SNAPSHOT;
-      resize(QSize(640,480));
-      if (ioctl(device_, VIDIOCSWIN, &window_)) {
-         perror("PWC_FPS_SNAPSHOT");
-      }  
-   } else {
-      window_.flags &= ~PWC_FPS_SNAPSHOT;
-      if (ioctl(device_, VIDIOCSWIN, &window_)) {
-         perror("PWC_FPS_SNAPSHOT");
-      }
-      resize(QSize(640,480));
-   }
-}
-#endif
-
 void QCamVesta::setGama(int val) {
    picture_.whiteness=val;
    updatePictureSettings();
@@ -368,17 +340,8 @@ void QCamVesta::getWhiteBalance() {
       //whiteBalanceActivated_=false;
       //remoteCTRLWhiteBalance_->hide();
    } else {
-#if 0
-      cout << "mode="<<tmp_whitebalance.mode
-           <<" mr="<<tmp_whitebalance.manual_red
-           <<" mb="<<tmp_whitebalance.manual_blue
-           <<" ar="<<tmp_whitebalance.read_red
-           <<" ab="<<tmp_whitebalance.read_blue
-           <<endl;
-#endif
       /* manual_red and manual_blue are garbage :-( */
       whiteBalanceMode_=tmp_whitebalance.mode;
-            
       switch(whiteBalanceMode_) {
       case PWC_WB_INDOOR:
          setProperty("WhiteBalanceMode","Indor");
@@ -403,21 +366,20 @@ void QCamVesta::getWhiteBalance() {
       default:
          setProperty("WhiteBalanceMode","???");
       }
-         
       emit whiteBalanceModeChange(whiteBalanceMode_);
 
       if (((whiteBalanceMode_ == PWC_WB_AUTO) && liveWhiteBalance_)
           || whiteBalanceMode_ != PWC_WB_AUTO) {
          setProperty("WhiteBalanceRed",whiteBalanceRed_);
          emit whiteBalanceRedChange(whiteBalanceRed_);
-         setProperty("WhiteBalanceBlue",whiteBalanceBlue_);   
+         setProperty("WhiteBalanceBlue",whiteBalanceBlue_);
          emit whiteBalanceBlueChange(whiteBalanceBlue_);
-         if (guiBuild()) {         
+         if (guiBuild()) {
             remoteCTRLWBred_->show();
             remoteCTRLWBblue_->show();
          }
-      } else { 
-         if (guiBuild()) {         
+      } else {
+         if (guiBuild()) {
             remoteCTRLWBred_->hide();
             remoteCTRLWBblue_->hide();
          }
@@ -463,7 +425,6 @@ void QCamVesta::setWhiteBalanceMode(int val) {
          remoteCTRLWBblue_->hide();
       }
    }
-   
    whiteBalanceMode_=val;
    setWhiteBalance();
    getWhiteBalance();
@@ -516,11 +477,11 @@ void QCamVesta::setSCmod(int value) {
       // already cleared
       break;
    case SCmodLed:
-      setSCmodImpl(new SCmodTucLed(*this));          
+      setSCmodImpl(new SCmodTucLed(*this));
       break;
    case SCmodSerial:{
       SCmodSerialPort * modSerial=new SCmodSerialPort();
-      setSCmodImpl(modSerial);          
+      setSCmodImpl(modSerial);
    }
       break;
    case SCmodPPort2:{
@@ -528,7 +489,6 @@ void QCamVesta::setSCmod(int value) {
       setSCmodImpl(scMod);
    }
       break;
-		  
    }
    if (SCmodCtrl_ && guiBuild()) {
       SCmodCtrl_->buildGUI(remoteCTRLframeRate_);
@@ -542,20 +502,18 @@ void QCamVesta::setLongExposureTime(const QString& str) {
    }
    int mult=(int)round(val*getFrameRate());
    //float realTime=(float)mult/getFrameRate();
-   
    if (mult <=1) {
       setFrameRateMultiplicateur(1);
    } else {
       setFrameRateMultiplicateur(mult);
    }
-   //longExposureTime_->setText(QString().sprintf("%1f",realTime));   
+   //longExposureTime_->setText(QString().sprintf("%1f",realTime));
 }
 
 void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
    QHGroupBox *  remoteCTRLframeRateGroup
       = new QHGroupBox(tr("Long Exposure"),
                        remoteCTRL);
-   
    longExposureTime_ = new  QLineEdit(remoteCTRLframeRateGroup);
    longExposureTime_->setMaxLength(4);
    longExposureTime_->setText("0");
@@ -571,14 +529,12 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
    exposureTimeLeft_=new QProgressBar(remoteCTRLframeRateGroup);
    exposureTimeLeft_->hide();
    exposureTimeLeft_->setCenterIndicator(true);
-   
    exposureTime_=new QLCDNumber(5,remoteCTRLframeRateGroup);
    connect(this,SIGNAL(exposureTime(double)),
            exposureTime_,SLOT(display(double)));
    exposureTime_->setSmallDecimalPoint(false);
    exposureTime_->setSegmentStyle(QLCDNumber::Flat);
    exposureTime_->show();
-   
    if (SCmodCtrl_) {
       SCmodCtrl_->buildGUI(remoteCTRL);
    }
@@ -607,7 +563,6 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       QCheckBox * flicker = new QCheckBox(tr("Anti-flicker"),sliders);
       connect(flicker,SIGNAL(toggled(bool)),this,SLOT(setFlicker(bool)));
       QToolTip::add(flicker,tr("Suppress 'flickering' of the image when light with a fluo tube"));
-      
       //QCheckBox * rawBayer = new QCheckBox(tr("Raw Bayer"),sliders);
       //connect(rawBayer,SIGNAL(toggled(bool)),this,SLOT(activateRawBayerMode(bool)));
       //QToolTip::add(rawBayer,tr("switch off camera Bayer Matrix => RGB"));
@@ -630,21 +585,17 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
               remoteCTRLcompression_,SLOT(setValue(int)));
       connect(remoteCTRLcompression_,SIGNAL(valueChange(int)),this,
               SLOT(setCompression(int)));
-      
       connect(this,SIGNAL(noiseRemovalChange(int)),
               remoteCTRLnoiseRemoval_,SLOT(setValue(int)));
-      
       connect(remoteCTRLnoiseRemoval_,SIGNAL(valueChange(int)),this,
               SLOT(setNoiseRemoval(int)));
       QToolTip::add(remoteCTRLnoiseRemoval_,tr("Dynamic Noise removal (0=none, 3=high) (0 give brighter image)"));
-      
       connect(this,SIGNAL(sharpnessChange(int)),
               remoteCTRLsharpness_,SLOT(setValue(int)));
       connect(remoteCTRLsharpness_,SIGNAL(valueChange(int)),this,
               SLOT(setSharpness(int)));
       QToolTip::add(remoteCTRLsharpness_,tr("Shaprness enhancement (0=none, 65536=high) (low value blurs image)"));
    }
-   
    remoteCTRLframeRate_ =new QHGroupBox(tr("fps"),remoteCTRL);
    int frameRate[]={5,10,15,20,25,30};
    remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
@@ -659,9 +610,8 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,4,scModeTable,scModeLabel);
    connect(SCmodSelector_,SIGNAL(change(int)),
            this,SLOT(setSCmod(int)));
-   
    int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
-   const char *wbLabel[]={"Auto", "In","Out","Néon","Manual"};
+   const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
    remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),remoteCTRL,5,wbValue,wbLabel,5);
    connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),
            this,SLOT(setWhiteBalanceMode(int)));
@@ -672,7 +622,6 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    connect(liveWBupdateB,SIGNAL(toggled(bool)),
            this,SLOT(setLiveWhiteBalance(bool)));
    QToolTip::add(liveWBupdateB,tr("Live Update of red/blue value in automatic mode"));
-   
    remoteCTRLWBred_ = new QCamSlider(tr("red bal."),false,whiteBalanceSliders,
                                     0,65535);
    connect(this,SIGNAL(whiteBalanceRedChange(int)),
@@ -690,7 +639,6 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    remoteCTRLWhiteBalance_->show();
 
    exposureTimeLeft_=NULL;
-   
    connect(this,SIGNAL(gainChange(int)),remoteCTRLgain_,SLOT(setValue(int)));
    connect(remoteCTRLgain_,SIGNAL(valueChange(int)),this,SLOT(setGain(int)));
 
@@ -700,10 +648,8 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    */
    connect(remoteCTRLexposure_,SIGNAL(valueChange(int)),
            this,SLOT(setExposure(int)));
-   
    connect(this,SIGNAL(gamaChange(int)),remoteCTRLgama_,SLOT(setValue(int)));
    connect(remoteCTRLgama_,SIGNAL(valueChange(int)),this,SLOT(setGama(int)));
-   
    QHGroupBox * settings=new QHGroupBox(tr("Settings"),remoteCTRL);
    QToolTip::add(settings,tr("save/restore settings of gain,exposure & white balance"));
    QPushButton *saveSettingsB =new QPushButton(tr("save"),settings);
@@ -719,19 +665,9 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    initRemoteControlLongExposure(remoteCTRLframeRate_);
 
    setBestQuality();
-   
    refreshPictureSettings();
 
-#if 0
-   remoteCTRLgama_->show();
-   remoteCTRLgain_->show();
-   remoteCTRLexposure_->show();
-   remoteCTRLcompression_->show();
-   remoteCTRLnoiseRemoval_->show();
-   remoteCTRLsharpness_->show();
-#else
    remoteCTRL->show();
-#endif
 
    return remoteCTRL;
 }

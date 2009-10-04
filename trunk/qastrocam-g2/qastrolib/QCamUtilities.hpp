@@ -26,7 +26,7 @@ public:
 private:
    static string basePath_;
    static bool useSDL_;
-   /// in expert mode, more controls are displayed in the GUI
+   // in expert mode, more controls are displayed in the GUI
    static bool expertMode_;
 };
 

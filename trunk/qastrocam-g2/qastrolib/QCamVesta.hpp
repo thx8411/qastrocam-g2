@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <linux/types.h>
 #include <linux/videodev.h>
 
 #include "pwc-ioctl.h"
@@ -47,6 +46,9 @@ protected:
    void checkSize(int & x, int & y) const;
    QWidget *  buildGUI(QWidget * parent);
    virtual void refreshPictureSettings();
+   friend class SCmodTucLed;
+   friend class SCmoduSC2Led;
+
 private:
    void init();
    void initRemoteControlLongExposure(QWidget * remoteCTRL);
@@ -73,7 +75,6 @@ private:
    QCamSlider * remoteCTRLcompression_;
    QCamSlider * remoteCTRLnoiseRemoval_;
    QCamSlider * remoteCTRLsharpness_;
-   
    QHGroupBox * remoteCTRLframeRate_;
    QCamComboBox * remoteCTRLframeRate2_;
    enum SCmodType { SCmodNone,SCmodPPort,SCmodLed,SCmodSerial, SCmodPPort2};
@@ -115,6 +116,7 @@ public slots:
    //void activateRawBayerMode(bool val);
 protected slots:
    bool updateFrame();
+
 signals:
    void gainChange(int);
    void exposureChange(int);
@@ -128,8 +130,6 @@ signals:
    void whiteBalanceModeChange(int);
    void whiteBalanceRedChange(int);
    void whiteBalanceBlueChange(int);
-   friend class SCmodTucLed;
-   friend class SCmoduSC2Led;
 };
 
 #endif

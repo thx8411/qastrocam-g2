@@ -11,7 +11,6 @@ class QHBox;
 /** Handle some radiobox buttons in a
     QButtonGroup.
 */
-
 class QCamRadioBox: public QVGroupBox {
    Q_OBJECT
 public:
@@ -28,7 +27,7 @@ public slots:
       The given value must be one of the valueList.
   */
   void update(int value);
-   
+
 signals:
    /** send when a checkbox is checked.
     */

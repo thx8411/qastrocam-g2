@@ -39,7 +39,6 @@ public:
       sendJpegFrames=(1<<7)
    };
    static const int DefaultOptions;
-   
    static QCam * openBestDevice(const char * devpath = "/dev/video0",const char * devsource = "");
    QCamV4L(const char * devpath="/dev/video0",
            int preferedPalette = 0 /* auto palette*/,
@@ -61,13 +60,12 @@ protected:
    struct video_capability capability_;
    struct video_window window_;
    struct video_picture picture_;
-   /// mmap stuf
+   // mmap stuf
    struct video_mbuf mmap_mbuf_;
    uchar * mmap_buffer_;
    long mmap_last_sync_buff_;
    long mmap_last_capture_buff_;
    mutable QSize * sizeTable_;
-   
    void updatePictureSettings();
    virtual void refreshPictureSettings();
    bool dropFrame();

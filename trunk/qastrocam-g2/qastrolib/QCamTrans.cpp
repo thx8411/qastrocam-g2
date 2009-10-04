@@ -91,14 +91,6 @@ void QCamTrans::transNewFrame() {
       break;
    case Copy:
       camFrame_=cam_->yuvFrame();
-#if 0
-      static double angle=0;
-      camFrame_.rotate(camFrame_.size().width()/2,
-                       camFrame_.size().height()/2,
-                       angle);
-      angle+=0.05;
-      if (angle > M_PI*2) angle=0;
-#endif 
       newFrameAvaible();
       break;
    };
@@ -108,7 +100,6 @@ QWidget * QCamTrans::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
    int modeTable[]={Off,Copy,On};
    const char * modeLabel[]={"Off","Copy","On"};
-                   
    QCamRadioBox * modeWidget
       =new QCamRadioBox("Mode",
                         remoteCTRL,
