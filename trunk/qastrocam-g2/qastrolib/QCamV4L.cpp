@@ -25,16 +25,20 @@
 
 #include "SCmodParPortPPdev.hpp"
 
+// settings object, needed everywhere
 extern settingsBackup settings;
 
+// static value init
 const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor|haveWhiteness);
 
+// constructor
 QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource,
                  unsigned long options /* cf QCamV4L::options */) {
+   // V4L2 needed vars
    v4l2_std_id _id;
    v4l2_standard standard;
    int _index=0;
-
+   // init defaults value
    options_=options;
    tmpBuffer_=NULL;
    remoteCTRLbrightness_=NULL;
@@ -49,11 +53,12 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    window_.clips=NULL;
    window_.clipcount=0;
    devpath_=devpath;
-
+   // opening the video device (non block)
    if (-1 == (device_=open(devpath_.c_str(),
                            O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0)))) {
       perror(devpath);
    }
+   // read device informations
    if (device_ != -1) {
       if (-1 == ioctl(device_,VIDIOCGCAP,&capability_)) {
          perror ("ioctl (VIDIOCGCAP)");
@@ -66,64 +71,67 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       }
       init(preferedPalette);
    }
-
    cout << "device name : " << capability_.name << endl;
-
-   /* available inputs */
+   // enumerate available inputs
    cout << endl << "available inputs : " << endl;
    input.index=0;
    while(!ioctl(device_,VIDIOC_ENUMINPUT,&input)) {
       cout << "input #" << input.index << " : " << input.name << endl;
       input.index++;
    }
-
-   /* choosing stored source */
+   // choosing stored source if there is one
    int res;
    string keyName("SOURCE_");
    keyName+=capability_.name;
-
+   // if we allready have a source, store it
    if(strlen(devsource)) settings.setKey(keyName.c_str(),devsource);
+   // looking for the source in settings file
    if(settings.haveKey(keyName.c_str())) {
       cout << "found stored source : " << settings.getKey(keyName.c_str()) << endl ;
       string source=settings.getKey(keyName.c_str());
       input.index=0;
+      // iterate to find the source
       do {
          res=ioctl(device_,VIDIOC_ENUMINPUT,&input);
          input.index++;
       } while((res==0)&&(strcasecmp(source.c_str(),(char*)input.name)!=0));
       if(res==-1)
+        // source not found
 	cout << "source '" << settings.getKey(keyName.c_str()) << "' not found, using default" << endl;
       else {
+         // setting the source
          _index=input.index-1;
          ioctl (device_, VIDIOC_S_INPUT, &_index);
       }
+   // no source found, using default
    } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
 
-   /* reading input */
+   // get the used source
    ioctl(device_,VIDIOC_G_INPUT,&_index);
    input.index=_index;
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
    cout << "using : " << input.name << endl << endl;
 
-   /* storing default source */
+   // storing used source
    settings.setKey(keyName.c_str(),(char*)input.name);
 
-   /* getting video standard */
+   // getting video standard to compute frame rate
    if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
       perror("Getting Standard");
    };
-   //cout << _index << endl;
-
    standard.index=0;
    res=0;
+   // iterate to find the used video standard
    while((res!=-1)&&(standard.id!=_id)) {
       res=ioctl(device_,VIDIOC_ENUMSTD,&standard);
       standard.index++;
    }
    if(res!=0) {
+      // standard unknown, default framerate
       frameRate_=10;
       cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s\n" ;
    } else {
+      // standard found, computing framerate
       cout << "Video standard : " << standard.name << endl;
       frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
       cout <<  "Using Framerate : " << frameRate_ << endl;
@@ -131,11 +139,13 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
 
+   // mmap init
    mmap_buffer_=NULL;
    if (mmapInit()) {
       mmapCapture();
    }
 
+   // setting up the timers
    notifier_=NULL;
    timer_=NULL;
    if (options_&ioUseSelect) {
@@ -149,16 +159,19 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       cout << "Using timer to wait new frames.\n";
    }
 
+   // update video stream properties
    setProperty("CameraName",capability_.name);
    setProperty("FrameRateSecond",frameRate_);
 
    label(capability_.name);
 
+   // lx mode vars inits
    lxDelay=0.2;
    lxLevel=64;
    lxControler=NULL;
    lxEnabled=false;
    lxBaseTime=getTime();
+   // lx timer settings
    lxTimer=new QTimer(this);
    lxTimer->stop();
    connect(lxTimer,SIGNAL(timeout()),this,SLOT(LXframeReady()));
@@ -169,7 +182,7 @@ void QCamV4L::resize(const QSize & s) {
 }
 
 void QCamV4L::init(int preferedPalette) {
-   // setting palette
+   // setting prefered palette if we have one
    if (preferedPalette) {
       picture_.palette=preferedPalette;
       if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
@@ -183,6 +196,8 @@ void QCamV4L::init(int preferedPalette) {
               << " invalid, trying to find one."<< endl;
       }
    }
+   // else finding a valide palette
+   // form best to low quality order
    if (preferedPalette == 0) {
       do {
 	 /* trying VIDEO_PALETTE_RGB24 */
@@ -235,6 +250,8 @@ void QCamV4L::init(int preferedPalette) {
    allocBuffers();
 }
 
+// allocate memory for buffers, depending on
+// frame size and palette
 void QCamV4L::allocBuffers() {
    delete tmpBuffer_;
    yuvBuffer_.setSize(QSize(window_.width,window_.height));
@@ -259,6 +276,8 @@ void QCamV4L::allocBuffers() {
    }
 }
 
+// get frame sizes supported by the
+// video device
 const QSize * QCamV4L::getAllowedSize() const {
    if (sizeTable_==NULL) {
       int currentIndex=0;
@@ -272,10 +291,16 @@ const QSize * QCamV4L::getAllowedSize() const {
       testWindow.x=0;
       testWindow.y=0;
 
+      // most of time, v4l generic supports continous 4 or 8 multiple pixel sizes
+      // it gives to much diffrent sizes. We test from max size to min size half by
+      // half.
       while((currentIndex<7)&&(currentx>capability_.minwidth)&&(currenty>capability_.minheight)) {
          testWindow.width=currentx;
          testWindow.height=currenty;
+         // try to set the size
          if (ioctl(device_, VIDIOCSWIN, &testWindow)!=-1) {
+            // if the device frame size is the same, test succeed
+            // storing this size
             if(ioctl(device_, VIDIOCGWIN, &testWindow)!=-1) {
                sizeTable_[currentIndex]=QSize(testWindow.width,testWindow.height);
                currentIndex++;
@@ -290,6 +315,7 @@ const QSize * QCamV4L::getAllowedSize() const {
    return sizeTable_;
 }
 
+// checks if size repects device capabilities
 void QCamV4L::checkSize(int & x, int & y) const {
    if (x>=capability_.maxwidth && y >= capability_.maxheight) {
       x=capability_.maxwidth;
@@ -300,42 +326,50 @@ void QCamV4L::checkSize(int & x, int & y) const {
    }
 }
 
+// change the frame size
 bool QCamV4L::setSize(int x, int y) {
    static char buff[11];
-
    checkSize(x,y);
    window_.x=0;
    window_.y=0;
    window_.width=x;
    window_.height=y;
 
+   // trying the size
    cout << "trying x=" << window_.width
         << " " << "y=" << window_.height <<endl;
    if(ioctl(device_, VIDIOCSWIN, &window_)) {
        perror ("ioctl(VIDIOCSWIN)");
    }
+   // reading the new size
    if(ioctl(device_, VIDIOCGWIN, &window_)) {
        perror ("ioctl(VIDIOCGWIN)");
    }
    cout << "set to x=" << window_.width
         << " " << "y=" << window_.height <<endl;
+   // updating video stream properties
    snprintf(buff,10,"%dx%d",window_.width,window_.height);
    setProperty("FrameSize",buff,true);
-
+   // if the two sizes are diffrent, the device does not
+   // support hot resizing
    if((x!=window_.width)||(y!=window_.height)) {
       cout << "Some devices refuse hot-resizing,\nYou should quit to get the new size" << endl;
    }
+   // realloc buffers using new size
    allocBuffers();
    return true;
 }
 
+// drop frames without treatment
 bool QCamV4L::dropFrame() {
    static char nullBuff[720*576*4];
    int bufSize;
+   // mmap case
    if (mmap_buffer_) {
       mmapCapture();
       mmapSync();
       return true;
+   // else, compute the byte number to read
    } else {
       switch (picture_.palette) {
       case VIDEO_PALETTE_GREY:
@@ -360,13 +394,14 @@ bool QCamV4L::dropFrame() {
    }
 }
 
+// we should have a new frame
 bool QCamV4L::updateFrame() {
    static char nullBuf[720*576];
    bool res;
    double currentTime;
    void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
    YBuf=(void*)yuvBuffer_.YforOverwrite();
-
+   // compute raw modes (conversions)
    switch(mode_) {
       case GreyFrame:
       case RawRgbFrame1:
@@ -380,12 +415,13 @@ bool QCamV4L::updateFrame() {
          VBuf=(void*)yuvBuffer_.VforOverwrite();
    }
 
+   // if we are using mmap
    if (mmap_buffer_) {
       mmapCapture();
       mmapSync();
       setTime();
       res=true;
-
+      // dependings on the palette, mem copies...
       switch (picture_.palette) {
          case VIDEO_PALETTE_GREY:
             memcpy(YBuf,mmapLastFrame(),window_.width * window_.height);
@@ -399,6 +435,7 @@ bool QCamV4L::updateFrame() {
                 mmapLastFrame()+ window_.width * window_.height+(window_.width/2) * (window_.height/2),
                 (window_.width/2) * (window_.height/2));
             break;
+         // ... and palette conversions
          case VIDEO_PALETTE_YUV420:
             ccvt_420i_420p(window_.width,window_.height,
                            mmapLastFrame(),
@@ -426,68 +463,81 @@ bool QCamV4L::updateFrame() {
             cerr << "invalid palette "<<picture_.palette<<endl;
             exit(1);
       }
+   // if using read/write mode
    } else {
-   switch (picture_.palette) {
-   case VIDEO_PALETTE_GREY:
-      res = 0 < read(device_,YBuf,window_.width * window_.height);
-      if (res) setTime();
-      break;
-   case VIDEO_PALETTE_YUV420P:
-      res = 0 < read(device_,YBuf,window_.width * window_.height);
-      if (res) setTime();
-      res = res && (0 < read(device_,UBuf,(window_.width/2) * (window_.height/2)));
-      res = res && (0 < read(device_,VBuf,(window_.width/2) * (window_.height/2)));
-      break;
-   case VIDEO_PALETTE_YUV420:
-      res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height *3/2);
-      if (res) {
-         setTime();
-         ccvt_420i_420p(window_.width,window_.height,
+      // depending on the palette, reads and converts frame
+      switch (picture_.palette) {
+      case VIDEO_PALETTE_GREY:
+         res = 0 < read(device_,YBuf,window_.width * window_.height);
+         if (res) setTime();
+         break;
+      case VIDEO_PALETTE_YUV420P:
+         res = 0 < read(device_,YBuf,window_.width * window_.height);
+         if (res) setTime();
+         res = res && (0 < read(device_,UBuf,(window_.width/2) * (window_.height/2)));
+         res = res && (0 < read(device_,VBuf,(window_.width/2) * (window_.height/2)));
+         break;
+      case VIDEO_PALETTE_YUV420:
+         res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height *3/2);
+         if (res) {
+            setTime();
+            ccvt_420i_420p(window_.width,window_.height,
                         tmpBuffer_,
                         YBuf,
                         UBuf,
                         VBuf);
-      }
-      break;
-   case VIDEO_PALETTE_RGB24:
-      res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 3);
-      if (res) {
-         setTime();
-         ccvt_rgb24_420p(window_.width,window_.height,
+         }
+         break;
+      case VIDEO_PALETTE_RGB24:
+         res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 3);
+         if (res) {
+            setTime();
+            ccvt_rgb24_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
                          VBuf);
-      }
-      break;
-   case VIDEO_PALETTE_YUV422:
-   case VIDEO_PALETTE_YUYV:
-      res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 2);
-      if (res) {
-          setTime();
-          ccvt_yuyv_420p(window_.width,window_.height,
+         }
+         break;
+      case VIDEO_PALETTE_YUV422:
+      case VIDEO_PALETTE_YUYV:
+         res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 2);
+         if (res) {
+            setTime();
+             ccvt_yuyv_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
                          VBuf);
-      }
-      break;
-   default:
+         }
+         break;
+      default:
       cerr << "invalid palette "<<picture_.palette<<endl;
       exit(1);
+      }
    }
-   }
+   // lx support
    if (res) {
+      // if lx activated
       if(lxEnabled) {
+         // count dropped frames
          lxFrameCounter++;
+         // update progress bar 
          lxBar->setProgress(lxFrameCounter);
+         // is there an image on this frame ?
          if(!yuvBuffer_.isValide(lxLevel)) {
+            // frame not valide
+            // if to much frames dropped, we missed the good frame, reseting
             if(lxFrameCounter>(int)(lxDelay*(double)(frameRate_)+4))
                lxFrameCounter=0;
+            // ignoring frame
             //cout << "frame dropped" << endl;
             return(0);
          }
+         // the frame is ok
+         // resetting dropped frames counter
          lxFrameCounter=0;
+         // integration starting for the next frame
          lxControler->startAccumulation();
       }
       newFrameAvaible();
@@ -559,11 +609,13 @@ int QCamV4L::getWhiteness() const {
 }
 
 QCamV4L::~QCamV4L() {
-   delete tmpBuffer_;
-
+   // release buffer mem if needed
+   if(tmpBuffer_!=NULL)
+      delete tmpBuffer_;
+   // release mmap zone i needed
    if(mmap_buffer_!=NULL)
       munmap(mmap_buffer_,mmap_mbuf_.size);
-
+   // close the video device
    close(device_);
 }
 
@@ -599,17 +651,19 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    else
       labelNumber=6;
 
+   // raw mode settings box
    int frameModeTable[]={GreyFrame,YuvFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
    const char* frameModeLabel[]={"Grey", "RGB", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
    infoBox=new QHGroupBox(tr("Source"),remoteCTRL);
    frameModeB= new QCamComboBox("frame type",infoBox,labelNumber,frameModeTable,frameModeLabel);
    frameModeB->setMaximumWidth(136);
    connect(frameModeB,SIGNAL(change(int)),this,SLOT(setMode(int)));
-
+   // looking for a saved raw mode
    if(settings.haveKey("RAW_MODE")) {
 	int index=frameModeB->getPosition(settings.getKey("RAW_MODE"));
 	if (index!=-1) setMode(index);
 	frameModeB->setCurrentItem(index);
+   // else use default
    } else setMode(0);
 
    if (options_ & haveContrast) {
@@ -673,53 +727,61 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    infoPalette=new QLabel(infoBox);
    infoPalette->setText(palette);
    infoPalette->setAlignment(AlignLeft|AlignVCenter);
-
+   // Tips
    QToolTip::add(infoInput,"V4L input used");
    QToolTip::add(infoPalette,"V4L palette used");
 
    // V4L generic long exposure
+   // container
    remoteCTRLlx= new QHGroupBox(tr("long exposure"),remoteCTRL);
+   // frame rate display
    lxLabel1= new QLabel("fps :",remoteCTRLlx);
    lxRate= new QLabel(QString().sprintf("%i",frameRate_),remoteCTRLlx);
    lxRate->setAlignment(AlignLeft|AlignVCenter);
    lxRate->setMinimumWidth(32);
+   // lx mode selector
    int lxTable[]={lxNone,lxPar,lxSer};
    const char* lxLabel[]={"lx : none","lx : // port","lx : serial"};
    lxSelector=new QCamComboBox(tr("lxMode"),remoteCTRLlx,3,lxTable,lxLabel);
+   // integration delay
    lxLabel2=new QLabel("Delay :",remoteCTRLlx);
    lxTime=new QLineEdit(remoteCTRLlx);
    lxTime->setMaximumWidth(48);
    lxTime->setEnabled(false);
    lxTime->setText(QString().sprintf("%4.2f",1.0/(double)frameRate_));
+   // integration delay button
    lxSet=new QPushButton("Set",remoteCTRLlx);
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
+   // progress bar
    lxBar=new QProgressBar(remoteCTRLlx);
    lxBar->setCenterIndicator(true);
    lxBar->setTotalSteps(0);
    lxBar->reset();
-
+   // tips
    QToolTip::add(lxRate,"Current frame rate");
    QToolTip::add(lxSelector,"Long exposure mode");
    QToolTip::add(lxTime,"Integration time in seconds (0.2s steps)");
    QToolTip::add(lxSet,"Set integration time");
    QToolTip::add(lxBar,"Integration progress bar");
-
+   // default lx delay, init
    lxDelay=0.2;
    lxControler=NULL;
-
+   // lx events connector
    connect(lxSelector,SIGNAL(change(int)),this,SLOT(setLXmode(int)));
    connect(lxSet,SIGNAL(released()),this,SLOT(setLXtime()));
 
    return remoteCTRL;
 }
 
+// changing raw mode
 void  QCamV4L::setMode(int  val) {
    QString value=frameModeB->text(val);
    settings.setKey("RAW_MODE",value.data());
    setMode((ImageMode)val);
 }
 
+// changing raw mode
 void  QCamV4L::setMode(ImageMode val) {
    switch (val) {
    case YuvFrame:
@@ -739,6 +801,7 @@ void  QCamV4L::setMode(ImageMode val) {
    yuvBuffer_.setMode(mode_);
 }
 
+// setting lx modes
 void QCamV4L::setLXmode(int value) {
    if(lxControler) {
       lxControler->leaveLongPoseMode();
@@ -746,6 +809,7 @@ void QCamV4L::setLXmode(int value) {
       lxControler=NULL;
    }
    switch(value) {
+      // lx mode disabled
       case lxNone :
          // object allready deleted
          lxRate->setText(QString().sprintf("%i",frameRate_));
@@ -758,6 +822,7 @@ void QCamV4L::setLXmode(int value) {
          lxEnabled=false;
          lxTimer->stop();
          break;
+      // parallel mode lx on
       case lxPar :
          lxRate->setText("N/A");
          lxControler=new SCmodParPortPPdev();
@@ -771,6 +836,7 @@ void QCamV4L::setLXmode(int value) {
          lxFrameCounter=0;
          lxControler->startAccumulation();
          break;
+      // serial mode lx on
       case lxSer :
          lxRate->setText("N/A");
          lxControler=new SCmodSerialPort();
@@ -787,18 +853,25 @@ void QCamV4L::setLXmode(int value) {
    }
 }
 
+// changing integration time
 void QCamV4L::setLXtime() {
    float val;
+   // reading edit line and converts
    QString str=lxTime->text();
    if (sscanf(str.latin1(),"%f",&val)!=1) {
+      // default delay
       val=0.2;
    }
+   // main delay
    if(val<0.2)
       val=0.2;
+   // 0.2s steps
    val=round(val*5)/5;
    lxDelay=val;
+   // progress bar update
    lxBar->setTotalSteps((int)(lxDelay*frameRate_));
    lxBar->reset();
+   // lx time update
    lxTimer->stop();
    lxTimer->start((int)(lxDelay*1000));
    lxFrameCounter=0;
@@ -807,17 +880,18 @@ void QCamV4L::setLXtime() {
    lxControler->startAccumulation();
 }
 
+// lx timer timeout slot, stops integration
 void QCamV4L::LXframeReady() {
    lxControler->stopAccumulation();
 }
 
+// lx level change slot
 void QCamV4L::LXlevel(int level) {
    lxLevel=level;
 }
 
+// mmap init
 bool QCamV4L::mmapInit() {
-   struct v4l2_requestbuffers stream_buffers;
-
    mmap_mbuf_.size = 0;
    mmap_mbuf_.frames = 0;
    mmap_last_sync_buff_=-1;
@@ -847,6 +921,7 @@ bool QCamV4L::mmapInit() {
    return true;
 }
 
+// mmap sync
 void QCamV4L::mmapSync() {
    mmap_last_sync_buff_=(mmap_last_sync_buff_+1)%mmap_mbuf_.frames;
    if (ioctl(device_, VIDIOCSYNC, &mmap_last_sync_buff_) < 0) {
@@ -865,6 +940,7 @@ uchar * QCamV4L::mmapLastFrame() const {
    //return mmap_buffer_ + mmap_mbuf_.size*((mmap_curr_buff_-1)%mmap_mbuf_.frames);
 }
 
+// mmap capture
 void QCamV4L::mmapCapture() {
    struct video_mmap vm;
    mmap_last_capture_buff_=(mmap_last_capture_buff_+1)%mmap_mbuf_.frames;
@@ -881,6 +957,7 @@ void QCamV4L::mmapCapture() {
    }
 }
 
+// gives os time in second (usec accuracy)
 double QCamV4L::getTime() {
    double t;
    struct timeval tv;
