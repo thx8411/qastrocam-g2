@@ -157,7 +157,7 @@ private:
    double lxBaseTime; // os time at integration beginning
    bool lxEnabled; // is lx mode on ?
    int lxFrameCounter; // dropped frames number
-   int lxLevel; // level used to decide if a frame should be dropper
+   int lxLevel; // level used to decide if a frame should be dropped, based on mean frame luminance
 
 public slots:
    // controls
