@@ -17,7 +17,9 @@ public:
        if it is overloaded, parents buildGUI should be called
        by new version. */
    virtual void buildGUI(QWidget * parent=0);
+   // update shifts when a new frame comes
    virtual void Update(double, double) {};
+   // reset telescope when tracker reseted
    virtual void Reset() {};
    virtual void setTrack(bool) {};
    virtual ~QTelescope();
