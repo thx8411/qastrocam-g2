@@ -79,4 +79,5 @@ private:
    int descriptor_;
    TrackingMode aligment_;
 };
+
 #endif

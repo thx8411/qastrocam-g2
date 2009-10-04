@@ -17,34 +17,21 @@ QTelescopeAutostar::QTelescopeAutostar(const char * deviceName) :
    if (descriptor_==-1) {
       perror(deviceName);
    }
-#if 0
-   if (tcgetattr(descriptor_,&termios_p)!=0) {
-      perror("tcgetattr");
-   }
-   cfsetospeed(&termios_p,B9600);
-   cfsetispeed(&termios_p,B9600);
-   if (tcsetattr(descriptor_,TCSANOW,&termios_p)!=0) {
-      perror("tcsetattr");
-   }
-   
-   if (0!=fcntl(descriptor_,F_SETFL,O_NONBLOCK)) {
-      perror("O_NONBLOCK");
-   }
-#else
+
    memset(&termios_p,0,sizeof(termios_p));
    termios_p.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
    termios_p.c_iflag = IGNPAR;
    termios_p.c_oflag = 0;   /* Raw output */
-   
+
    /* set input mode (non-canonical, no echo, ... */
    termios_p.c_lflag = 0;
-   
+
    termios_p.c_cc[VTIME] = 1; /* inter-character timer unused, block instead */
    termios_p.c_cc[VMIN] = 1;  /* read 1 character minimum */
-   
+
    tcflush(descriptor_, TCIFLUSH);             /* clear the channel */
    tcsetattr(descriptor_,TCSANOW,&termios_p);
-#endif
+
    cout << "Version number: "<<flush<<version(versionFull)<<"\n";
    cout << "Getting aligment: "<<flush;
    string aligment=sendCommand(getAlignment);
@@ -61,7 +48,6 @@ QTelescopeAutostar::QTelescopeAutostar(const char * deviceName) :
       aligment_=german;
       cout <<"Telescope in German polar mount\n";
    }
-   
    setSpeed(0.1);
 }
 
@@ -145,7 +131,7 @@ string QTelescopeAutostar::recvCmd(ReturnType t) {
    case numerics:
       lu=read(descriptor_,buf,4);
       if (lu!=4) {
-         cerr <<"expecting a 4 digit number when reading from autostar\n"; 
+         cerr <<"expecting a 4 digit number when reading from autostar\n";
       }
       buf[lu]=0;
    case strings:
@@ -181,17 +167,8 @@ bool QTelescopeAutostar::setTracking(bool activated) {
    if (aligment_ == land) {
       return !activated;
    }
-#if 1
    // set Aligment mode not working
    return activated;
-#else
-   if (activated) {
-      setTracking(aligment_);
-   } else {
-      setTracking(land);
-   }
-   return true;
-#endif
 }
 
 void QTelescopeAutostar::setTracking(TrackingMode mode) {
@@ -231,5 +208,5 @@ string QTelescopeAutostar::version(SubVersion v) {
       break;
    }
    sendCmd("GV",param);
-   return recvCmd(strings); 
+   return recvCmd(strings);
 }

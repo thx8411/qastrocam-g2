@@ -58,18 +58,13 @@ void QHistogram::setValue(double value,int pos) {
    if (autoShift()) {
       --currentPos_;
       if (currentPos_<0) currentPos_+=dataSize_;
-      //cout << "insert " << value << " at " <<  currentPos_+pos <<endl;
    }
    pos=(currentPos_+pos)%dataSize_;
-   
    bool searchMax=dataTable_[pos]==max_;
    bool searchMin=dataTable_[pos]==min_;
-   
    dataTable_[pos]=value;
-   
    if (value>max_) max_=value;
    if (value<min_) min_=value;
-   
    if (searchMax) max_=findMax();
    if (searchMin) min_=findMin();
 

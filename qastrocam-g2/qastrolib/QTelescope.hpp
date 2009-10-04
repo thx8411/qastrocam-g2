@@ -71,4 +71,5 @@ public slots:
     return !activated (it can always stop).*/
    virtual bool setTracking(bool activated)=0;
 };
+
 #endif

@@ -12,10 +12,10 @@ class QHistogram : public QWidget {
 public:
    enum DisplayMode {NormalDisplay=0,LogDisplay=1,SqrtDisplay=2,
                      Power2Display=3,ExpDisplay=4};
-   
+
    QHistogram(QWidget * parent=0, const char * name=0, WFlags f=0 );
    virtual ~QHistogram();
-   /// histogram is shifted after each added value
+   // histogram is shifted after each added value
    bool autoShift() const;
    /** number of value/2+1 used to calcultate average.
        0 for no average drawing. */
@@ -25,14 +25,14 @@ public:
    double max() const;
    double min() const;
 public slots:
-   /// number of element to plot;
+   // number of element to plot;
    void setDataSize(int dataSize);
    void setValue(double value,int pos=0);
    void setAutoShift(bool);
    void setAverage(int val);
    void reset();
    void displayMode(DisplayMode);
-   /// should called when autoShift()==false, after finishing the graph update;
+   // should called when autoShift()==false, after finishing the graph update;
    void draw() { update(); }
 protected:
    void paintEvent( QPaintEvent * ev);
@@ -51,4 +51,5 @@ private:
    QPen * normPen_;
    QPen * averagePen_;
 };
+
 #endif

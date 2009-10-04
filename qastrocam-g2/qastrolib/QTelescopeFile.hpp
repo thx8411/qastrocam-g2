@@ -8,7 +8,6 @@
 using namespace std;
 
 /** Telescope implementation for a file interface.
-    
  */
 class QTelescopeFile : public QTelescope {
    Q_OBJECT;
@@ -24,7 +23,7 @@ public:
    virtual void goN(float shift){};
    virtual void stopW() {}
    virtual void stopE() {}
-   virtual void stopN() {} 
+   virtual void stopN() {}
    virtual void stopS() {}
    virtual double setSpeed(double speed) {return speed; }
    virtual bool setTracking(bool activated) {return true; }
@@ -41,4 +40,5 @@ public:
    float yPosition;
    bool tracking_;
 };
+
 #endif

@@ -28,19 +28,16 @@ QTelescopeMTS::QTelescopeMTS(const char * deviceName) :
    termios_p.c_iflag = IGNPAR;
    termios_p.c_oflag = 0;   /* Raw output */
    termios_p.c_lflag = 0;
-   
    termios_p.c_cc[VTIME] = 0;
    termios_p.c_cc[VMIN] = 1;  /* read 1 character minimum */
-   
    tcflush( descriptor_, TCIFLUSH );    /* clear the channel */
    tcsetattr( descriptor_, TCSANOW, &termios_p );
 
-   /* Check if the controller is idle */ 
-   if ( sendCommand( ready ) != 0 ) { 
-     cerr << "Error: MTS controller busy\n\n"; 
+   /* Check if the controller is idle */
+   if ( sendCommand( ready ) != 0 ) {
+     cerr << "Error: MTS controller busy\n\n";
      exit(0);
    }
-   
    /* Display redirection must be disabled during PC operation */
    sendCommand ( displayoff );
 
@@ -54,7 +51,7 @@ void QTelescopeMTS::buildGUI(QWidget * parent) {
    widget()->setCaption("PowerFlex MTS");
 }
 
-/** Send command to telescope controller 
+/** Send command to telescope controller
    Some of the commands seen here not yet used by
    any of the methods */
 void QTelescopeMTS::sendCommand( CommandType c ) {
@@ -101,7 +98,6 @@ void QTelescopeMTS::sendCommand( CommandType c ) {
    }
 }
 int QTelescopeMTS::sendCommand( RD1CommandType c ) {
- 
   switch( c ) {
    case ready:
      sendCmd(0xa2);
@@ -116,12 +112,10 @@ int QTelescopeMTS::sendCommand( RD1CommandType c ) {
 
 /* Send the command data through serial port */
 bool QTelescopeMTS::sendCmd( int cmd ) {
-  
   /*cout <<"sending command '"<<cmd<<"'"<<endl;*/
 
-  if ( write( descriptor_, &cmd , 1 ) < 0 ) 
+  if ( write( descriptor_, &cmd , 1 ) < 0 )
     { return false; }
-  
   return true;
 }
 
@@ -150,10 +144,9 @@ double QTelescopeMTS::setSpeed(double speed) {
    }
 }
 
-/* Sets the tracking of the mount on/off 
+/* Sets the tracking of the mount on/off
    NOT IMPLEMENTED */
 bool QTelescopeMTS::setTracking(bool activated) {
   cout << "setTracking not implemented.";
   return activated;
 }
-

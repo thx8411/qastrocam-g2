@@ -17,34 +17,20 @@ QTelescopeMCU::QTelescopeMCU(const char * deviceName) :
    if (descriptor_==-1) {
       perror(deviceName);
    }
-#if 0
-   if (tcgetattr(descriptor_,&termios_p)!=0) {
-      perror("tcgetattr");
-   }
-   cfsetospeed(&termios_p,B9600);
-   cfsetispeed(&termios_p,B9600);
-   if (tcsetattr(descriptor_,TCSANOW,&termios_p)!=0) {
-      perror("tcsetattr");
-   }
-   
-   if (0!=fcntl(descriptor_,F_SETFL,O_NONBLOCK)) {
-      perror("O_NONBLOCK");
-   }
-#else
    memset(&termios_p,0,sizeof(termios_p));
    termios_p.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
    termios_p.c_iflag = IGNPAR;
    termios_p.c_oflag = 0;   /* Raw output */
-   
+
    /* set input mode (non-canonical, no echo, ... */
    termios_p.c_lflag = 0;
-   
+
    termios_p.c_cc[VTIME] = 1; /* inter-character timer unused, block instead */
    termios_p.c_cc[VMIN] = 1;  /* read 1 character minimum */
-   
+
    tcflush(descriptor_, TCIFLUSH);             /* clear the channel */
    tcsetattr(descriptor_,TCSANOW,&termios_p);
-#endif
+
    cout << "MCU update kit revision number: "<<flush<<version(versionFull)<<"\n";
    cout << "Getting aligment: "<<flush;
    string aligment=sendCommand(getAlignment);
@@ -61,7 +47,7 @@ QTelescopeMCU::QTelescopeMCU(const char * deviceName) :
       aligment_=german;
       cout <<"Telescope in German polar mount mode\n";
    }
-   
+
    cout << "Setting mount to guide speed:\n";
    setSpeed('G');
 }
@@ -133,7 +119,7 @@ bool QTelescopeMCU::sendCmd(const string & cmd,const string & param) {
 string QTelescopeMCU::recvCmd(ReturnType t) {
 // currently, the communication with the MCU update kit is very limited
 // the only information passed back is the revision information and the
-// fixed alignment "polar" (which is wrong I think, by rights the kit should 
+// fixed alignment "polar" (which is wrong I think, by rights the kit should
 // have to pass back "german")
    char buf[100];
    int lu=0;
@@ -150,7 +136,7 @@ string QTelescopeMCU::recvCmd(ReturnType t) {
    case numerics:
       lu=read(descriptor_,buf,4);
       if (lu!=4) {
-         cerr <<"expecting a 4 digit number when reading from MCU\n"; 
+         cerr <<"expecting a 4 digit number when reading from MCU\n";
       }
       buf[lu]=0;
    case strings:
@@ -224,5 +210,5 @@ string QTelescopeMCU::version(SubVersion v) {
 // The MCU update kit only understands a single version command, therefore
 // parameter v is ignored here
    sendCmd("G","V");
-   return recvCmd(revision); 
+   return recvCmd(revision);
 }

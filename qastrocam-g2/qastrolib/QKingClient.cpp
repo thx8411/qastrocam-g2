@@ -7,7 +7,6 @@
 #include <math.h>
 #include <time.h>
 
-
 QKingClient::QKingClient() {
    timeFirstFrame_=0;
    statusBar_=NULL;
@@ -25,10 +24,7 @@ bool QKingClient::registerFirstFrame() {
 bool QKingClient::findShift(ShiftInfo & shift) {
    if (QCamFindShift_hotSpot::findShift(shift)) {
 
-      //cout << "QKingClient::findShift\n";
-      
       // calculate misalignment
-
       /*
         X= x1 + dx/2 - dy/(C.dt)
         Y= y1 + dx/(C.dt)+dy/2
@@ -55,7 +51,6 @@ bool QKingClient::findShift(ShiftInfo & shift) {
                       rightPos.x(),rightPos.y());
          statusBar_->message(stat);
       }
-      
       cam().annotate(firstHotSpot_+rightPos);
       return true;
    } else {
@@ -69,6 +64,5 @@ QWidget * QKingClient::buildGUI(QWidget * parent) {
    connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
 
    statusBar_=new QStatusBar(w);
-   
    return w;
 }
