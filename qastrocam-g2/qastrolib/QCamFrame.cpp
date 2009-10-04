@@ -564,3 +564,21 @@ unsigned char * QCamFrame::VforOverwrite() {
    }
    return common_->V();
 }
+
+bool QCamFrame::isValide(int level) {
+   int i;
+   int size;
+   int value=0;
+   const unsigned char* lum;
+   lum=Y();
+   size=ySize();
+   for(i=0;i<size;i++) {
+      value+=lum[i];
+   }
+   value/=size;
+   cout << value << endl;
+   if(value>level) {
+      return(true);
+   }
+   return(false);
+}

@@ -8,7 +8,6 @@
 #include <qprogressbar.h>
 #include <qpushbutton.h>
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/videodev.h>
@@ -123,6 +122,7 @@ private:
    QLabel * infoLabel2;
    QLabel * infoInput;
 
+   QCamSlider * lxSlider;
    //QHGroupBox * remoteCTRLlx;   -> cf. protected
    QLabel * lxLabel1;
    QLabel * lxRate;
@@ -139,9 +139,8 @@ private:
    double lxDelay;
    double lxBaseTime;
    bool lxEnabled;
-   bool lxReady;
-   int lxFramesToWait;
-   int lxPaddingFrames;
+   int lxFrameCounter;
+   int lxLevel;
 
 public slots:
    void setContrast(int value);
@@ -154,6 +153,7 @@ public slots:
    void setLXmode(int val);
    void setLXtime();
    void LXframeReady();
+   void LXlevel(int level);
 protected slots:
    virtual bool updateFrame();
 signals:
