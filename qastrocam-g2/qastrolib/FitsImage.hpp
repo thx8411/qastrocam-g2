@@ -1,5 +1,5 @@
-#ifndef DIP
-#define DIP
+#ifndef _FITSIMAGE_HPP_
+#define _FITSIMAGE_HPP_
 
 #define IMAGE_WIDTH      640
 #define IMAGE_HEIGHT     480
@@ -26,25 +26,6 @@ public:
    virtual bool close() {}
 };
 
-#if 0
-class FitsImageFM: public FitsImage {
-   WORD *f_;
-   int rx_;
-   int ry_;
-   int lo_;
-   int hi_;
-   static int debug;
-   map<string,string> externalProperties_;
-public:
-   FitsImageFM(const string & fileName);
-   ~FitsImageFM();
-   bool load(QCamFrame &);
-   bool save(const QCamFrame &);
-};
-
-#endif
-
-
 #include <fitsio.h>
 
 class FitsImageCFITSIO : public FitsImage {
@@ -64,4 +45,4 @@ public:
    virtual bool close();
 };
 
-#endif /*DIP */
+#endif

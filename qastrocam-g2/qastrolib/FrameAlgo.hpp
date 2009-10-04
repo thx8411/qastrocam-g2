@@ -6,11 +6,11 @@
 
 class QWidget;
 
-/** transform frames */
+/* transform frames */
 class FrameAlgo : public QObject {
    Q_OBJECT;
 public:
-   /** Main callback to implement.
+   /* Main callback to implement.
        Transfor the frame in. result is stored in out.
        \return true if there is a result, if false out is not modified.
    */
@@ -18,9 +18,9 @@ public:
    virtual QString label() const =0;
    virtual QWidget * allocGui(QWidget * parent) const=0;
    virtual ~FrameAlgo() {}
-   
+
 public:
-   /** Forgot any state from the previous frames. */
+   /* Forgot any state from the previous frames. */
    virtual void reset() {}
 };
 
