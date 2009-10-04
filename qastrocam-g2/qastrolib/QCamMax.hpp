@@ -9,14 +9,12 @@
 
 class QImage;
 
-
 /** Stacks a serie of frame from .*/
 class QCamMax : public QCam {
    Q_OBJECT
    QCam * cam_;
    void allocBuff(const QSize &);
    void addFrame(const uchar *);
-   //QSize curSize_;
    QCamFrame yuvFrame_;
 public:
    QCamMax(QCam * cam);

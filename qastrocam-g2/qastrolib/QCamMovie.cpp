@@ -3,7 +3,6 @@
 #include "QCam.hpp"
 
 bool QCamMovie::open(const string & seqName, const QCam & cam) {
-   
    propFile_=fopen((seqName+".properties").c_str(),"w");
 
    if (propFile_ == NULL) {

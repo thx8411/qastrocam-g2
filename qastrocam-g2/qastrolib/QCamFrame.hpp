@@ -29,7 +29,6 @@ enum ImageMode {
    /* GB
       RG */
    RawRgbFrame4,
-   
 };
 
 /*** to not be used */
@@ -37,7 +36,6 @@ class QCamFrameCommon {
 protected:
    QCamFrameCommon(ImageMode mode): mode_(mode) {
       init();
-      //cout << "new()="<<this<<endl;
    };
    QCamFrameCommon * clone();
 
@@ -45,11 +43,10 @@ protected:
    void incRef() {
       assert(this);
       ++nbRef_;
-      //cout << "incRef "<<this <<" "<<nbRef_<<endl;
    }
-   
+
    void decRef();
-   
+
    const unsigned char * Y() const { return yFrame_;}
    const unsigned char * U() const { return (mode_!=YuvFrame)?UVGreyBuff():uFrame_;}
    const unsigned char * V() const { return (mode_!=YuvFrame)?UVGreyBuff():vFrame_;}
@@ -61,7 +58,7 @@ protected:
    int ySize() const { return ySize_;}
    int uSize() const { return uSize_;}
    int vSize() const { return vSize_;}
-   
+
    const unsigned char * YLine(int line) const {
       return yFrame_+line*size_.width();
    }
