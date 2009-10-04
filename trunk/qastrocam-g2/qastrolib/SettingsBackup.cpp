@@ -3,6 +3,8 @@
 
 using namespace std;
 
+// find the key position in the table
+// returns -1 if not found
 int settingsBackup::findKey(const char* key) {
    int i=0;
    while((i<NB_RECORDS)&&(datas[0][i]!=key)) i++;
@@ -10,6 +12,7 @@ int settingsBackup::findKey(const char* key) {
    return(i);
 }
 
+// add a key and a value in the table
 void settingsBackup::addKey(const char* key, const char* val) {
    if(end_record==NB_RECORDS) cout << "Settings tab full\n";
    else {
@@ -19,6 +22,7 @@ void settingsBackup::addKey(const char* key, const char* val) {
    }
 }
 
+// write the table to the file
 void settingsBackup::serialize() {
    FILE* fd;
    int i;
