@@ -85,8 +85,6 @@ QCamAutoGuidageSimple::QCamAutoGuidageSimple() {
 QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    QWidget * mainBox = QCamAutoGuidage::buildGUI(parent);
 
-   //cout << "QCamAutoGuidageSimple::buildGUI()"<<endl;
-   
    QHBox * buttons=new QHBox(mainBox);
    QCheckBox * swapEWb = new QCheckBox(tr("swap E/W"),buttons);
    connect(swapEWb,SIGNAL(toggled(bool)),this,SLOT(swapEW(bool)));
@@ -106,7 +104,7 @@ QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    connect(trAsc,SIGNAL(minChanged(int)),this,SLOT(setMinShift(int)));
    connect(trAsc,SIGNAL(maxChanged(int)),this,SLOT(setMaxShift(int)));
    connect(this,SIGNAL(ascMove(MoveDir)),trAsc,SLOT(setMoveDir(MoveDir)));
-           
+
    swapEWb->show();
    swapNSb->show();
    centerb->show();
@@ -127,7 +125,7 @@ void QCamAutoGuidageSimple::frameShift(const ShiftInfo & shift) {
                   cam()->size().height()/2);
       vs=shift.center()-oc;
    }
-   
+
    if (vs.x() != 0) {
       if (vs.x()<-minShift_) {
          if (!ewSwapped_) asc=MovedEast; else asc=MovedWest;
@@ -150,7 +148,7 @@ void QCamAutoGuidageSimple::frameShift(const ShiftInfo & shift) {
    emit(shiftAsc(vs.x()));
    emit(shiftAlt(vs.y()));
    telescope_->Update(vs.x(),vs.y());
-   
+
    switch (asc) {
    case NotMoved:
       moveAsc(NotMoved);

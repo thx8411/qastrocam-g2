@@ -20,7 +20,6 @@ void QCamAdd::removeFrame(const QCamFrame & frame) {
    moveFrame(frame,dummyMin,dummyMax,dummyCr,false);
 }
 
-
 void QCamAdd::addFrame(const QCamFrame & frame,
                        int & maxYValue,
                        int & minYValue,
@@ -37,7 +36,7 @@ void QCamAdd::moveFrame(const QCamFrame & frame,
    int tmpValue;
    maxYValue=minYValue=integrationBuff_[0];
    int * dest=integrationBuff_;
-   
+
    const uchar * src=frame.Y();
    size=frame.ySize();
    for (int i=0;i<size;++i) {
@@ -49,7 +48,7 @@ void QCamAdd::moveFrame(const QCamFrame & frame,
             minYValue=tmpValue;
          }
       } else {
-         *dest-=*src; 
+         *dest-=*src;
       }
       ++dest;
       ++src;
@@ -66,7 +65,7 @@ void QCamAdd::moveFrame(const QCamFrame & frame,
                maxCrValue=tmpValue;
             }
          } else {
-            *dest-=(-128+*src); 
+            *dest-=(-128+*src);
          }
          ++dest;
          ++src;
@@ -130,26 +129,13 @@ QCamAdd::QCamAdd(QCam* cam) :
    funcDisplay_=NULL;
    negateDisplay_=false;
    frameHistory_=new QCamFrame[nbuf];
-   //while (nbuf >0) { frameHistory_[--nbuf]=NULL;}
    allocBuff(cam_->size());
    connect(cam_,SIGNAL(newFrame()),this,SLOT(addNewFrame()));
-   //connect(cam_,SIGNAL(newFrame()),this,SLOT(addNewFrame()));
 #ifndef QCAM_ADD_COLOR
    setGray(true);
 #endif
-   //initRemoteControl(remoteCTRL_);
    label(tr("Stacking"));
 }
-
-/*
-void QCamAdd::clear() {
-   delete integrationBuff_;
-      
-   for (int i=0;i<numOfBuffers_;++i) {
-      frameHistory_[i].setSize(QSize(0,0));
-   }
-}
-*/
 
 QCamAdd::~QCamAdd() {
    //clear();
@@ -168,14 +154,12 @@ void QCamAdd::integration2yuv(const int * integration,
    int Vsize=yuv.vSize();
 #endif
    yuv.setMode(mode_);
-   //cout << "yuv.setMode "<<mode_<<"\n";
    yB=yuv.YforUpdate();
    if (funcDisplay_) {
       double dInterval=funcDisplay_(maxYValue_)-funcDisplay_(minYValue_);
       double logMin=funcDisplay_(minYValue_);
       for (i=0;i<Ysize;++i) {
          //value=(integration[i]-minYValue_)*255/interval;
-         
          if (integration[i]>0) {
             value=(int)rint((funcDisplay_(integration[i])-logMin)*255/dInterval);
             if (value <= 0) {
@@ -226,7 +210,7 @@ void QCamAdd::integration2yuv(const int * integration,
             uB[i]=value+128;
          }
       }
-      
+
       vB=yuv.VforUpdate();
       for (i=0;i<Vsize;++i) {
          //value=(integration[i+Ysize+Usize]-shiftCr)*128/maxCrValue;
@@ -249,7 +233,7 @@ QCamFrame QCamAdd::yuvFrame() const {
    }
 
    //computedFrame_=cam_->yuvFrame();
-   
+
    return computedFrame_;
 }
 
@@ -299,11 +283,10 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    case YuvFrame:
       mode_=(maxCrValueAutoSaturated_==0)?GreyFrame:YuvFrame;
    }
-   
+
    //frameHistory_[curBuff_]->removeFrame(integrationBuff_);
    removeFrame(frameHistory_[curBuff_]);
-   
-      
+
    if (maxYValueAuto_) {
       maxYValue_=-256*256;
    }
@@ -312,7 +295,7 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    }
 
    frameHistory_[curBuff_]=frame;
-      
+
    int tmpMax,tmpMin;
    addFrame(frameHistory_[curBuff_],tmpMax,tmpMin,maxCrValue_);
 
@@ -403,7 +386,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    connect(modeDisplayButton_,SIGNAL(change(int)),this,SLOT(modeDisplay(int)));
    modeDisplay(0);
    modeDisplayButton_->update(0);
-   
+
    invDisplayButton_ = new QCheckBox(tr("negate"),modeDisplayButton_);
    connect(invDisplayButton_,SIGNAL(toggled(bool)),this,SLOT(negateDisplay(bool)));
 #ifdef MultiSatMode
@@ -423,12 +406,12 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    modeDisplayButton_->show();
    invDisplayButton_->show();
    displayOptions_->show();
-   
+
    connect(this,SIGNAL(maxYValueChange(int)),
            remoteCTRLmaxYvalue_,SLOT(setValue(int)));
    connect(remoteCTRLmaxYvalue_,SIGNAL(valueChange(int)),
            this,SLOT(setMaxYvalue(int)));
-   
+
    connect(this,SIGNAL(minYValueChange(int)),
            remoteCTRLminYvalue_,SLOT(setValue(int)));
    connect(remoteCTRLminYvalue_,SIGNAL(valueChange(int)),
@@ -439,8 +422,8 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    accumulationWidget_->show();
    remoteCTRLmaxYvalue_->show();
    remoteCTRLminYvalue_->show();
-   
-   //remoteCTRL->setCaption("accumultaion");
+
+   //remoteCTRL->setCaption("accumulation");
    return remoteCTRL;
 }
 
@@ -449,7 +432,6 @@ bool QCamAdd::writeFit(const QString & name,
    cout << "writting "
         << name
         << endl;
-   
    FILE *f=fopen((name+".fit").latin1(),"w");
    if (f==NULL) {
       perror(name.latin1());
@@ -462,11 +444,9 @@ bool QCamAdd::writeFit(const QString & name,
 }
 
 bool QCamAdd::loadFit(const QString & name,int * buff) const {
-      
    cout << "loading "
         << name
         << endl;
-   
    FILE *f=fopen((name+".fit").latin1(),"r");
    if (f==NULL) {
       perror(name.latin1());

@@ -3,13 +3,10 @@
 
 #include <qobject.h>
 
-
 #include "QCam.hpp"
 #include <qsize.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <linux/types.h>
-//#include <linux/videodev.h>
 #include <math.h>
 
 #define QCAM_ADD_COLOR
@@ -39,7 +36,7 @@ class QCamAdd : public QCam {
    int numOfActiveBuffers_;
    int curBuff_;
    int * integrationBuff_;
-   
+
    QCamFrame * frameHistory_;
    mutable QCamFrame computedFrame_;
    QSize curSize_;
@@ -53,16 +50,15 @@ class QCamAdd : public QCam {
 #endif
    bool maxYValueAuto_;
    bool minYValueAuto_;
-   
+
    static const int numOfBuffers_;
-   
+
    mutable bool newIntegrationBuff_;
    double (*funcDisplay_)(double);
    bool negateDisplay_;
    ImageMode mode_;
    void allocBuff(const QSize &);
    void zeroBuff(const QSize & size);
-   //void clear();
    void addFrame(const QCamFrame &);
    bool writeFit(const QString & name,int * buff) const;
    bool loadFit(const QString & name,int * buff) const;
@@ -122,9 +118,4 @@ public slots:
 };
 
 #endif
-
-
-
-
-
 
