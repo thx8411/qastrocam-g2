@@ -133,15 +133,99 @@ CCD philipps). Le passage aux pilotes V4L2 est pr\'evu pour la version 4.5.
 
 \subsection{P\'eriph\'eriques V4L g\'en\'eriques}
 
+\paragraph*{}
+Le support des p\'eriph\'eriques g\'en\'eriques V4L est encore en plein d\'eveloppement. Un
+bon nombre d'informations sur le support ou non de vos p\'eriph\'eriques est affich\'e dans
+la console lors du lancement de qastrocam-g2 en ligne de commande. Le p\'eriph\'erique doit
+ \^etre  connect\'e avant le lancement du logiciel. Ces informations seront, \`a terme, 
+ accessibles par l'interface graphique.
+
+\paragraph*{} 
+En cas de soucis, un  appel \`a la commande
+ {\tt dmesg} juste apr\`es le branchement peut vous aider \`a identifier le probl\`eme. 
+
 \subsubsection{Modes d'acc\`es}
+
+\paragraph*{}
+Qastrocam-g2 g\`ere deux des trois m\'ethodes d'acc\`es propos\'ees par les API V4L : la m\'ethode
+{\tt read/write} et la m\'ethode {\tt mmap}, ce qui couvre la quasi totalit\'e des pilotes V4L
+disponibles. La m\'ethode {\tt mmap} permet des acc\`es directes \`a la m\'emoire du pilote,
+assurant ainsi des temps d'acc\`es plus faibles. Cette m\'ethode est donc utilis\'ee par d\'efaut.
+En cas de probl\`eme, qastrocam-g2 bascule automatiquement sur la m\'ethode {\tt read/write}. Ceci
+peut occasionner un l\'eger d\'ecalage entre l'image captur\'ee et l'image vue. 
+
+\subsubsection{Sources vid\'eo}
+
+\paragraph*{}
+Lorsque le p\'eriph\'erique propose plusieures sources de captures vid\'eo (Tuner, Composite et
+S-VHS, par exemple), qastrocam-g2 utilise la source par d\'efaut. Il est cependant possible de
+choisir cette source via l'option {\tt -i}. La liste des sources disponibles est affich\'ee dans
+la console lors du lancement.
+
+\paragraph*{}
+L'option choisie, si elle est valide, est alors enregist\'ee dans le fichier de configuration.
 
 \subsubsection{R\'esolutions}
 
+\paragraph*{}
+La r\'esolution maximale est pour l'instant la r\'esolution du standard PAL, soit 720x576 pixels.
+La majorit\'e des mat\'eriels de capture vid\'eo permettent le choix d'une r\'esolution quelconque
+entre les r\'esolutions minimales et maximales (pourvu que celles-ci soient multiples de quatre ou
+de huit). Le choix entre toutes ces r\'esolutions possibles est rarement pertinent. Qastrocam-g2
+propose donc les r\'esolutions disponibles du maximum au minimum, chaque r\'esolution \'etant
+le quart (en nombre de pixels) de la pr\'ec\'edente.
+
+\paragraph*{}
+Ainsi, les r\'esolutions disponibles seront souvent les suivantes en PAL :
+
+\paragraph*{}
+\begin{itemize}
+\item 720x576
+\item 360x288
+\item 180x144
+\end{itemize}
+
+\paragraph*{}
+Elles seront souvent les suivantes en NTSC :
+
+\paragraph*{}
+\begin{itemize}
+\item 640x480
+\item 320x240
+\item 160x120
+\end{itemize}
+
 \subsubsection{Palettes}
+
+Qastrocam-g2 supporte les palettes V4L suivantes. Ces palettes sont test\'es par ordre de qualit\'e,
+comme pr\'esent\'ees dans cette liste :
+
+\paragraph*{}
+\begin{itemize}
+\item RGB24 (support partiel, luminance uniquement)
+\item YUYV (YUV422)
+\item YUV420p (Progressif)
+\item YUV420i (entrelac\'e)
+\item 8 bits grey
+\end{itemize}
+
+\paragraph*{}
+Le support de la palette JPEG est pr\'evu pour les versions futures. Bien que la qualit\'e
+de cette palette soit souvent m\'ediocre, elle permettra l'utilisation de nombreuse petites
+webcams du commerce pour l'autoguidage.
 
 \subsubsection{Contr\^oles}
 
+\paragraph*{}
+Les contr\^oles disponibles (luminosit\'e, contraste, etc.) sont ceux propos\'es par le pilote
+V4L. Ils sont accessibles dans l'interface graphique par l'interm\'diaire de curseurs.
+
 \subsubsection{Nombre d'images par secondes}
+
+\paragraph*{}
+Le nombre d'images par seconde (framerate) utili\'es est celui-ci du standard vid\'eo d\'etect\'e,
+soit 25 images par secondes pour le PAL et 30 images par secondes pour le NTSC. Ceci peut \^etre
+modifi\'e par l'utilisation du module de pose longue.  
 
 \subsection{Webcams "VESTA"}
 
