@@ -62,7 +62,7 @@ void QCamSlider::setValue(int val) {
 
 void QCamSlider::sliderMoveKey(int val) {
    if (slider_ && lastEmit_ != val) {
-      std::cout << "sliderMoveKey" << std::endl;
+      //std::cout << "sliderMoveKey" << std::endl;
       if (checkBox_) {
          checkBox_->setChecked(false);
       }
@@ -78,7 +78,7 @@ void QCamSlider::sliderMove(int val) {
       return;
    }
 
-   std::cout << "sliderMove"<<std::endl;
+   //std::cout << "sliderMove"<<std::endl;
    slider_->setFocus();
 
    if (checkBox_) {

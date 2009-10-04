@@ -188,6 +188,8 @@ public:
    const string & getProperty(const string & propName) const { return getCommon()->getProperty(propName);}
    void exportProperties(map<string,string> & dest) const;
    void setAllProperies(const map<string,string> & src) const;
+
+   bool isValide(int level);
 private:
    QCamFrameCommon * common_;
 };

@@ -154,12 +154,11 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    label(capability_.name);
 
-   lxPaddingFrames=2;
    lxDelay=0.2;
+   lxLevel=64;
    lxControler=NULL;
    lxEnabled=false;
    lxBaseTime=getTime();
-   lxReady=false;
    lxTimer=new QTimer(this);
    lxTimer->stop();
    connect(lxTimer,SIGNAL(timeout()),this,SLOT(LXframeReady()));
@@ -373,26 +372,6 @@ bool QCamV4L::updateFrame() {
    void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
    YBuf=(void*)yuvBuffer_.YforOverwrite();
 
-   // lx support
-   if(lxEnabled) {
-      lxBar->setProgress((int)((getTime()-lxBaseTime)*1000));
-      if(!lxReady) {
-         dropFrame();
-         cout << "dropping frame" << endl;
-         return(0);
-      } else {
-         if(lxFramesToWait!=0) {
-            lxFramesToWait--;
-            dropFrame();
-            cout << "dropping frame" << endl;
-            return(0);
-         } else {
-            lxFramesToWait=lxPaddingFrames;
-         }
-      }
-      cout << "reading frame" << endl;
-   }
-
    switch(mode_) {
       case GreyFrame:
       case RawRgbFrame1:
@@ -504,6 +483,18 @@ bool QCamV4L::updateFrame() {
    }
    }
    if (res) {
+      if(lxEnabled) {
+         lxFrameCounter++;
+         lxBar->setProgress(lxFrameCounter);
+         if(!yuvBuffer_.isValide(lxLevel)) {
+            if(lxFrameCounter>(int)(lxDelay*(double)(frameRate_)+4))
+               lxFrameCounter=0;
+            //cout << "frame dropped" << endl;
+            return(0);
+         }
+         lxFrameCounter=0;
+         lxControler->startAccumulation();
+      }
       newFrameAvaible();
         if (options_ & haveBrightness) emit brightnessChange(getBrightness());
         if (options_ & haveContrast) emit contrastChange(getContrast());
@@ -521,14 +512,6 @@ bool QCamV4L::updateFrame() {
       frameRate_=newFrameRate;
       if (timer_) timer_->changeInterval(1000/frameRate_);
    }*/
-
-   // lx support
-   if(lxEnabled) {
-      //usleep((int)(1.0/(float)(frameRate_*2.0*1000.0)));
-      lxReady=false;
-      lxControler->startAccumulation();
-      lxBaseTime=getTime();
-   }
 
    return res;
 }
@@ -680,6 +663,12 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    //remoteCTRLcontrast_->show();
    //remoteCTRLbrightness_->show();
 
+   // level slider
+   lxSlider=new QCamSlider("Lvl.",false,hbox,0,255);
+   lxSlider->setValue(lxLevel);
+   connect(lxSlider,SIGNAL(valueChange(int)),this,SLOT(LXlevel(int)));
+   QToolTip::add(lxSlider,"Dropping frame level");
+
    // palette and input display
    infoLabel1=new QLabel(infoBox);
    infoLabel1->setText("Input :");
@@ -790,7 +779,8 @@ void QCamV4L::setLXmode(int value) {
          lxEnabled=true;
          lxTimer->start((int)(lxDelay*1000));
          lxControler->enterLongPoseMode();
-         lxFramesToWait=lxPaddingFrames;
+         lxFrameCounter=0;
+         lxControler->startAccumulation();
          //cout << "lxPar" << endl;
          break;
       case lxSer :
@@ -803,7 +793,8 @@ void QCamV4L::setLXmode(int value) {
          lxEnabled=true;
          lxTimer->start((int)(lxDelay*1000));
          lxControler->enterLongPoseMode();
-         lxFramesToWait=lxPaddingFrames;
+         lxFrameCounter=0;
+         lxControler->startAccumulation();
          //cout << "lxSer" << endl;
          break;
    }
@@ -819,20 +810,26 @@ void QCamV4L::setLXtime() {
       val=0.2;
    val=round(val*5)/5;
    lxDelay=val;
-   lxBar->setTotalSteps((int)(lxDelay*1000));
+   lxBar->setTotalSteps((int)(lxDelay*frameRate_));
    lxBar->reset();
    lxTimer->stop();
    lxTimer->start((int)(lxDelay*1000));
+   lxFrameCounter=0;
    //cout << "new delay : " << lxDelay << endl;
    lxTime->setText(QString().sprintf("%4.2f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
+   lxControler->startAccumulation();
 }
 
 void QCamV4L::LXframeReady() {
    lxControler->stopAccumulation();
-   //usleep(40);
-   lxReady=true;
-   cout << "lx timer timeout" << endl;
+   //usleep((int)(1.0/((double)frameRate_*2.0*1000.0)));
+   //lxControler->startAccumulation();
+   //cout << "lx timer timeout" << endl;
+}
+
+void QCamV4L::LXlevel(int level) {
+   lxLevel=level;
 }
 
 bool QCamV4L::mmapInit() {
