@@ -3,12 +3,9 @@
 
 #include <qpainter.h>
 #include <qimage.h>
-//#include <qhgroupbox.h>
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <linux/types.h>
-//#include <linux/videodev.h>
 
 #include "QCamClient.hpp"
 
@@ -39,7 +36,6 @@ private:
    QVGroupBox * histoGroup_;
    QHistogram * histogramArea_;
    QVGroupBox * focusGroup_;
-   
    QPushButton * resetFocus_;
    QWidget * focusLevel_;
    QHistogram * focusArea_;
