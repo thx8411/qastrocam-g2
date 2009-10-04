@@ -11,21 +11,20 @@ extern settingsBackup settings;
 
 QTelescopeAPM::QTelescopeAPM(const char * pport) : QTelescope() {
    portName=pport;
+   // get an instance of the port object (singleton)
    paralPort=PPort::instance();
-
+   // get access to the port
    portEntry=paralPort->getAccess(portName);
    if(portEntry==-1) {
       cerr << "unable to get access to " << portName << endl;
    }
-
+   // are levels inverted in settings file ?
    if(settings.haveKey("TS_LEVELS_INVERTED")&&(strcasecmp(settings.getKey("TS_LEVELS_INVERTED"),"yes")==0)) {
       go=false;
       stop=true;
-      //cout << "APM inverted" << endl;
    } else {
       go=true;
       stop=false;
-      //cout << "APM not inverted" << endl;
    }
 
    stopE();

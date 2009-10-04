@@ -6,7 +6,6 @@
 #include "PPort.hpp"
 
 /** Telescope implementation for APM interface. **/
-
 class QTelescopeAPM : public QTelescope {
    Q_OBJECT;
 public:
@@ -24,11 +23,16 @@ public slots:
    virtual double setSpeed(double speed);
    virtual bool setTracking(bool activated);
 private:
+   // bit values for stop and start
    bool go;
    bool stop;
+   // port entry in PPdev table
    int portEntry;
+   // port device name
    const char* portName;
+   // PPdev object
    PPort* paralPort;
+   // used bits
    enum BitControl { EastBit=4,WestBit=5,NorthBit=6,SouthBit=7};
 };
 
