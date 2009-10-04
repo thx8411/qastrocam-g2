@@ -29,6 +29,7 @@
 #include "QKingClient.hpp"
 #include "SettingsBackup.hpp"
 
+// options strings
 const string BrutDisplayString("-db");
 const string PPortOptionString("-pc");
 const string HistogramOptionString("-h");
@@ -56,8 +57,10 @@ const string ExpertMode("--expert");
 const string DeviceSource("-i");
 const string DevicePalette("-p");
 
+// back object, present everywhere
 settingsBackup settings;
 
+// qastrocam-g2 usage
 void usage(const char * progName) {
    cerr << "usage: "
         << progName
@@ -100,21 +103,24 @@ void usage(const char * progName) {
    cerr << endl;
 }
 
+// ??
 QTabWidget * getAllRemoteCTRL(QWidget * parent=0) {
    static QTabWidget * allRemote = new QTabWidget(parent,"allRemoteCTRL");
    return allRemote;
 }
 
+// ??
 void addRemoteCTRL(QCam * cam) {
    getAllRemoteCTRL()->addTab(cam->buildGUI(getAllRemoteCTRL()),cam->label());
 }
 
+// ??
 void addRemoteCTRL(QCamClient * client) {
    getAllRemoteCTRL()->addTab(client->buildGUI(getAllRemoteCTRL()),client->label());
 }
 
 int main(int argc, char ** argv) {
-
+   // default options values
    bool accum=false,max=false,mirror=false;
    bool brutDisplay=false,accumDisplay=false,maxDisplay=false,mirrorDisplay=false;
    bool autoAlign=false,autoAlignDisplay=false;
@@ -131,11 +137,14 @@ int main(int argc, char ** argv) {
    cout << "* based on " << QCamUtilities::getVersionId() <<endl;
    cout << "* " << qastrocamWeb << endl;
    cout << "* " << qastrocamMail << endl;
-   
+
+   // reading settings
    settings.deSerialize();
 
+   // set telescope device, using settings
    if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
 
+   // decode all options
    for (int i=1;i <argc;++i) {
       if (BrutDisplayString == argv[i]) {
          brutDisplay=true;
@@ -235,6 +244,7 @@ int main(int argc, char ** argv) {
       }
    }
 
+   // displays telescope liste
    if (telescopeType == "help") {
       cout << "supported scopes:\n"
            << "* apm\n"
@@ -246,6 +256,7 @@ int main(int argc, char ** argv) {
       exit(0);
    }
 
+   // setting path
    if (libPath.empty()) {
       QCamUtilities::computePathName(argv[0]);
    } else {
@@ -253,33 +264,27 @@ int main(int argc, char ** argv) {
    }
    cout << "* lib directory "<<QCamUtilities::basePathName()<<"\n";
    cout << endl;
-  
+
+   // use SDL messages
    if (QCamUtilities::useSDL()) {
 	   cout << "SDL display enabled. (If only a black windows is displayed,"
                 << " try option "<<SDLoff<<" when launchnig qastrocam)\n";
    }
 
+   // QT app settings
    QApplication app(argc,argv);
-   
    QCamUtilities::setLocale(app);
 
+   // main window setting
    QVBox mainWindow;
    QPushButton quit(&mainWindow,"Quit");
    QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
    quit.setPixmap(*QCamUtilities::getIcon("exit.png"));
    app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
-      
-   /*
-   if (!(brutDisplay || accumDisplay
-         || telescope || maxDisplay || autoAlignDisplay
-         || mirror)) {
-      usage(argv[0]);
-      exit(1);
-   }
-   */
+
+   // creating telescope object
    QTelescope * theTelescope=NULL;
-   
    if (telescopeType.length() != 0) {
       if (telescopeType=="autostar") {
          theTelescope = new QTelescopeAutostar(telescopeDeviceName.c_str());
@@ -302,10 +307,8 @@ int main(int argc, char ** argv) {
       theTelescope->buildGUI();
    }
 
-   // creation du module d'acquisition
-   //QCamVesta cam("/dev/video0");
+   // capture module creation
    QCam  * cam =NULL;
-	   
    do {
       cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),videoDeviceSource.c_str());
       if (cam == NULL) {
@@ -330,8 +333,8 @@ int main(int argc, char ** argv) {
    cam->setCaptureFile("raw");
    QCam * camSrc=cam;
 
+   // King client object creation
    QKingClient * kingClient=NULL;
-   
    if (kingOption) {
       cout << "King aligment enabled\n";
       kingClient=new QKingClient();
@@ -340,10 +343,9 @@ int main(int argc, char ** argv) {
       //addRemoteCTRL(kingClient);
       kingClient->buildGUI(NULL)->show();
    }
-   
 
+   // alignement object
    QCamFindShift * findShift=NULL;
-   
    if (theTelescope || autoAlign) {
       //QCamFindShift * baryShift=new QCamFindShift_barycentre();
       findShift=new QCamFindShift_hotSpot(theTelescope);
@@ -355,18 +357,18 @@ int main(int argc, char ** argv) {
       tracker->setCam(camSrc);
       tracker->setTracker(findShift);
       tracker->setScope(theTelescope);
-      /*
-        GUI build later
-        tracker->buildGUI();
-      */
+      //GUI build later
+      //tracker->buildGUI();
    }
 
+   // histogram creation
    if (histogram) {
       camSrc->displayHistogram(true);
       //CamHistogram * histo= new CamHistogram(*camSrc);
       //histo->show();
    }
 
+   // autoaligne creation
    if (autoAlign) {
       assert(findShift);
       QCamAutoAlign * autoAlign=new QCamAutoAlign();
@@ -375,7 +377,7 @@ int main(int argc, char ** argv) {
       camSrc=autoAlign;
 
       if (autoAlignDisplay) {
-         camSrc->displayFrames(true);   
+         camSrc->displayFrames(true);
       }
    }
 
@@ -386,9 +388,9 @@ int main(int argc, char ** argv) {
          tracker->buildGUI();
       }
    }
-   
+
+   // mirror module
    if (mirror) {
-      //mirror module
       QCamTrans  * camMirror = new QCamTrans();
       FrameMirror * mirrorAlgo = new FrameMirror();
       camMirror->connectCam(*camSrc);
@@ -398,20 +400,19 @@ int main(int argc, char ** argv) {
       camSrc=camMirror;
 
       if (mirrorDisplay) {
-         camSrc->displayFrames(true);   
+         camSrc->displayFrames(true);
       }
-      
    }
 
+   // accumulation module
    if (accum) {
-      //creation du module d'acumulation
       QCam  * camAdd = new QCamAdd(camSrc);
       addRemoteCTRL(camAdd);
       camAdd->setCaptureFile("add");
       camSrc=camAdd;
 
       if (accumDisplay) {
-         camSrc->displayFrames(true);   
+         camSrc->displayFrames(true);
       }
    }
    if (max) {
@@ -422,17 +423,17 @@ int main(int argc, char ** argv) {
       camSrc=camMax;
 
       if (maxDisplay) {
-         camSrc->displayFrames(true);   
+         camSrc->displayFrames(true);
       }
    }
-   QCamUtilities::setQastrocamIcon(&mainWindow);
 
-   //mainWindow.move(0,0);
+   // main window display
+   QCamUtilities::setQastrocamIcon(&mainWindow);
    mainWindow.show();
    mainWindow.adjustSize();
-
    getAllRemoteCTRL()->show();
    getAllRemoteCTRL()->adjustSize();
-   
+
+   // QT event loop
    return app.exec();
 }
