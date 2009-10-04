@@ -14,7 +14,6 @@ bool FrameMirror::transform(const QCamFrame in, QCamFrame & out) {
                in.size().width()-1,in.size().height()-1,
                0,0,
                swapLeftRight_,swapUpDown_);
-      
    } else {
       out=in;
    }
@@ -49,7 +48,7 @@ FrameMirror::Widget::Widget(QWidget * parent,const FrameMirror * algo):
    upDown_->setToggleButton(true);
    connect(upDown_,SIGNAL(toggled(bool)),algo,SLOT(swapUpDown(bool)));
    connect(algo,SIGNAL(upDownSwapped(bool)),upDown_,SLOT(setOn(bool)));
-           
+
    leftRight_ = new QPushButton(tr("swap Left/Right"),this);
    leftRight_->setToggleButton(true);
    connect(leftRight_,SIGNAL(toggled(bool)),algo,SLOT(swapLeftRight(bool)));
@@ -62,4 +61,3 @@ FrameMirror::Widget::~Widget() {
    delete upDown_;
    upDown_=NULL;
 }
-
