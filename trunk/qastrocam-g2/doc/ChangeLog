@@ -6,7 +6,7 @@
   - levels (inverted/normal) can be set for // port LX
   - APM telescope and // port LX may now share the same port with ppdev and lp devices
   - V4L generic palette can be forced using -p option
-  - supports ppdev and standard lp ports witch the "latch mod" (for "usb to //" devices)
+  - supports ppdev and standard lp ports with the "latch mod" (for "usb to //" devices)
   - small yuyv to yuv420p speed improvement
   - documentation about the "latch" // mod added
   - active V4L input and palette displayed in gui
