@@ -20,7 +20,6 @@
 
 QCamAutoAlign::QCamAutoAlign() {
    tracker_=NULL;
-   //initRemoteControl(remoteCTRL_);
    label(tr("Align"));
 #if ONE_MAP
    shiftMap_=NULL;
@@ -56,11 +55,11 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    QSizePolicy sizePolicyMax;
    sizePolicyMax.setVerData(QSizePolicy::Expanding);
    sizePolicyMax.setHorData(QSizePolicy::Expanding);
-   
+
    QSizePolicy sizePolicyMin;
    sizePolicyMin.setVerData(QSizePolicy::Minimum);
    sizePolicyMin.setHorData(QSizePolicy::Minimum);
-   
+
    QWidget * remoteCTRL= QCam::buildGUI(parent);
    QPushButton * resetCenter = new QPushButton(tr("reset"),remoteCTRL);
    connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
@@ -87,7 +86,6 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    QToolTip::add(scaleSlider_,
                  tr("Scale of the shift history Map"));
 
-   
    shiftMap_= new QVectorMap(remoteCTRL);
    shiftMap_->setSizePolicy(sizePolicyMax);
    shiftMap_->setMode(DrawLine);
@@ -100,13 +98,12 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    shiftXhisto_->setDataSize(200);
    shiftXhisto_->setAutoShift(true);
    shiftXhisto_->setAverage(4);
-   
    shiftYhisto_ = new QHistogram(remoteCTRL);
    shiftYhisto_->setDataSize(200);
    shiftYhisto_->setAutoShift(true);
    shiftYhisto_->setAverage(4);
 #endif
-   
+
    resetCenter->show();
 
    return remoteCTRL;
@@ -178,7 +175,7 @@ void QCamAutoAlign::shifted(const ShiftInfo & shift) {
 #else
       if (shiftXhisto_) shiftXhisto_->setValue(shift.shift().x());
       if (shiftYhisto_) shiftYhisto_->setValue(shift.shift().y());
-#endif                                          
+#endif
       importProperties(tracker_->cam());
       setProperty("shift X",shift.shift().x());
       setProperty("shift Y",shift.shift().y());
@@ -195,7 +192,6 @@ void QCamAutoAlign::shifted(const ShiftInfo & shift) {
             perror(buff);
          }
       }
-      
       newFrameAvaible();
    }
 }
@@ -206,8 +202,6 @@ QCamFrame QCamAutoAlign::yuvFrame() const {
 
 void QCamAutoAlign::shiftFrame(const ShiftInfo & shift,const QCamFrame orig,
                                QCamFrame & shifted,float crop,bool center) {
-   
-
    int shiftX=(int)shift.shift().x();
    int shiftY=(int)shift.shift().y();
 
@@ -227,9 +221,8 @@ void QCamAutoAlign::shiftFrame(const ShiftInfo & shift,const QCamFrame orig,
       shifted = orig;
       return;
    }
-   
+
    /* black background */
-   
    shifted.setSize(QSize(orig.size().width()-cropX,
                          orig.size().height()-cropY));
    shifted.clear();

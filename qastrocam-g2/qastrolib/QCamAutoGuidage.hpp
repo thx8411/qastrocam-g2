@@ -58,7 +58,7 @@ protected:
    MoveDir lastAscMove_;
    void moveAsc(MoveDir EWmove);
    void moveAlt(MoveDir NSmove);
-   
+
 private:
    QCam * cam_;
    QCamFindShift * tracker_;

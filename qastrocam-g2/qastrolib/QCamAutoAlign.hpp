@@ -22,7 +22,6 @@ class QCheckBox;
 class QCamAutoAlign : public QCam {
    Q_OBJECT;
 
-
 public:
    QCamAutoAlign();
    QCamFrame yuvFrame() const;
@@ -50,7 +49,6 @@ private:
    QCamFindShift * tracker_;
    ShiftInfo currentShift_;
    QCamFrame yuvFrame_;
-   //QFrameDisplay  * dispImgCenter_;
    QHGroupBox * findShiftWidget_;
    QWidget * findShiftCtrl_;
 #define ONE_MAP 1
