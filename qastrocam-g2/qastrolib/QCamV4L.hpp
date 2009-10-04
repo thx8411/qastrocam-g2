@@ -85,6 +85,7 @@ protected:
    virtual int getFrameRate() const { return 10;}
 
    QHGroupBox * remoteCTRLlx;
+   QCamSlider * lxSlider;
 
 private:
    v4l2_input input;
@@ -122,7 +123,7 @@ private:
    QLabel * infoLabel2;
    QLabel * infoInput;
 
-   QCamSlider * lxSlider;
+   //QCamSlider * lxSlider;   -> cf. protected
    //QHGroupBox * remoteCTRLlx;   -> cf. protected
    QLabel * lxLabel1;
    QLabel * lxRate;
