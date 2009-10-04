@@ -1,18 +1,12 @@
 #include "bayer.hpp"
 
-#include <iostream>
-
-using namespace std;
-
 #define LINE4(jj) int LineAddr4=(jj)*w*4;
-#define LINE(jj)  int LineAddr=(jj)*w;
 
-#define A4(ii,jj) (((jj)*w*+(ii))*4)
 #define A(ii,jj) ((jj)*w+(ii))
 
 #define P4(ii) int Paddr4=LineAddr4+(ii)*4;
-#define P(ii) int Paddr=LineAddr+(ii);
 
+// vesta raw to rgb conversion
 void raw2rgb(unsigned char * dest,const unsigned char * const data,int w,
              int h,int mode) {
    int redShiftX,redShiftY;
@@ -53,29 +47,22 @@ void raw2rgb(unsigned char * dest,const unsigned char * const data,int w,
       greenShiftY=0;
       break;
    }
-   
-   //cout << "bayer "<<w<<"x"<<h<<"\n";
-   
+
    for(int j=2;j<h-2;++j) {
       LINE4(j);
-      //LINE(j);
-      
       for(int i=2;i<w-2;++i) {
          int lx,ly;
-         // RED
-         
+
          lx=(i-redShiftX)%2;
          ly=(j-redShiftY)%2;
 
          P4(i);
-         //P(i);
-         
+
          if (lx==0 && ly==0) {
             dest[Paddr4+2]=data[A(i,j)];
          } else if (lx==0 && ly==1) {
             dest[Paddr4+2]
                =(data[A(i,j-1)]+data[A(i,j+1)])>>1;
-            
          } else if (lx==1 && ly==0) {
             dest[Paddr4+2]
                = (data[A(i-1,j)]+data[A(i+1,j)])>>1;
@@ -93,7 +80,6 @@ void raw2rgb(unsigned char * dest,const unsigned char * const data,int w,
          } else if (lx==0 && ly==1) {
             dest[Paddr4+0]
                =(data[A(i,j-1)]+data[A(i,j+1)])>>1;
-            
          } else if (lx==1 && ly==0) {
             dest[Paddr4]
                = (data[A(i-1,j)]+data[A(i+1,j)])>>1;
@@ -116,5 +102,4 @@ void raw2rgb(unsigned char * dest,const unsigned char * const data,int w,
          }
       }
    }
-   //return dest;
 }
