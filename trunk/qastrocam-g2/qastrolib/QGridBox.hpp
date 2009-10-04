@@ -11,11 +11,11 @@ public:
    virtual void addItem ( QLayoutItem * item );
    virtual QLayoutIterator iterator ();
 private:
-   /// max width or height (depending of the Orientation
+   // max width or height (depending of the Orientation)
    const int size_;
-   /// current number of inserted elements
+   // current number of inserted elements
    int nbElements_;
-   /// orientation
+   // orientation
    const Orientation orientation_;
 };
 

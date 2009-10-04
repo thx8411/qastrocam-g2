@@ -6,7 +6,7 @@
 
 using namespace std;
 
-/** Control PowerFlex MTS drive controllers from Boxdoerfer 
+/** Control PowerFlex MTS drive controllers from Boxdoerfer
     Elektronik via RS-232. Based on the manual of version 2.00.
 
     Supported models: MTS-3, MTS-3LP, MTS3-SLP, MTS-3SDI
@@ -67,4 +67,5 @@ private:
    /* The file descpritor of the serial port. */
    int descriptor_;
 };
+
 #endif

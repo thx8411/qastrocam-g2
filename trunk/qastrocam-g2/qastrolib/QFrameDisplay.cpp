@@ -19,7 +19,7 @@ void QFrameDisplay::frame(const QCamFrame &frame) {
    resize(frame_.size());
    update();
 }
-   
+
 void QFrameDisplay::paintEvent(QPaintEvent * ev) {
    if (!frame_.empty()) {
       painter_->begin(this);

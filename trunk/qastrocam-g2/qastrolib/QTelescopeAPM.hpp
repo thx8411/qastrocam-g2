@@ -31,4 +31,5 @@ private:
    PPort* paralPort;
    enum BitControl { EastBit=4,WestBit=5,NorthBit=6,SouthBit=7};
 };
+
 #endif

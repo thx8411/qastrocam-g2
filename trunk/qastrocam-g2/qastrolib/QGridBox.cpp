@@ -9,12 +9,10 @@ QGridBoxLayout::QGridBoxLayout(QWidget * parent , Orientation ori, int size,
    size_(size),
    nbElements_(0),
    orientation_(ori) {
-   //cout << "QGridBoxLayout created\n";
    setAutoAdd(true);
 }
 
 void QGridBoxLayout::addItem(QLayoutItem * item ) {
-   //cout << "adding item\n";
    int col,row;
    if (orientation_==Vertical) {
       col=nbElements_%size_;
@@ -24,11 +22,10 @@ void QGridBoxLayout::addItem(QLayoutItem * item ) {
       col=nbElements_/size_;
    }
    ++nbElements_;
-   QGridLayout::addItem(item, row, col);   
+   QGridLayout::addItem(item, row, col);
 }
 
 QLayoutIterator QGridBoxLayout::iterator () {
-   //cout << "QGridBoxLayout::iterator\n";
    return QGridLayout::iterator();
 }
 

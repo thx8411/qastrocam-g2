@@ -4,7 +4,6 @@
 #include "QTelescope.hpp"
 
 /** Telescope implementation for a generic fifo interface.
-    
  */
 class QTelescopeFifo : public QTelescope {
    Q_OBJECT;
@@ -17,11 +16,12 @@ public:
    virtual void goN(float shift) {}
    virtual void stopW() {}
    virtual void stopE() {}
-   virtual void stopN() {} 
+   virtual void stopN() {}
    virtual void stopS() {}
    virtual double setSpeed(double speed) {return speed; }
    virtual bool setTracking(bool activated) {return true; }
   private:
    int descriptor_;
 };
+
 #endif

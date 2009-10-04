@@ -71,8 +71,9 @@ private:
    bool sendCmd(const string & cmd,const string & param="");
    /** read the result. */
    string recvCmd(ReturnType t);
-   /// the file decritor of the serial port.
+   // the file decritor of the serial port.
    int descriptor_;
    TrackingMode aligment_;
 };
+
 #endif

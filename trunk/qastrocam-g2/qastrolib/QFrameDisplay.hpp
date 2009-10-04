@@ -20,4 +20,5 @@ private:
    QPainter * painter_;
    QPen * pen_;
 };
+
 #endif

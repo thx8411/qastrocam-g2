@@ -1,5 +1,6 @@
 #ifndef _QDirectoryChooser_hpp_
 #define _QDirectoryChooser_hpp_
+
 #include <qpushbutton.h>
 #include <qobject.h>
 
@@ -15,4 +16,5 @@ private slots:
 signals:
    void directoryChanged(const QString &);
 };
+
 #endif
