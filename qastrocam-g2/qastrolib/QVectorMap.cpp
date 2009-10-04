@@ -65,7 +65,6 @@ void QVectorMap::paintEvent(QPaintEvent * ev) {
    if (!vectorList_.empty()) {
       VectorList::const_iterator it=vectorList_.begin();
       Vector2D previous=*it;
-      
       int NbPoint=vectorList_.size();
       int curPoint=1;
       while(it != vectorList_.end()) {

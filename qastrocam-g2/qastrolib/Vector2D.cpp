@@ -8,7 +8,7 @@ Vector2D::Vector2D() {
 Vector2D::Vector2D(const Vector2D & other) {
    *this=other;
 }
-   
+
 Vector2D::Vector2D(double x, double y) {
    set(x,y);
 }

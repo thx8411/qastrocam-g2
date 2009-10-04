@@ -1,5 +1,6 @@
 #ifndef _SCmod_hpp_
 #define _SCmod_hpp_
+
 /** Abstract class to control an SC moded webcam
  */
 

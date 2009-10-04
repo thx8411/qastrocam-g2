@@ -1,5 +1,6 @@
 #ifndef _Vector2D_hpp_
 #define _Vector2D_hpp_
+
 /** simple vector class in 2 dimension.
     Like QPoint but with float.
 */
