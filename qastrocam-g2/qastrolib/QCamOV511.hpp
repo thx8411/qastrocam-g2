@@ -19,4 +19,5 @@ public:
    QCamOV519(const char * devpath="/dev/video0");
 protected:
 };
+
 #endif

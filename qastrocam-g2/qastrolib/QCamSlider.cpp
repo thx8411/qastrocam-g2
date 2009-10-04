@@ -21,7 +21,6 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
    slider_=new QSlider(QSlider::Horizontal,this);
    slider_->setMinValue(minVal);
    slider_->setMaxValue(maxVal);
-   //slider_->setMinValue(minVal);
 
    slider_->setLineStep((maxVal-minVal)/100);
    if (slider_->lineStep()==0) {
@@ -31,7 +30,7 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
    if (slider_->pageStep()==0) {
       slider_->setPageStep(2);
    }
-      
+
    connect(slider_,SIGNAL(sliderMoved(int)),this,SLOT(sliderMove(int)));
    connect(slider_,SIGNAL(valueChanged(int)),this,SLOT(sliderMoveKey(int)));
    valueLabel_= new QLabel(this);
@@ -62,7 +61,6 @@ void QCamSlider::setValue(int val) {
 
 void QCamSlider::sliderMoveKey(int val) {
    if (slider_ && lastEmit_ != val) {
-      //std::cout << "sliderMoveKey" << std::endl;
       if (checkBox_) {
          checkBox_->setChecked(false);
       }
@@ -77,8 +75,6 @@ void QCamSlider::sliderMove(int val) {
    if (!slider_) {
       return;
    }
-
-   //std::cout << "sliderMove"<<std::endl;
    slider_->setFocus();
 
    if (checkBox_) {

@@ -35,7 +35,5 @@ private slots:
  signals:
    void valueChange(int);
 };
+
 #endif
-
-
-

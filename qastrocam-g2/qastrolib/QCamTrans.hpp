@@ -54,4 +54,5 @@ private:
    QWidget * algoWidget_;
    QSize emptySize_;
 };
+
 #endif

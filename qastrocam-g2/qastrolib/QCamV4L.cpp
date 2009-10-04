@@ -14,7 +14,7 @@
 #include <string>
 #include <qtabwidget.h>
 #include <qsocketnotifier.h>
-#include <qtimer.h> 
+#include <qtimer.h>
 #include <qtooltip.h>
 
 #include "QCamSlider.hpp"
@@ -103,14 +103,14 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    ioctl(device_,VIDIOC_G_INPUT,&_index);
    input.index=_index;
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
-   cout << "using : " << input.name << endl << endl; 
+   cout << "using : " << input.name << endl << endl;
 
-   /* storing default source */ 
+   /* storing default source */
    settings.setKey(keyName.c_str(),(char*)input.name);
 
    /* getting video standard */
    if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
-      perror("Getting Standard"); 
+      perror("Getting Standard");
    };
    //cout << _index << endl;
 
@@ -122,7 +122,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    }
    if(res!=0) {
       frameRate_=10;
-      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s\n" ;  
+      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s\n" ;
    } else {
       cout << "Video standard : " << standard.name << endl;
       frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
@@ -231,15 +231,12 @@ void QCamV4L::init(int preferedPalette) {
       }
       while (false);
    }
-   
    mode_ = (picture_.palette==VIDEO_PALETTE_GREY)?GreyFrame:YuvFrame;
-   
    allocBuffers();
 }
 
 void QCamV4L::allocBuffers() {
    delete tmpBuffer_;
-   
    yuvBuffer_.setSize(QSize(window_.width,window_.height));
    switch (picture_.palette) {
    case VIDEO_PALETTE_GREY:
@@ -316,7 +313,7 @@ bool QCamV4L::setSize(int x, int y) {
         << " " << "y=" << window_.height <<endl;
    if(ioctl(device_, VIDIOCSWIN, &window_)) {
        perror ("ioctl(VIDIOCSWIN)");
-   } 
+   }
    if(ioctl(device_, VIDIOCGWIN, &window_)) {
        perror ("ioctl(VIDIOCGWIN)");
    }
@@ -328,9 +325,7 @@ bool QCamV4L::setSize(int x, int y) {
    if((x!=window_.width)||(y!=window_.height)) {
       cout << "Some devices refuse hot-resizing,\nYou should quit to get the new size" << endl;
    }
-
    allocBuffers();
-   
    return true;
 }
 
@@ -390,7 +385,7 @@ bool QCamV4L::updateFrame() {
       mmapSync();
       setTime();
       res=true;
-      
+
       switch (picture_.palette) {
          case VIDEO_PALETTE_GREY:
             memcpy(YBuf,mmapLastFrame(),window_.width * window_.height);
@@ -506,20 +501,17 @@ bool QCamV4L::updateFrame() {
       cout << "frame dropped" << endl;
       //newFrameAvaible();
    }
-
    /*int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
       frameRate_=newFrameRate;
       if (timer_) timer_->changeInterval(1000/frameRate_);
    }*/
-
    return res;
 }
 
 const QSize & QCamV4L::size() const {
    return yuvBuffer_.size();
 }
-
 
 void QCamV4L::setContrast(int val) {
    picture_.contrast=val;
@@ -592,7 +584,6 @@ void QCamV4L::refreshPictureSettings() {
    if (options_ & haveColor) emit colorChange(getColor());
    if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
 }
-
 
 QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
@@ -693,7 +684,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxRate->setAlignment(AlignLeft|AlignVCenter);
    lxRate->setMinimumWidth(32);
    int lxTable[]={lxNone,lxPar,lxSer};
-   const char* lxLabel[]={"lx : none","lx : // port","lx : serial"};   
+   const char* lxLabel[]={"lx : none","lx : // port","lx : serial"};
    lxSelector=new QCamComboBox(tr("lxMode"),remoteCTRLlx,3,lxTable,lxLabel);
    lxLabel2=new QLabel("Delay :",remoteCTRLlx);
    lxTime=new QLineEdit(remoteCTRLlx);
@@ -704,7 +695,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
    lxBar=new QProgressBar(remoteCTRLlx);
-   //lxBar->setEnabled(false);
    lxBar->setCenterIndicator(true);
    lxBar->setTotalSteps(0);
    lxBar->reset();
@@ -767,7 +757,6 @@ void QCamV4L::setLXmode(int value) {
          setProperty("FrameRateSecond",frameRate_);
          lxEnabled=false;
          lxTimer->stop();
-         //cout << "lxNone" << endl;
          break;
       case lxPar :
          lxRate->setText("N/A");
@@ -781,7 +770,6 @@ void QCamV4L::setLXmode(int value) {
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
          lxControler->startAccumulation();
-         //cout << "lxPar" << endl;
          break;
       case lxSer :
          lxRate->setText("N/A");
@@ -795,7 +783,6 @@ void QCamV4L::setLXmode(int value) {
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
          lxControler->startAccumulation();
-         //cout << "lxSer" << endl;
          break;
    }
 }
@@ -815,7 +802,6 @@ void QCamV4L::setLXtime() {
    lxTimer->stop();
    lxTimer->start((int)(lxDelay*1000));
    lxFrameCounter=0;
-   //cout << "new delay : " << lxDelay << endl;
    lxTime->setText(QString().sprintf("%4.2f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
    lxControler->startAccumulation();
@@ -823,9 +809,6 @@ void QCamV4L::setLXtime() {
 
 void QCamV4L::LXframeReady() {
    lxControler->stopAccumulation();
-   //usleep((int)(1.0/((double)frameRate_*2.0*1000.0)));
-   //lxControler->startAccumulation();
-   //cout << "lx timer timeout" << endl;
 }
 
 void QCamV4L::LXlevel(int level) {
@@ -891,7 +874,7 @@ void QCamV4L::mmapCapture() {
    vm.height = window_.height;
    if (ioctl(device_, VIDIOCMCAPTURE, &vm) < 0) {
       perror("QCamV4L::mmapCapture");
-      // AEW: try and do something sensible here - the V4L source 
+      // AEW: try and do something sensible here - the V4L source
       // has gone away
       close(device_);
       exit(0);

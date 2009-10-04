@@ -17,11 +17,9 @@ QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,
    rowTable_=new QHBox*[numOfbutton/maxPerRow+1];
    for (int i=0;i<=numOfbutton/maxPerRow;++i) {
       rowTable_[i]=new QHBox(this);
-      
    }
    bg_=new QButtonGroup(this);
    bg_->hide();
-   
    for (int i=0;i<numOfButton_;++i) {
       valueList_[i]=valueList[i];
       buttonTable_[i]
@@ -32,7 +30,6 @@ QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,
    }
    for (int i=0;i<=numOfbutton/maxPerRow;++i) {
       rowTable_[i]->show();
-      
    }
    connect(bg_,SIGNAL(clicked(int)),this,SLOT(buttonClicked(int)));
    currentValue_=valueList[0];

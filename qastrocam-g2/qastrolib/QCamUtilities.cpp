@@ -13,9 +13,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-
 #include <iostream>
-
 
 string QCamUtilities::basePath_="/usr/share/qastrocam/";
 
@@ -69,7 +67,6 @@ const string QCamUtilities::getVersionId() {
 void QCamUtilities::setQastrocamIcon(QWidget *widget) {
    static QPixmap * iconNb=QCamUtilities::getIcon("qastrocam-icon-nb.png");
    widget->setIcon(*iconNb);
-   //cout << "setting icon "<<(color?"color":"nb")<<endl;
 }
 
 void QCamUtilities::setLocale(QApplication & app) {
