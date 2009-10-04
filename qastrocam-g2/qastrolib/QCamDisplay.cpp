@@ -98,7 +98,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
    QToolTip::add(widget_,"Double click to set center of the reticule");
    connect(crossLumSlider_,SIGNAL(valueChange(int)),this,SLOT(setCrossLum(int)));
    crossLumSlider_->setValue(QCamDisplay::defaultLum_);
-   
+
    QSizePolicy policy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    //policy.setHorStretch(100);
    //policy.setVerStretch(100);
@@ -182,12 +182,7 @@ void QCamDisplayImpl::mouseDoubleClickEvent ( QMouseEvent * e ) {
    crossCenterX_=e->x();
    crossCenterY_=e->y();
    if (currentCross_ == QCamDisplay::None) {
-#if 0
-      currentCross_=QCamDisplay::Cross;
-      camClient_.crossButton_->update(currentCross_);
-#else
       camClient_.setCross(QCamDisplay::Cross);
-#endif
    }
 }
 
@@ -205,23 +200,6 @@ void QCamDisplayImpl::setCross(   QCamDisplay::CrossType cross) {
 }
 
 void QCamDisplayImpl::resizeEvent(QResizeEvent*ev) {
-#if 0
-   if (camClient_.isConnected() &&
-       (camClient_.cam().size() != size() &&
-        firtsFrameReceived_ )) {
-      cout << "resize display "<<size().width()<<"x"<<size().height()<<"\n";
-      cout << "* old size was:"<<ev->oldSize().width()<<"x"<<ev->oldSize().height()<<"\n";
-      camClient_.cam().resize(size());
-      
-      //cout << "camsize "<< camClient_.cam().size().width()<<"x"<< camClient_.cam().size().height()<<"\n";
-      //resize(camClient_.cam().size());
-      //crossCenterY_=crossCenterX_=-1000;
-      //setMinimumSize(camClient_.cam().size());
-      //setMaximumSize(camClient_.cam().size());
-      updateGeometry();
-      parentWidget()->adjustSize();
-   }
-#else
    if (camClient_.isConnected() &&
         firtsFrameReceived_ ) {
       cout << "resize display "<<size().width()<<"x"<<size().height()<<"\n";
@@ -229,18 +207,9 @@ void QCamDisplayImpl::resizeEvent(QResizeEvent*ev) {
             //cout << "camsize "<< camClient_.cam().size().width()<<"x"<< camClient_.cam().size().height()<<"\n";
       //resize(camClient_.cam().size());
       //crossCenterY_=crossCenterX_=-1000;
-      if (size()==camClient_.cam().size()) {
-#if 0
-         setMinimumSize(camClient_.cam().size());
-         setMaximumSize(camClient_.cam().size());
-         updateGeometry();
-         parentWidget()->adjustSize();
-#endif
-      } else {
+      if (size()!=camClient_.cam().size())
          resize(camClient_.cam().size());
-      }
    }
-#endif
 }
 
 void QCamDisplayImpl::setCrossLum(int l) {
@@ -281,26 +250,6 @@ void QCamDisplayImplQT::paintEvent(QPaintEvent * ev) {
          painter_->drawImage(sx,sy,frame.falseColorImage());
          break;
       }
-#if 0
-      switch (currentCross_) {
-      case QCamDisplay::Cross:
-         painter_->drawLine(crossCenterX_,0,
-                            crossCenterX_,height());
-         painter_->drawLine(0,crossCenterY_,
-                            width(),crossCenterY_);
-         break;
-      case QCamDisplay::Circle: {
-            int step=height()/10;
-            int max=min(min(crossCenterX_,width()-crossCenterX_),min(crossCenterY_,height()-crossCenterY_));
-            for (int i=step/2;i<max;i+=step) {
-               painter_->drawEllipse(crossCenterX_-i,crossCenterY_-i,2*i,2*i);
-            }
-         }
-         break;
-      case QCamDisplay::None:
-         break;
-      }
-#endif
       annotate(*painter_);
       painter_->end();
    }
@@ -351,4 +300,3 @@ void QCamDisplayImpl::annotate(QPainter & painter) {
       painter.drawLine(x-10,y,x+10,y);
    }
 }
-

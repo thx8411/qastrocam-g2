@@ -40,9 +40,6 @@ void QCamFindShift::newFrame() {
       ShiftInfo theShift;
       if (findShift(theShift)) {
          currentShift_=theShift;
-         //cout << "center = "<<theShift.center().x()<<","<<theShift.center().y()<<endl;
-         //cout << "shift = "<<theShift.shift().x()<<","<<theShift.shift().y()<<endl;
-         //cout << "rotation = "<<theShift.angle()<<endl;
          emit(shift(theShift));
       }
    } else {
@@ -54,13 +51,12 @@ QCamFrame QCamFindShift::image() const {
    QCamFrame img;
    if (firstFrameRegistered_) {
       img.setSize(QSize(32,32));
-      //img.clear();
       cout << "copying center "
            <<(int)currentShift().center().x()-15 <<"x"
            <<(int)currentShift().center().y()-15 << " , "
            <<(int)currentShift().center().x()+16 <<"x"
            <<(int)currentShift().center().y()+16 <<endl;
-      
+
       img.copy(cam().yuvFrame(),
                (int)currentShift().center().x()-15,
                (int)currentShift().center().y()-15,
@@ -73,5 +69,4 @@ QCamFrame QCamFindShift::image() const {
 
 QWidget * QCamFindShift::buildGUI(QWidget *parent) {
    return QCamClient::buildGUI(parent);
-   //return new QLabel("No controls",parent);
 }

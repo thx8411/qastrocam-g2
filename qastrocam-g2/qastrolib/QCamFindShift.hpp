@@ -19,7 +19,7 @@ public:
    ShiftInfo currentShift() const { return currentShift_;}
    virtual QWidget * buildGUI(QWidget *parent);
 public slots:
-   /** forget current reference */ 
+   /** forget current reference */
    void reset();
 protected:
    void camConnected();

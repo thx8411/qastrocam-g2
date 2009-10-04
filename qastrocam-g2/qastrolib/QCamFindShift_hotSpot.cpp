@@ -69,9 +69,9 @@ double QCamFindShift_hotSpot::computeBarycenter(const Vector2D & from,
          bary+=Vector2D(i,j)*val;
       }
    }
-   
+
    bary/=imgSum;
-   
+
    if (pixelFound > ((size/step)*(size/step)*maximalCoverage)) {
       imgSum*=-1;
    }
@@ -110,7 +110,7 @@ bool QCamFindShift_hotSpot::findHotSpot(Vector2D & center) {
          newBrightness=findHotSpot(Vector2D(i,j),newHotSpot);
          if (newBrightness>hotSpotBrightness) {
             hotSpotBrightness=newBrightness;
-            center=newHotSpot; 
+            center=newHotSpot;
          }
       }
    }
@@ -128,7 +128,7 @@ bool QCamFindShift_hotSpot::findHotSpot(Vector2D & center) {
 double QCamFindShift_hotSpot::findHotSpot(const Vector2D & from,
                                           Vector2D & center) {
    center.set(0,0);
-   
+
    double newBrightness=0;
 
    /* first pass to find an approximation */
@@ -152,7 +152,6 @@ bool QCamFindShift_hotSpot::registerFirstFrame() {
 bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
    Vector2D newCenter;
    double newBrightness = findHotSpot(lastCenter_,newCenter);
-   //cout << "brightness var="<<fabs(newBrightness/lastBrightness_-1)<<"\n";
    if (fabs((newBrightness/lastBrightness_)-1)<0.2) {
       shift.setCenter(newCenter);
       shift.setShift(newCenter-firstHotSpot_);
@@ -160,7 +159,6 @@ bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
       lastBrightness_=lastBrightness_;
       lastCenter_=newCenter;
       computeCenterImg(searchBoxSize_,newCenter);
-      //cout << "fast search success\n";
       emit(searchBoxSizeChanged(searchBoxSize_));
       emit(seuilChanged(seuil_));
       if (dispImgCenter_) dispImgCenter_->frame(image());
@@ -173,13 +171,11 @@ bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
          shift.setShift(newCenter-firstHotSpot_);
          shift.setAngle(0);
          computeCenterImg(searchBoxSize_,newCenter);
-         //cout << "slow search success\n";
          emit(searchBoxSizeChanged(searchBoxSize_));
          emit(seuilChanged(seuil_));
          if (dispImgCenter_) dispImgCenter_->frame(image());
          return true;
       } else {
-         //cout << "slow search failed\n";
          centerImg_.clear();
          emit(searchBoxSizeChanged(searchBoxSize_));
          emit(seuilChanged(seuil_));
@@ -207,7 +203,6 @@ QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    emit(autoSeuilChanged(autoSeuil_));
 
    QLabel * binningLabel=new QLabel("Binning:",hbox2);
-   
    int binningValues[5]={1,2,3,4,5};
    const char * binningLabels[5]={"1x1","2x2","3x3","4x4","5x5"};
    QCamComboBox * binning =new QCamComboBox(tr("Binning"),hbox2,4,
@@ -215,13 +210,13 @@ QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    connect(binning,SIGNAL(change(int)),this,SLOT(setBinning(int)));
    QToolTip::add(binning,tr("seting a high binning will speedup\n"
                             "the processing with big box size"));
-   
+
    bigBoxSlider_=new QCamSlider("Boxsize",false,vbox,1,200,false,false);
    connect(bigBoxSlider_,SIGNAL(valueChange(int)),this,SLOT(setSearchBoxSize(int)));
    connect(this,SIGNAL(searchBoxSizeChanged(int)),bigBoxSlider_,SLOT(setValue(int)));
 
    QCamFindShift::buildGUI(mainBox_);
-   
+
    return mainBox_;
 }
 
@@ -246,7 +241,6 @@ void QCamFindShift_hotSpot::setBinning(int value) {
 
 void QCamFindShift_hotSpot::setSearchBoxSize(int value) {
    searchBoxSize_=value;
-   //cout <<"searchBoxSize_="<<value<<endl;
    emit(searchBoxSizeChanged(value));
 }
 
@@ -280,7 +274,6 @@ void QCamFindShift_hotSpot::computeCenterImg(int size,const Vector2D & center) {
          } else {
             lineY[i]=val/255;
             lineU[i/2]=lineV[i/2]=0;
-            
          }
       }
    }
