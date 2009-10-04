@@ -28,6 +28,6 @@ private:
    Vector2D center_;
    Vector2D vectorShift_;
    double angleRotation_;
-   
 };
+
 #endif

@@ -12,7 +12,7 @@ ShiftInfo::ShiftInfo(const Vector2D & center,
    vectorShift_(shift),
    angleRotation_(angle) {
 }
-   
+
 void ShiftInfo::setShift(const Vector2D & vect) {
    vectorShift_=vect;
 }
@@ -24,7 +24,7 @@ void ShiftInfo::setCenter(const Vector2D & vect) {
 void ShiftInfo::setAngle(double angle) {
    angleRotation_=angle;
 }
-      
+
 const Vector2D & ShiftInfo::shift() const {
    return vectorShift_;
 }

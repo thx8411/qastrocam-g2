@@ -22,6 +22,7 @@ void SCmod::setLevels(bool polarity) {
    else settings.setKey("LX_LEVELS_INVERTED","no");
 }
 
+
 SCmodTucLed::SCmodTucLed(QCamVesta & cam) : cam_(cam) {
    if(settings.haveKey("LX_LEVELS_INVERTED"))
       inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
@@ -39,20 +40,18 @@ void SCmodTucLed::leaveLongPoseMode() {
 }
 
 void SCmodTucLed::stopAccumulation() {
-   if (inverted_) 
+   if (inverted_)
       cam_.setLed(1000,0);
-   else 
+   else
       cam_.setLed(0,1000); // switching led ON/OFF for TUC USB
 }
 
 void SCmodTucLed::startAccumulation() {
-   if (inverted_) 
+   if (inverted_)
       cam_.setLed(0,1000);
-   else 
+   else
       cam_.setLed(1000,0); // switching led ON  for TUC USB
 }
-
-
 
 
 SCmodSerialPort::SCmodSerialPort() {
@@ -85,11 +84,10 @@ void SCmodSerialPort::stopAccumulation() {
    int flag;
    int function;
 
-   if (inverted_) 
+   if (inverted_)
       function=TIOCMBIC;
-   else 
+   else
       function=TIOCMBIS;
-
    // set preamp on
    flag=TIOCM_DTR;
    if (ioctl(device_,function,&flag)) {
@@ -107,16 +105,15 @@ void SCmodSerialPort::startAccumulation() {
    int flag;
    int function;
 
-   if (inverted_) 
+   if (inverted_)
       function=TIOCMBIS;
-   else 
+   else
       function=TIOCMBIC;
    // block exposure
    flag=TIOCM_RTS;
    if (ioctl(device_,function,&flag)) {
       perror("set rts");
-   }   
-
+   }
    // switch preamp off
    flag=TIOCM_DTR;
    if (ioctl(device_,function,&flag)) {

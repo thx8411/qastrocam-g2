@@ -28,16 +28,11 @@
  */
 
 
-//#include <stdio.h>
 #include <stdlib.h>
-//#include <string.h>
 
 #include "rasterOp.hpp"
 
-
 #define COMBINE_PARTIAL(d, s, m)     ( ((d) & ~(m)) | ((s) & (m)) )
-
-
 
 static const unsigned int lmask32[] = {0x0,
                                        0x80000000, 0xc0000000, 0xe0000000, 0xf0000000,
@@ -271,8 +266,7 @@ rasteropVipLow(unsigned int  *data,
          *pdlwpart = COMBINE_PARTIAL(*pdlwpart, 0x0, lwmask);
          pdlwpart += dirwpl;
       }
-   } 
-
+   }
    return;
 }
 
@@ -281,7 +275,7 @@ rasteropVipLow(unsigned int  *data,
 /*--------------------------------------------------------------------*
  *                 Low-level Horizontal In-place Rasterop             *
  *--------------------------------------------------------------------*/
-/* 
+/*
  *  rasteropHipLow()
  */
 void
@@ -403,4 +397,3 @@ shiftDataHorizontalLow(unsigned int  *datad,
    }
    return;
 }
-
