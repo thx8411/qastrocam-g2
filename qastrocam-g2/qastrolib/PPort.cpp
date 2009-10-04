@@ -9,10 +9,13 @@
 
 #include <iostream>
 
+// static members init
 PPort* PPort::instance_=NULL;
+int PPort::clientNumber=0;
 
 // if pport does not exist, create one
 PPort* PPort::instance() {
+   clientNumber++;
    if(instance_==NULL)
       instance_=new PPort();
    return(instance_);
@@ -20,9 +23,12 @@ PPort* PPort::instance() {
 
 // destroy the port if needed
 void PPort::destroy() {
-   if(instance_!=NULL)
-      delete instance_;
-   instance_=NULL;
+   clientNumber--;
+   if(clientNumber==0) {
+      if(instance_!=NULL)
+         delete instance_;
+      instance_=NULL;
+   }
 }
 
 PPort::PPort() {
@@ -136,4 +142,3 @@ bool  PPort::setBit(int bit,bool value, int entry) {
    usleep(1);
    return(res==1);
 }
-
