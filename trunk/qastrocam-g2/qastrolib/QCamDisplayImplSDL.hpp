@@ -27,4 +27,5 @@ private:
     virtual void setDisplayMode(QCamDisplay::DisplayMode);
  };
 #endif
+
 #endif

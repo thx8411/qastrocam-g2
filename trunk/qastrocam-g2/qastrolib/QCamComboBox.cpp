@@ -13,7 +13,7 @@ QCamComboBox::QCamComboBox(const char * label,QWidget * parent,
    QComboBox(false,parent,label) {
    valueList_=new int[numOfbutton];
    numOfButton_=numOfbutton;
-      
+
    for (int i=0;i<numOfButton_;++i) {
       valueList_[i]=valueList[i];
       insertItem(labelList?QString(labelList[i]):QString("%1").arg(valueList_[i]));

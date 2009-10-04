@@ -23,7 +23,7 @@ public slots:
    void setSeuil(int value);
    /** activate the auto mode for the tresh calculation */
    void setAutoSeuil(bool value);
-  
+
    /** size of the moving box used to search the hot spot.
        size must be smaller than the distance between two
        possible hot spot.
@@ -52,7 +52,7 @@ private:
       pixelVal-=seuil_;
       if (pixelVal>0) {
          pixelVal=pixelVal*255/(255-seuil_);
-         pixelVal*=pixelVal;  
+         pixelVal*=pixelVal;
       }
       return pixelVal;
    }
@@ -63,14 +63,14 @@ private:
                             double maxCoverage) const;
    double lastBrightness_;
    Vector2D lastCenter_;
-   
+
    int searchBoxSize_;
    int seuil_;
 
    int binning_;
 
    QCamFrame centerImg_;
-   
+
    /* GUI data */
    QVGroupBox * mainBox_;
    QCamSlider * seuilSlider_;

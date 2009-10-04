@@ -40,10 +40,10 @@ public:
    static const int defaultLum_;
 public slots:
    void setCross(CrossType t);
-   void setDisplayMode(DisplayMode t);  
+   void setDisplayMode(DisplayMode t);
 protected:
    void camConnected();
-protected slots: 
+protected slots:
    void newFrame();
    void setCross(int t);
    void setDisplayMode(int t);
@@ -67,7 +67,7 @@ private:
    friend class QCamDisplayImpl;
 };
 
-/// helper class for QCamDisplay
+// helper class for QCamDisplay
 class QCamDisplayImpl : public QWidget {
    Q_OBJECT;
 protected slots:
@@ -88,11 +88,11 @@ protected:
    QCamDisplay & camClient_;
    QCamDisplay::CrossType currentCross_;
    QCamDisplay::DisplayMode displayMode_;
-   
+
    QPainter * painter_;
    QPen * pen_;
    bool firtsFrameReceived_;
-   
+
    friend class QCamDisplay;
 };
 
@@ -107,8 +107,6 @@ protected:
 private:
    friend class QCamDisplay;
 };
-
-
 
 #include "QCamDisplayImplSDL.hpp"
 
