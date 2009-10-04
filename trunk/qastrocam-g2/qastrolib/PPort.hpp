@@ -13,9 +13,13 @@ using namespace std;
 
 // opened port entry
 typedef struct {
+   // device name
    string name;
+   // type : lp or parport
    int type;
+   // file descriptor
    int fd;
+   // bus byte value
    unsigned char data;
 } pportEntry;
 
@@ -31,6 +35,8 @@ private :
    ~PPort();
    // find port entry using his name, -1 if not found
    int pportFind(const char* name);
+   // instance clients number
+   static int clientNumber;
 public:
    // singleton class
    static PPort* instance();
@@ -40,4 +46,5 @@ public:
    // change the port bit using entry number, true if success
    bool setBit(int bit, bool value, int entry);
 };
+
 #endif
