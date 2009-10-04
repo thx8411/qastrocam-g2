@@ -1,4 +1,4 @@
-#ifndef _QCamMoviAvi_hpp_ 
+#ifndef _QCamMoviAvi_hpp_
 #define _QCamMoviAvi_hpp_
 
 #include "../config.h"
@@ -24,4 +24,5 @@ private:
 };
 
 #endif
+
 #endif

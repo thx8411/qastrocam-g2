@@ -7,8 +7,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <linux/types.h>
-//#include <linux/videodev.h>
 
 #include <map>
 
@@ -171,5 +169,4 @@ private:
 };
 
 #endif
-
 

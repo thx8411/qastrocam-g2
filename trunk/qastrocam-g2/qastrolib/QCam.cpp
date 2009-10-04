@@ -37,7 +37,6 @@
 #include "SettingsBackup.hpp"
 
 #include <sys/time.h>
-//#include <time.h>
 
 extern settingsBackup settings;
 
@@ -59,7 +58,7 @@ QCam::QCam() {
    //remoteCTRL_->show();
 #if HAVE_AVIFILE_H
    movieWritterAvi_=new QCamMovieAvi();
-#endif	
+#endif
    movieWritterSeq_=new QCamMovieSeq();
    movieWritter_=NULL;
    annotationEnabled_=false;
@@ -83,7 +82,7 @@ const char * QCam::getSaveFormat() const {
 
 bool QCam::saveFrame(const string& file) const {
    writeProperties(file+".properties");
-   
+
    string fileFormat=getSaveFormat();
    int quality=-1;
    if (fileFormat=="FITS") {
@@ -128,8 +127,7 @@ void QCam::setCapture(bool doCapture) const {
    fileSeqenceNumber_=0;
    if (doCapture) {
       // default writer
-      movieWritter_=movieWritterSeq_;     
-
+      movieWritter_=movieWritterSeq_;
 #if HAVE_AVIFILE_H
       string fileFormat=getSaveFormat();
       if (fileFormat=="AVI") {
@@ -162,7 +160,6 @@ void QCam::setCaptureFile(const QString & afile) {
          QToolTip::add(snapshot_,
                        (string("Save snapshot image in file '")
                         + captureFile_ +"-<date>.<type>'").c_str());
-
 #if HAVE_AVIFILE_H
          QToolTip::add(capture_,
                        (string("Save sequence in uncompressed AVI file '")
@@ -189,7 +186,6 @@ void QCam::newFrameAvaible() {
       if (movieWritter_->add(yuvFrame(),*this)) {
          ++fileSeqenceNumber_;
       }
-      
       if (fileSeqenceNumber_>9999) {
          capturedFrame_->setNumDigits(5);
       } else if (fileSeqenceNumber_>999) {
@@ -259,11 +255,11 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QSizePolicy sizePolicyMin;
    sizePolicyMin.setVerData(QSizePolicy::Minimum);
    sizePolicyMin.setHorData(QSizePolicy::Minimum);
-   
+
    remoteCTRL_= new QVBox(parent);
 
    remoteCTRL_->setSizePolicy(sizePolicyMin);
-   
+
    buttonBox_= new QGridBox(remoteCTRL_,Qt::Vertical,4);
    displayFramesButton_ = new QPushButton("display",buttonBox_);
    QToolTip::add(displayFramesButton_,"display frames");
@@ -336,9 +332,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
          }
       }
    }
-   
+
    QVGroupBox * saveGroup = new QVGroupBox("Save Images",remoteCTRL_);
-   buttons_=new QHBox(saveGroup); 
+   buttons_=new QHBox(saveGroup);
 
    new QLabel("Prefix:",buttons_);
    fileNameW_ = new  QLineEdit(buttons_);
@@ -350,7 +346,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
                  "prefix used for saved images");
    dirChooser_ = new QDirectoryChooser(buttons_);
    connect(dirChooser_,SIGNAL(directoryChanged(const QString &)),this,SLOT(setDirectory(const QString &)));
-   
+
    imgFormatBox_ = new QCamComboBox("Save Format",buttons_,
                                     size,tmpTab,
                                     fileFormatList_);
@@ -358,13 +354,13 @@ QWidget * QCam::buildGUI(QWidget * parent) {
            this,SLOT(updateFileFormat(int)));
    imgFormatBox_->update(fileFormatCurrent_);
 
-   QHBox * buttons2=new QHBox(saveGroup); 
+   QHBox * buttons2=new QHBox(saveGroup);
    snapshot_=new QPushButton("snapshot",buttons2);
    snapshot_->setPixmap(*QCamUtilities::getIcon("snapshot.png"));
    capture_=new QPushButton("capture",buttons2);
    capture_->setToggleButton(true);
    capture_->setPixmap(*QCamUtilities::getIcon("movie.png"));
-      
+
    pauseCapture_=new QPushButton("pause",buttons2);
    QToolTip::add(pauseCapture_,
                  "Suspend the current capture");
@@ -383,12 +379,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    connect(maxCaptureInSequenceW_,SIGNAL(textChanged(const QString&)),
            this,SLOT(maxCaptureInSequenceUpdated(const QString&)));
    QToolTip::add(maxCaptureInSequenceW_,"Number of frames to capture");
-   /*
-     QSizePolicy sizePolicyMin;
-     sizePolicyMin.setVerData(QSizePolicy::Maximum);
-     sizePolicyMin.setHorData(QSizePolicy::Maximum);
-     maxCaptureInSequenceW_->setSizePolicy(sizePolicyMin);
-   */
+
    maxCaptureInSequenceW_->show();
 
    connect(snapshot_,SIGNAL(released()),this,SLOT(snapshot()));
@@ -405,7 +396,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    /* periodic capture */
    QHGroupBox * savePeriodicGroup = new QHGroupBox("Periodic capture",
                                                    saveGroup);
-   
    int valueList[]={0,1,2};
    const char *  labelList[] = {"none","snap.","sequ."};
    periodicCaptureW_ =
@@ -413,7 +403,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
                        labelList);
    connect(periodicCaptureW_,SIGNAL(change(int)),
            this,SLOT(periodicCapture(int)));
-   
+
    timebetweenCaptureW_ = new QLineEdit(savePeriodicGroup);
    QToolTip::add(timebetweenCaptureW_,"Time between two automatic capture");
    timebetweenCaptureW_->
@@ -430,7 +420,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    periodicCaptureT_->start(timebetweenCapture_*1000);
 
    setCapture(false);
-
 
    const QSize * sizeTable=getAllowedSize();
    if (sizeTable && !sizeTable[0].isEmpty()) {
@@ -553,7 +542,7 @@ void QCam::maxCaptureInSequenceUpdated(const QString &newMaxStr) {
       maxCaptureInSequence_=0;
    }
    maxCaptureInSequenceW_->
-      setText(QString().sprintf("%d",maxCaptureInSequence_));   
+      setText(QString().sprintf("%d",maxCaptureInSequence_));
 }
 
  void QCam::periodicCapture(int mode) {
@@ -561,12 +550,12 @@ void QCam::maxCaptureInSequenceUpdated(const QString &newMaxStr) {
    if (mode != 0) {
       //timebetweenCaptureW_->show();
       periodicCaptureT_->changeInterval(timebetweenCapture_*1000);
-      timebetweenCaptureTimeout();      
+      timebetweenCaptureTimeout();
    } else {
       //timebetweenCaptureW_->hide();
    }
 }
- 
+
 void QCam::timebetweenCaptureUpdated(const QString &newMaxStr) {
    int newMax;
    bool res;
@@ -582,7 +571,7 @@ void QCam::timebetweenCaptureUpdated(const QString &newMaxStr) {
 
 void  QCam::timebetweenCaptureTimeout() {
    //cout << "timebetweenCaptureTimeout "<< periodicCaptureW_->value() << endl;
-   
+
    switch(periodicCaptureW_->value()) {
    case 0:
       break;

@@ -34,10 +34,10 @@ QWidget * QCamMovieAvi::buildGUI(QWidget  * father) {
 bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    cam.writeProperties(seqName+".properties");
    aviFile_ = avm::CreateWriteFile((seqName+".avi").c_str());
-   
+
    BITMAPINFOHEADER bi;
    fourcc_t codec = _CODEC_;
-   
+
    memset(&bi, 0, sizeof(bi));
    bi.biSize = sizeof(bi);
    bi.biWidth = cam.size().width();
@@ -50,11 +50,9 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    int frameRate=atoi(cam.getProperty("FrameRateSecond").c_str());
    if (frameRate<1) frameRate=1;
    aviStream_ = aviFile_->AddVideoStream(codec, &bi, 1000*1000/frameRate);
-   
    aviStream_->SetQuality(10000);
-   
    aviStream_->Start();
-   
+
    deinterlaceBuf_ = new unsigned char[bi.biSizeImage];
 
    cam.writeProperties(seqName+".properties");
@@ -74,7 +72,7 @@ void QCamMovieAvi::closeImpl() {
 
 bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    BITMAPINFOHEADER bi;
-   
+
    fourcc_t codec= _CODEC_;
 
    memset(&bi, 0, sizeof(bi));
@@ -85,7 +83,7 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    bi.biPlanes = 3;
    bi.biBitCount = 12;
    bi.biCompression = codec;
-   
+
    if(deinterlaceBuf_) {
       memcpy(deinterlaceBuf_, newFrame.Y(), bi.biWidth * bi.biHeight);
       memcpy(deinterlaceBuf_ + (bi.biWidth * bi.biHeight), newFrame.U(), (bi.biWidth * bi.biHeight) / 4);

@@ -17,7 +17,7 @@ bool QCamMovieSeq::openImpl(const string & seqName, const QCam & cam) {
       perror("QCamMovieSeq::open");
       return false;
    }
-   return true; 
+   return true;
 }
 
 void QCamMovieSeq::closeImpl() {

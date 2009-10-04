@@ -1,7 +1,6 @@
 #include "QCamFrame.hpp"
 #include <qimage.h>
 #include "ccvt.h"
-//#include "dcraw.hpp"
 #include "bayer.hpp"
 #include <assert.h>
 #include <math.h>
@@ -36,7 +35,6 @@ QCamFrameCommon * QCamFrameCommon::clone() {
       memcpy(newFrame->uFrame_,uFrame_,uSize());
       memcpy(newFrame->vFrame_,vFrame_,vSize());
    }
-   //cout << "clone("<<this<<")="<<newFrame<<endl;
    return newFrame;
 }
 
@@ -46,7 +44,6 @@ void QCamFrameCommon::decRef() {
    if (nbRef_<=0) {
       delete this;
    }
-   //cout << "decRef "<<this <<" "<<nbRef_<<endl;
 }
 
 void QCamFrameCommon::allocBuff() {
@@ -107,14 +104,13 @@ const QImage & QCamFrameCommon::colorImage() const {
          memset(colorImageBuff_,0,size_.width() * size_.height()* 4);
          colorImage_=new QImage(colorImageBuff_,
                                 size_.width(),size_.height(),
-                                32,0,0,QImage::BigEndian);  
+                                32,0,0,QImage::BigEndian);
       }
       raw2rgb(colorImageBuff_,Y(),size_.width(),size_.height(),getMode());
       break;
    }
    return *colorImage_;
 }
-
 
 const QImage & QCamFrameCommon::grayImage() const {
    if (!grayImage_) {
@@ -153,7 +149,7 @@ const QImage & QCamFrameCommon::falseColorImage() const {
       static QRgb * grayTable=NULL;
       if (grayTable == NULL) {
          grayTable=new QRgb[256];
-         
+
          for (int i=0;i<256;i+=4) {
             grayTable[i/4]=qRgb(0,i,255);
          }
@@ -206,17 +202,6 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
       break;
    }
 
-#if 0
-   cout <<"begin "
-        <<srcX1<<" "
-        <<srcY1<<" "
-        <<srcX2<<" "
-        <<srcY2<<" "
-        <<dstX<<" "
-        <<dstY<<endl;
-   cout <<"srcSize " << src.size_.width()<<"x"<<src.size_.height()<<endl;
-   cout <<"dstSize " << size_.width()<<"x"<<size_.height()<<endl;
-#endif
    if (dstX>=size_.width()
        || dstX+(srcX2-srcX1+1) <0
        || dstY>=size_.height()
@@ -260,15 +245,7 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
       zoneHeight=size_.height()-dstY;
    }
    srcY2=srcY1+zoneHeight-1;
-#if 0
-   cout <<"end "
-        <<srcX1<<" "
-        <<srcY1<<" "
-        <<srcX2<<" "
-        <<srcY2<<" "
-        <<dstX<<" "
-        <<dstY<<endl;
-#endif
+
    int jinc,jref;
    if (swapUpDown) {
       jinc=-1;
@@ -321,7 +298,7 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
          break;
       }
    }
-   
+
    if (swapUpDown) {
       switch (getMode()) {
       case RawRgbFrame1:
@@ -340,30 +317,19 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
          // mode is preserved
          break;
       }
-   }     
+   }
 }
 
 void QCamFrameCommon::move(int srcX1,int srcY1,
                            int srcX2,int srcY2,
                            int dstX,int dstY) {
-                           
    bool colorMode=getMode()==YuvFrame;
-#if 0
-   cout <<"begin "
-        <<srcX1<<" "
-        <<srcY1<<" "
-        <<srcX2<<" "
-        <<srcY2<<" "
-        <<dstX<<" "
-        <<dstY<<endl;
-#endif
    if (dstX>=size_.width()
        || dstX+(srcX2-srcX1+1) <0
        || dstY>=size_.height()
        || dstY+(srcY2-srcY1+1) <0 ) {
       return;
    }
-   //cout <<"srcSize " << size_.width()<<"x"<<size_.height()<<endl;
    if (srcX2>size_.width()-1) {
       srcX2=size_.width()-1;
    }
@@ -401,15 +367,6 @@ void QCamFrameCommon::move(int srcX1,int srcY1,
       zoneHeight=size_.height()-dstY;
    }
    srcY2=srcY1+zoneHeight-1;
-#if 0
-   cout <<"end "
-        <<srcX1<<" "
-        <<srcY1<<" "
-        <<srcX2<<" "
-        <<srcY2<<" "
-        <<dstX<<" "
-        <<dstY<<endl;
-#endif
    int jref;
    if (dstY<=srcY1) {
       jref=dstY;
@@ -497,7 +454,7 @@ void QCamFrame::copy(const QCamFrame & src,
    }
 }
 
-/** for moduls that don't look if we have a b&w frame */
+/** for modules that don't look if we have a b&w frame */
 const unsigned char * QCamFrameCommon::UVGreyBuff() const {
    static unsigned char *emptyBuff=NULL;
    static int size=0;
@@ -516,7 +473,7 @@ unsigned char * QCamFrameCommon::UVGreyBuff() {
 const string & QCamFrameCommon::getProperty(const string & propName) const {
    static string empty="N/A";
    map<string,string>::const_iterator it=properties_.find(propName);
-   
+
    if (it != properties_.end()) {
       return it->second;
    } else {

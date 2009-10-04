@@ -3,19 +3,10 @@
 
 QCamMax::QCamMax(QCam* cam) {
    cam_=cam;
-   //allocBuff(cam_->size());
    connect(cam_,SIGNAL(newFrame()),this,SLOT(addNewFrame()));
    label("Max stacking");
    //initRemoteControl(remoteCTRL_);
 }
-
-/*
-void QCamMax::allocBuff(const QSize &s) {
-   curSize_=s;
-   yuvFrame_.setSize(s);
-   yuvFrame_.clear();
-}
-*/
 
 void QCamMax::clear() {
    yuvFrame_.clear();
@@ -25,7 +16,6 @@ void QCamMax::addNewFrame() {
    QCamFrame origFrame = cam_->yuvFrame();
    bool colorMode=(origFrame.getMode()==YuvFrame);
    if (origFrame.size() != yuvFrame_.size()) {
-      // allocBuff(origFrame.size());
       yuvFrame_.setSize(origFrame.size());
       yuvFrame_.clear();
    }
