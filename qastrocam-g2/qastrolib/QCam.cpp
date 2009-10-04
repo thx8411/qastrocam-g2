@@ -287,31 +287,35 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    int tmpTab[16];
 
    fileFormatList_= new const char*[16];
-
+   // adds fits format
    fileFormatList_[size]="FITS";
    tmpTab[size]=size;
    ++size;
+   // adds fits-gz format
    fileFormatList_[size]="FITS-GZ";
    tmpTab[size]=size;
    ++size;
 #if HAVE_AVIFILE_H
+   // adds avi format
    fileFormatList_[size]="AVI";
    tmpTab[size]=size;
    ++size;
 #endif
+   // adds bmp format
    if(formatList.findIndex("BMP")!=-1) {
       fileFormatList_[size]="BMP";
       tmpTab[size]=size;
       ++size;
    }
+   // adds png format
    if(formatList.findIndex("PNG")!=-1) {
       fileFormatList_[size]="PNG";
       tmpTab[size]=size;
       ++size;
    }
-
+   // default format
    fileFormatCurrent_=0;
-
+   // looking for the settings stored format
    if(settings.haveKey("FILE_FORMAT")) {
       for(int i=0;i<size;++i) {
          if (!strcasecmp(fileFormatList_[i],settings.getKey("FILE_FORMAT"))) {
@@ -319,15 +323,18 @@ QWidget * QCam::buildGUI(QWidget * parent) {
             break;
          }
       }
+   // else looking for bmp or png format
    } else {
       for(int i=0;i<size;++i) {
          if (!strcasecmp(fileFormatList_[i],"PNG")) {
             fileFormatCurrent_=i;
             // png is good, not trying to find a better one
+            // save setting
             settings.setKey("FILE_FORMAT","PNG");
             break;
          } else if (!strcasecmp(fileFormatList_[i],"BMP")) {
             fileFormatCurrent_=i;
+            // save setting
             settings.setKey("FILE_FORMAT","BMP");
          }
       }
@@ -439,7 +446,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       }
 
       sizeCombo=new QCamComboBox("Frame size",remoteCTRL_,size,valueList,labelList);
-
+      // looking for settings stored frame resolution
       if(settings.haveKey("FRAME_RESOLUTION"))
          indexOfCurrentSize=sizeCombo->getPosition(settings.getKey("FRAME_RESOLUTION"));
 
@@ -529,6 +536,7 @@ void QCam::writeProperties(const string & fileName) const {
 
 void QCam::updateFileFormat(int value) {
    fileFormatCurrent_=value;
+   // saving file format
    settings.setKey("FILE_FORMAT",getSaveFormat());
 }
 
@@ -605,6 +613,7 @@ void QCam::annotate(const Vector2D & pos) const {
 }
 
 void QCam::setSizeFromAllowed(int index) {
+   // saving frame resolution
    settings.setKey("FRAME_RESOLUTION",sizeCombo->text(index));
    resize(getAllowedSize()[index]);
 }
