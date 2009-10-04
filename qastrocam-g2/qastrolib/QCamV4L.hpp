@@ -20,6 +20,7 @@ class QCamSlider;
 class QTimer;
 class QSocketNotifier;
 
+// lx modes list
 #define	lxNone	0
 #define lxPar	1
 #define lxSer	2
@@ -28,6 +29,7 @@ class QSocketNotifier;
 class QCamV4L : public QCam {
    Q_OBJECT
 public:
+   // image controls
    enum Options {
       ioNoBlock=(1<<0),
       ioUseSelect=(1<<1),
@@ -39,22 +41,28 @@ public:
       sendJpegFrames=(1<<7)
    };
    static const int DefaultOptions;
+   // create the best camera instance, depending on the device
    static QCam * openBestDevice(const char * devpath = "/dev/video0",const char * devsource = "");
+   // constructor
    QCamV4L(const char * devpath="/dev/video0",
            int preferedPalette = 0 /* auto palette*/,
            const char* devsource=NULL,
            unsigned long options =  DefaultOptions /* cf QCamV4L::options */);
+   // destructor
+   ~QCamV4L();
+   // image access
    QCamFrame yuvFrame() const { return yuvBuffer_; }
    const QSize & size() const;
    void resize(const QSize & s);
-   ~QCamV4L();
    int getBrightness() const;
    int getContrast() const;
    int getColor() const;
    int getHue() const;
    int getWhiteness() const;
+   // gui
    QWidget * buildGUI(QWidget * parent);
 protected:
+   // V4L vars
    int device_;
    unsigned long options_;
    struct video_capability capability_;
@@ -66,8 +74,10 @@ protected:
    long mmap_last_sync_buff_;
    long mmap_last_capture_buff_;
    mutable QSize * sizeTable_;
+   // pictures settings
    void updatePictureSettings();
    virtual void refreshPictureSettings();
+   // drop a frame 
    bool dropFrame();
    /** should be overloaded.
        set x an y to allowed value.
@@ -82,24 +92,30 @@ protected:
        by the timer used to probe the camera for a new frame */
    virtual int getFrameRate() const { return 10;}
 
+   // gui
    QHGroupBox * remoteCTRLlx;
    QCamSlider * lxSlider;
 
 private:
+   // get os time in seconds (usec accuracy)
+   double getTime();
+   // V4L vars
    v4l2_input input;
    QString palette;
-
+   // device name
    string devpath_;
+   // basic operations
    bool setSize(int x, int y);
    void init(int preferedPalette);
    void allocBuffers();
+   // mmap functions
    bool mmapInit();
    void mmapCapture();
    void mmapSync();
-   double getTime();
    uchar * mmapLastFrame() const;
-
+   // gui
    QCamComboBox*  frameModeB;
+   // image frame and buffer
    QCamFrame yuvBuffer_;
    uchar * tmpBuffer_;
    // to probe the cam for new frame
@@ -121,6 +137,7 @@ private:
    QLabel * infoLabel2;
    QLabel * infoInput;
 
+   // lx mode widgets
    //QCamSlider * lxSlider;   -> cf. protected
    //QHGroupBox * remoteCTRLlx;   -> cf. protected
    QLabel * lxLabel1;
@@ -131,17 +148,19 @@ private:
    QPushButton * lxSet;
    QProgressBar * lxBar;
    QTimer * lxTimer;
-
+   // video stream vars
    ImageMode mode_;
    int frameRate_;
+   // lx mode vars
    SCmod* lxControler;
-   double lxDelay;
-   double lxBaseTime;
-   bool lxEnabled;
-   int lxFrameCounter;
-   int lxLevel;
+   double lxDelay; // integration time
+   double lxBaseTime; // os time at integration beginning
+   bool lxEnabled; // is lx mode on ?
+   int lxFrameCounter; // dropped frames number
+   int lxLevel; // level used to decide if a frame should be dropper
 
 public slots:
+   // controls
    void setContrast(int value);
    void setBrightness(int value);
    void setColor(int value);
@@ -149,13 +168,16 @@ public slots:
    void setWhiteness(int value);
    void setMode(ImageMode val);
    void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */
+   // lx mode slots
    void setLXmode(int val);
    void setLXtime();
    void LXframeReady();
    void LXlevel(int level);
 protected slots:
+   // a new frame is up
    virtual bool updateFrame();
 signals:
+   // controls
    void contrastChange(int);
    void brightnessChange(int);
    void colorChange(int value);
