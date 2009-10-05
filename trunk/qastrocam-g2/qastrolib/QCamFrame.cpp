@@ -524,18 +524,17 @@ unsigned char * QCamFrame::VforOverwrite() {
 
 bool QCamFrame::isValide(int level) {
    int i;
-   int size;
+   int frameSize;
    int value=0;
    const unsigned char* lum;
    lum=Y();
-   size=ySize();
-   for(i=0;i<size;i++) {
+   frameSize=ySize();
+   // check the mean luminance
+   for(i=0;i<frameSize;i++) {
       value+=lum[i];
    }
-   value/=size;
-   cout << value << endl;
-   if(value>level) {
+   value/=frameSize;
+   if(value>level)
       return(true);
-   }
    return(false);
 }

@@ -167,6 +167,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    // lx mode vars inits
    lxDelay=0.2;
+   lxFineDelay=0.0;
    lxLevel=64;
    lxControler=NULL;
    lxEnabled=false;
@@ -537,8 +538,6 @@ bool QCamV4L::updateFrame() {
          // the frame is ok
          // resetting dropped frames counter
          lxFrameCounter=0;
-         // integration starting for the next frame
-         lxControler->startAccumulation();
       }
       newFrameAvaible();
         if (options_ & haveBrightness) emit brightnessChange(getBrightness());
@@ -753,6 +752,13 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxSet=new QPushButton("Set",remoteCTRLlx);
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
+   // fine tuning buttons
+   //lxFinePlus=new QPushButton("+",remoteCTRLlx);
+   //lxFinePlus->setMaximumWidth(16);
+   //
+   //lxFineMinus=new QPushButton("-",remoteCTRLlx);
+   //lxFineMinus->setMaximumWidth(16);
+   //
    // progress bar
    lxBar=new QProgressBar(remoteCTRLlx);
    lxBar->setCenterIndicator(true);
@@ -770,6 +776,8 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    // lx events connector
    connect(lxSelector,SIGNAL(change(int)),this,SLOT(setLXmode(int)));
    connect(lxSet,SIGNAL(released()),this,SLOT(setLXtime()));
+   //connect(lxFinePlus,SIGNAL(released()),this,SLOT(LXfinePlus()));
+   //connect(lxFineMinus,SIGNAL(released()),this,SLOT(LXfineMinus()));
 
    return remoteCTRL;
 }
@@ -831,7 +839,7 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
-         lxTimer->start((int)(lxDelay*1000));
+         lxTimer->start((int)((lxDelay+lxFineDelay)*1000));
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
          lxControler->startAccumulation();
@@ -845,7 +853,7 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
-         lxTimer->start((int)(lxDelay*1000));
+         lxTimer->start((int)((lxDelay+lxFineDelay)*1000));
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
          lxControler->startAccumulation();
@@ -873,7 +881,7 @@ void QCamV4L::setLXtime() {
    lxBar->reset();
    // lx time update
    lxTimer->stop();
-   lxTimer->start((int)(lxDelay*1000));
+   lxTimer->start((int)((lxDelay+lxFineDelay)*1000));
    lxFrameCounter=0;
    lxTime->setText(QString().sprintf("%4.2f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
@@ -882,12 +890,29 @@ void QCamV4L::setLXtime() {
 
 // lx timer timeout slot, stops integration
 void QCamV4L::LXframeReady() {
+   // stop integration
    lxControler->stopAccumulation();
+   // wait for the canera to send the frames
+   usleep((int)(1000000.0/(double)(frameRate_)));
+   // integration starting for the next frame
+   lxControler->startAccumulation();
 }
 
 // lx level change slot
 void QCamV4L::LXlevel(int level) {
    lxLevel=level;
+}
+
+// lx fine delay increment
+void QCamV4L::LXfinePlus() {
+   lxFineDelay+=(1.0/(double)(frameRate_*5));
+   cout << lxFineDelay << endl;
+}
+
+// lx fine delay decrement
+void QCamV4L::LXfineMinus() {
+   lxFineDelay-=(1.0/(double)(frameRate_*5));
+   cout << lxFineDelay << endl;
 }
 
 // mmap init
