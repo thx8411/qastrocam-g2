@@ -145,6 +145,10 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       mmapCapture();
    }
 
+   // some lx widgets init to avoid segfaults in updateFrame
+   lxBar=NULL;
+   lxBlink=NULL;
+
    // setting up the timers
    notifier_=NULL;
    timer_=NULL;
@@ -524,11 +528,11 @@ bool QCamV4L::updateFrame() {
          // count dropped frames
          lxFrameCounter++;
          // update progress bar 
-         lxBar->setProgress(lxFrameCounter);
+         if(lxBar) lxBar->setProgress(lxFrameCounter);
          // is there an image on this frame ?
          if(!yuvBuffer_.isValide(lxLevel)) {
             // frame not valide
-            // if to much frames dropped, we missed the good frame, reseting
+            // if too much frames dropped, we missed the good frame, resetting
             if(lxFrameCounter>(int)(lxDelay*(double)(frameRate_)+4))
                lxFrameCounter=0;
             // ignoring frame
@@ -538,6 +542,8 @@ bool QCamV4L::updateFrame() {
          // the frame is ok
          // resetting dropped frames counter
          lxFrameCounter=0;
+         // blinking
+         if(lxBlink) lxBlink->step();
       }
       newFrameAvaible();
         if (options_ & haveBrightness) emit brightnessChange(getBrightness());
@@ -764,6 +770,8 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxBar->setCenterIndicator(true);
    lxBar->setTotalSteps(0);
    lxBar->reset();
+   // blink
+   lxBlink=new QBlink(remoteCTRLlx);
    // tips
    QToolTip::add(lxRate,"Current frame rate");
    QToolTip::add(lxSelector,"Long exposure mode");

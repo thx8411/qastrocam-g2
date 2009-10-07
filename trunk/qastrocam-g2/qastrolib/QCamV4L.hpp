@@ -13,6 +13,7 @@
 #include <linux/videodev.h>
 
 #include "QCam.hpp"
+#include "QBlink.hpp"
 
 #include "SCmod.hpp"
 
@@ -149,6 +150,7 @@ private:
    //QPushButton * lxFinePlus;
    //QPushButton * lxFineMinus;
    QProgressBar * lxBar;
+   QBlink* lxBlink;
    QTimer * lxTimer;
    // video stream vars
    ImageMode mode_;
