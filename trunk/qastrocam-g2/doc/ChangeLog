@@ -1,4 +1,4 @@
-4.4beta20091006
+4.4beta20091007
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
@@ -12,6 +12,7 @@
   - active V4L input and palette displayed in gui
   - LX mode for V4L generic added (serial and //)
   - user manual started
+  - binary compiled with -O3 (forgot in previous versions)
 
 4.3
 

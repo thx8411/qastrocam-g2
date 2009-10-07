@@ -1,4 +1,4 @@
-qastrocam-g2 (4.4beta20091006) jaunty; urgency=low
+qastrocam-g2 (4.4beta20091007) jaunty; urgency=low
 
   * levels (inverted/normal) can be set for APM telescope
   * levels (inverted/normal) can be set for // port LX
@@ -12,8 +12,9 @@ qastrocam-g2 (4.4beta20091006) jaunty; urgency=low
   * active V4L input and palette displayed in gui
   * LX mode for V4L generic added (serial and //)  
   * user manual started
+  * binary compiled with -O3
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 02 Oct 2009 05:27:39 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 07 Oct 2009 04:40:10 +0200
 
 qastrocam-g2 (4.3) jaunty; urgency=low
 
