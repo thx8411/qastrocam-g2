@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 4.0.0), libqt3-dev|libqt3-mt-dev, libsdl-dev, libav
 Standards-Version: 3.6.0
 
 Package: qastrocam-g2
-Architecture: i686
+Architecture: i386
 Section: graphics
 Priority: optional
 Depends: ${shlibs:Depends}
