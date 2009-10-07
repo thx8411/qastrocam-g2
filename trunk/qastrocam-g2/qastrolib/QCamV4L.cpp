@@ -167,7 +167,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    // lx mode vars inits
    lxDelay=0.2;
-   lxFineDelay=0.0;
+   //lxFineDelay=0.0;
    lxLevel=64;
    lxControler=NULL;
    lxEnabled=false;
@@ -839,7 +839,7 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
-         lxTimer->start((int)((lxDelay+lxFineDelay)*1000));
+         lxTimer->start((int)((lxDelay/*+lxFineDelay*/)*1000));
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
          lxControler->startAccumulation();
@@ -853,7 +853,7 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
-         lxTimer->start((int)((lxDelay+lxFineDelay)*1000));
+         lxTimer->start((int)((lxDelay/*+lxFineDelay*/)*1000));
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
          lxControler->startAccumulation();
@@ -881,7 +881,7 @@ void QCamV4L::setLXtime() {
    lxBar->reset();
    // lx time update
    lxTimer->stop();
-   lxTimer->start((int)((lxDelay+lxFineDelay)*1000));
+   lxTimer->start((int)((lxDelay/*+lxFineDelay*/)*1000));
    lxFrameCounter=0;
    lxTime->setText(QString().sprintf("%4.2f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
@@ -904,16 +904,16 @@ void QCamV4L::LXlevel(int level) {
 }
 
 // lx fine delay increment
-void QCamV4L::LXfinePlus() {
-   lxFineDelay+=(1.0/(double)(frameRate_*5));
-   cout << lxFineDelay << endl;
-}
+//void QCamV4L::LXfinePlus() {
+//   lxFineDelay+=(1.0/(double)(frameRate_*5));
+//   cout << lxFineDelay << endl;
+//}
 
 // lx fine delay decrement
-void QCamV4L::LXfineMinus() {
-   lxFineDelay-=(1.0/(double)(frameRate_*5));
-   cout << lxFineDelay << endl;
-}
+//void QCamV4L::LXfineMinus() {
+//   lxFineDelay-=(1.0/(double)(frameRate_*5));
+//   cout << lxFineDelay << endl;
+//}
 
 // mmap init
 bool QCamV4L::mmapInit() {
