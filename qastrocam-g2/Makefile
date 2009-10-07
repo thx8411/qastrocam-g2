@@ -1,7 +1,5 @@
 SHELL=/bin/bash
 SUBDIRS=qastrolib qastrocam
-#SUBDIRS+=doc
-#SUBDIRS+=alignlib qastrostack qastroscope
 
 -include Makefile.vars
 
@@ -17,7 +15,7 @@ install:: all
 	gnomeIconDir="$(DESTDIR)/share/icons"; install -d "$$gnomeIconDir"; install icons/qastrocam-icon.png "$$gnomeIconDir"
 
 release::
-	$(MAKE) all OPTFLAGS="-O3"
+	$(MAKE) all
 clean::configure_done
 	$(MAKE) -C qastrolib clean
 	$(MAKE) -C qastrocam clean
