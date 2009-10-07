@@ -146,8 +146,8 @@ private:
    QLabel * lxLabel2;
    QLineEdit * lxTime;
    QPushButton * lxSet;
-   QPushButton * lxFinePlus;
-   QPushButton * lxFineMinus;
+   //QPushButton * lxFinePlus;
+   //QPushButton * lxFineMinus;
    QProgressBar * lxBar;
    QTimer * lxTimer;
    // video stream vars
@@ -156,7 +156,7 @@ private:
    // lx mode vars
    SCmod* lxControler;
    double lxDelay; // integration time
-   double lxFineDelay; // fine tuning for interlace sync
+   //double lxFineDelay; // fine tuning for interlace sync
    double lxBaseTime; // os time at integration beginning
    bool lxEnabled; // is lx mode on ?
    int lxFrameCounter; // dropped frames number
@@ -172,8 +172,8 @@ public slots:
    void setMode(ImageMode val);
    void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */
    // lx mode slots
-   void LXfinePlus();
-   void LXfineMinus();
+   //void LXfinePlus();
+   //void LXfineMinus();
    void setLXmode(int val);
    void setLXtime();
    void LXframeReady();
