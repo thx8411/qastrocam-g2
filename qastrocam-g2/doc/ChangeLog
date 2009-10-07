@@ -1,4 +1,4 @@
-4.4beta20091007
+4.4beta20091008
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
@@ -13,6 +13,7 @@
   - LX mode for V4L generic added (serial and //)
   - user manual started
   - binary compiled with -O3 (forgot in previous versions)
+  - binary target is now i686
 
 4.3
 
