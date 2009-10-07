@@ -6,7 +6,9 @@ Build-Depends: debhelper (>= 4.0.0), libqt3-dev|libqt3-mt-dev, libsdl-dev, libav
 Standards-Version: 3.6.0
 
 Package: qastrocam-g2
-Architecture: any
+Architecture: i686
+Section: graphics
+Priority: optional
 Depends: ${shlibs:Depends}
 Description: Webcam capture program for astronomy
  qastrocam-g2 is a capture program for linux that can handle any V4L device.
