@@ -12,8 +12,8 @@ CFITSIO_INC=@CFITSIO_INC@
 CXXFLAGS+=$(QT_CXXFLAGS) $(CFITSIO_INC)
 LDFLAGS+=$(QT_LDADD) $(CFITSIO_LINK)
 
-# arch indep optimisation
-OPTFLAGS=-O3
+# optimisation
+OPTFLAGS=-O3 -march=i686
 # profiling
 #OPTFLAGS=-pg -O3
 # debug
