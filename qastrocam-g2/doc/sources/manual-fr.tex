@@ -69,6 +69,8 @@ Qastrocam-g2 est sous licence GPL version 2.
 \item LX mode for V4L generic added (serial and //)
 \item Binary compiled with -O3 (forgot in previous versions)
 \item Binary target is now i686
+\item autoconf warning fixed
+\item Minor cosmetic fix
 \end{itemize}
 \paragraph*{}
 \item vers. 4.3
@@ -251,9 +253,19 @@ modifi\'e par l'utilisation du module de pose longue.
 
 \appendix
 
+\chapter{Compilation de Qastrocam-g2}
+
+\section{Packages n\'ec\'essaires}
+
+\section{Configuration de la plate-forme}
+
+\section{Compilation et instalation}
+
+\section{G\'en\'eration d'un package debian}
+
 \chapter{Modification "latch"}
 
-\section*{Introduction}
+\section{Introduction}
 
 \paragraph*{}
 Longtemps, le port parall\`ele a constitu\'e un outil de choix pour
@@ -307,7 +319,7 @@ montage est auto-aliment\'e. De plus, un "reset" de l'imprimante engendre un "re
 verrou. La porte inverseuse du 7404 est remplac\'ee par un petit inverseur \`a transistor, moins 
 encombrant qu'un circuit int\'egr\'e complet.
 
-\section*{Explications}
+\section{Explications}
 
 \paragraph*{}
 Nous avons connu les "yes cards", voici venir la "yes printer". Le principe de
@@ -359,7 +371,7 @@ celles-ci soient reli\'ees \`a des entr\'es haute imp\'edance.
  Les autres signaux, {\tt SELECT} (13), {\tt AUTOFEED} (14), {\tt ERROR} (15) et 
  {\tt SELECTIN} (17) n'ont pas besoin d'\^etre g\'er\'es, ils sont donc simplement ignor\'es. 
  
-\section*{Liste des composants}
+\section{Liste des composants}
 
 \paragraph*{Base}
 \begin{itemize}
@@ -376,7 +388,7 @@ celles-ci soient reli\'ees \`a des entr\'es haute imp\'edance.
 \item D1 : LED 3mm basse consommation
 \end{itemize}
  
-\section*{R\'ealisation}
+\section{R\'ealisation}
 
 \paragraph*{}
 La r\'ealisation ne devrait pas poser de probl\`emes. Pour tous ceux qui n'ont pas les moyens
@@ -413,7 +425,7 @@ Si tout se passe bien, vous devriez obtenir un circuit semblable \`a la figure~\
  Je vous recommande de placer tout ceci dans une petite boite, pour le prot\'eger de l'humidit\'e
  de vos sorties nocturnes...
 
-\section*{Mise en \oe uvre}
+\section{Mise en \oe uvre}
 
 \paragraph*{}
 Une fois ce petit montage branch\'e derri\`ere votre adaptateur USB/parall\`ele, il vous est
