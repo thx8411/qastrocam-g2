@@ -43,7 +43,6 @@ public:
    void setSCmodImpl(SCmod *impl) {SCmodCtrl_=impl;}
    const QSize * getAllowedSize() const;
 protected:
-   void checkSize(int & x, int & y) const;
    QWidget *  buildGUI(QWidget * parent);
    virtual void refreshPictureSettings();
    friend class SCmodTucLed;

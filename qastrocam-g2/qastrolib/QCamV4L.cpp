@@ -35,8 +35,8 @@ const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor
 QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource,
                  unsigned long options /* cf QCamV4L::options */) {
    // V4L2 needed vars
-   v4l2_std_id _id;
-   v4l2_standard standard;
+   v4l2_std_id _id; // video stream standard id
+   v4l2_standard standard; // video stream standard
    int _index=0;
    // init defaults value
    options_=options;
@@ -80,26 +80,30 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       input.index++;
    }
    // choosing stored source if there is one
+   // the storing key is "SOURCE"+<device_name>
+   // so, we can store a prefered source for each diffrent device
    int res;
    string keyName("SOURCE_");
    keyName+=capability_.name;
-   // if we allready have a source, store it
+   // if we allready have a source in params, store it
    if(strlen(devsource)) settings.setKey(keyName.c_str(),devsource);
    // looking for the source in settings file
    if(settings.haveKey(keyName.c_str())) {
+      // we have a stored prefered source
       cout << "found stored source : " << settings.getKey(keyName.c_str()) << endl ;
       string source=settings.getKey(keyName.c_str());
-      input.index=0;
       // iterate to find the source
+      // in the V4L device
+      input.index=0;
       do {
          res=ioctl(device_,VIDIOC_ENUMINPUT,&input);
          input.index++;
       } while((res==0)&&(strcasecmp(source.c_str(),(char*)input.name)!=0));
       if(res==-1)
-        // source not found
+        // source not found in V4L device, using default
 	cout << "source '" << settings.getKey(keyName.c_str()) << "' not found, using default" << endl;
       else {
-         // setting the source
+         // setting the source in V4L device
          _index=input.index-1;
          ioctl (device_, VIDIOC_S_INPUT, &_index);
       }
@@ -111,7 +115,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    input.index=_index;
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
    cout << "using : " << input.name << endl << endl;
-
    // storing used source
    settings.setKey(keyName.c_str(),(char*)input.name);
 
@@ -119,9 +122,9 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
       perror("Getting Standard");
    };
+   // iterate to find the used video standard
    standard.index=0;
    res=0;
-   // iterate to find the used video standard
    while((res!=-1)&&(standard.id!=_id)) {
       res=ioctl(device_,VIDIOC_ENUMSTD,&standard);
       standard.index++;
@@ -137,6 +140,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       cout <<  "Using Framerate : " << frameRate_ << endl;
    }
 
+   // display the frame size
    cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
 
    // mmap init
@@ -144,6 +148,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    if (mmapInit()) {
       mmapCapture();
    }
+   // if mmap is NULL, using read/write mode
 
    // some lx widgets init to avoid segfaults in updateFrame
    lxBar=NULL;
@@ -153,10 +158,12 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    notifier_=NULL;
    timer_=NULL;
    if (options_&ioUseSelect) {
+      // notifier used if the device supports "select"
       notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
       connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
       cout << "Using select to wait new frames.\n";
    } else {
+      // use a QT timer
       timer_=new QTimer(this);
       connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
       timer_->start(1000/frameRate_) ; // value 0 => called every time event loop is empty
@@ -166,93 +173,94 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // update video stream properties
    setProperty("CameraName",capability_.name);
    setProperty("FrameRateSecond",frameRate_);
-
    label(capability_.name);
 
    // lx mode vars inits
    lxDelay=0.2;
-   //lxFineDelay=0.0;
    lxLevel=64;
    lxControler=NULL;
    lxEnabled=false;
    lxBaseTime=getTime();
    // lx timer settings
+   // we use a QT timer for long exposure mode timing
    lxTimer=new QTimer(this);
    lxTimer->stop();
    connect(lxTimer,SIGNAL(timeout()),this,SLOT(LXframeReady()));
 }
 
+// resize the stream
 void QCamV4L::resize(const QSize & s) {
    setSize(s.width(),s.height());
 }
 
 void QCamV4L::init(int preferedPalette) {
+   // most palettes use color
+   mode_=YuvFrame;
    // setting prefered palette if we have one
+   // also used for forced palette (-p option)
    if (preferedPalette) {
       picture_.palette=preferedPalette;
       if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
          palette="prefered";
-         cout << "found preferedPalette "
-              << preferedPalette << endl;
-      } else {
-         preferedPalette=0;
-         cout << "preferedPalette "
-              << preferedPalette
-              << " invalid, trying to find one."<< endl;
+         cout << "found preferedPalette " << preferedPalette << endl;
+         if(palette==VIDEO_PALETTE_GREY)
+            mode_=GreyFrame;
+         allocBuffers();
+         return;
       }
+      cout << "preferedPalette " << preferedPalette << " invalid, trying to find one."<< endl;
    }
-   // else finding a valide palette
-   // form best to low quality order
-   if (preferedPalette == 0) {
-      do {
-	 /* trying VIDEO_PALETTE_RGB24 */
-         picture_.palette=VIDEO_PALETTE_RGB24;
-         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-            palette="rgb24";
-            cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
-	 /* trying VIDEO_PALETTE_YUYV */
-         picture_.palette=VIDEO_PALETTE_YUYV;
-         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-           palette="yuyv";
-           cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
-           break;
-         }
-         cout <<"VIDEO_PALETTE_YUYV not supported.\n";
-	 /* trying VIDEO_PALETTE_YUV420P (Planar) */
-         picture_.palette=VIDEO_PALETTE_YUV420P;
-         if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
-            palette="yuv420p";
-            cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
-         /* trying VIDEO_PALETTE_YUV420 (interlaced) */
-         picture_.palette=VIDEO_PALETTE_YUV420;
-         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-            palette="yuv420";
-            cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
-	 /* trying VIDEO_PALETTE_GREY */
-         picture_.palette=VIDEO_PALETTE_GREY;
-         if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-            palette="grey";
-            cout << "found palette VIDEO_PALETTE_GREY"<<endl;
-            break;
-         }
-         cout <<"VIDEO_PALETTE_GREY not supported.\n";
-
-         cerr <<"could not find a supported palette.\n";
-         exit(1);
-      }
-      while (false);
+   // else finding a valid palette
+   // in high to low quality order
+   /* trying VIDEO_PALETTE_RGB24 */
+   picture_.palette=VIDEO_PALETTE_RGB24;
+   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+      palette="rgb24";
+      cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
+      allocBuffers();
+      return;
    }
-   mode_ = (picture_.palette==VIDEO_PALETTE_GREY)?GreyFrame:YuvFrame;
-   allocBuffers();
+   cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
+   /* trying VIDEO_PALETTE_YUYV */
+   picture_.palette=VIDEO_PALETTE_YUYV;
+   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+     palette="yuyv";
+     cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
+     allocBuffers();
+     return;
+   }
+   cout <<"VIDEO_PALETTE_YUYV not supported.\n";
+   /* trying VIDEO_PALETTE_YUV420P (Planar) */
+   picture_.palette=VIDEO_PALETTE_YUV420P;
+   if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
+      palette="yuv420p";
+      cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
+      allocBuffers();
+      return;
+   }
+   cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
+   /* trying VIDEO_PALETTE_YUV420 (interlaced) */
+   picture_.palette=VIDEO_PALETTE_YUV420;
+   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+      palette="yuv420";
+      cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
+      allocBuffers();
+      return;
+   }
+   cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
+   /* trying VIDEO_PALETTE_GREY */
+   picture_.palette=VIDEO_PALETTE_GREY;
+   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+      palette="grey";
+      cout << "found palette VIDEO_PALETTE_GREY"<<endl;
+      mode_=GreyFrame;
+      allocBuffers();
+      return;
+   }
+   cout <<"VIDEO_PALETTE_GREY not supported.\n";
+   // no supported palette, leaving
+   cerr <<"could not find a supported palette.\n";
+   exit(1);
 }
 
 // allocate memory for buffers, depending on
@@ -320,21 +328,9 @@ const QSize * QCamV4L::getAllowedSize() const {
    return sizeTable_;
 }
 
-// checks if size repects device capabilities
-void QCamV4L::checkSize(int & x, int & y) const {
-   if (x>=capability_.maxwidth && y >= capability_.maxheight) {
-      x=capability_.maxwidth;
-      y=capability_.maxheight;
-   } else if (x<=capability_.minwidth || y <=capability_.minheight ) {
-      x=capability_.minwidth;
-      y=capability_.minheight;
-   }
-}
-
 // change the frame size
 bool QCamV4L::setSize(int x, int y) {
    static char buff[11];
-   checkSize(x,y);
    window_.x=0;
    window_.y=0;
    window_.width=x;

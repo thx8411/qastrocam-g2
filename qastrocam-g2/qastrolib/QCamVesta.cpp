@@ -68,26 +68,6 @@ QCamVesta::QCamVesta(const char * devpath):
    lastGain_=getGain();
 }
 
-void QCamVesta::checkSize(int & x, int & y) const {
-   cout << "checkSize "<<x<<"x"<<y;
-   if (x>=640 && y>=480 && 640<=capability_.maxwidth) {
-      x=640;
-      y=480;
-   } else if (x>=352 && y >=288 && getType()<700) {
-      x=352;y=288;
-   } else if (x>=320 && y >= 240) {
-      x=320;y=240;
-   } else if (x>=176 && y >=144 && getType()<700 ) {
-      x=176;y=144;
-   } else if (x>=160 && y >=120 ) {
-      x=160;y=120;
-   } else {
-      x=capability_.minwidth;
-      y=capability_.minheight;
-   }
-   cout << " give "<<x<<"x"<<y<<endl;;
-}
-
 bool QCamVesta::updateFrame() {
    static int tmp;
    if (skippedFrame_ < multiplicateur_-1) {

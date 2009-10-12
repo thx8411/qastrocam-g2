@@ -81,10 +81,6 @@ protected:
    // drop a frame 
    bool dropFrame();
    /** should be overloaded.
-       set x an y to allowed value.
-   */
-   virtual void checkSize(int & x, int & y) const;
-   /** should be overloaded.
        return the avaibles capture size.
    */
    virtual const QSize* getAllowedSize() const;

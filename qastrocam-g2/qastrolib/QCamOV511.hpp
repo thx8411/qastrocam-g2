@@ -8,16 +8,12 @@ class QCamOV511 : public QCamV4L {
    Q_OBJECT;
 public:
    QCamOV511(const char * devpath="/dev/video0");
-protected:
-   /** update x and y to a valid size */
-   virtual void checkSize(int & x, int & y) const;
 };
 
 class QCamOV519 : public QCamV4L {
    Q_OBJECT;
 public:
    QCamOV519(const char * devpath="/dev/video0");
-protected:
 };
 
 #endif
