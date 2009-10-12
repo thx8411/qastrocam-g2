@@ -1,4 +1,4 @@
-4.4beta20091008
+4.4beta20091012
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
@@ -14,6 +14,8 @@
   - user manual started
   - binary compiled with -O3 (forgot in previous versions)
   - binary target is now i686
+  - autoconf warning fixed
+  - minor cosmetic fix
 
 4.3
 
