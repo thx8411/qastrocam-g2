@@ -1,8 +1,8 @@
 #ifndef _qastrolibVersion_hpp_
 #define _qastrolibVersion_hpp_
 
-const char * const qastrolibVersion ="4.4beta20091008";
-const int          qastrolibBuild   =37;
+const char * const qastrolibVersion ="4.4beta20091012";
+const int          qastrolibBuild   =38;
 const char * const qastrolibWeb = "http://sourceforge.net/projects/qastrocam-g2/";
 const char * const qastrolibMail = "thx8411@users.sourceforge.net";
 const char * const qastrolibName = "QastroLib-g2";

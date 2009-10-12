@@ -1,4 +1,4 @@
-qastrocam-g2 (4.4beta20091008) jaunty; urgency=low
+qastrocam-g2 (4.4beta20091012) jaunty; urgency=low
 
   * levels (inverted/normal) can be set for APM telescope
   * levels (inverted/normal) can be set for // port LX
@@ -14,8 +14,10 @@ qastrocam-g2 (4.4beta20091008) jaunty; urgency=low
   * user manual started
   * binary compiled with -O3 (optimisation)
   * binary target is now i686
+  * autoconf warning fixed
+  * minor cosmetic fix
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 07 Oct 2009 06:25:21 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Mon, 12 Oct 2009 04:00:39 +0200
 
 qastrocam-g2 (4.3) jaunty; urgency=low
 
