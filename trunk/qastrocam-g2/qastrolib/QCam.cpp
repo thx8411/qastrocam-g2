@@ -275,6 +275,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QToolTip::add(displayHistogramButton_,"display frames histograms,\nand focus information");
    displayHistogramButton_->setToggleButton(true);
    displayHistogramButton_->setPixmap(*QCamUtilities::getIcon("displayHistogram.png"));
+   displayHistogramButton_->setMinimumHeight(28);
    if (displayHistogramWindow_ && displayHistogramWindow_->isActive()) {
       cout << "set displayHistogramButton_ on\n";
       displayHistogramButton_->setOn(true);
