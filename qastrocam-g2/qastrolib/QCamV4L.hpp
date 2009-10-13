@@ -144,8 +144,6 @@ private:
    QLabel * lxLabel2;
    QLineEdit * lxTime;
    QPushButton * lxSet;
-   //QPushButton * lxFinePlus;
-   //QPushButton * lxFineMinus;
    QProgressBar * lxBar;
    QBlink* lxBlink;
    QTimer * lxTimer;
@@ -171,8 +169,6 @@ public slots:
    void setMode(ImageMode val);
    void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */
    // lx mode slots
-   //void LXfinePlus();
-   //void LXfineMinus();
    void setLXmode(int val);
    void setLXtime();
    void LXframeReady();
