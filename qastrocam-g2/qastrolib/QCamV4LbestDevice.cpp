@@ -63,16 +63,16 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
          close(cam_fd);
          camFound = new QCamOV519(devpath);
 	 goto exit;
-      } 
+      }
       printf("unknow %s camera detected.\n"
              "Using generic V4L driver.\n",
              vcap.name);
       close(cam_fd);
-      
+
       if(settings.haveKey("PALETTE")) {
          string palette_=settings.getKey("PALETTE");
          if(strcasecmp(palette_.c_str(),"rgb24")==0) {
-            palette=VIDEO_PALETTE_RGB24; 
+            palette=VIDEO_PALETTE_RGB24;
          } else if(strcasecmp(palette_.c_str(),"yuyv")==0){
             palette=VIDEO_PALETTE_YUYV;
          } else if(strcasecmp(palette_.c_str(),"yuv420p")==0){
@@ -84,7 +84,7 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
          } else {
             palette=0;
          }
-      } else { 
+      } else {
          palette=0;
       }
       camFound = new QCamV4L(devpath,palette,devsource);

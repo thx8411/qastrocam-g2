@@ -47,7 +47,7 @@ QCamVesta::QCamVesta(const char * devpath):
          }
       }
       if (!IsPhilips) {
-         cerr << "QCamVesta::QCamVesta() not called on a Philips Webcam.\n"
+         cerr << "QCamVesta::QCamVesta() called on a non Philips Webcam.\n"
               << "did you use QCamV4L::openBestDevice() to open your device?"
               << endl;
          exit(1);

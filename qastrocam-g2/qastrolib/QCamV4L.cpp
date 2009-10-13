@@ -401,103 +401,60 @@ bool QCamV4L::updateFrame() {
    if (mmap_buffer_) {
       mmapCapture();
       mmapSync();
-      setTime();
       res=true;
-      // dependings on the palette, mem copies...
+      tmpBuffer_=mmapLastFrame();
+   } else {
+      res= 0 < read(device_,(void*)tmpBuffer_,yuvFrameMemSize);
+   }
+   // if we have a frame...
+   if(res) {
+      setTime();
+      // ...dependings on the palette...
       switch (picture_.palette) {
+         // mem copies
          case VIDEO_PALETTE_GREY:
-            memcpy(YBuf,mmapLastFrame(),window_.width * window_.height);
+            memcpy(YBuf,tmpBuffer_,window_.width * window_.height);
             break;
          case VIDEO_PALETTE_YUV420P:
-            memcpy(YBuf,mmapLastFrame(), window_.width * window_.height);
+            memcpy(YBuf,tmpBuffer_, window_.width * window_.height);
             memcpy(UBuf,
-                mmapLastFrame()+ window_.width * window_.height,
-                (window_.width/2) * (window_.height/2));
+               tmpBuffer_+ window_.width * window_.height,
+               (window_.width/2) * (window_.height/2));
             memcpy(VBuf,
-                mmapLastFrame()+ window_.width * window_.height+(window_.width/2) * (window_.height/2),
-                (window_.width/2) * (window_.height/2));
+               tmpBuffer_+ window_.width * window_.height+(window_.width/2) * (window_.height/2),
+               (window_.width/2) * (window_.height/2));
             break;
-         // ... and palette conversions
+         // and frame convertions
          case VIDEO_PALETTE_YUV420:
             ccvt_420i_420p(window_.width,window_.height,
-                           mmapLastFrame(),
-                           YBuf,
-                           UBuf,
-                           VBuf);
+                        tmpBuffer_,
+                        YBuf,
+                        UBuf,
+                        VBuf);
             break;
          case VIDEO_PALETTE_RGB24:
             ccvt_rgb24_420p(window_.width,window_.height,
-                            mmapLastFrame(),
+                         tmpBuffer_,
                          YBuf,
                          UBuf,
                          VBuf);
             break;
          case VIDEO_PALETTE_YUV422:
          case VIDEO_PALETTE_YUYV:
-            ccvt_yuyv_420p(window_.width,window_.height,
-                         mmapLastFrame(),
-                         YBuf,
-                         UBuf,
-                         VBuf);
-            break;
-
-         default:
-            cerr << "invalid palette "<<picture_.palette<<endl;
-            exit(1);
-      }
-   // if using read/write mode
-   } else {
-      // depending on the palette, reads and converts frame
-      switch (picture_.palette) {
-      case VIDEO_PALETTE_GREY:
-         res = 0 < read(device_,YBuf,window_.width * window_.height);
-         if (res) setTime();
-         break;
-      case VIDEO_PALETTE_YUV420P:
-         res = 0 < read(device_,YBuf,window_.width * window_.height);
-         if (res) setTime();
-         res = res && (0 < read(device_,UBuf,(window_.width/2) * (window_.height/2)));
-         res = res && (0 < read(device_,VBuf,(window_.width/2) * (window_.height/2)));
-         break;
-      case VIDEO_PALETTE_YUV420:
-         res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height *3/2);
-         if (res) {
-            setTime();
-            ccvt_420i_420p(window_.width,window_.height,
-                        tmpBuffer_,
-                        YBuf,
-                        UBuf,
-                        VBuf);
-         }
-         break;
-      case VIDEO_PALETTE_RGB24:
-         res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 3);
-         if (res) {
-            setTime();
-            ccvt_rgb24_420p(window_.width,window_.height,
-                         tmpBuffer_,
-                         YBuf,
-                         UBuf,
-                         VBuf);
-         }
-         break;
-      case VIDEO_PALETTE_YUV422:
-      case VIDEO_PALETTE_YUYV:
-         res = 0 < read(device_,(void*)tmpBuffer_,window_.width * window_.height * 2);
-         if (res) {
-            setTime();
              ccvt_yuyv_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
                          VBuf);
-         }
-         break;
-      default:
-      cerr << "invalid palette "<<picture_.palette<<endl;
-      exit(1);
+            break;
+         default:
+            cerr << "invalid palette "<<picture_.palette<<endl;
+            exit(1);
       }
    }
+   // if mmap, restoring tmpBuffer_
+   if(mmap_buffer_)
+      tmpBuffer_=NULL;
    // lx support
    if (res) {
       // if lx activated
