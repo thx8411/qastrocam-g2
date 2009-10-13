@@ -270,23 +270,24 @@ void QCamV4L::allocBuffers() {
    yuvBuffer_.setSize(QSize(window_.width,window_.height));
    switch (picture_.palette) {
    case VIDEO_PALETTE_GREY:
-      tmpBuffer_=new uchar[(int)window_.width * window_.height];
+      yuvFrameMemSize=window_.width * window_.height;
       break;
    case VIDEO_PALETTE_RGB24:
-      tmpBuffer_=new uchar[(int)window_.width * window_.height * 3];
+      yuvFrameMemSize=window_.width * window_.height * 3;
       break;
-
    case VIDEO_PALETTE_YUV420:
    case VIDEO_PALETTE_YUV420P:
-      tmpBuffer_=new uchar[(int)window_.width * window_.height * 3/2 ];
+      yuvFrameMemSize=window_.width * window_.height * 3/2;
       break;
    case VIDEO_PALETTE_YUV422:
    case VIDEO_PALETTE_YUYV:
-      tmpBuffer_=new uchar[(int)window_.width * window_.height * 2];
+      yuvFrameMemSize=window_.width * window_.height * 2;
       break;
    default:
+      yuvFrameMemSize=0;
       tmpBuffer_=NULL;
    }
+   tmpBuffer_=new uchar[yuvFrameMemSize];
 }
 
 // get frame sizes supported by the
@@ -358,7 +359,7 @@ bool QCamV4L::setSize(int x, int y) {
    }
    // realloc buffers using new size
    allocBuffers();
-   return true;
+   return(true);
 }
 
 // drop frames without treatment
@@ -370,29 +371,9 @@ bool QCamV4L::dropFrame() {
       mmapCapture();
       mmapSync();
       return true;
-   // else, compute the byte number to read
-   } else {
-      switch (picture_.palette) {
-      case VIDEO_PALETTE_GREY:
-         bufSize=window_.width * window_.height;
-         break;
-      case VIDEO_PALETTE_YUV420P:
-      case VIDEO_PALETTE_YUV420:
-         bufSize=window_.width * window_.height *3/2;
-         break;
-      case VIDEO_PALETTE_RGB24:
-         bufSize=window_.width * window_.height *3;
-         break;
-      case VIDEO_PALETTE_YUV422:
-      case VIDEO_PALETTE_YUYV:
-         bufSize=window_.width * window_.height *2;
-         break;
-      default:
-         cerr << "invalid palette "<<picture_.palette<<endl;
-         exit(1);
-      }
-      return 0 < read(device_,(void*)nullBuff,bufSize);
    }
+   // else, read the frame
+   return 0 < read(device_,(void*)nullBuff,yuvFrameMemSize);
 }
 
 // we should have a new frame
@@ -552,11 +533,11 @@ bool QCamV4L::updateFrame() {
       cout << "frame dropped" << endl;
       //newFrameAvaible();
    }
-   /*int newFrameRate=getFrameRate();
+   int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
       frameRate_=newFrameRate;
       if (timer_) timer_->changeInterval(1000/frameRate_);
-   }*/
+   }
    return res;
 }
 
@@ -640,12 +621,8 @@ void QCamV4L::refreshPictureSettings() {
 
 QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
-   //QHBox * hbox=new QHBox(remoteCTRL);
    QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
-   /*
-     QCheckBox * greyModeB = new QCheckBox("B&W",hbox);
-     connect(greyModeB,SIGNAL(toggled(bool)),this,SLOT(setGrey(bool)));
-   */
+
    int labelNumber;
    if(picture_.palette==VIDEO_PALETTE_GREY)
       labelNumber=1;
@@ -669,7 +646,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
-      //hbox->add(remoteCTRLcontrast_);
       connect(this,SIGNAL(contrastChange(int)),
               remoteCTRLcontrast_,SLOT(setValue(int)));
       connect(remoteCTRLcontrast_,SIGNAL(valueChange(int)),
@@ -677,7 +653,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    }
    if (options_ & haveBrightness) {
       remoteCTRLbrightness_=new QCamSlider("Bri.",false,hbox);
-      //hbox->add(remoteCTRLbrightness_);
       connect(this,SIGNAL(brightnessChange(int)),
               remoteCTRLbrightness_,SLOT(setValue(int)));
       connect(remoteCTRLbrightness_,SIGNAL(valueChange(int)),
@@ -685,7 +660,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    }
    if (options_ & haveHue) {
       remoteCTRLhue_=new QCamSlider("Hue",false,hbox);
-      //hbox->add(remoteCTRLhue_);
       connect(this,SIGNAL(hueChange(int)),
               remoteCTRLhue_,SLOT(setValue(int)));
       connect(remoteCTRLhue_,SIGNAL(valueChange(int)),
@@ -705,9 +679,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
       connect(remoteCTRLwhiteness_,SIGNAL(valueChange(int)),
               this,SLOT(setWhiteness(int)));
    }
-   //greyModeB->show();
-   //remoteCTRLcontrast_->show();
-   //remoteCTRLbrightness_->show();
 
    // level slider
    lxSlider=new QCamSlider("Lvl.",false,hbox,0,255);
@@ -754,13 +725,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxSet=new QPushButton("Set",remoteCTRLlx);
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
-   // fine tuning buttons
-   //lxFinePlus=new QPushButton("+",remoteCTRLlx);
-   //lxFinePlus->setMaximumWidth(16);
-   //
-   //lxFineMinus=new QPushButton("-",remoteCTRLlx);
-   //lxFineMinus->setMaximumWidth(16);
-   //
    // progress bar
    lxBar=new QProgressBar(remoteCTRLlx);
    lxBar->setCenterIndicator(true);
@@ -780,8 +744,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    // lx events connector
    connect(lxSelector,SIGNAL(change(int)),this,SLOT(setLXmode(int)));
    connect(lxSet,SIGNAL(released()),this,SLOT(setLXtime()));
-   //connect(lxFinePlus,SIGNAL(released()),this,SLOT(LXfinePlus()));
-   //connect(lxFineMinus,SIGNAL(released()),this,SLOT(LXfineMinus()));
 
    return remoteCTRL;
 }
@@ -907,18 +869,6 @@ void QCamV4L::LXlevel(int level) {
    lxLevel=level;
 }
 
-// lx fine delay increment
-//void QCamV4L::LXfinePlus() {
-//   lxFineDelay+=(1.0/(double)(frameRate_*5));
-//   cout << lxFineDelay << endl;
-//}
-
-// lx fine delay decrement
-//void QCamV4L::LXfineMinus() {
-//   lxFineDelay-=(1.0/(double)(frameRate_*5));
-//   cout << lxFineDelay << endl;
-//}
-
 // mmap init
 bool QCamV4L::mmapInit() {
    mmap_mbuf_.size = 0;
@@ -960,13 +910,6 @@ void QCamV4L::mmapSync() {
 
 uchar * QCamV4L::mmapLastFrame() const {
    return mmap_buffer_ + mmap_mbuf_.offsets[mmap_last_sync_buff_];
-   //if (mmap_curr_buff_ == 1 ) {
-   //   return mmap_buffer_;
-   //} else {
-   //   return mmap_buffer_ + mmap_mbuf_.offsets[1];
-   //}
-   //return mmap_buffer_ + mmap_mbuf_.offsets[(mmap_curr_buff_-1)% mmap_mbuf_.frames];
-   //return mmap_buffer_ + mmap_mbuf_.size*((mmap_curr_buff_-1)%mmap_mbuf_.frames);
 }
 
 // mmap capture

@@ -53,6 +53,7 @@ public:
    ~QCamV4L();
    // image access
    QCamFrame yuvFrame() const { return yuvBuffer_; }
+   int yuvFrameMemSize;
    const QSize & size() const;
    void resize(const QSize & s);
    int getBrightness() const;
@@ -87,7 +88,7 @@ protected:
    /** return the frame rate of the camera.
        is used if the select() system call is not avaible,
        by the timer used to probe the camera for a new frame */
-   virtual int getFrameRate() const { return 10;}
+   virtual int getFrameRate() const { return(frameRate_);}
 
    // gui
    QHGroupBox * remoteCTRLlx;
