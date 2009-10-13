@@ -16,6 +16,7 @@
   - binary target is now i686
   - autoconf warning fixed
   - minor cosmetic fix
+  - mmap yuyv palette bug fixed
 
 4.3
 

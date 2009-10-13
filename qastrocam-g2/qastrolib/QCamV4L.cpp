@@ -435,7 +435,7 @@ bool QCamV4L::updateFrame() {
          case VIDEO_PALETTE_YUV422:
          case VIDEO_PALETTE_YUYV:
             ccvt_yuyv_420p(window_.width,window_.height,
-                         tmpBuffer_,
+                         mmapLastFrame(),
                          YBuf,
                          UBuf,
                          VBuf);
