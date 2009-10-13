@@ -519,6 +519,8 @@ bool QCamV4L::updateFrame() {
          // the frame is ok
          // resetting dropped frames counter
          lxFrameCounter=0;
+         // resetting progress bar
+         lxBar->reset();
          // blinking
          if(lxBlink) lxBlink->step();
       }
@@ -819,7 +821,7 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
-         lxTimer->start((int)((lxDelay/*+lxFineDelay*/)*1000));
+         lxTimer->start((int)(lxDelay*1000));
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
          lxControler->startAccumulation();
@@ -847,7 +849,7 @@ void QCamV4L::setLXtime() {
    lxBar->reset();
    // lx time update
    lxTimer->stop();
-   lxTimer->start((int)((lxDelay/*+lxFineDelay*/)*1000));
+   lxTimer->start((int)(lxDelay*1000));
    lxFrameCounter=0;
    lxTime->setText(QString().sprintf("%4.2f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
@@ -859,12 +861,13 @@ void QCamV4L::LXframeReady() {
    // stop integration
    lxControler->stopAccumulation();
    // wait for the canera to send the frames
-   usleep((int)(1000000.0/(double)(frameRate_)));
+   // worst case : we must wait for 2 complet fields
+   usleep((int)(1000000.0/(1.25*frameRate_)));
    // integration starting for the next frame
    lxControler->startAccumulation();
 }
 
-// lx level change slot
+// lx level slider change slot
 void QCamV4L::LXlevel(int level) {
    lxLevel=level;
 }
