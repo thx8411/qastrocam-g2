@@ -17,8 +17,9 @@ qastrocam-g2 (4.4beta20091013) jaunty; urgency=low
   * autoconf warning fixed
   * minor cosmetic fix
   * mmap yuyv palette bug fixed
+  * RGB24 palette support (luminance only)
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 13 Oct 2009 03:25:09 +0200
+ -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 15 Oct 2009 12:45:22 +0200
 
 qastrocam-g2 (4.3) jaunty; urgency=low
 

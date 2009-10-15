@@ -1,4 +1,4 @@
-4.4beta20091013
+4.4beta20091016
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
@@ -17,6 +17,7 @@
   - autoconf warning fixed
   - minor cosmetic fix
   - mmap yuyv palette bug fixed
+  - RGB24 palette support (luminance only)
 
 4.3
 
