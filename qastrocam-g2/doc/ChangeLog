@@ -1,4 +1,4 @@
-4.4beta20091016
+4.4beta20091017
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
   - removed obsolete parport LX control
@@ -18,6 +18,8 @@
   - minor cosmetic fix
   - mmap yuyv palette bug fixed
   - RGB24 palette support (luminance only)
+  - V4L generic "hot" resize supported for all devices
+  - prefered grey palette bug fixed
 
 4.3
 
