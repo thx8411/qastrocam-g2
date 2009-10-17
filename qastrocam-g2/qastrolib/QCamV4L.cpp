@@ -105,13 +105,14 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       else {
          // setting the source in V4L device
          _index=input.index-1;
-         ioctl (device_, VIDIOC_S_INPUT, &_index);
+         ioctl(device_, VIDIOC_S_INPUT, &_index);
       }
    // no source found, using default
    } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
 
    // get the used source
    ioctl(device_,VIDIOC_G_INPUT,&_index);
+   deviceSource=_index;
    input.index=_index;
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
    cout << "using : " << input.name << endl << endl;
@@ -203,7 +204,7 @@ void QCamV4L::init(int preferedPalette) {
       if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
          palette="prefered";
          cout << "found preferedPalette " << preferedPalette << endl;
-         if(palette==VIDEO_PALETTE_GREY)
+         if(picture_.palette==VIDEO_PALETTE_GREY)
             mode_=GreyFrame;
          allocBuffers();
          return;
@@ -347,16 +348,37 @@ bool QCamV4L::setSize(int x, int y) {
    if(ioctl(device_, VIDIOCGWIN, &window_)) {
        perror ("ioctl(VIDIOCGWIN)");
    }
+   // if the two sizes are diffrent, the device does not
+   // support hot resizing, closing and re-opening device
+   // the device allready had all these settings, assuming
+   // everything goes well...
+   if((x!=window_.width)||(y!=window_.height)) {
+      close(device_);
+      device_=open(devpath_.c_str(),O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0));
+      // setting the source back
+      ioctl(device_, VIDIOC_S_INPUT, &deviceSource);
+      // setting the palette back
+      ioctl(device_, VIDIOCSPICT, &picture_);
+      // setting the size back
+      window_.width=x;
+      window_.height=y;
+      ioctl(device_, VIDIOCSWIN, &window_);
+      // setting mmap back
+      if(mmap_buffer_!=NULL) {
+         mmap_mbuf_.size = 0;
+         mmap_mbuf_.frames = 0;
+         mmap_last_sync_buff_=-1;
+         mmap_last_capture_buff_=-1;
+         ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_);
+         mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
+      }
+      //cout << "Some devices refuse hot-resizing,\nYou should quit to get the new size" << endl;
+   }
    cout << "set to x=" << window_.width
         << " " << "y=" << window_.height <<endl;
    // updating video stream properties
    snprintf(buff,10,"%dx%d",window_.width,window_.height);
    setProperty("FrameSize",buff,true);
-   // if the two sizes are diffrent, the device does not
-   // support hot resizing
-   if((x!=window_.width)||(y!=window_.height)) {
-      cout << "Some devices refuse hot-resizing,\nYou should quit to get the new size" << endl;
-   }
    // realloc buffers using new size
    allocBuffers();
    return(true);

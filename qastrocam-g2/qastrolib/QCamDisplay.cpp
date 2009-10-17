@@ -203,7 +203,7 @@ void QCamDisplayImpl::resizeEvent(QResizeEvent*ev) {
    if (camClient_.isConnected() &&
         firtsFrameReceived_ ) {
       cout << "resize display "<<size().width()<<"x"<<size().height()<<"\n";
-      cout << "* old size was:"<<ev->oldSize().width()<<"x"<<ev->oldSize().height()<<"\n";
+      cout << "old size was:"<<ev->oldSize().width()<<"x"<<ev->oldSize().height()<<"\n";
             //cout << "camsize "<< camClient_.cam().size().width()<<"x"<< camClient_.cam().size().height()<<"\n";
       //resize(camClient_.cam().size());
       //crossCenterY_=crossCenterX_=-1000;
