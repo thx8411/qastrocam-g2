@@ -100,6 +100,8 @@ private:
    // V4L vars
    v4l2_input input;
    QString palette;
+   // device settings stored
+   int deviceSource;
    // device name
    string devpath_;
    // basic operations
