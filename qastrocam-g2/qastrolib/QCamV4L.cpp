@@ -177,6 +177,11 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    label(capability_.name);
 
    // lx mode vars inits
+   //
+   // lx mod use 0.2s steps : 
+   // this is the smallest common value for PAL and NTSC
+   // PAL : 0.2s = 5 full frames
+   // NTSC : 0.2s = 6 full frames
    lxDelay=0.2;
    lxLevel=64;
    lxControler=NULL;
