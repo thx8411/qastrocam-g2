@@ -306,7 +306,7 @@ modifi\'e par l'utilisation du module de pose longue.
 \paragraph*{}
 Longtemps, le port parall\`ele a constitu\'e un outil de choix pour
 interfacer un ordinateur personnel au monde ext\'erieur, notamment en
-astronomie amateur. Cependant, depuis quelques années, ces ports
+astronomie amateur. Cependant, depuis quelques ann\'ees, ces ports
 disparaissent de nos machines, et surtout des machines portables,
 pourtant tr\`es utiles \`a l'astronome nomade.
 
@@ -321,14 +321,14 @@ interface \`a un prix raisonnable, il ne reste donc que les interfaces USB/s\'er
 ou USB/parall\`ele standards du march\'e chinois, pour quelques dollars ou euro.
 
 \paragraph*{}
-Les adaptateurs USB/s\'erie on l'avantage d'\^etre totalement contr\^olables (sur les bits)
-de signalisation, du moins), mais cela ne fournit que deux bits en sortie et deux bits en
+Les adaptateurs USB/s\'erie on l'avantage d'\^etre totalement contr\^olables (sur les bits
+de signalisation, du moins), mais ils ne fournissent que deux bits en sortie et deux bits en
 entr\'ee. C'est la solution utilis\'ee par la modification longue pose s\'erie (utilisant
 les lignes {\tt DTR} et {\tt RTS}). Il faut cependant adapter les niveaux de tension 
 (diverses solutions existent, avec des jeux de r\'esistances, des transistors, des diodes
  zener, etc), les liaisons RS232
  fonctionnant en +/-12V. Malheureusement, cette solution ne fournie pas suffisamment de 
- sorties pour contr\^oler \`a la fois une camera longue pose et piloter l'autoguidage d'une
+ sorties pour contr\^oler \`a la fois une camera longue pose et l'autoguidage d'une
  monture. Pour cela, point d'autre salut que le port parall\`ele.
 
 \paragraph*{} 
@@ -340,11 +340,11 @@ les bits de signalisation du ports, et que celui-ci n'accepte d'\'echanger des d
 s'il est connect\'e \`a une imprimante, ou au moins quelque chose qui se comporte comme tel.
 
 \paragraph*{}
-C'est l\`a qu'intervient la modification "latch", qui consiste \`a ins\'erer le minimum d'
-\'electronique permettant de simuler le comportement d'une imprimante, afin de disposer tout
+C'est l\`a qu'intervient la modification "latch", qui consiste \`a ins\'erer le minimum 
+d'\'electronique permettant de simuler le comportement d'une imprimante, afin de disposer tout
 de m\^eme des huit bits de donn\'ees disponibles sur le port. J'appelle cette modification
-"latch" car le plus gros de l'\'electronique concern\'ee est constitu\'e d'un composant TTL qui
-verrouille les niveaux de sortie du port, un "latch" en anglais, un 74HC573 en l'occurrence (il 
+"latch" car le plus gros de l'\'electronique est constitu\'e d'un composant TTL qui
+verrouille les niveaux de sortie du port, un "latch" en anglais (un 74HC573 en l'occurrence qui 
 peut \^etre remplac\'e par un 74HC574, voir un composant d'une autre s\'erie, type LS en fonction
  des disponibilit\'es), composant tr\`es courant \`a moins de un euro.
 
@@ -363,8 +363,8 @@ Nous avons connu les "yes cards", voici venir la "yes printer". Le principe de
  correctement, que l'imprimante et toujours disponible, et que tout se passe toujours bien.
   Pour cela, une partie des
  signaux est directement renvoy\'ee \`a l'ordinateur, comme accus\'e r\'eception, et
- une autre for\c{c}\'ee au niveau bas, \`a la masse. Pendant ce temps, le signal de 
- synchronisation du PC sera utilis\'e pour stocker les donn\'ees dans le verrou.
+ une autre for\c{c}\'ee au niveau bas. Le signal de 
+ synchronisation sera utilis\'e pour stocker les donn\'ees dans le verrou.
  
  \paragraph*{}
  Un bon dessin \'etant bien mieux qu'un long discours, le sch\'ema est visible sur la figure~\ref{latch1}.
@@ -391,15 +391,15 @@ Le signal {\tt INIT} (16) nous sert d'alimentation pour le montage. Il est en ef
 que les signaux d'un port parall\`ele sont faits pour piloter des portes logiques, il est donc 
 important d'en tirer le moins de courant possible. La LED sera donc de pr\'ef\'erence une LED
 faible courant, avec une r\'esistance de limitation adapt\'ee. De toute mani\`ere, en application
-astronomique, il est conseill\'e d'avoir le moins de lumi\`ere parasite possible, la LED et sa r\'esistance 
+astronomique, il est conseill\'e d'avoir le moins de lumi\`eres parasites possible, la LED et sa r\'esistance 
 peuvent donc \^etre omises au besoin. De m\^eme pour les donn\'ees en sortie, il est imp\'eratif que 
 celles-ci soient reli\'ees \`a des entr\'es haute imp\'edance.
 
 \paragraph*{}
  Notre imprimante n'est jamais occup\'ee et a toujours du papier, les entr\'es {\tt BUSY} (11) et
- {\tt PAPEROUT} (12) sont donc reli\'ees \` la masse. L'entr\'ee {\tt /ACK} (10) est directement reli\'ee
+ {\tt PAPEROUT} (12) sont donc reli\'ees \`a la masse. L'entr\'ee {\tt /ACK} (10) est directement reli\'ee
  \`a la sortie {\tt STROBE} (1). Notre imprimante accuse automatiquement r\'eception de tout ce
- qu'elle re\,coit. {\tt STROBE}, via notre inverseur, pilote \'egalement le chargement de notre
+ qu'elle re\c{c}oit. {\tt STROBE}, via notre inverseur, pilote \'egalement le chargement de notre
  verrou. Sur notre verrou, les donn\'ees doivent \^etre en permanence disponibles en sortie,
  {\tt /OE} est donc mise \`a la masse.
  
