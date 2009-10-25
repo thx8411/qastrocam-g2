@@ -452,14 +452,13 @@ QWidget * QCam::buildGUI(QWidget * parent) {
          indexOfCurrentSize=sizeCombo->getPosition(settings.getKey("FRAME_RESOLUTION"));
 
       if (indexOfCurrentSize==-1) {
-         cout << "warning current capture size "
-            "not found in  getAllowedSize()\n";
-      } else {
-         sizeCombo->update(indexOfCurrentSize);
-         setSizeFromAllowed(indexOfCurrentSize);
+         cout << "warning current capture size not found" << endl;
+         cout << "Using default..." << endl;
+         indexOfCurrentSize=0;
       }
-      connect(sizeCombo,
-              SIGNAL(change(int)),this,SLOT(setSizeFromAllowed(int)));
+      sizeCombo->update(indexOfCurrentSize);
+      setSizeFromAllowed(indexOfCurrentSize);
+      connect(sizeCombo,SIGNAL(change(int)),this,SLOT(setSizeFromAllowed(int)));
    }
    return remoteCTRL_;
 }

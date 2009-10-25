@@ -1,4 +1,4 @@
-qastrocam-g2 (4.4beta20091017) jaunty; urgency=low
+qastrocam-g2 (4.4) jaunty; urgency=low
 
   * levels (inverted/normal) can be set for APM telescope
   * levels (inverted/normal) can be set for // port LX
@@ -20,6 +20,7 @@ qastrocam-g2 (4.4beta20091017) jaunty; urgency=low
   * RGB24 palette support (luminance only)
   * prefered grey palette bug fixed
   * V4L generic "hot" resize supported for all devices
+  * stored frame size bug when changing device fixed
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Sat, 17 Oct 2009 02:40:49 +0200
 
