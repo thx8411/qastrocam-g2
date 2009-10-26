@@ -527,13 +527,18 @@ bool QCamFrame::isValide(int level) {
    int frameSize;
    int value=0;
    const unsigned char* lum;
+
+   // check the frame level
    lum=Y();
    frameSize=ySize();
-   // check the mean luminance
    for(i=0;i<frameSize;i++) {
-      value+=lum[i];
+     //value+=lum[i];
+     if(lum[i]>value)
+       value=lum[i];
    }
-   value/=frameSize;
+   //value/=framesize;
+
+   // test
    if(value>level)
       return(true);
    return(false);

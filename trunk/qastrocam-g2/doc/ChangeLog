@@ -1,6 +1,6 @@
 4.5beta20091027
 
-  -
+  - v4l generic lx frame selection now use max instead of mean pixel value
 
 4.4
 
