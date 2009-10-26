@@ -1,6 +1,6 @@
 qastrocam-g2 (4.5beta20091027) jaunty; urgency=low
 
-  * 
+  * v4l generic lx frame selection now use max instead of mean pixel value
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Mon, 26 Oct 2009 11:28:03 +0100
 
