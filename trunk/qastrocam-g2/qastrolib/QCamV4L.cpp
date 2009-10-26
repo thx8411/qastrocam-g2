@@ -483,6 +483,10 @@ bool QCamV4L::updateFrame() {
    if(mmap_buffer_)
       tmpBuffer_=NULL;
    // lx support
+   // V4L generic may use very diffrent devices, and we can't know the number
+   // of frame we should drop. So, we use a threshold tip. We fix a threshold
+   // value with a slider, and all the frames with an average luminance below
+   // the threshold will be dropped. 
    if (res) {
       // if lx activated
       if(lxEnabled) {
