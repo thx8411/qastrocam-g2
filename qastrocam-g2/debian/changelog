@@ -1,3 +1,9 @@
+qastrocam-g2 (4.5beta20091027) jaunty; urgency=low
+
+  * 
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Mon, 26 Oct 2009 11:28:03 +0100
+
 qastrocam-g2 (4.4) jaunty; urgency=low
 
   * levels (inverted/normal) can be set for APM telescope

@@ -1,3 +1,7 @@
+4.5beta20091027
+
+  -
+
 4.4
 
   - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
