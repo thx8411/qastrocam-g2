@@ -66,6 +66,7 @@ public:
 protected:
    // V4L2 vars
    struct v4l2_capability v4l2_cap_;
+   struct v4l2_format v4l2_fmt_;
    // V4L vars
    int device_;
    unsigned long options_;
@@ -98,8 +99,9 @@ protected:
 private:
    // get os time in seconds (usec accuracy)
    double getTime();
-   // V4L vars
+   // V4L2 vars
    v4l2_input input;
+   // palette name
    QString palette;
    // device settings stored
    int deviceSource;
