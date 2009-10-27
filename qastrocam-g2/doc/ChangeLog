@@ -1,5 +1,6 @@
 4.5beta20091027
 
+  - icons moved and changed to avoid conflicts with the qastrocam package
   - v4l generic lx frame selection now use max instead of mean pixel value
 
 4.4
