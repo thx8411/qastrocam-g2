@@ -36,12 +36,12 @@ QCamVesta::QCamVesta(const char * devpath):
       /* sanity check */
       bool IsPhilips = false;
       struct pwc_probe probe;
-      if (sscanf(capability_.name, "Philips %d webcam", &type_) == 1) {
+      if (sscanf((char*)v4l2_cap_.card, "Philips %d webcam", &type_) == 1) {
          /* original phillips */
          IsPhilips = true;
       } else if (ioctl(device_, VIDIOCPWCPROBE, &probe) == 0) {
          /* an OEM clone ? */
-         if (!strcmp(capability_.name,probe.name)) {
+         if (!strcmp((char*)v4l2_cap_.card,probe.name)) {
            IsPhilips = true;
            type_=probe.type;
          }
@@ -691,7 +691,7 @@ const QSize * QCamVesta::getAllowedSize() const {
       if (getType()<700) sizeTable_[currentIndex++]=QSize(176,144);
       sizeTable_[currentIndex++]=QSize(320,240);
       if (getType()<700) sizeTable_[currentIndex++]=QSize(352,288);
-      if (capability_.maxwidth>=640) sizeTable_[currentIndex++]=QSize(640,480);
+      sizeTable_[currentIndex++]=QSize(640,480);
       sizeTable_[currentIndex++]=QSize(0,0);
    }
    return sizeTable_;

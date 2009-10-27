@@ -37,6 +37,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // V4L2 needed vars
    v4l2_std_id _id; // video stream standard id
    v4l2_standard standard; // video stream standard
+   // V4L2 vars init
+   v4l2_fmt_.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
    int _index=0;
    // init defaults value
    options_=options;
