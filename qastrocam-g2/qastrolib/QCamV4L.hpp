@@ -64,10 +64,11 @@ public:
    // gui
    QWidget * buildGUI(QWidget * parent);
 protected:
+   // V4L2 vars
+   struct v4l2_capability v4l2_cap_;
    // V4L vars
    int device_;
    unsigned long options_;
-   struct video_capability capability_;
    struct video_window window_;
    struct video_picture picture_;
    // mmap stuf
