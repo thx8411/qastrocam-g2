@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-string QCamUtilities::basePath_="/usr/share/qastrocam/";
+string QCamUtilities::basePath_="/usr/share/qastrocam-g2/";
 
 bool QCamUtilities::useSDL_=false;
 bool QCamUtilities::expertMode_=false;
