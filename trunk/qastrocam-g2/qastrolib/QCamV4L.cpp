@@ -60,21 +60,25 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    }
    // read device informations
    if (device_ != -1) {
-      if (-1 == ioctl(device_,VIDIOCGCAP,&capability_)) {
+      // v4l2 query cap
+      if (-1 == ioctl(device_,VIDIOC_QUERYCAP,&v4l2_cap_)) {
          perror ("ioctl (VIDIOCGCAP)");
       }
+      // v4l
       if (-1 == ioctl (device_, VIDIOCGWIN, &window_)) {
          perror ("ioctl (VIDIOCGWIN)");
       }
+      // v4l
       if (-1 == ioctl (device_, VIDIOCGPICT, &picture_)) {
          perror ("ioctl (VIDIOCGPICT)");
       }
       init(preferedPalette);
    }
-   cout << "device name : " << capability_.name << endl;
+   cout << "device name : " << v4l2_cap_.card << endl;
    // enumerate available inputs
    cout << endl << "available inputs : " << endl;
    input.index=0;
+   // v4l2
    while(!ioctl(device_,VIDIOC_ENUMINPUT,&input)) {
       cout << "input #" << input.index << " : " << input.name << endl;
       input.index++;
@@ -84,7 +88,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // so, we can store a prefered source for each diffrent device
    int res;
    string keyName("SOURCE_");
-   keyName+=capability_.name;
+   keyName+=(char*)v4l2_cap_.card;
    // if we allready have a source in params, store it
    if(strlen(devsource)) settings.setKey(keyName.c_str(),devsource);
    // looking for the source in settings file
@@ -96,6 +100,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       // in the V4L device
       input.index=0;
       do {
+         // v4l2
          res=ioctl(device_,VIDIOC_ENUMINPUT,&input);
          input.index++;
       } while((res==0)&&(strcasecmp(source.c_str(),(char*)input.name)!=0));
@@ -105,21 +110,25 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       else {
          // setting the source in V4L device
          _index=input.index-1;
+         // v4l2
          ioctl(device_, VIDIOC_S_INPUT, &_index);
       }
    // no source found, using default
    } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
 
    // get the used source
+   // v4l2
    ioctl(device_,VIDIOC_G_INPUT,&_index);
    deviceSource=_index;
    input.index=_index;
+   // v4l2
    ioctl(device_,VIDIOC_ENUMINPUT,&input);
    cout << "using : " << input.name << endl << endl;
    // storing used source
    settings.setKey(keyName.c_str(),(char*)input.name);
 
    // getting video standard to compute frame rate
+   // v4l2
    if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
       perror("Getting Standard");
    };
@@ -127,6 +136,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    standard.index=0;
    res=0;
    while((res!=-1)&&(standard.id!=_id)) {
+      // v4l2
       res=ioctl(device_,VIDIOC_ENUMSTD,&standard);
       standard.index++;
    }
@@ -172,9 +182,9 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    }
 
    // update video stream properties
-   setProperty("CameraName",capability_.name);
+   setProperty("CameraName",(char*)v4l2_cap_.card);
    setProperty("FrameRateSecond",frameRate_);
-   label(capability_.name);
+   label((char*)v4l2_cap_.card);
 
    // lx mode vars inits
    //
@@ -206,6 +216,7 @@ void QCamV4L::init(int preferedPalette) {
    // also used for forced palette (-p option)
    if (preferedPalette) {
       picture_.palette=preferedPalette;
+      // v4l
       if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
          palette="prefered";
          cout << "found preferedPalette " << preferedPalette << endl;
@@ -220,6 +231,7 @@ void QCamV4L::init(int preferedPalette) {
    // in high to low quality order
    /* trying VIDEO_PALETTE_RGB24 */
    picture_.palette=VIDEO_PALETTE_RGB24;
+   // v4l
    if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
       palette="rgb24";
       cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
@@ -229,6 +241,7 @@ void QCamV4L::init(int preferedPalette) {
    cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
    /* trying VIDEO_PALETTE_YUYV */
    picture_.palette=VIDEO_PALETTE_YUYV;
+   // v4l
    if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
      palette="yuyv";
      cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
@@ -238,6 +251,7 @@ void QCamV4L::init(int preferedPalette) {
    cout <<"VIDEO_PALETTE_YUYV not supported.\n";
    /* trying VIDEO_PALETTE_YUV420P (Planar) */
    picture_.palette=VIDEO_PALETTE_YUV420P;
+   // v4l
    if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
       palette="yuv420p";
       cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
@@ -247,6 +261,7 @@ void QCamV4L::init(int preferedPalette) {
    cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
    /* trying VIDEO_PALETTE_YUV420 (interlaced) */
    picture_.palette=VIDEO_PALETTE_YUV420;
+   // v4l
    if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
       palette="yuv420";
       cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
@@ -256,6 +271,7 @@ void QCamV4L::init(int preferedPalette) {
    cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
    /* trying VIDEO_PALETTE_GREY */
    picture_.palette=VIDEO_PALETTE_GREY;
+   // v4l
    if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
       palette="grey";
       cout << "found palette VIDEO_PALETTE_GREY"<<endl;
@@ -300,13 +316,22 @@ void QCamV4L::allocBuffers() {
 // video device
 const QSize * QCamV4L::getAllowedSize() const {
    if (sizeTable_==NULL) {
+      struct video_capability capability_;
       int currentIndex=0;
-      int currentx=capability_.maxwidth;
-      int currenty=capability_.maxheight;
+      int currentx;
+      int currenty;
       struct video_window testWindow;
       sizeTable_=new QSize[8];
 
       cout << "Frame size detection" << endl;
+
+      // v4l
+      if (-1 == ioctl(device_,VIDIOCGCAP,&capability_)) {
+         perror ("ioctl (VIDIOCGCAP)");
+      }
+
+      currentx=capability_.maxwidth;
+      currenty=capability_.maxheight;
 
       testWindow.x=0;
       testWindow.y=0;
@@ -318,9 +343,11 @@ const QSize * QCamV4L::getAllowedSize() const {
          testWindow.width=currentx;
          testWindow.height=currenty;
          // try to set the size
+         // v4l
          if (ioctl(device_, VIDIOCSWIN, &testWindow)!=-1) {
             // if the device frame size is the same, test succeed
             // storing this size
+            // v4l
             if(ioctl(device_, VIDIOCGWIN, &testWindow)!=-1) {
                sizeTable_[currentIndex]=QSize(testWindow.width,testWindow.height);
                currentIndex++;
@@ -346,10 +373,12 @@ bool QCamV4L::setSize(int x, int y) {
    // trying the size
    cout << "trying x=" << window_.width
         << " " << "y=" << window_.height <<endl;
+   // v4l
    if(ioctl(device_, VIDIOCSWIN, &window_)) {
        perror ("ioctl(VIDIOCSWIN)");
    }
    // reading the new size
+   // v4l
    if(ioctl(device_, VIDIOCGWIN, &window_)) {
        perror ("ioctl(VIDIOCGWIN)");
    }
@@ -361,12 +390,15 @@ bool QCamV4L::setSize(int x, int y) {
       close(device_);
       device_=open(devpath_.c_str(),O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0));
       // setting the source back
+      // v4l2
       ioctl(device_, VIDIOC_S_INPUT, &deviceSource);
       // setting the palette back
+      // v4l2
       ioctl(device_, VIDIOCSPICT, &picture_);
       // setting the size back
       window_.width=x;
       window_.height=y;
+      // v4l
       ioctl(device_, VIDIOCSWIN, &window_);
       // setting mmap back
       if(mmap_buffer_!=NULL) {
@@ -374,6 +406,7 @@ bool QCamV4L::setSize(int x, int y) {
          mmap_mbuf_.frames = 0;
          mmap_last_sync_buff_=-1;
          mmap_last_capture_buff_=-1;
+         // v4l
          ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_);
          mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
       }
@@ -592,13 +625,16 @@ QCamV4L::~QCamV4L() {
 }
 
 void QCamV4L::updatePictureSettings() {
+   // v4l
    if (ioctl(device_, VIDIOCSPICT, &picture_) ) {
       perror("updatePictureSettings");
    }
+   // v4l
    ioctl(device_, VIDIOCGPICT, &picture_);
 }
 
 void QCamV4L::refreshPictureSettings() {
+   // v4l
    if (ioctl(device_, VIDIOCGPICT, &picture_) ) {
       perror("refreshPictureSettings");
    }
@@ -868,6 +904,7 @@ bool QCamV4L::mmapInit() {
    mmap_last_capture_buff_=-1;
    mmap_buffer_=NULL;
 
+   // v4l
    if (ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_)) {
       cout << "mmap not supported" << endl;
       return false;
@@ -894,6 +931,7 @@ bool QCamV4L::mmapInit() {
 // mmap sync
 void QCamV4L::mmapSync() {
    mmap_last_sync_buff_=(mmap_last_sync_buff_+1)%mmap_mbuf_.frames;
+   // v4l
    if (ioctl(device_, VIDIOCSYNC, &mmap_last_sync_buff_) < 0) {
       perror("QCamV4L::mmapSync()");
    }
@@ -911,6 +949,7 @@ void QCamV4L::mmapCapture() {
    vm.format = picture_.palette;
    vm.width = window_.width;
    vm.height = window_.height;
+   // v4l
    if (ioctl(device_, VIDIOCMCAPTURE, &vm) < 0) {
       perror("QCamV4L::mmapCapture");
       // AEW: try and do something sensible here - the V4L source
