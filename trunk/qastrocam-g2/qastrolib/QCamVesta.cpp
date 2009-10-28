@@ -21,7 +21,6 @@
 #include "QGridBox.hpp"
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
-#include "pwc-ioctl.h"
 #include "qlineedit.h"
 #include "SCmod.hpp"
 #include "SCmodParPortPPdev.hpp"
