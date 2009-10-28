@@ -1,5 +1,6 @@
-4.5beta20091028
+4.5beta20091029
 
+  - frame size limit becomes 8192x8192 (should be enough...)
   - v4l1 no more supported (migrating to v4l2)
   - yuv420i no more supported
   - icons moved and changed to avoid conflicts with the qastrocam package
