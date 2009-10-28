@@ -1,5 +1,7 @@
-4.5beta20091027
+4.5beta20091028
 
+  - v4l1 no more supported (migrating to v4l2)
+  - yuv420i no more supported
   - icons moved and changed to avoid conflicts with the qastrocam package
   - v4l generic lx frame selection now use max instead of mean pixel value
 

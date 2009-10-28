@@ -28,7 +28,7 @@
 #include "QCamUtilities.hpp"
 
 QCamVesta::QCamVesta(const char * devpath):
-   QCamV4L(devpath,VIDEO_PALETTE_YUV420P, "",(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
+   QCamV4L(devpath,V4L2_PIX_FMT_YUV420, "",(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
    SCmodCtrl_=NULL;
    exposureTimeLeft_=NULL;
 

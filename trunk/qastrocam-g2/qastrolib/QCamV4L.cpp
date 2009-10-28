@@ -37,8 +37,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // V4L2 needed vars
    v4l2_std_id _id; // video stream standard id
    v4l2_standard standard; // video stream standard
-   // V4L2 vars init
-   v4l2_fmt_.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
    int _index=0;
    // init defaults value
    options_=options;
@@ -214,27 +212,34 @@ void QCamV4L::resize(const QSize & s) {
 void QCamV4L::init(int preferedPalette) {
    // most palettes use color
    mode_=YuvFrame;
+   // setting default settings (we just test palettes)
+   v4l2_fmt_.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   v4l2_fmt_.fmt.pix.width=160;
+   v4l2_fmt_.fmt.pix.height=120;
+   v4l2_fmt_.fmt.pix.field = V4L2_FIELD_ANY;
    // setting prefered palette if we have one
    // also used for forced palette (-p option)
    if (preferedPalette) {
-      picture_.palette=preferedPalette;
-      // v4l
-      if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
+      v4l2_fmt_.fmt.pix.pixelformat=preferedPalette;
+      // v4l2
+      /*if (0 == */ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)/*) {*/ /**/ ; /**/
          palette="prefered";
-         cout << "found preferedPalette " << preferedPalette << endl;
-         if(picture_.palette==VIDEO_PALETTE_GREY)
+         cout << "found preferedPalette " << endl;
+         if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
             mode_=GreyFrame;
          allocBuffers();
          return;
-      }
-      cout << "preferedPalette " << preferedPalette << " invalid, trying to find one."<< endl;
+      /*}
+      cout << "preferedPalette " << " invalid, trying to find one."<< endl;*/
+      // tests removed, due to pwc v4l2 VIDIOC_S_FMT bug
+
    }
    // else finding a valid palette
    // in high to low quality order
    /* trying VIDEO_PALETTE_RGB24 */
-   picture_.palette=VIDEO_PALETTE_RGB24;
-   // v4l
-   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+   v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_RGB24;
+   // v4l2
+   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
       palette="rgb24";
       cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
       allocBuffers();
@@ -242,9 +247,9 @@ void QCamV4L::init(int preferedPalette) {
    }
    cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
    /* trying VIDEO_PALETTE_YUYV */
-   picture_.palette=VIDEO_PALETTE_YUYV;
-   // v4l
-   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+   v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUYV;
+   // v4l2
+   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
      palette="yuyv";
      cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
      allocBuffers();
@@ -252,29 +257,19 @@ void QCamV4L::init(int preferedPalette) {
    }
    cout <<"VIDEO_PALETTE_YUYV not supported.\n";
    /* trying VIDEO_PALETTE_YUV420P (Planar) */
-   picture_.palette=VIDEO_PALETTE_YUV420P;
-   // v4l
-   if (0 == ioctl(device_, VIDIOCSPICT, &picture_)) {
+   v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUV420;
+   // v4l2
+   if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
       palette="yuv420p";
       cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
       allocBuffers();
       return;
    }
    cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
-   /* trying VIDEO_PALETTE_YUV420 (interlaced) */
-   picture_.palette=VIDEO_PALETTE_YUV420;
-   // v4l
-   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
-      palette="yuv420";
-      cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
-      allocBuffers();
-      return;
-   }
-   cout <<"VIDEO_PALETTE_YUV420 not supported.\n";
    /* trying VIDEO_PALETTE_GREY */
-   picture_.palette=VIDEO_PALETTE_GREY;
-   // v4l
-   if ( 0== ioctl(device_, VIDIOCSPICT, &picture_)) {
+   v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_GREY;
+   // v4l2
+   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
       palette="grey";
       cout << "found palette VIDEO_PALETTE_GREY"<<endl;
       mode_=GreyFrame;
@@ -292,19 +287,17 @@ void QCamV4L::init(int preferedPalette) {
 void QCamV4L::allocBuffers() {
    delete tmpBuffer_;
    yuvBuffer_.setSize(QSize(window_.width,window_.height));
-   switch (picture_.palette) {
-   case VIDEO_PALETTE_GREY:
+   switch (v4l2_fmt_.fmt.pix.pixelformat) {
+   case V4L2_PIX_FMT_GREY:
       yuvFrameMemSize=window_.width * window_.height;
       break;
-   case VIDEO_PALETTE_RGB24:
+   case V4L2_PIX_FMT_RGB24:
       yuvFrameMemSize=window_.width * window_.height * 3;
       break;
-   case VIDEO_PALETTE_YUV420:
-   case VIDEO_PALETTE_YUV420P:
+   case V4L2_PIX_FMT_YUV420:
       yuvFrameMemSize=window_.width * window_.height * 3/2;
       break;
-   case VIDEO_PALETTE_YUV422:
-   case VIDEO_PALETTE_YUYV:
+   case V4L2_PIX_FMT_YUYV:
       yuvFrameMemSize=window_.width * window_.height * 2;
       break;
    default:
@@ -396,7 +389,7 @@ bool QCamV4L::setSize(int x, int y) {
       ioctl(device_, VIDIOC_S_INPUT, &deviceSource);
       // setting the palette back
       // v4l2
-      ioctl(device_, VIDIOCSPICT, &picture_);
+      ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
       // setting the size back
       window_.width=x;
       window_.height=y;
@@ -472,12 +465,12 @@ bool QCamV4L::updateFrame() {
    if(res) {
       setTime();
       // ...dependings on the palette...
-      switch (picture_.palette) {
+      switch (v4l2_fmt_.fmt.pix.pixelformat) {
          // mem copies
-         case VIDEO_PALETTE_GREY:
+         case V4L2_PIX_FMT_GREY:
             memcpy(YBuf,tmpBuffer_,window_.width * window_.height);
             break;
-         case VIDEO_PALETTE_YUV420P:
+         case V4L2_PIX_FMT_YUV420:
             memcpy(YBuf,tmpBuffer_, window_.width * window_.height);
             memcpy(UBuf,
                tmpBuffer_+ window_.width * window_.height,
@@ -487,22 +480,14 @@ bool QCamV4L::updateFrame() {
                (window_.width/2) * (window_.height/2));
             break;
          // and frame convertions
-         case VIDEO_PALETTE_YUV420:
-            ccvt_420i_420p(window_.width,window_.height,
-                        tmpBuffer_,
-                        YBuf,
-                        UBuf,
-                        VBuf);
-            break;
-         case VIDEO_PALETTE_RGB24:
+         case V4L2_PIX_FMT_RGB24:
             ccvt_rgb24_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
                          VBuf);
             break;
-         case VIDEO_PALETTE_YUV422:
-         case VIDEO_PALETTE_YUYV:
+         case V4L2_PIX_FMT_YUYV:
              ccvt_yuyv_420p(window_.width,window_.height,
                          tmpBuffer_,
                          YBuf,
@@ -510,7 +495,7 @@ bool QCamV4L::updateFrame() {
                          VBuf);
             break;
          default:
-            cerr << "invalid palette "<<picture_.palette<<endl;
+            cerr << "invalid palette " << endl;
             exit(1);
       }
    }
@@ -521,13 +506,13 @@ bool QCamV4L::updateFrame() {
    // V4L generic may use very diffrent devices, and we can't know the number
    // of frame we should drop. So, we use a threshold tip. We fix a threshold
    // value with a slider, and all the frames with an average luminance below
-   // the threshold will be dropped. 
+   // the threshold will be dropped.
    if (res) {
       // if lx activated
       if(lxEnabled) {
          // count dropped frames
          lxFrameCounter++;
-         // update progress bar 
+         // update progress bar
          if(lxBar) lxBar->setProgress(lxFrameCounter);
          // is there an image on this frame ?
          if(!yuvBuffer_.isValide(lxLevel)) {
@@ -652,7 +637,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
 
    int labelNumber;
-   if(picture_.palette==VIDEO_PALETTE_GREY)
+   if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
       labelNumber=1;
    else
       labelNumber=6;
@@ -787,7 +772,7 @@ void  QCamV4L::setMode(int  val) {
 void  QCamV4L::setMode(ImageMode val) {
    switch (val) {
    case YuvFrame:
-      if (picture_.palette != VIDEO_PALETTE_GREY) {
+      if (v4l2_fmt_.fmt.pix.pixelformat != V4L2_PIX_FMT_GREY) {
          // color mode possible only if palette is not B&W
          mode_=val;
       }
@@ -948,7 +933,12 @@ void QCamV4L::mmapCapture() {
    struct video_mmap vm;
    mmap_last_capture_buff_=(mmap_last_capture_buff_+1)%mmap_mbuf_.frames;
    vm.frame = mmap_last_capture_buff_;
+
+   //
+   // A CORRIGER !!!!
    vm.format = picture_.palette;
+   //
+
    vm.width = window_.width;
    vm.height = window_.height;
    // v4l
