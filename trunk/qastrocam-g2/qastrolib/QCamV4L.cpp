@@ -408,8 +408,10 @@ bool QCamV4L::setSize(int x, int y) {
 
 // drop frames without treatment
 bool QCamV4L::dropFrame() {
-   static char nullBuff[720*576*4];
-   int bufSize;
+   static char* nullBuff=NULL;
+   // allocates memory
+   if (nullBuff==NULL)
+      nullBuff=(char*)malloc(yuvFrameMemSize);
    // mmap case
    if (mmap_buffer_) {
       mmapCapture();
