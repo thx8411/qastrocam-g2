@@ -452,7 +452,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
          indexOfCurrentSize=sizeCombo->getPosition(settings.getKey("FRAME_RESOLUTION"));
 
       if (indexOfCurrentSize==-1) {
-         cout << "warning current capture size not found" << endl;
+         cout << "warning : current capture size not found" << endl;
          cout << "Using default..." << endl;
          indexOfCurrentSize=0;
       }

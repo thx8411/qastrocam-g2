@@ -48,10 +48,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    remoteCTRLwhiteness_=NULL;
    sizeTable_=NULL;
    device_=-1;
-   window_.x=0;
-   window_.y=0;
-   window_.clips=NULL;
-   window_.clipcount=0;
    devpath_=devpath;
    // opening the video device (non block)
    if (-1 == (device_=open(devpath_.c_str(),
@@ -62,11 +58,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    if (device_ != -1) {
       // v4l2 query cap
       if (-1 == ioctl(device_,VIDIOC_QUERYCAP,&v4l2_cap_)) {
-         perror ("ioctl (VIDIOCGCAP)");
-      }
-      // v4l
-      if (-1 == ioctl (device_, VIDIOCGWIN, &window_)) {
-         perror ("ioctl (VIDIOCGWIN)");
+         perror ("ioctl (VIDIOC_QUERYCAP)");
       }
       // v4l
       if (-1 == ioctl (device_, VIDIOCGPICT, &picture_)) {
@@ -151,9 +143,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       cout <<  "Using Framerate : " << frameRate_ << endl;
    }
 
-   // display the frame size
-   cout << "initial size "<<window_.width<<"x"<<window_.height<<"\n";
-
    // mmap init
    mmap_buffer_=NULL;
    if (mmapInit()) {
@@ -172,13 +161,13 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       // notifier used if the device supports "select"
       notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
       connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
-      cout << "Using select to wait new frames.\n";
+      cout << "Using select to wait new frames.\n" << endl;
    } else {
       // use a QT timer
       timer_=new QTimer(this);
       connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
       timer_->start(1000/frameRate_) ; // value 0 => called every time event loop is empty
-      cout << "Using timer to wait new frames.\n";
+      cout << "Using timer to wait new frames.\n" << endl;
    }
 
    // update video stream properties
@@ -265,7 +254,7 @@ void QCamV4L::init(int preferedPalette) {
       allocBuffers();
       return;
    }
-   cout <<"VIDEO_PALETTE_YUV420P not supported.\n"; 
+   cout <<"VIDEO_PALETTE_YUV420P not supported.\n";
    /* trying VIDEO_PALETTE_GREY */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_GREY;
    // v4l2
@@ -286,19 +275,19 @@ void QCamV4L::init(int preferedPalette) {
 // frame size and palette
 void QCamV4L::allocBuffers() {
    delete tmpBuffer_;
-   yuvBuffer_.setSize(QSize(window_.width,window_.height));
+   yuvBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
    switch (v4l2_fmt_.fmt.pix.pixelformat) {
    case V4L2_PIX_FMT_GREY:
-      yuvFrameMemSize=window_.width * window_.height;
+      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height;
       break;
    case V4L2_PIX_FMT_RGB24:
-      yuvFrameMemSize=window_.width * window_.height * 3;
+      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * 3;
       break;
    case V4L2_PIX_FMT_YUV420:
-      yuvFrameMemSize=window_.width * window_.height * 3/2;
+      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * 3/2;
       break;
    case V4L2_PIX_FMT_YUYV:
-      yuvFrameMemSize=window_.width * window_.height * 2;
+      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * 2;
       break;
    default:
       yuvFrameMemSize=0;
@@ -311,77 +300,80 @@ void QCamV4L::allocBuffers() {
 // video device
 const QSize * QCamV4L::getAllowedSize() const {
    if (sizeTable_==NULL) {
-      struct video_capability capability_;
       int currentIndex=0;
-      int currentx;
-      int currenty;
-      struct video_window testWindow;
+      int last_x=0;
+      int last_y=0;
+      int min_x;
+      int min_y;
       sizeTable_=new QSize[8];
+      v4l2_format v4l2_fmt_temp;
 
       cout << "Frame size detection" << endl;
 
-      // v4l
-      if (-1 == ioctl(device_,VIDIOCGCAP,&capability_)) {
-         perror ("ioctl (VIDIOCGCAP)");
-      }
+      v4l2_fmt_temp.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+      v4l2_fmt_temp.fmt.pix.field = V4L2_FIELD_ANY;
 
-      currentx=capability_.maxwidth;
-      currenty=capability_.maxheight;
-
-      testWindow.x=0;
-      testWindow.y=0;
-
+      // trying small size to get min size
+      v4l2_fmt_temp.fmt.pix.width=1;
+      v4l2_fmt_temp.fmt.pix.height=1;
+      // v4l2
+      if (-1 == ioctl(device_,VIDIOC_TRY_FMT,&v4l2_fmt_temp))
+         perror ("ioctl (VIDIOC_TRY_FMT)");
+      min_x=v4l2_fmt_temp.fmt.pix.width;
+      min_y=v4l2_fmt_temp.fmt.pix.height;
+      // trying huge size to get max size
+      v4l2_fmt_temp.fmt.pix.width=8192;
+      v4l2_fmt_temp.fmt.pix.height=8192;
+      // v4l2
+      if (-1 == ioctl(device_,VIDIOC_TRY_FMT,&v4l2_fmt_temp))
+         perror ("ioctl (VIDIOC_TRY_FMT)");
       // most of time, v4l generic supports continous 4 or 8 multiple pixel sizes
       // it gives to much diffrent sizes. We test from max size to min size half by
       // half.
-      while((currentIndex<7)&&(currentx>capability_.minwidth)&&(currenty>capability_.minheight)) {
-         testWindow.width=currentx;
-         testWindow.height=currenty;
-         // try to set the size
-         // v4l
-         if (ioctl(device_, VIDIOCSWIN, &testWindow)!=-1) {
-            // if the device frame size is the same, test succeed
-            // storing this size
-            // v4l
-            if(ioctl(device_, VIDIOCGWIN, &testWindow)!=-1) {
-               sizeTable_[currentIndex]=QSize(testWindow.width,testWindow.height);
-               currentIndex++;
-               cout << "Adding " << testWindow.width << "x" << testWindow.height<< endl;
+      while((currentIndex<7)&&(v4l2_fmt_temp.fmt.pix.width>min_x)&&(v4l2_fmt_temp.fmt.pix.height>min_y)) {
+         // try the new size...
+         // v4l2
+         if (ioctl(device_, VIDIOC_TRY_FMT, &v4l2_fmt_temp)!=-1) {
+            // ... and store it if it as changed
+            if((last_x!=v4l2_fmt_temp.fmt.pix.width)||(last_y!=v4l2_fmt_temp.fmt.pix.height)) {
+            	sizeTable_[currentIndex]=QSize(v4l2_fmt_temp.fmt.pix.width,v4l2_fmt_temp.fmt.pix.height);
+            	currentIndex++;
+                last_x=v4l2_fmt_temp.fmt.pix.width;
+                last_y=v4l2_fmt_temp.fmt.pix.height;
+            	cout << "Adding " << last_x << "x" << last_y << endl;
             }
          }
-         currentx/=2;
-         currenty/=2;
+         // reducing size by half
+         v4l2_fmt_temp.fmt.pix.width/=2;
+         v4l2_fmt_temp.fmt.pix.height/=2;
          sizeTable_[currentIndex]=QSize(0,0);
       }
    }
+   cout << endl;
    return sizeTable_;
 }
 
 // change the frame size
 bool QCamV4L::setSize(int x, int y) {
    static char buff[11];
-   window_.x=0;
-   window_.y=0;
-   window_.width=x;
-   window_.height=y;
+
+   v4l2_fmt_.fmt.pix.width=x;
+   v4l2_fmt_.fmt.pix.height=y;
 
    // trying the size
-   cout << "trying x=" << window_.width
-        << " " << "y=" << window_.height <<endl;
-   // v4l
-   if(ioctl(device_, VIDIOCSWIN, &window_)) {
-       perror ("ioctl(VIDIOCSWIN)");
-   }
+   cout << "resizing : x=" << x << " " << "y=" << y <<endl;
+   // v4l2
+   if(ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_))
    // reading the new size
-   // v4l
-   if(ioctl(device_, VIDIOCGWIN, &window_)) {
-       perror ("ioctl(VIDIOCGWIN)");
+   // v4l2
+   if(ioctl(device_, VIDIOC_G_FMT, &v4l2_fmt_)) {
+       perror ("ioctl(VIDIOC_G_FMT)");
    }
    // if the two sizes are diffrent, the device does not
    // support hot resizing, closing and re-opening device
    // the device allready had all these settings, assuming
    // everything goes well...
-   if((x!=window_.width)||(y!=window_.height)) {
+   if((x!=v4l2_fmt_.fmt.pix.width)||(y!=v4l2_fmt_.fmt.pix.height)) {
       close(device_);
       device_=open(devpath_.c_str(),O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0));
       // setting the source back
@@ -391,10 +383,10 @@ bool QCamV4L::setSize(int x, int y) {
       // v4l2
       ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
       // setting the size back
-      window_.width=x;
-      window_.height=y;
-      // v4l
-      ioctl(device_, VIDIOCSWIN, &window_);
+      v4l2_fmt_.fmt.pix.width=x;
+      v4l2_fmt_.fmt.pix.height=y;
+      // v4l2
+      ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
       // setting mmap back
       if(mmap_buffer_!=NULL) {
          mmap_mbuf_.size = 0;
@@ -405,12 +397,9 @@ bool QCamV4L::setSize(int x, int y) {
          ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_);
          mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
       }
-      //cout << "Some devices refuse hot-resizing,\nYou should quit to get the new size" << endl;
    }
-   cout << "set to x=" << window_.width
-        << " " << "y=" << window_.height <<endl;
    // updating video stream properties
-   snprintf(buff,10,"%dx%d",window_.width,window_.height);
+   snprintf(buff,10,"%dx%d",x,y);
    setProperty("FrameSize",buff,true);
    // realloc buffers using new size
    allocBuffers();
@@ -470,27 +459,27 @@ bool QCamV4L::updateFrame() {
       switch (v4l2_fmt_.fmt.pix.pixelformat) {
          // mem copies
          case V4L2_PIX_FMT_GREY:
-            memcpy(YBuf,tmpBuffer_,window_.width * window_.height);
+            memcpy(YBuf,tmpBuffer_,v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             break;
          case V4L2_PIX_FMT_YUV420:
-            memcpy(YBuf,tmpBuffer_, window_.width * window_.height);
+            memcpy(YBuf,tmpBuffer_, v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             memcpy(UBuf,
-               tmpBuffer_+ window_.width * window_.height,
-               (window_.width/2) * (window_.height/2));
+               tmpBuffer_+ v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height,
+               (v4l2_fmt_.fmt.pix.width/2) * (v4l2_fmt_.fmt.pix.height/2));
             memcpy(VBuf,
-               tmpBuffer_+ window_.width * window_.height+(window_.width/2) * (window_.height/2),
-               (window_.width/2) * (window_.height/2));
+               tmpBuffer_+ v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height+(v4l2_fmt_.fmt.pix.width/2) * (v4l2_fmt_.fmt.pix.height/2),
+               (v4l2_fmt_.fmt.pix.width/2) * (v4l2_fmt_.fmt.pix.height/2));
             break;
          // and frame convertions
          case V4L2_PIX_FMT_RGB24:
-            ccvt_rgb24_420p(window_.width,window_.height,
+            ccvt_rgb24_420p(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
                          VBuf);
             break;
          case V4L2_PIX_FMT_YUYV:
-             ccvt_yuyv_420p(window_.width,window_.height,
+             ccvt_yuyv_420p(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
                          tmpBuffer_,
                          YBuf,
                          UBuf,
@@ -937,8 +926,8 @@ void QCamV4L::mmapCapture() {
    vm.format = picture_.palette;
    //
 
-   vm.width = window_.width;
-   vm.height = window_.height;
+   vm.width = v4l2_fmt_.fmt.pix.width;
+   vm.height = v4l2_fmt_.fmt.pix.height;
    // v4l
    if (ioctl(device_, VIDIOCMCAPTURE, &vm) < 0) {
       perror("QCamV4L::mmapCapture");

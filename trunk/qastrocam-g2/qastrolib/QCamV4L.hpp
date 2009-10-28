@@ -70,7 +70,7 @@ protected:
    // V4L vars
    int device_;
    unsigned long options_;
-   struct video_window window_;
+   //struct video_window window_;
    struct video_picture picture_;
    // mmap stuf
    struct video_mbuf mmap_mbuf_;

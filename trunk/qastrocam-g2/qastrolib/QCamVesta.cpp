@@ -66,6 +66,11 @@ QCamVesta::QCamVesta(const char * devpath):
    setWhiteBalanceMode(PWC_WB_AUTO);
    //getWhiteBalance();
    lastGain_=getGain();
+
+   // get window_ value
+   // V4L generic don't do it anymore
+   if(ioctl(device_,VIDIOCGWIN, &window_))
+      perror("ioctl (VIDIOCGWIN)");
 }
 
 bool QCamVesta::updateFrame() {
@@ -304,7 +309,7 @@ void QCamVesta::setFrameRate(int value) {
 }
 
 int QCamVesta::getFrameRate() const {
-   return ((window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT); 
+   return ((window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT);
 }
 
 void QCamVesta::getWhiteBalance() {

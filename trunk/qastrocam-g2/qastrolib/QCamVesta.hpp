@@ -43,6 +43,7 @@ public:
    void setSCmodImpl(SCmod *impl) {SCmodCtrl_=impl;}
    const QSize * getAllowedSize() const;
 protected:
+   struct video_window window_;
    QWidget *  buildGUI(QWidget * parent);
    virtual void refreshPictureSettings();
    friend class SCmodTucLed;
