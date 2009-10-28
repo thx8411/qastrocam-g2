@@ -1,7 +1,14 @@
 #ifndef PWC_IOCTL_H
 #define PWC_IOCTL_H
 
-/* (C) 2001-2003 Nemosoft Unv.    webcam@smcc.demon.nl
+/* (C) 2001-2004 Nemosoft Unv.
+   (C) 2004-2006 Luc Saillard (luc@saillard.org)
+
+   NOTE: this version of pwc is an unofficial (modified) release of pwc & pcwx
+   driver and thus may have bugs that are not present in the original version.
+   Please send bug reports and support requests to <luc@saillard.org>.
+   The decompression routines have been implemented by reverse-engineering the
+   Nemosoft binary pwcx module. Caveat emptor.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -18,7 +25,7 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* This is pwc-ioctl.h belonging to PWC 8.12.1
+/* This is pwc-ioctl.h belonging to PWC 10.0.10
    It contains structures and defines to communicate from user space
    directly to the driver.
  */
@@ -26,10 +33,11 @@
 /*
    Changes
    2001/08/03  Alvarado   Added ioctl constants to access methods for
-                          changing white balance and red/blue gains
+			  changing white balance and red/blue gains
    2002/12/15  G. H. Fernandez-Toribio   VIDIOCGREALSIZE
    2003/12/13  Nemosft Unv. Some modifications to make interfacing to
-               PWCX easier
+	       PWCX easier
+   2006/01/01  Luc Saillard Add raw format definition
  */
 
 /* These are private ioctl() commands, specific for the Philips webcams.
@@ -38,14 +46,16 @@
 
    The #define names are built up like follows:
    VIDIOC		VIDeo IOCtl prefix
-         PWC		Philps WebCam
-            G           optional: Get
-            S           optional: Set
-             ... 	the function
+	 PWC		Philps WebCam
+	    G           optional: Get
+	    S           optional: Set
+	     ... 	the function
  */
 
+#include <linux/types.h>
+#include <linux/version.h>
 
- /* Enumeration of image sizes */
+/* Enumeration of image sizes */
 #define PSZ_SQCIF	0x00
 #define PSZ_QSIF	0x01
 #define PSZ_QCIF	0x02
@@ -58,6 +68,8 @@
 /* The frame rate is encoded in the video_window.flags parameter using
    the upper 16 bits, since some flags are defined nowadays. The following
    defines provide a mask and shift to filter out this value.
+   This value can also be passing using the private flag when using v4l2 and
+   VIDIOC_S_FMT ioctl.
 
    In 'Snapshot' mode the camera freezes its automatic exposure and colour
    balance controls.
@@ -66,9 +78,11 @@
 #define PWC_FPS_MASK		0x00FF0000
 #define PWC_FPS_FRMASK		0x003F0000
 #define PWC_FPS_SNAPSHOT	0x00400000
+#define PWC_QLT_MASK		0x03000000
+#define PWC_QLT_SHIFT		24
 
 
-/* structure for transfering x & y coordinates */
+/* structure for transferring x & y coordinates */
 struct pwc_coord
 {
 	int x, y;		/* guess what */
@@ -83,6 +97,10 @@ struct pwc_probe
 	int type;
 };
 
+struct pwc_serial
+{
+	char serial[30];	/* String with serial number. Contains terminating 0 */
+};
 
 /* pwc_whitebalance.mode values */
 #define PWC_WB_INDOOR		0
@@ -91,14 +109,14 @@ struct pwc_probe
 #define PWC_WB_MANUAL		3
 #define PWC_WB_AUTO		4
 
-/** Used with VIDIOCPWC[SG]AWB (Auto White Balance). 
+/* Used with VIDIOCPWC[SG]AWB (Auto White Balance).
    Set mode to one of the PWC_WB_* values above.
-   *red and *blue are the respective gains of these colour components inside 
+   *red and *blue are the respective gains of these colour components inside
    the camera; range 0..65535
-   When 'mode' == PWC_WB_MANUAL, 'manual_red' and 'manual_blue' are set or read; 
+   When 'mode' == PWC_WB_MANUAL, 'manual_red' and 'manual_blue' are set or read;
    otherwise undefined.
    'read_red' and 'read_blue' are read-only.
-*/   
+*/
 struct pwc_whitebalance
 {
 	int mode;
@@ -106,9 +124,9 @@ struct pwc_whitebalance
 	int read_red, read_blue;	/* R/O */
 };
 
-/** 
+/*
    'control_speed' and 'control_delay' are used in automatic whitebalance mode,
-   and tell the camera how fast it should react to changes in lighting, and 
+   and tell the camera how fast it should react to changes in lighting, and
    with how much delay. Valid values are 0..65535.
 */
 struct pwc_wb_speed
@@ -118,14 +136,14 @@ struct pwc_wb_speed
 
 };
 
-/** Used with VIDIOCPWC[SG]LED */
+/* Used with VIDIOCPWC[SG]LED */
 struct pwc_leds
 {
 	int led_on;			/* Led on-time; range = 0..25000 */
 	int led_off;			/* Led off-time; range = 0..25000  */
 };
 
-/** Image size (used with GREALSIZE) */
+/* Image size (used with GREALSIZE) */
 struct pwc_imagesize
 {
 	int width;
@@ -137,28 +155,24 @@ struct pwc_imagesize
 #define PWC_MPT_TILT		0x02
 #define PWC_MPT_TIMEOUT		0x04 /* for status */
 
-/** Set angles; when absolute = 1, the angle is absolute and the 
-    driver calculates the relative offset for you. This can only
-    be used with VIDIOCPWCSANGLE; VIDIOCPWCGANGLE always returns
-    absolute angles.
- */   
+/* Set angles; when absolute != 0, the angle is absolute and the
+   driver calculates the relative offset for you. This can only
+   be used with VIDIOCPWCSANGLE; VIDIOCPWCGANGLE always returns
+   absolute angles.
+ */
 struct pwc_mpt_angles
 {
 	int absolute;		/* write-only */
 	int pan;		/* degrees * 100 */
 	int tilt;		/* degress * 100 */
-	int zoom;		/* N/A, set to -1 */
 };
 
-/** Range of angles of the camera, both horizontally and vertically.
-    The zoom is not used, maybe in the future...
-
+/* Range of angles of the camera, both horizontally and vertically.
  */
 struct pwc_mpt_range
 {
 	int pan_min, pan_max;		/* degrees * 100 */
 	int tilt_min, tilt_max;
-	int zoom_min, zoom_max;		/* -1, -1 */
 };
 
 struct pwc_mpt_status
@@ -169,17 +183,17 @@ struct pwc_mpt_status
 };
 
 
-/** This is used for out-of-kernel decompression. With it, you can get
-    all the necessary information to initialize and use the decompressor
-    routines in standalone applications.
- */   
+/* This is used for out-of-kernel decompression. With it, you can get
+   all the necessary information to initialize and use the decompressor
+   routines in standalone applications.
+ */
 struct pwc_video_command
 {
 	int type;		/* camera type (645, 675, 730, etc.) */
 	int release;		/* release number */
 
-        int size;		/* one of PSZ_* */
-        int alternate;
+	int size;		/* one of PSZ_* */
+	int alternate;
 	int command_len;	/* length of USB video command */
 	unsigned char command_buf[13];	/* Actual USB video command */
 	int bandlength;		/* >0 = compressed */
@@ -212,6 +226,9 @@ struct pwc_video_command
  /* Get preferred compression quality */
 #define VIDIOCPWCGCQUAL		_IOR('v', 195, int)
 
+
+/* Retrieve serial number of camera */
+#define VIDIOCPWCGSERIAL	_IOR('v', 198, struct pwc_serial)
 
  /* This is a probe function; since so many devices are supported, it
     becomes difficult to include all the names in programs that want to
@@ -254,7 +271,7 @@ struct pwc_video_command
 
   /* Flickerless mode; = 0 off, otherwise on */
 #define VIDIOCPWCSFLICKER	_IOW('v', 208, int)
-#define VIDIOCPWCGFLICKER	_IOR('v', 208, int)  
+#define VIDIOCPWCGFLICKER	_IOR('v', 208, int)
 
   /* Dynamic noise reduction; 0 off, 3 = high noise reduction */
 #define VIDIOCPWCSDYNNOISE	_IOW('v', 209, int)
@@ -263,7 +280,7 @@ struct pwc_video_command
  /* Real image size as used by the camera; tells you whether or not there's a gray border around the image */
 #define VIDIOCPWCGREALSIZE	_IOR('v', 210, struct pwc_imagesize)
 
- /* Motorized pan & tilt functions */ 
+ /* Motorized pan & tilt functions */
 #define VIDIOCPWCMPTRESET	_IOW('v', 211, int)
 #define VIDIOCPWCMPTGRANGE	_IOR('v', 211, struct pwc_mpt_range)
 #define VIDIOCPWCMPTSANGLE	_IOW('v', 212, struct pwc_mpt_angles)
@@ -272,5 +289,36 @@ struct pwc_video_command
 
  /* Get the USB set-video command; needed for initializing libpwcx */
 #define VIDIOCPWCGVIDCMD	_IOR('v', 215, struct pwc_video_command)
+struct pwc_table_init_buffer {
+   int len;
+   char *buffer;
+
+};
+#define VIDIOCPWCGVIDTABLE	_IOR('v', 216, struct pwc_table_init_buffer)
+
+/*
+ * This is private command used when communicating with v4l2.
+ * In the future all private ioctl will be remove/replace to
+ * use interface offer by v4l2.
+ */
+
+#define V4L2_CID_PRIVATE_SAVE_USER       (V4L2_CID_PRIVATE_BASE + 0)
+#define V4L2_CID_PRIVATE_RESTORE_USER    (V4L2_CID_PRIVATE_BASE + 1)
+#define V4L2_CID_PRIVATE_RESTORE_FACTORY (V4L2_CID_PRIVATE_BASE + 2)
+#define V4L2_CID_PRIVATE_COLOUR_MODE     (V4L2_CID_PRIVATE_BASE + 3)
+#define V4L2_CID_PRIVATE_AUTOCONTOUR     (V4L2_CID_PRIVATE_BASE + 4)
+#define V4L2_CID_PRIVATE_CONTOUR         (V4L2_CID_PRIVATE_BASE + 5)
+#define V4L2_CID_PRIVATE_BACKLIGHT       (V4L2_CID_PRIVATE_BASE + 6)
+#define V4L2_CID_PRIVATE_FLICKERLESS     (V4L2_CID_PRIVATE_BASE + 7)
+#define V4L2_CID_PRIVATE_NOISE_REDUCTION (V4L2_CID_PRIVATE_BASE + 8)
+
+struct pwc_raw_frame {
+   __le16 type;		/* type of the webcam */
+   __le16 vbandlength;	/* Size of 4lines compressed (used by the decompressor) */
+   __u8   cmd[4];	/* the four byte of the command (in case of nala,
+			   only the first 3 bytes is filled) */
+   __u8   rawframe[0];	/* frame_size = H/4*vbandlength */
+} __attribute__ ((packed));
+
 
 #endif
