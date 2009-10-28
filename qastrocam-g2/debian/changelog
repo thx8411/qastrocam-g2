@@ -1,9 +1,11 @@
-qastrocam-g2 (4.5beta20091027) jaunty; urgency=low
+qastrocam-g2 (4.5beta20091028) jaunty; urgency=low
 
   * v4l generic lx frame selection now use max instead of mean pixel value
   * icons moved and changed to avoid conflicts with the qastrocam package
+  * yuv420i no more supported
+  * v4l1 no more supported (migrating to v4l2)
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 27 Oct 2009 01:01:03 +0100
+ -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 28 Oct 2009 02:46:59 +0100
 
 qastrocam-g2 (4.4) jaunty; urgency=low
 

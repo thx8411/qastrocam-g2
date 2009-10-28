@@ -21,8 +21,8 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
       perror(devpath);
       return NULL;
    } else {
-      struct video_capability vcap;
-      if (ioctl(cam_fd, VIDIOCGCAP,&vcap ) < 0) {
+      struct v4l2_capability vcap;
+      if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap ) < 0) {
          perror(devpath);
          camFound = NULL;
 	 goto exit;
@@ -32,12 +32,12 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
          struct pwc_probe probe;
          int type;
 	 bool IsPhilips = false;
-	 if (sscanf(vcap.name, "Philips %d webcam", &type) == 1) {
+	 if (sscanf((char*)vcap.card, "Philips %d webcam", &type) == 1) {
             /* original phillips */
             IsPhilips = true;
          } else if (ioctl(cam_fd, VIDIOCPWCPROBE, &probe) == 0) {
             /* an OEM clone ? */
-	    if (!strcmp(vcap.name,probe.name)) {
+	    if (!strcmp((char*)vcap.card,probe.name)) {
 	       IsPhilips = true;
 	       type=probe.type;
             }
@@ -50,37 +50,35 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource) {
          }
       }
 
-      if (strncmp(vcap.name,"OV511",5)==0) {
+      if (strncmp((char*)vcap.card,"OV511",5)==0) {
          printf("webcam %s detected.\n",
-                vcap.name);
+                vcap.card);
          close(cam_fd);
          camFound = new QCamOV511(devpath);
 	 goto exit;
       }
-      if (strncmp(vcap.name,"OV519",5)==0) {
+      if (strncmp((char*)vcap.card,"OV519",5)==0) {
          printf("webcam %s detected (jpeg mode).\n",
-                vcap.name);
+                vcap.card);
          close(cam_fd);
          camFound = new QCamOV519(devpath);
 	 goto exit;
       }
       printf("unknow %s camera detected.\n"
              "Using generic V4L driver.\n",
-             vcap.name);
+             vcap.card);
       close(cam_fd);
 
       if(settings.haveKey("PALETTE")) {
          string palette_=settings.getKey("PALETTE");
          if(strcasecmp(palette_.c_str(),"rgb24")==0) {
-            palette=VIDEO_PALETTE_RGB24;
+            palette=V4L2_PIX_FMT_RGB24;
          } else if(strcasecmp(palette_.c_str(),"yuyv")==0){
-            palette=VIDEO_PALETTE_YUYV;
+            palette=V4L2_PIX_FMT_YUYV;
          } else if(strcasecmp(palette_.c_str(),"yuv420p")==0){
-            palette=VIDEO_PALETTE_YUV420P;
-         } else if(strcasecmp(palette_.c_str(),"yuv420")==0){
-            palette=VIDEO_PALETTE_YUV420;
+            palette=V4L2_PIX_FMT_YUV420;
          } else if(strcasecmp(palette_.c_str(),"grey")==0){
-            palette=VIDEO_PALETTE_GREY;
+            palette=V4L2_PIX_FMT_GREY;
          } else {
             palette=0;
          }

@@ -81,7 +81,7 @@ protected:
    // pictures settings
    void updatePictureSettings();
    virtual void refreshPictureSettings();
-   // drop a frame 
+   // drop a frame
    bool dropFrame();
    /** should be overloaded.
        return the avaibles capture size.
