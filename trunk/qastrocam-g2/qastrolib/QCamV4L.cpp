@@ -459,7 +459,9 @@ bool QCamV4L::updateFrame() {
       res=true;
       tmpBuffer_=mmapLastFrame();
    } else {
+   // else we read the device
       res= 0 < read(device_,(void*)tmpBuffer_,yuvFrameMemSize);
+      if(!res) perror("FrameUpdate");
    }
    // if we have a frame...
    if(res) {
@@ -538,10 +540,6 @@ bool QCamV4L::updateFrame() {
         if (options_ & haveHue) emit hueChange(getHue());
         if (options_ & haveColor) emit colorChange(getColor());
         if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
-   } else {
-      perror("updateFrame");
-      cout << "frame dropped" << endl;
-      //newFrameAvaible();
    }
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
