@@ -12,6 +12,7 @@ Later - binning in boxsize of hotspot search
 Later - binning module
 Later - static build
 Later - Multi language support
+DONE - 4.4   - add V4L generic usage "forcing"
 DONE - 4.4   - V4L generic "hot" resize for all devices
 DONE - 4.4   - RGB24 palette support (luminance only)
 DONE - 4.4   - LX mode for V4L generic added (serial and //)  

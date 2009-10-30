@@ -56,15 +56,14 @@ const string SDLoff("--noSDL");
 const string ExpertMode("--expert");
 const string DeviceSource("-i");
 const string DevicePalette("-p");
+const string ForceGeneric("-df");
 
 // back object, present everywhere
 settingsBackup settings;
 
 // qastrocam-g2 usage
 void usage(const char * progName) {
-   cerr << "usage: "
-        << progName
-        << " <options>"<<endl;
+   cerr << "usage: "<< progName<< " <options>"<<endl;
    cerr << "\nValid options are:"<<endl;
    cerr << "  "<<BrutDisplayString<<" to see the raw images from the cam\n";
    cerr << "  "<<HistogramOptionString<<" to see the histogram of the image from the cam and focus level info (needs '-b')\n";
@@ -85,6 +84,7 @@ void usage(const char * progName) {
 	<< "     default is /dev/video0.\n";
    cerr << "  "<<DeviceSource<< " <source> to set the V4L device source.\n";
    cerr << "  "<<DevicePalette<<" <palette> to force the V4L device palette.\n";
+   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
    cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n"
 	<< "     type 'help' will give the list of avaible telescope type\n";
    cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope control device or file.\n"
@@ -126,12 +126,13 @@ int main(int argc, char ** argv) {
    bool autoAlign=false,autoAlignDisplay=false;
    bool histogram=false,telescope=false;
    bool kingOption=false;
+   bool V4Lforce=false;
    string videoDeviceName("/dev/video0");
    string videoDeviceSource;
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
    string libPath;
-   
+
    cout << qastrocamName << " " << qastroCamVersion
         << " (build "<<qastrocamBuild<<")"<<endl;
    cout << "* based on " << QCamUtilities::getVersionId() <<endl;
@@ -176,6 +177,16 @@ int main(int argc, char ** argv) {
          QCamUtilities::useSDL(false);
       } else if (ExpertMode == argv[i]) {
          QCamUtilities::expertMode(true);
+      } else if (ForceGeneric == argv[i]) {
+         i++;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         if(strcasecmp("yes",argv[i])==0)
+            settings.setKey("FORCE_V4LGENERIC","yes");
+         else
+            settings.setKey("FORCE_V4LGENERIC","no");
       } else if (VideoDeviceOptionString == argv[i]) {
          ++i;
          if (i==argc) {
@@ -307,10 +318,16 @@ int main(int argc, char ** argv) {
       theTelescope->buildGUI();
    }
 
+   // is generic V4L forced in settings ?
+   if(settings.haveKey("FORCE_V4LGENERIC")) {
+      if(strcasecmp(settings.getKey("FORCE_V4LGENERIC"),"yes")==0)
+         V4Lforce=true;
+   }
+
    // capture module creation
    QCam  * cam =NULL;
    do {
-      cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),videoDeviceSource.c_str());
+      cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),videoDeviceSource.c_str(),V4Lforce);
       if (cam == NULL) {
          static QMessageBox mb("Qastrocam-g2",
 			      QMessageBox::tr("No camera detected (did you plug it?)"),
