@@ -43,7 +43,7 @@ public:
    };
    static const int DefaultOptions;
    // create the best camera instance, depending on the device
-   static QCam * openBestDevice(const char * devpath = "/dev/video0",const char * devsource = "");
+   static QCam * openBestDevice(const char * devpath = "/dev/video0",const char * devsource = "",bool force = false);
    // constructor
    QCamV4L(const char * devpath="/dev/video0",
            int preferedPalette = 0 /* auto palette*/,
