@@ -30,7 +30,7 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource, boo
    if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap ) < 0) {
       perror(devpath);
       camFound = NULL;
-      printf("no camera detected.\n");
+      cout << "no camera detected." << endl;
       return camFound;
    }
    // if V4L generic usage not forced
@@ -50,23 +50,21 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource, boo
          }
       }
       if (IsPhilips) {
-         printf("Philips webcam type %d detected.\n", type);
+         cout << "Philips webcam type " << type << " detected." << endl;
          close(cam_fd);
          camFound = new QCamVesta(devpath);
          return camFound;
       }
       // looking for an OV511 device
       if (strncmp((char*)vcap.card,"OV511",5)==0) {
-         printf("webcam %s detected.\n",
-                vcap.card);
+         cout << "webcam " << vcap.card << " detected." << endl;
          close(cam_fd);
          camFound = new QCamOV511(devpath);
          return camFound;
       }
       // looking for an OV519 device
       if (strncmp((char*)vcap.card,"OV519",5)==0) {
-         printf("webcam %s detected (jpeg mode).\n",
-                vcap.card);
+         cout << "webcam " << vcap.card << " detected (jpeg mode)." << endl;
          close(cam_fd);
          camFound = new QCamOV519(devpath);
          return camFound;

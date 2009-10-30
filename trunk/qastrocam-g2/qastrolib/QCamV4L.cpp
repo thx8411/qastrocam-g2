@@ -318,7 +318,9 @@ const QSize * QCamV4L::getAllowedSize() const {
       v4l2_fmt_temp.fmt.pix.height=1;
       // v4l2
       if (-1 == ioctl(device_,VIDIOC_TRY_FMT,&v4l2_fmt_temp))
-         perror ("ioctl (VIDIOC_TRY_FMT)");
+         // VIDIOC_TRY_FMT not supported
+         if (-1 == ioctl(device_,VIDIOC_S_FMT,&v4l2_fmt_temp))
+            perror ("ioctl (VIDIOC_S_FMT)");
       min_x=v4l2_fmt_temp.fmt.pix.width;
       min_y=v4l2_fmt_temp.fmt.pix.height;
       // trying huge size to get max size
@@ -326,7 +328,9 @@ const QSize * QCamV4L::getAllowedSize() const {
       v4l2_fmt_temp.fmt.pix.height=8192;
       // v4l2
       if (-1 == ioctl(device_,VIDIOC_TRY_FMT,&v4l2_fmt_temp))
-         perror ("ioctl (VIDIOC_TRY_FMT)");
+         // VIDIOC_TRY_FMT not supported
+         if (-1 == ioctl(device_,VIDIOC_S_FMT,&v4l2_fmt_temp))
+            perror ("ioctl (VIDIOC_S_FMT)");
       // most of time, v4l generic supports continous 4 or 8 multiple pixel sizes
       // it gives to much diffrent sizes. We test from max size to min size half by
       // half.
@@ -336,12 +340,24 @@ const QSize * QCamV4L::getAllowedSize() const {
          if (ioctl(device_, VIDIOC_TRY_FMT, &v4l2_fmt_temp)!=-1) {
             // ... and store it if it as changed
             if((last_x!=v4l2_fmt_temp.fmt.pix.width)||(last_y!=v4l2_fmt_temp.fmt.pix.height)) {
-            	sizeTable_[currentIndex]=QSize(v4l2_fmt_temp.fmt.pix.width,v4l2_fmt_temp.fmt.pix.height);
-            	currentIndex++;
-                last_x=v4l2_fmt_temp.fmt.pix.width;
-                last_y=v4l2_fmt_temp.fmt.pix.height;
-            	cout << "Adding " << last_x << "x" << last_y << endl;
+               sizeTable_[currentIndex]=QSize(v4l2_fmt_temp.fmt.pix.width,v4l2_fmt_temp.fmt.pix.height);
+               currentIndex++;
+               last_x=v4l2_fmt_temp.fmt.pix.width;
+               last_y=v4l2_fmt_temp.fmt.pix.height;
+               cout << "Adding " << last_x << "x" << last_y << endl;
             }
+         } else
+            // VIDIOC_TRY_FMT not supported
+            if (-1 == ioctl(device_,VIDIOC_S_FMT,&v4l2_fmt_temp)){
+               // ... and store it if it as changed
+               if((last_x!=v4l2_fmt_temp.fmt.pix.width)||(last_y!=v4l2_fmt_temp.fmt.pix.height)) {
+                  sizeTable_[currentIndex]=QSize(v4l2_fmt_temp.fmt.pix.width,v4l2_fmt_temp.fmt.pix.height);
+                  currentIndex++;
+                  last_x=v4l2_fmt_temp.fmt.pix.width;
+                  last_y=v4l2_fmt_temp.fmt.pix.height;
+                  cout << "Adding " << last_x << "x" << last_y << endl;
+               }
+            else perror("ioctl (VIDIOC_S_FMT)");
          }
          // reducing size by half
          v4l2_fmt_temp.fmt.pix.width/=2;
