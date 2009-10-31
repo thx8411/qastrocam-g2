@@ -14,7 +14,7 @@ int settingsBackup::findKey(const char* key) {
 
 // add a key and a value in the table
 void settingsBackup::addKey(const char* key, const char* val) {
-   if(end_record==NB_RECORDS) cout << "Settings tab full\n";
+   if(end_record==NB_RECORDS) cout << "Settings tab full" << endl;
    else {
       datas[0][end_record]=key;
       datas[1][end_record]=val;
@@ -83,7 +83,7 @@ void settingsBackup::deSerialize() {
             i++; j++;
          }
          if(buffer[i]=='\0') {
-            cout <<  "Invalid record : '" << buffer << "'\n" ;
+            cout <<  "Invalid record : '" << buffer << "'" << endl;
             break;
          } else {
             i++;
