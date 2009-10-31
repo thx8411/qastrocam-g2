@@ -922,7 +922,7 @@ bool QCamV4L::mmapInit() {
         <<" size="<<mmap_mbuf_.size
         << endl;
 
-   cout <<"\n";
+   cout << endl;
    return true;
 }
 
