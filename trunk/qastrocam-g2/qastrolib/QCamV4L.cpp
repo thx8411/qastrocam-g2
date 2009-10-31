@@ -201,27 +201,25 @@ void QCamV4L::resize(const QSize & s) {
 void QCamV4L::init(int preferedPalette) {
    // most palettes use color
    mode_=YuvFrame;
-   // setting default settings (we just test palettes)
+   // getting default values
    v4l2_fmt_.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
-   v4l2_fmt_.fmt.pix.width=160;
-   v4l2_fmt_.fmt.pix.height=120;
-   v4l2_fmt_.fmt.pix.field = V4L2_FIELD_ANY;
+   // v4l2
+   if(-1 == ioctl(device_,VIDIOC_G_FMT,&v4l2_fmt_))
+         perror("ioctl (VIDIOC_G_FMT)");
    // setting prefered palette if we have one
    // also used for forced palette (-p option)
    if (preferedPalette) {
       v4l2_fmt_.fmt.pix.pixelformat=preferedPalette;
       // v4l2
-      /*if (0 == */ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)/*) {*/ /**/ ; /**/
+      if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
          palette="prefered";
          cout << "found preferedPalette " << endl;
          if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
             mode_=GreyFrame;
          allocBuffers();
          return;
-      /*}
-      cout << "preferedPalette " << " invalid, trying to find one."<< endl;*/
-      // tests removed, due to pwc v4l2 VIDIOC_S_FMT bug
-
+      }
+      cout << "preferedPalette " << " invalid, trying to find one."<< endl;
    }
    // else finding a valid palette
    // in high to low quality order
@@ -246,11 +244,12 @@ void QCamV4L::init(int preferedPalette) {
    }
    cout <<"VIDEO_PALETTE_YUYV not supported.\n";
    /* trying VIDEO_PALETTE_YUV420P (Planar) */
+   /* yuv420i no more supported */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUV420;
    // v4l2
    if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
-      palette="yuv420p";
-      cout << "found palette VIDEO_PALETTE_YUV420P"<<endl;
+      palette="yuv420";
+      cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
       allocBuffers();
       return;
    }
@@ -311,8 +310,10 @@ const QSize * QCamV4L::getAllowedSize() const {
       cout << "Frame size detection" << endl;
 
       v4l2_fmt_temp.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
-      v4l2_fmt_temp.fmt.pix.field = V4L2_FIELD_ANY;
-
+      // get previous values
+      // v4l2
+      if(-1 == ioctl(device_,VIDIOC_G_FMT,&v4l2_fmt_temp))
+         perror("ioctl (VIDIOC_G_FMT)");
       // trying small size to get min size
       v4l2_fmt_temp.fmt.pix.width=1;
       v4l2_fmt_temp.fmt.pix.height=1;

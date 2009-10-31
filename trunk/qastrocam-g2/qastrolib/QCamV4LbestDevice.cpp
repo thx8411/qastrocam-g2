@@ -83,7 +83,7 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource, boo
          palette=V4L2_PIX_FMT_RGB24;
       } else if(strcasecmp(palette_.c_str(),"yuyv")==0){
          palette=V4L2_PIX_FMT_YUYV;
-      } else if(strcasecmp(palette_.c_str(),"yuv420p")==0){
+      } else if(strcasecmp(palette_.c_str(),"yuv420")==0){
          palette=V4L2_PIX_FMT_YUV420;
       } else if(strcasecmp(palette_.c_str(),"grey")==0){
          palette=V4L2_PIX_FMT_GREY;
