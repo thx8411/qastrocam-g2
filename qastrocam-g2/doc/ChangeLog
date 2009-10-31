@@ -1,5 +1,6 @@
-4.5beta20091030
+4.5beta20091031
 
+  - settings file name can now be forced
   - usage of V4L generic can now be forced
   - frame size limit becomes 8192x8192 (should be enough...)
   - v4l1 no more supported (migrating to v4l2)

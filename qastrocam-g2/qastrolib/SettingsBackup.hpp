@@ -17,10 +17,12 @@ using namespace std;
 // RAW_MODE
 // LX_LEVELS_INVERTED
 // LX_LEVELS_INVERTED
+// TS_LEVELS_INVERTED
 // SOURCE_<name>
 // PALETTE
 // TELESCOPE_DEVICE
 // LX_DEVICE
+// FORCE_V4LGENERIC
 
 class settingsBackup {
    private :
@@ -32,6 +34,8 @@ class settingsBackup {
       void serialize();
    public :
       settingsBackup();
+      // setting settings file name
+      void setName(string name);
       // checks if the key is in
       bool haveKey(const char* key);
       // set the key value, and create a key if it doesn't exist
