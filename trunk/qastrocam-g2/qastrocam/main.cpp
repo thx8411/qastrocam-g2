@@ -57,6 +57,7 @@ const string ExpertMode("--expert");
 const string DeviceSource("-i");
 const string DevicePalette("-p");
 const string ForceGeneric("-df");
+const string ForceSettings("-sf");
 
 // back object, present everywhere
 settingsBackup settings;
@@ -65,6 +66,7 @@ settingsBackup settings;
 void usage(const char * progName) {
    cerr << "usage: "<< progName<< " <options>"<<endl;
    cerr << "\nValid options are:"<<endl;
+   cerr << "  "<<ForceSettings<<" to set the settings file name to use\n";
    cerr << "  "<<BrutDisplayString<<" to see the raw images from the cam\n";
    cerr << "  "<<HistogramOptionString<<" to see the histogram of the image from the cam and focus level info (needs '-b')\n";
    cerr << "  "<<MirrorOptionString<<" to swap left/right top/bottom of the image\n";
@@ -120,6 +122,7 @@ void addRemoteCTRL(QCamClient * client) {
 }
 
 int main(int argc, char ** argv) {
+   int i;
    // default options values
    bool accum=false,max=false,mirror=false;
    bool brutDisplay=false,accumDisplay=false,maxDisplay=false,mirrorDisplay=false;
@@ -132,12 +135,28 @@ int main(int argc, char ** argv) {
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
    string libPath;
+   string settingsFileName(".qastrocam-g2-settings");
 
    cout << qastrocamName << " " << qastroCamVersion
         << " (build "<<qastrocamBuild<<")"<<endl;
    cout << "* based on " << QCamUtilities::getVersionId() <<endl;
    cout << "* " << qastrocamWeb << endl;
    cout << "* " << qastrocamMail << endl;
+
+   // looking for settings name option first
+   for(i=1;i<argc;i++) {
+      if (ForceSettings== argv[i]) {
+         ++i;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settingsFileName=argv[i];
+      }
+   }
+
+   // creating setting object
+   settings.setName(settingsFileName);
 
    // reading settings
    settings.deSerialize();
@@ -146,7 +165,7 @@ int main(int argc, char ** argv) {
    if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
 
    // decode all options
-   for (int i=1;i <argc;++i) {
+   for (i=1;i <argc;++i) {
       if (BrutDisplayString == argv[i]) {
          brutDisplay=true;
       } else if (MirrorOptionString == argv[i]) {
@@ -248,6 +267,14 @@ int main(int argc, char ** argv) {
          libPath=argv[i];
       } else if ( KingOption == argv[i]) {
          kingOption=true;
+      } else if (ForceSettings== argv[i]) {
+         ++i;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         // nothing to be done
+         // allready scanned
       } else {
          cerr << "Invalid option '"<<argv[i]<<"'"<<endl;
          usage(argv[0]);

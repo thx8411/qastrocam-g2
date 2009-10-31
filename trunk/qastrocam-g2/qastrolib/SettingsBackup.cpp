@@ -36,8 +36,11 @@ void settingsBackup::serialize() {
 
 settingsBackup::settingsBackup() {
    end_record=0;
-   fileName=".qastrocam-g2-settings";
    for(int i=0;i<NB_RECORDS;i++) datas[0][i]="";
+}
+
+void settingsBackup::setName(string name) {
+   fileName=name;
 }
 
 void settingsBackup::setKey(const char* key, const char* val) {
