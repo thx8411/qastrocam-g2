@@ -135,12 +135,17 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    if(res!=0) {
       // standard unknown, default framerate
       frameRate_=10;
-      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s\n" ;
+      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s" << endl;
    } else {
       // standard found, computing framerate
       cout << "Video standard : " << standard.name << endl;
-      frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
-      cout <<  "Using Framerate : " << frameRate_ << endl;
+      if((standard.frameperiod.denominator==0)||(standard.frameperiod.numerator==0)) {
+         frameRate_=10;
+         cout << "unable to get video frame rate, setting default frame rate : " << frameRate_ << " i/s" << endl;
+      } else {
+         frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
+         cout <<  "Using Framerate : " << frameRate_ << " i/s" << endl;
+      }
    }
 
    // mmap init
@@ -177,7 +182,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    // lx mode vars inits
    //
-   // lx mod use 0.2s steps : 
+   // lx mod use 0.2s steps :
    // this is the smallest common value for PAL and NTSC
    // PAL : 0.2s = 5 full frames
    // NTSC : 0.2s = 6 full frames

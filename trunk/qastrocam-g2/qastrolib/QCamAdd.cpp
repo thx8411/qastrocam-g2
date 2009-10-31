@@ -429,9 +429,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
 
 bool QCamAdd::writeFit(const QString & name,
                        int * buff) const {
-   cout << "writting "
-        << name
-        << endl;
+   cout << "writting " << name << endl;
    FILE *f=fopen((name+".fit").latin1(),"w");
    if (f==NULL) {
       perror(name.latin1());
@@ -444,9 +442,7 @@ bool QCamAdd::writeFit(const QString & name,
 }
 
 bool QCamAdd::loadFit(const QString & name,int * buff) const {
-   cout << "loading "
-        << name
-        << endl;
+   cout << "loading " << name << endl;
    FILE *f=fopen((name+".fit").latin1(),"r");
    if (f==NULL) {
       perror(name.latin1());
