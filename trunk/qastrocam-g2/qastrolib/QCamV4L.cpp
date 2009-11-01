@@ -150,9 +150,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    // mmap init
    mmap_buffer_=NULL;
-   if (mmapInit()) {
+   if (mmapInit())
       mmapCapture();
-   }
    // if mmap is NULL, using read/write mode
 
    // some lx widgets init to avoid segfaults in updateFrame
@@ -411,13 +410,18 @@ bool QCamV4L::setSize(int x, int y) {
       ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
       // setting mmap back
       if(mmap_buffer_!=NULL) {
-         mmap_mbuf_.size = 0;
-         mmap_mbuf_.frames = 0;
-         mmap_last_sync_buff_=-1;
-         mmap_last_capture_buff_=-1;
+         //mmap_mbuf_.size = 0;
+         //mmap_mbuf_.frames = 0;
+         //mmap_last_sync_buff_=-1;
+         //mmap_last_capture_buff_=-1;
          // v4l
-         ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_);
-         mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
+         //ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_);
+         //mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
+         munmap(mmap_buffer_,mmap_mbuf_.size);
+         if (mmapInit())
+            mmapCapture();
+         else
+            mmap_buffer_==NULL;
       }
    }
    // updating video stream properties
