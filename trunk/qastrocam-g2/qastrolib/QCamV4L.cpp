@@ -340,7 +340,7 @@ const QSize * QCamV4L::getAllowedSize() const {
       // most of time, v4l generic supports continous 4 or 8 multiple pixel sizes
       // it gives to much diffrent sizes. We test from max size to min size half by
       // half.
-      while((currentIndex<7)&&(v4l2_fmt_temp.fmt.pix.width>min_x)&&(v4l2_fmt_temp.fmt.pix.height>min_y)) {
+      while((currentIndex<7)&&(v4l2_fmt_temp.fmt.pix.width>=min_x)&&(v4l2_fmt_temp.fmt.pix.height>=min_y)) {
          // try the new size...
          // v4l2
          if (ioctl(device_, VIDIOC_TRY_FMT, &v4l2_fmt_temp)!=-1) {
