@@ -122,7 +122,7 @@ private:
    QCamFrame yuvBuffer_;
    uchar * tmpBuffer_;
    // to probe the cam for new frame
-   QTimer * timer_;
+   //QTimer * timer_;
    // to probe the cam if it support select
    QSocketNotifier * notifier_;
    QSize size_;

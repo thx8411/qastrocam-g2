@@ -135,16 +135,16 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    if(res!=0) {
       // standard unknown, default framerate
       frameRate_=10;
-      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " i/s" << endl;
+      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " fps" << endl;
    } else {
       // standard found, computing framerate
       cout << "Video standard : " << standard.name << endl;
       if((standard.frameperiod.denominator==0)||(standard.frameperiod.numerator==0)) {
          frameRate_=10;
-         cout << "unable to get video frame rate, setting default frame rate : " << frameRate_ << " i/s" << endl;
+         cout << "unable to get video frame rate, setting default frame rate : " << frameRate_ << " fps" << endl;
       } else {
          frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
-         cout <<  "Using Framerate : " << frameRate_ << " i/s" << endl;
+         cout <<  "Using Framerate : " << frameRate_ << " fps" << endl;
       }
    }
 
@@ -161,19 +161,19 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    // setting up the timers
    notifier_=NULL;
-   timer_=NULL;
-   if (options_&ioUseSelect) {
-      // notifier used if the device supports "select"
-      notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
-      connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
-      cout << "Using select to wait new frames.\n" << endl;
-   } else {
-      // use a QT timer
-      timer_=new QTimer(this);
-      connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-      timer_->start(1000/frameRate_) ; // value 0 => called every time event loop is empty
-      cout << "Using timer to wait new frames.\n" << endl;
-   }
+   //timer_=NULL;
+
+   // notifier (all V4L2 devices must support "select")
+   notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
+   connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
+   cout << "Using select to wait new frames.\n" << endl;
+   //} else {
+   //   // use a QT timer
+   //   timer_=new QTimer(this);
+   //   connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
+   //   timer_->start(1000/frameRate_) ; // value 0 => called every time event loop is empty
+   //   cout << "Using timer to wait new frames.\n" << endl;
+   //}
 
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
@@ -370,8 +370,8 @@ const QSize * QCamV4L::getAllowedSize() const {
          v4l2_fmt_temp.fmt.pix.height/=2;
          sizeTable_[currentIndex]=QSize(0,0);
       }
+      cout << endl;
    }
-   cout << endl;
    return sizeTable_;
 }
 
@@ -383,7 +383,7 @@ bool QCamV4L::setSize(int x, int y) {
    v4l2_fmt_.fmt.pix.height=y;
 
    // trying the size
-   cout << "resizing : x=" << x << " " << "y=" << y <<endl;
+   cout << "resizing : x=" << x << " " << "y=" << y << endl;
    // v4l2
    if(ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_))
    // reading the new size
@@ -557,7 +557,7 @@ bool QCamV4L::updateFrame() {
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
       frameRate_=newFrameRate;
-      if (timer_) timer_->changeInterval(1000/frameRate_);
+      //if (timer_) timer_->changeInterval(1000/frameRate_);
    }
    return res;
 }
@@ -914,15 +914,14 @@ bool QCamV4L::mmapInit() {
       mmap_mbuf_.size = 0;
       mmap_mbuf_.frames = 0;
       mmap_buffer_=NULL;
-      cout << "Trouble with mmap, using read/write mode" << endl;
+      cout << "Trouble with mmap, using read/write mode" << endl << endl;
       return false;
    }
    cout << "mmap() in use : "
         << "frames="<<mmap_mbuf_.frames
         <<" size="<<mmap_mbuf_.size
-        << endl;
+        << endl << endl;
 
-   cout << endl;
    return true;
 }
 
