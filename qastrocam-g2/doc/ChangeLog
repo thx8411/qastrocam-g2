@@ -1,5 +1,6 @@
-4.5beta20091101
+4.5beta20091102
 
+  - use "select" to notifie new frames with V4L2 devices
   - settings file name can now be forced
   - usage of V4L generic can now be forced
   - frame size limit becomes 8192x8192 (should be enough...)
