@@ -429,7 +429,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    setCapture(false);
 
-   const QSize * sizeTable=getAllowedSize();
    if (sizeTable && !sizeTable[0].isEmpty()) {
       int size=0;
       while (!sizeTable[size].isEmpty()) { size++;}
@@ -615,5 +614,5 @@ void QCam::annotate(const Vector2D & pos) const {
 void QCam::setSizeFromAllowed(int index) {
    // saving frame resolution
    settings.setKey("FRAME_RESOLUTION",sizeCombo->text(index));
-   resize(getAllowedSize()[index]);
+   resize(sizeTable[index]);
 }
