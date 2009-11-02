@@ -301,10 +301,10 @@ void QCamVesta::setFrameRate(int value) {
    if (ioctl(device_, VIDIOCSWIN, &window_)) {
       perror("setFrameRate");
    } else {
+      ioctl(device_, VIDIOCGWIN, &window_);
       setProperty("FrameRateSecond",value/(double)multiplicateur_);
+      emit exposureTime(multiplicateur_/(double)getFrameRate());
    }
-   ioctl(device_, VIDIOCGWIN, &window_);
-   emit exposureTime(multiplicateur_/(double)getFrameRate());
 }
 
 int QCamVesta::getFrameRate() const {

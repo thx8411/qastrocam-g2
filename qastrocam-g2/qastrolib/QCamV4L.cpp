@@ -134,19 +134,30 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    }
    if(res!=0) {
       // standard unknown, default framerate
-      frameRate_=10;
-      cout << "unable to get video standard, setting default frame rate : " << frameRate_ << " fps" << endl;
+      frameRate_=0;
+      cout << "unable to get video standard" << endl;
    } else {
       // standard found, computing framerate
       cout << "Video standard : " << standard.name << endl;
-      if((standard.frameperiod.denominator==0)||(standard.frameperiod.numerator==0)) {
-         frameRate_=10;
-         cout << "unable to get video frame rate, setting default frame rate : " << frameRate_ << " fps" << endl;
+      if(standard.frameperiod.numerator==0) {
+         frameRate_=0;
       } else {
          frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
-         cout <<  "Using Framerate : " << frameRate_ << " fps" << endl;
       }
    }
+   if(frameRate_==0) {
+      cout << "unable to get video frame rate" << endl;
+      // try to get framerate for pwc
+      // v4l
+      struct video_window window_;
+      if(ioctl(device_,VIDIOCGWIN, &window_)==0)
+         frameRate_=(window_.flags&/*PWC_FPS_FRMASK*/0x00FF0000)>>/*PWC_FPS_SHIFT*/16;
+      else {
+         frameRate_=10;
+         cout <<  "Using default Framerate: " << frameRate_ << " fps" << endl;
+      }
+   } else
+      cout <<  "Using Framerate : " << frameRate_ << " fps" << endl;
 
    // mmap init
    mmap_buffer_=NULL;
@@ -160,19 +171,11 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    // setting up the timers
    notifier_=NULL;
-   //timer_=NULL;
 
    // notifier (all V4L2 devices must support "select")
    notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
    connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
    cout << "Using select to wait new frames.\n" << endl;
-   //} else {
-   //   // use a QT timer
-   //   timer_=new QTimer(this);
-   //   connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   //   timer_->start(1000/frameRate_) ; // value 0 => called every time event loop is empty
-   //   cout << "Using timer to wait new frames.\n" << endl;
-   //}
 
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
