@@ -8,8 +8,9 @@ qastrocam-g2 (4.5beta20091102) jaunty; urgency=low
   * usage of V4L generic can now be forced
   * settings file name can now be forced
   * use "select" to notifie new frames with V4L2 devices
+  * optimisation flags now applies on all the code
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 01 Nov 2009 21:31:04 +0100
+ -- Blaise-Florentin Collin <collin@eeepc901>  Mon, 02 Nov 2009 15:11:28 +0100
 
 qastrocam-g2 (4.4) jaunty; urgency=low
 

@@ -49,25 +49,29 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    sizeTable_=NULL;
    device_=-1;
    devpath_=devpath;
+
+   // ************************************
    // opening the video device (non block)
-   if (-1 == (device_=open(devpath_.c_str(),
-                           O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0)))) {
+   // ************************************
+   if (-1 == (device_=open(devpath_.c_str(),O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0)))) {
       perror(devpath);
    }
+   // ************************
    // read device informations
-   if (device_ != -1) {
-      // v4l2 query cap
-      if (-1 == ioctl(device_,VIDIOC_QUERYCAP,&v4l2_cap_)) {
-         perror ("ioctl (VIDIOC_QUERYCAP)");
-      }
-      // v4l
-      if (-1 == ioctl (device_, VIDIOCGPICT, &picture_)) {
-         perror ("ioctl (VIDIOCGPICT)");
-      }
-      init(preferedPalette);
+   // v4l2 query cap
+   // ************************
+   if (-1 == ioctl(device_,VIDIOC_QUERYCAP,&v4l2_cap_)) {
+      perror ("ioctl (VIDIOC_QUERYCAP)");
    }
    cout << "device name : " << v4l2_cap_.card << endl;
+   // needed for ctrl
+   // v4l
+   if (-1 == ioctl (device_, VIDIOCGPICT, &picture_)) {
+      perror ("ioctl (VIDIOCGPICT)");
+   }
+   // **************************
    // enumerate available inputs
+   // **************************
    cout << endl << "available inputs : " << endl;
    input.index=0;
    // v4l2
@@ -107,7 +111,6 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       }
    // no source found, using default
    } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
-
    // get the used source
    // v4l2
    ioctl(device_,VIDIOC_G_INPUT,&_index);
@@ -118,12 +121,13 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    cout << "using : " << input.name << endl << endl;
    // storing used source
    settings.setKey(keyName.c_str(),(char*)input.name);
-
+   // ********************************************
    // getting video standard to compute frame rate
    // v4l2
+   // ********************************************
    if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
       perror("Getting Standard");
-   };
+   }
    // iterate to find the used video standard
    standard.index=0;
    res=0;
@@ -156,9 +160,21 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
          frameRate_=10;
          cout <<  "Using default Framerate: " << frameRate_ << " fps" << endl;
       }
+      cout << endl;
    } else
-      cout <<  "Using Framerate : " << frameRate_ << " fps" << endl;
-
+      cout <<  "Using Framerate : " << frameRate_ << " fps" << endl << endl;
+   // *************************
+   // palette detection/setting
+   // *************************
+   init(preferedPalette);
+   // **************
+   // size detection
+   // **************
+   sizeTable=getAllowedSize();
+   // **************
+   // mem allocation
+   // **************
+   allocBuffers();
    // mmap init
    mmap_buffer_=NULL;
    if (mmapInit())
@@ -168,11 +184,11 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // some lx widgets init to avoid segfaults in updateFrame
    lxBar=NULL;
    lxBlink=NULL;
-
    // setting up the timers
    notifier_=NULL;
-
+   // *************************************************
    // notifier (all V4L2 devices must support "select")
+   // *************************************************
    notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
    connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
    cout << "Using select to wait new frames.\n" << endl;
@@ -181,9 +197,9 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    setProperty("CameraName",(char*)v4l2_cap_.card);
    setProperty("FrameRateSecond",frameRate_);
    label((char*)v4l2_cap_.card);
-
+   // ******************
    // lx mode vars inits
-   //
+   // ******************
    // lx mod use 0.2s steps :
    // this is the smallest common value for PAL and NTSC
    // PAL : 0.2s = 5 full frames
@@ -220,10 +236,9 @@ void QCamV4L::init(int preferedPalette) {
       // v4l2
       if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
          palette="prefered";
-         cout << "found preferedPalette " << endl;
+         cout << "found preferedPalette " << endl<< endl;
          if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
             mode_=GreyFrame;
-         allocBuffers();
          return;
       }
       cout << "preferedPalette " << " invalid, trying to find one."<< endl;
@@ -235,8 +250,7 @@ void QCamV4L::init(int preferedPalette) {
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
       palette="rgb24";
-      cout << "found palette VIDEO_PALETTE_RGB24"<<endl;
-      allocBuffers();
+      cout << "found palette VIDEO_PALETTE_RGB24"<<endl<<endl;
       return;
    }
    cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
@@ -245,8 +259,7 @@ void QCamV4L::init(int preferedPalette) {
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
      palette="yuyv";
-     cout << "found palette VIDEO_PALETTE_YUYV"<<endl;
-     allocBuffers();
+     cout << "found palette VIDEO_PALETTE_YUYV"<<endl<<endl;
      return;
    }
    cout <<"VIDEO_PALETTE_YUYV not supported.\n";
@@ -256,8 +269,7 @@ void QCamV4L::init(int preferedPalette) {
    // v4l2
    if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
       palette="yuv420";
-      cout << "found palette VIDEO_PALETTE_YUV420"<<endl;
-      allocBuffers();
+      cout << "found palette VIDEO_PALETTE_YUV420"<<endl<<endl;
       return;
    }
    cout <<"VIDEO_PALETTE_YUV420P not supported.\n";
@@ -266,9 +278,8 @@ void QCamV4L::init(int preferedPalette) {
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
       palette="grey";
-      cout << "found palette VIDEO_PALETTE_GREY"<<endl;
+      cout << "found palette VIDEO_PALETTE_GREY"<<endl<<endl;
       mode_=GreyFrame;
-      allocBuffers();
       return;
    }
    cout <<"VIDEO_PALETTE_GREY not supported.\n";

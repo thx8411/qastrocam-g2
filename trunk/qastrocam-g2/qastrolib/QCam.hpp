@@ -113,6 +113,8 @@ protected:
    string getFileName() const;
    /** when called, will set the date of the frame to current date */
    void setTime();
+   // allowed sizes table
+   const QSize* sizeTable;
 private:
    QWidget * remoteCTRL_;
    void resetCaptureDir() const;

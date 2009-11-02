@@ -35,15 +35,15 @@ commit:
 	$(SILENT)cvs commit
 %.o: %.cpp
 	$(SILENT)echo $< "=>" $@
-	$(SILENT)$(CXX) -c $(CXXFLAGS) $< -o $@
+	$(SILENT)$(CXX) -c $(CXXFLAGS) $(CFLAGS) $< -o $@
 
 %.o: %.c
 	$(SILENT)echo $< "=>" $@
-	$(SILENT)$(CC) -c $< -o $@
+	$(SILENT)$(CC) -c $(CFALGS) $< -o $@
 
 %.o: %.S
 	$(SILENT)echo $< "=>" $@
-	$(SILENT)$(CC) -c $< -o $@
+	$(SILENT)$(CC) -c $(CFLAGS) $< -o $@
 
 %.moc: %.hpp
 	$(SILENT)echo $< "=>" $@
