@@ -170,11 +170,11 @@ void QCam::setCaptureFile(const QString & afile) {
                         + captureFile_ +"-<date>'").c_str());
 #endif
       }
-   };
-
-   if (guiBuild()) {
-      fileNameW_->setText(captureFile_.c_str());
-   }
+      if (guiBuild()) {
+         fileNameW_->setText(captureFile_.c_str());
+      }
+   } else
+      captureFile_="NoName";
 }
 
 void QCam::newFrameAvaible() {
@@ -346,7 +346,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    new QLabel("Prefix:",buttons_);
    fileNameW_ = new  QLineEdit(buttons_);
-   fileNameW_->setMaxLength(10);
+   //fileNameW_->setMaxLength(10);
    fileNameW_->setText(captureFile_.c_str());
    connect(fileNameW_,SIGNAL(textChanged(const QString&)),
            this,SLOT(setCaptureFile(const QString&)));

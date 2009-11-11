@@ -64,6 +64,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       perror ("ioctl (VIDIOC_QUERYCAP)");
    }
    cout << "device name : " << v4l2_cap_.card << endl;
+   useMmap=((v4l2_cap_.capabilities&V4L2_CAP_STREAMING)!=0);
    // needed for ctrl
    // v4l
    if (-1 == ioctl (device_, VIDIOCGPICT, &picture_)) {
@@ -176,15 +177,13 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // **************
    allocBuffers();
    // mmap init
-   mmap_buffer_=NULL;
-   if (mmapInit())
-      mmapCapture();
-   // if mmap is NULL, using read/write mode
+   if(useMmap)
+      useMmap=mmapInit();
 
    // some lx widgets init to avoid segfaults in updateFrame
    lxBar=NULL;
    lxBlink=NULL;
-   // setting up the timers
+   // setting up the notifier
    notifier_=NULL;
    // *************************************************
    // notifier (all V4L2 devices must support "select")
@@ -192,6 +191,10 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
    connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
    cout << "Using select to wait new frames.\n" << endl;
+
+   // start capture
+   if(useMmap)
+      mmapCapture();
 
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
