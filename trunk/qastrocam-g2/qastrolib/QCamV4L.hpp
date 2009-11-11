@@ -73,6 +73,7 @@ protected:
    //struct video_window window_;
    struct video_picture picture_;
    // mmap stuf
+   bool useMmap;
    struct video_mbuf mmap_mbuf_;
    uchar * mmap_buffer_;
    long mmap_last_sync_buff_;

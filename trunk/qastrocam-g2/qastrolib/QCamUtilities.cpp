@@ -32,8 +32,8 @@ void QCamUtilities::computePathName(const char * path) {
    basePath_=dirname(workingCopy);
    //cout <<"pass 2: "<<basePath_<<"\n";
    if (basePath_[0]!='/') {
-      char cwd[1000];
-      getcwd(cwd,1000);
+      char cwd[512];
+      getcwd(cwd,512);
       basePath_=string(cwd)+(basePath_!="."?"/"+basePath_:"");
    }
    //cout <<"pass 2 bis: "<<basePath_<<"\n";

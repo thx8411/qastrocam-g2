@@ -1,5 +1,7 @@
-4.5beta20091102
+4.5beta20091111
 
+  - empty capture file name issue fixed
+  - capture file name size no more limited
   - optimisation flags now applies on all the code
   - use "select" to notifie new frames with V4L2 devices
   - settings file name can now be forced
