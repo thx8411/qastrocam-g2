@@ -60,16 +60,75 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // read device informations
    // v4l2 query cap
    // ************************
+   // v4l2
    if (-1 == ioctl(device_,VIDIOC_QUERYCAP,&v4l2_cap_)) {
       perror ("ioctl (VIDIOC_QUERYCAP)");
    }
    cout << "device name : " << v4l2_cap_.card << endl;
    useMmap=((v4l2_cap_.capabilities&V4L2_CAP_STREAMING)!=0);
-   // needed for ctrl
-   // v4l
-   if (-1 == ioctl (device_, VIDIOCGPICT, &picture_)) {
-      perror ("ioctl (VIDIOCGPICT)");
-   }
+   // ***********************
+   // setting image controls
+   // ***********************
+   // get bounds
+   v4l2_queryctrl qctrl;
+   // brightness
+   qctrl.id=V4L2_CID_BRIGHTNESS;
+   // v4l2
+   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
+   picture_.brightness_min=qctrl.minimum;
+   picture_.brightness_max=qctrl.maximum;
+   // hue
+   qctrl.id=V4L2_CID_HUE;
+   // v4l2
+   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
+   picture_.hue_min=qctrl.minimum;
+   picture_.hue_max=qctrl.maximum;
+   // saturation
+   qctrl.id=V4L2_CID_SATURATION;
+   // v4l2
+   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
+   picture_.colour_min=qctrl.minimum;
+   picture_.colour_max=qctrl.maximum;
+   // contrast
+   qctrl.id=V4L2_CID_CONTRAST;
+   // v4l2
+   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
+   picture_.contrast_min=qctrl.minimum;
+   picture_.contrast_max=qctrl.maximum;
+   // whiteness
+   qctrl.id=V4L2_CID_WHITENESS;
+   // v4l2
+   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
+   picture_.whiteness_min=qctrl.minimum;
+   picture_.whiteness_max=qctrl.maximum;
+
+   // get values
+   v4l2_control ctrl;
+   // brightness
+   ctrl.id=V4L2_CID_BRIGHTNESS;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.brightness=ctrl.value;
+   // hue
+   ctrl.id=V4L2_CID_HUE;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.hue=ctrl.value;
+   // saturation
+   ctrl.id=V4L2_CID_SATURATION;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.colour=ctrl.value;
+   // contrast
+   ctrl.id=V4L2_CID_CONTRAST;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.contrast=ctrl.value;
+   // whiteness
+   ctrl.id=V4L2_CID_WHITENESS;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.whiteness=ctrl.value;
    // **************************
    // enumerate available inputs
    // **************************
@@ -124,8 +183,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    settings.setKey(keyName.c_str(),(char*)input.name);
    // ********************************************
    // getting video standard to compute frame rate
-   // v4l2
    // ********************************************
+   // v4l2
    if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
       perror("Getting Standard");
    }
@@ -153,8 +212,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    if(frameRate_==0) {
       cout << "unable to get video frame rate" << endl;
       // try to get framerate for pwc
-      // v4l
       struct video_window window_;
+      // v4l
       if(ioctl(device_,VIDIOCGWIN, &window_)==0)
          frameRate_=(window_.flags&/*PWC_FPS_FRMASK*/0x00FF0000)>>/*PWC_FPS_SHIFT*/16;
       else {
@@ -341,6 +400,7 @@ const QSize * QCamV4L::getAllowedSize() const {
       // v4l2
       if (-1 == ioctl(device_,VIDIOC_TRY_FMT,&v4l2_fmt_temp))
          // VIDIOC_TRY_FMT not supported
+         // v4l2
          if (-1 == ioctl(device_,VIDIOC_S_FMT,&v4l2_fmt_temp))
             perror ("ioctl (VIDIOC_S_FMT)");
       min_x=v4l2_fmt_temp.fmt.pix.width;
@@ -351,6 +411,7 @@ const QSize * QCamV4L::getAllowedSize() const {
       // v4l2
       if (-1 == ioctl(device_,VIDIOC_TRY_FMT,&v4l2_fmt_temp))
          // VIDIOC_TRY_FMT not supported
+         // v4l2
          if (-1 == ioctl(device_,VIDIOC_S_FMT,&v4l2_fmt_temp))
             perror ("ioctl (VIDIOC_S_FMT)");
       // most of time, v4l generic supports continous 4 or 8 multiple pixel sizes
@@ -370,6 +431,7 @@ const QSize * QCamV4L::getAllowedSize() const {
             }
          } else
             // VIDIOC_TRY_FMT not supported
+            // v4l2
             if (-1 == ioctl(device_,VIDIOC_S_FMT,&v4l2_fmt_temp)){
                // ... and store it if it as changed
                if((last_x!=v4l2_fmt_temp.fmt.pix.width)||(last_y!=v4l2_fmt_temp.fmt.pix.height)) {
@@ -593,7 +655,7 @@ void QCamV4L::setContrast(int val) {
 }
 
 int QCamV4L::getContrast() const {
-   return picture_.contrast;
+   return(picture_.contrast);
 }
 
 void QCamV4L::setBrightness(int val) {
@@ -602,7 +664,7 @@ void QCamV4L::setBrightness(int val) {
 }
 
 int QCamV4L::getBrightness() const {
-   return picture_.brightness;
+   return(picture_.brightness);
 }
 
 void QCamV4L::setColor(int val) {
@@ -611,7 +673,7 @@ void QCamV4L::setColor(int val) {
 }
 
 int QCamV4L::getColor() const {
-   return picture_.colour;
+   return(picture_.colour);
 }
 
 void QCamV4L::setHue(int val) {
@@ -620,7 +682,7 @@ void QCamV4L::setHue(int val) {
 }
 
 int QCamV4L::getHue() const {
-   return picture_.hue;
+   return(picture_.hue);
 }
 
 void QCamV4L::setWhiteness(int val) {
@@ -629,7 +691,7 @@ void QCamV4L::setWhiteness(int val) {
 }
 
 int QCamV4L::getWhiteness() const {
-   return picture_.whiteness;
+   return(picture_.whiteness);
 }
 
 QCamV4L::~QCamV4L() {
@@ -644,19 +706,92 @@ QCamV4L::~QCamV4L() {
 }
 
 void QCamV4L::updatePictureSettings() {
-   // v4l
-   if (ioctl(device_, VIDIOCSPICT, &picture_) ) {
-      perror("updatePictureSettings");
-   }
-   // v4l
-   ioctl(device_, VIDIOCGPICT, &picture_);
+   v4l2_control ctrl;
+
+   // set properties
+   // brightness
+   ctrl.id=V4L2_CID_BRIGHTNESS;
+   ctrl.value=picture_.brightness;
+   // v4l2
+   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+   // hue
+   ctrl.id=V4L2_CID_HUE;
+   ctrl.value=picture_.hue;
+   // v4l2
+   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+   // saturation
+   ctrl.id=V4L2_CID_SATURATION;
+   ctrl.value=picture_.colour;
+   // v4l2
+   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+   // contrast
+   ctrl.id=V4L2_CID_CONTRAST;
+   ctrl.value=picture_.contrast;
+   // v4l2
+   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+   // whiteness
+   ctrl.id=V4L2_CID_WHITENESS;
+   ctrl.value=picture_.whiteness;
+   // v4l2
+   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+
+   // get properties
+   // brightness
+   ctrl.id=V4L2_CID_BRIGHTNESS;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.brightness=ctrl.value;
+   // hue
+   ctrl.id=V4L2_CID_HUE;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.hue=ctrl.value;
+   // saturation
+   ctrl.id=V4L2_CID_SATURATION;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.colour=ctrl.value;
+   // contrast
+   ctrl.id=V4L2_CID_CONTRAST;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.contrast=ctrl.value;
+   // whiteness
+   ctrl.id=V4L2_CID_WHITENESS;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.whiteness=ctrl.value;
 }
 
 void QCamV4L::refreshPictureSettings() {
-   // v4l
-   if (ioctl(device_, VIDIOCGPICT, &picture_) ) {
-      perror("refreshPictureSettings");
-   }
+   v4l2_control ctrl;
+   // get properties
+   // brightness
+   ctrl.id=V4L2_CID_BRIGHTNESS;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.brightness=ctrl.value;
+   // hue
+   ctrl.id=V4L2_CID_HUE;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.hue=ctrl.value;
+   // saturation
+   ctrl.id=V4L2_CID_SATURATION;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.colour=ctrl.value;
+   // contrast
+   ctrl.id=V4L2_CID_CONTRAST;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.contrast=ctrl.value;
+   // whiteness
+   ctrl.id=V4L2_CID_WHITENESS;
+   // v4l2
+   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   picture_.whiteness=ctrl.value;
+
    if (options_ & haveBrightness) emit brightnessChange(getBrightness());
    if (options_ & haveContrast) emit contrastChange(getContrast());
    if (options_ & haveHue) emit hueChange(getHue());
@@ -691,6 +826,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
+      remoteCTRLcontrast_->setMinValue(picture_.contrast_min);
+      remoteCTRLcontrast_->setMaxValue(picture_.contrast_max);
+      remoteCTRLcontrast_->setValue(picture_.contrast);
       connect(this,SIGNAL(contrastChange(int)),
               remoteCTRLcontrast_,SLOT(setValue(int)));
       connect(remoteCTRLcontrast_,SIGNAL(valueChange(int)),
@@ -698,6 +836,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    }
    if (options_ & haveBrightness) {
       remoteCTRLbrightness_=new QCamSlider("Bri.",false,hbox);
+      remoteCTRLbrightness_->setMinValue(picture_.brightness_min);
+      remoteCTRLbrightness_->setMaxValue(picture_.brightness_max);
+      remoteCTRLbrightness_->setValue(picture_.brightness);
       connect(this,SIGNAL(brightnessChange(int)),
               remoteCTRLbrightness_,SLOT(setValue(int)));
       connect(remoteCTRLbrightness_,SIGNAL(valueChange(int)),
@@ -705,6 +846,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    }
    if (options_ & haveHue) {
       remoteCTRLhue_=new QCamSlider("Hue",false,hbox);
+      remoteCTRLhue_->setMinValue(picture_.hue_min);
+      remoteCTRLhue_->setMaxValue(picture_.hue_max);
+      remoteCTRLhue_->setValue(picture_.hue);
       connect(this,SIGNAL(hueChange(int)),
               remoteCTRLhue_,SLOT(setValue(int)));
       connect(remoteCTRLhue_,SIGNAL(valueChange(int)),
@@ -712,6 +856,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    }
    if (options_ & haveColor) {
       remoteCTRLcolor_=new QCamSlider("Col.",false,hbox);
+      remoteCTRLcolor_->setMinValue(picture_.colour_min);
+      remoteCTRLcolor_->setMaxValue(picture_.colour_max);
+      remoteCTRLcolor_->setValue(picture_.colour);
       connect(this,SIGNAL(colorChange(int)),
               remoteCTRLcolor_,SLOT(setValue(int)));
       connect(remoteCTRLcolor_,SIGNAL(valueChange(int)),
@@ -719,6 +866,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    }
    if (options_ & haveWhiteness) {
       remoteCTRLwhiteness_=new QCamSlider("Whit.",false,hbox);
+      remoteCTRLwhiteness_->setMinValue(picture_.whiteness_min);
+      remoteCTRLwhiteness_->setMaxValue(picture_.whiteness_max);
+      remoteCTRLwhiteness_->setValue(picture_.whiteness);
       connect(this,SIGNAL(whitenessChange(int)),
               remoteCTRLwhiteness_,SLOT(setValue(int)));
       connect(remoteCTRLwhiteness_,SIGNAL(valueChange(int)),
@@ -962,14 +1112,15 @@ uchar * QCamV4L::mmapLastFrame() const {
 // mmap capture
 void QCamV4L::mmapCapture() {
    struct video_mmap vm;
+
+   // get palette
+   struct video_picture picture_ctrl;
+   // v4l
+   ioctl (device_, VIDIOCGPICT, &picture_ctrl);
+
    mmap_last_capture_buff_=(mmap_last_capture_buff_+1)%mmap_mbuf_.frames;
    vm.frame = mmap_last_capture_buff_;
-
-   //
-   // A CORRIGER !!!!
-   vm.format = picture_.palette;
-   //
-
+   vm.format=picture_ctrl.palette;
    vm.width = v4l2_fmt_.fmt.pix.width;
    vm.height = v4l2_fmt_.fmt.pix.height;
    // v4l

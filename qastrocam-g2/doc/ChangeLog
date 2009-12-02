@@ -1,5 +1,6 @@
-4.5beta20091111
+4.5beta20091203
 
+  - everything except mmap migrated to v4l2
   - empty capture file name issue fixed
   - capture file name size no more limited
   - optimisation flags now applies on all the code
