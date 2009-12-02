@@ -26,6 +26,24 @@ class QSocketNotifier;
 #define lxPar	1
 #define lxSer	2
 
+struct video_ctrl {
+   int brightness;
+   int brightness_min;
+   int brightness_max;
+   int hue;
+   int hue_min;
+   int hue_max;
+   int contrast;
+   int contrast_min;
+   int contrast_max;
+   int colour;
+   int colour_min;
+   int colour_max;
+   int whiteness;
+   int whiteness_min;
+   int whiteness_max;
+};
+
 /** QCam implementation to acces a basic Video4Linux device.*/
 class QCamV4L : public QCam {
    Q_OBJECT
@@ -71,7 +89,7 @@ protected:
    int device_;
    unsigned long options_;
    //struct video_window window_;
-   struct video_picture picture_;
+   struct video_ctrl picture_;
    // mmap stuf
    bool useMmap;
    struct video_mbuf mmap_mbuf_;
