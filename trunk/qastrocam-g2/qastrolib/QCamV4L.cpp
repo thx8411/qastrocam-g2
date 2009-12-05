@@ -74,33 +74,43 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // brightness
    qctrl.id=V4L2_CID_BRIGHTNESS;
    // v4l2
-   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
-   picture_.brightness_min=qctrl.minimum;
-   picture_.brightness_max=qctrl.maximum;
+   if(ioctl(device_,VIDIOC_QUERYCTRL,&qctrl)==0) {
+      picture_.brightness_min=qctrl.minimum;
+      picture_.brightness_max=qctrl.maximum;
+   } else
+      options_&=~haveBrightness;
    // hue
    qctrl.id=V4L2_CID_HUE;
    // v4l2
-   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
-   picture_.hue_min=qctrl.minimum;
-   picture_.hue_max=qctrl.maximum;
+   if(ioctl(device_,VIDIOC_QUERYCTRL,&qctrl)==0) {
+      picture_.hue_min=qctrl.minimum;
+      picture_.hue_max=qctrl.maximum;
+   } else
+      options_&=~haveHue;
    // saturation
    qctrl.id=V4L2_CID_SATURATION;
    // v4l2
-   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
-   picture_.colour_min=qctrl.minimum;
-   picture_.colour_max=qctrl.maximum;
+   if(ioctl(device_,VIDIOC_QUERYCTRL,&qctrl)==0) {
+      picture_.colour_min=qctrl.minimum;
+      picture_.colour_max=qctrl.maximum;
+   } else
+      options_&=~haveColor;
    // contrast
    qctrl.id=V4L2_CID_CONTRAST;
    // v4l2
-   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
-   picture_.contrast_min=qctrl.minimum;
-   picture_.contrast_max=qctrl.maximum;
+   if(ioctl(device_,VIDIOC_QUERYCTRL,&qctrl)==0) {
+      picture_.contrast_min=qctrl.minimum;
+      picture_.contrast_max=qctrl.maximum;
+   } else
+      options_&=~haveContrast;
    // whiteness
    qctrl.id=V4L2_CID_WHITENESS;
    // v4l2
-   ioctl(device_,VIDIOC_QUERYCTRL,&qctrl);
-   picture_.whiteness_min=qctrl.minimum;
-   picture_.whiteness_max=qctrl.maximum;
+   if(ioctl(device_,VIDIOC_QUERYCTRL,&qctrl)==0) {
+      picture_.whiteness_min=qctrl.minimum;
+      picture_.whiteness_max=qctrl.maximum;
+   } else
+      options_&=~haveWhiteness;
 
    // get values
    v4l2_control ctrl;
