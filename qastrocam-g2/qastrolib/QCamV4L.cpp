@@ -498,19 +498,11 @@ bool QCamV4L::setSize(int x, int y) {
       // v4l2
       ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
       // setting mmap back
-      if(mmap_buffer_!=NULL) {
-         //mmap_mbuf_.size = 0;
-         //mmap_mbuf_.frames = 0;
-         //mmap_last_sync_buff_=-1;
-         //mmap_last_capture_buff_=-1;
-         // v4l
-         //ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_);
-         //mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
-         munmap(mmap_buffer_,mmap_mbuf_.size);
-         if (mmapInit())
+      if(useMmap) {
+         mmapRelease();
+         useMmap=mmapInit();
+         if(useMmap)
             mmapCapture();
-         else
-            mmap_buffer_==NULL;
       }
    }
    // updating video stream properties
@@ -528,7 +520,7 @@ bool QCamV4L::dropFrame() {
    if (nullBuff==NULL)
       nullBuff=(char*)malloc(yuvFrameMemSize);
    // mmap case
-   if (mmap_buffer_) {
+   if (useMmap) {
       mmapCapture();
       mmapSync();
       return true;
@@ -559,7 +551,7 @@ bool QCamV4L::updateFrame() {
    }
 
    // if we are using mmap
-   if (mmap_buffer_) {
+   if (useMmap) {
       mmapCapture();
       mmapSync();
       res=true;
@@ -608,7 +600,7 @@ bool QCamV4L::updateFrame() {
       }
    }
    // if mmap, restoring tmpBuffer_
-   if(mmap_buffer_)
+   if(useMmap)
       tmpBuffer_=NULL;
    // lx support
    // V4L generic may use very diffrent devices, and we can't know the number
@@ -709,8 +701,8 @@ QCamV4L::~QCamV4L() {
    if(tmpBuffer_!=NULL)
       delete tmpBuffer_;
    // release mmap zone i needed
-   if(mmap_buffer_!=NULL)
-      munmap(mmap_buffer_,mmap_mbuf_.size);
+   if(useMmap)
+      mmapRelease();
    // close the video device
    close(device_);
 }
@@ -1115,6 +1107,7 @@ void QCamV4L::mmapSync() {
    }
 }
 
+// returns last frame address
 uchar * QCamV4L::mmapLastFrame() const {
    return mmap_buffer_ + mmap_mbuf_.offsets[mmap_last_sync_buff_];
 }
@@ -1141,6 +1134,10 @@ void QCamV4L::mmapCapture() {
       close(device_);
       exit(0);
    }
+}
+
+void QCamV4L::mmapRelease() {
+   munmap(mmap_buffer_,mmap_mbuf_.size);
 }
 
 // gives os time in second (usec accuracy)
