@@ -1,6 +1,6 @@
 4.5beta20091206
 
-  - now detects control options
+  - partialy detects control options
   - everything except mmap migrated to v4l2
   - empty capture file name issue fixed
   - capture file name size no more limited

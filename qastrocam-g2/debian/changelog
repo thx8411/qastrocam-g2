@@ -12,7 +12,7 @@ qastrocam-g2 (4.5beta20091206) jaunty; urgency=low
   * capture file name size no more limited
   * empty capture file name issue fixed
   * everything except mmap migrated to v4l2
-  * now detects control options
+  * partialy detects control options
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Sat, 05 Dec 2009 18:46:02 +0100
 
