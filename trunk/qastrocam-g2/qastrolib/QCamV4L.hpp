@@ -134,6 +134,7 @@ private:
    bool mmapInit();
    void mmapCapture();
    void mmapSync();
+   void mmapRelease();
    uchar * mmapLastFrame() const;
    // gui
    QCamComboBox*  frameModeB;
