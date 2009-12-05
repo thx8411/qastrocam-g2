@@ -1,4 +1,4 @@
-qastrocam-g2 (4.5beta20091203) jaunty; urgency=low
+qastrocam-g2 (4.5beta20091206) jaunty; urgency=low
 
   * v4l generic lx frame selection now use max instead of mean pixel value
   * icons moved and changed to avoid conflicts with the qastrocam package
@@ -12,8 +12,9 @@ qastrocam-g2 (4.5beta20091203) jaunty; urgency=low
   * capture file name size no more limited
   * empty capture file name issue fixed
   * everything except mmap migrated to v4l2
+  * now detects control options
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 03 Dec 2009 00:07:58 +0100
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sat, 05 Dec 2009 18:46:02 +0100
 
 qastrocam-g2 (4.4) jaunty; urgency=low
 
