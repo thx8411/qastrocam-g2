@@ -318,16 +318,16 @@ void QCamV4L::init(int preferedPalette) {
    /* trying VIDEO_PALETTE_RGB24 */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_RGB24;
    // v4l2
-   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
+   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_RGB24)) {
       palette="rgb24";
-      cout << "found palette VIDEO_PALETTE_RGB24"<<endl<<endl;
+      cout << "found palette VIDEO_PALETTE_RGB24" <<endl<<endl;
       return;
    }
    cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
    /* trying VIDEO_PALETTE_YUYV */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUYV;
    // v4l2
-   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
+   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_YUYV)) {
      palette="yuyv";
      cout << "found palette VIDEO_PALETTE_YUYV"<<endl<<endl;
      return;
@@ -337,7 +337,7 @@ void QCamV4L::init(int preferedPalette) {
    /* yuv420i no more supported */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUV420;
    // v4l2
-   if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
+   if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_YUV420)) {
       palette="yuv420";
       cout << "found palette VIDEO_PALETTE_YUV420"<<endl<<endl;
       return;
@@ -346,7 +346,7 @@ void QCamV4L::init(int preferedPalette) {
    /* trying VIDEO_PALETTE_GREY */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_GREY;
    // v4l2
-   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
+   if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)) {
       palette="grey";
       cout << "found palette VIDEO_PALETTE_GREY"<<endl<<endl;
       mode_=GreyFrame;
