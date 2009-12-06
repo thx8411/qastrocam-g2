@@ -1,0 +1,6 @@
+Known Bugs :
+
+vers. 4.4beta20091006 :
+
+ - V4L generic lx mode : some sync troubles, giving interlaced fields instead of full frames
+

@@ -1,0 +1,100 @@
+4.5
+
+  - fixed a palette detection bug
+  - partialy detects control options
+  - everything migrated to v4l2
+  - empty capture file name issue fixed
+  - capture file name size no more limited
+  - optimisation flags now applies on all the code
+  - use "select" to notifie new frames with V4L2 devices
+  - settings file name can now be forced
+  - usage of V4L generic can now be forced
+  - frame size limit becomes 8192x8192 (should be enough...)
+  - v4l1 no more supported (migrating to v4l2)
+  - yuv420i no more supported
+  - icons moved and changed to avoid conflicts with the qastrocam package
+  - v4l generic lx frame selection now use max instead of mean pixel value
+
+4.4
+
+  - removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
+  - removed obsolete parport LX control
+  - levels (inverted/normal) can be set for APM telescope
+  - levels (inverted/normal) can be set for // port LX
+  - APM telescope and // port LX may now share the same port with ppdev and lp devices
+  - V4L generic palette can be forced using -p option
+  - supports ppdev and standard lp ports with the "latch mod" (for "usb to //" devices)
+  - small yuyv to yuv420p speed improvement
+  - documentation about the "latch" // mod added
+  - active V4L input and palette displayed in gui
+  - LX mode for V4L generic added (serial and //)
+  - user manual started
+  - binary compiled with -O3 (forgot in previous versions)
+  - binary target is now i686
+  - autoconf warning fixed
+  - minor cosmetic fix
+  - mmap yuyv palette bug fixed
+  - RGB24 palette support (luminance only)
+  - V4L generic "hot" resize supported for all devices
+  - prefered grey palette bug fixed
+  - stored frame size bug when changing device fixed
+
+4.3
+
+  - YUYV pallette support
+  - gnome menu entry and icon included in the debian package
+  - V4L generic devices source can now be choosen. Choice is stored for each device
+  - ccvt updated to 0.3 (no more asm)
+  - file format, raw mode, resolution, level inversion, telescope device and lx device 
+    are now stored and restored (feature #2846348, to be finished)
+  - now supports level inversion on serial and led SCmod via command line (feature #2856135)
+  - fixed : #2862323
+  - enhanced V4L generic frame size support (bug #2859701)
+
+4.2rc2
+
+  - My Version naming system was stupid, vers. 4.2.2rc2 becomes 4.2rc2
+
+4.2.2rc2
+
+  - Quit button now quit on release
+  - Bug #2853068 fixed
+
+4.2.2rc1
+
+  - Bug #2846342 fixed
+  - Bugs #2847809, #2846660, #2846661, #2846437 fixed
+  - Bugs #2847888, #2847886 fixed
+  - Sources cleaned
+  - Bug #2851998 fixed
+  - Bug #2836340 fixed
+
+4.2.2 : project renamed to qastrocam-g2
+
+4.2.2 beta BFC Fork
+
+  You may generate tracking files, compatible with iris files, with "-t file -dt <filename>"
+  Can be used with PEAS
+
+4.2.1 beta BFC Fork
+
+  The SCmod serial device can now be choosen with the -dx option
+  Some spelling error corrected
+
+4.2.0 beta BFC Fork
+  Added serial SC mod support using F. Sicard previous work (roots version, to be "cleaned")
+  Type mismatch correction in LED SCmod
+  Some spelling error corrected
+  
+4.1.0 pre 17082009 
+
+...
+
+...
+
+release 1.0.1
+  JPEG format (used for saved images) changed to PNG.
+release 1.0
+  added integration buffer
+release 0.9
+  initial release
