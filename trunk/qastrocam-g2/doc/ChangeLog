@@ -1,7 +1,7 @@
 4.5beta20091206
 
   - partialy detects control options
-  - everything except mmap migrated to v4l2
+  - everything migrated to v4l2
   - empty capture file name issue fixed
   - capture file name size no more limited
   - optimisation flags now applies on all the code

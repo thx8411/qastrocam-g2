@@ -237,17 +237,19 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // palette detection/setting
    // *************************
    init(preferedPalette);
+   // *********
+   // mmap init
+   // *********
+   // setting struct
+   memset(&mmap_reqbuf,0,sizeof(mmap_reqbuf));
+   mmap_reqbuf.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   mmap_reqbuf.memory=V4L2_MEMORY_MMAP;
+   mmap_reqbuf.count=-1;
    // **************
    // size detection
    // **************
    sizeTable=getAllowedSize();
-   // **************
-   // mem allocation
-   // **************
-   allocBuffers();
-   // mmap init
-   if(useMmap)
-      useMmap=mmapInit();
+   resize(sizeTable[0]);
 
    // some lx widgets init to avoid segfaults in updateFrame
    lxBar=NULL;
@@ -259,11 +261,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // *************************************************
    notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
    connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
-   cout << "Using select to wait new frames.\n" << endl;
-
-   // start capture
-   if(useMmap)
-      mmapCapture();
+   cout << "Using select to wait for new frames.\n" << endl;
 
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
@@ -497,36 +495,36 @@ bool QCamV4L::setSize(int x, int y) {
       v4l2_fmt_.fmt.pix.height=y;
       // v4l2
       ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
-      // setting mmap back
-      if(useMmap) {
-         mmapRelease();
-         useMmap=mmapInit();
-         if(useMmap)
-            mmapCapture();
-      }
    }
    // updating video stream properties
    snprintf(buff,10,"%dx%d",x,y);
    setProperty("FrameSize",buff,true);
    // realloc buffers using new size
    allocBuffers();
+   // updating mmap
+   if(useMmap) {
+      mmapRelease();
+      useMmap=mmapInit();
+   }
    return(true);
 }
 
 // drop frames without treatment
 bool QCamV4L::dropFrame() {
-   static char* nullBuff=NULL;
-   // allocates memory
-   if (nullBuff==NULL)
-      nullBuff=(char*)malloc(yuvFrameMemSize);
+   uchar* nullBuff=NULL;
    // mmap case
    if (useMmap) {
-      mmapCapture();
-      mmapSync();
-      return true;
+      nullBuff=mmapCapture();
+      return(true);
    }
-   // else, read the frame
-   return 0 < read(device_,(void*)nullBuff,yuvFrameMemSize);
+   // else, allocates memory
+   nullBuff=(uchar*)malloc(yuvFrameMemSize);
+   // read the frame
+   read(device_,(void*)nullBuff,yuvFrameMemSize);
+   // free memory
+   free(nullBuff);
+
+   return(true);
 }
 
 // we should have a new frame
@@ -552,17 +550,15 @@ bool QCamV4L::updateFrame() {
 
    // if we are using mmap
    if (useMmap) {
-      mmapCapture();
-      mmapSync();
+      tmpBuffer_=mmapCapture();
       res=true;
-      tmpBuffer_=mmapLastFrame();
    } else {
    // else we read the device
       res= 0 < read(device_,(void*)tmpBuffer_,yuvFrameMemSize);
       if(!res) perror("FrameUpdate");
    }
    // if we have a frame...
-   if(res) {
+   if(res&&(tmpBuffer_!=NULL)) {
       setTime();
       // ...dependings on the palette...
       switch (v4l2_fmt_.fmt.pix.pixelformat) {
@@ -1069,75 +1065,101 @@ void QCamV4L::LXlevel(int level) {
 
 // mmap init
 bool QCamV4L::mmapInit() {
-   mmap_mbuf_.size = 0;
-   mmap_mbuf_.frames = 0;
-   mmap_last_sync_buff_=-1;
-   mmap_last_capture_buff_=-1;
-   mmap_buffer_=NULL;
+   // setting struct
+   mmap_reqbuf.count=4;
 
-   // v4l
-   if (ioctl(device_, VIDIOCGMBUF, &mmap_mbuf_)) {
-      cout << "mmap not supported" << endl;
-      return false;
+   // request buffs
+   if(ioctl(device_,VIDIOC_REQBUFS, &mmap_reqbuf)==-1) {
+      cout << "Troubles with video streaming, using read/write" << endl;
+      mmap_reqbuf.count=-1;
+      mmapRelease();
+      return(false);
+   }
+   cout << "Using " << mmap_reqbuf.count << " buffers for video streaming" << endl;
+
+   // alloc buffers table
+   buffers=(struct mmap_buffer*)calloc(mmap_reqbuf.count, sizeof(struct mmap_buffer));
+   if(buffers==NULL) {
+      cout << "Mmap memory allocation fails, using read/write" << endl;
+      mmapRelease();
+      return(false);
+   }
+   // mmap and enqueue each buffer
+   for(int i=0;i<mmap_reqbuf.count;i++) {
+      struct v4l2_buffer buffer;
+      memset(&buffer,0,sizeof(v4l2_buffer));
+      buffer.type=mmap_reqbuf.type;
+      buffer.memory=mmap_reqbuf.memory;
+      buffer.index=i;
+      // query buf
+      if(ioctl(device_, VIDIOC_QUERYBUF, &buffer)==-1) {
+         cout << "Mmap buffers allocation fails, using read/write" << endl;
+         buffers[i].start=MAP_FAILED;
+         mmap_reqbuf.count=i;
+         mmapRelease();
+         return(false);
+      }
+      // mmap buf
+      buffers[i].length=buffer.length;
+      buffers[i].start=mmap(NULL, buffer.length, PROT_READ,MAP_SHARED,device_,buffer.m.offset);
+      if(buffers[i].start==MAP_FAILED) {
+         perror("mmap");
+         cout << "Mmap mapping fails, using read/write" << endl;
+         mmap_reqbuf.count=i;
+         mmapRelease();
+         return(false);
+      }
+      //enqueue buffer
+      if(ioctl(device_,VIDIOC_QBUF,&buffer)) {
+         cout << "Mmap buffer queuing fails, using read/write" << endl;
+         mmap_reqbuf.count=i;
+         mmapRelease();
+         return(false);
+      }
    }
 
-   mmap_buffer_=(uchar *)mmap(NULL, mmap_mbuf_.size, PROT_READ, MAP_SHARED, device_, 0);
-   if (mmap_buffer_ == MAP_FAILED) {
-      perror("mmap");
-      mmap_mbuf_.size = 0;
-      mmap_mbuf_.frames = 0;
-      mmap_buffer_=NULL;
-      cout << "Trouble with mmap, using read/write mode" << endl << endl;
-      return false;
+   // start streaming
+   if(ioctl(device_,VIDIOC_STREAMON,&mmap_reqbuf.type)) {
+      cout << "Mmap stream start fails, using read/write" << endl;
+      mmapRelease();
+      return(false);
    }
-   cout << "mmap() in use : "
-        << "frames="<<mmap_mbuf_.frames
-        <<" size="<<mmap_mbuf_.size
-        << endl << endl;
 
-   return true;
-}
-
-// mmap sync
-void QCamV4L::mmapSync() {
-   mmap_last_sync_buff_=(mmap_last_sync_buff_+1)%mmap_mbuf_.frames;
-   // v4l
-   if (ioctl(device_, VIDIOCSYNC, &mmap_last_sync_buff_) < 0) {
-      perror("QCamV4L::mmapSync()");
-   }
-}
-
-// returns last frame address
-uchar * QCamV4L::mmapLastFrame() const {
-   return mmap_buffer_ + mmap_mbuf_.offsets[mmap_last_sync_buff_];
+   return(true);
 }
 
 // mmap capture
-void QCamV4L::mmapCapture() {
-   struct video_mmap vm;
+uchar* QCamV4L::mmapCapture() {
+   static v4l2_buffer buffer;
+   buffer.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   buffer.memory=V4L2_MEMORY_MMAP;
+   // enqueue previous buffer
+   //if(ioctl(device_, VIDIOC_QBUF,&buffer)!=0)
+   // dequeue new buffer
+   if(ioctl(device_, VIDIOC_DQBUF,&buffer)!=0)
+      perror("DQBUF");
 
-   // get palette
-   struct video_picture picture_ctrl;
-   // v4l
-   ioctl (device_, VIDIOCGPICT, &picture_ctrl);
-
-   mmap_last_capture_buff_=(mmap_last_capture_buff_+1)%mmap_mbuf_.frames;
-   vm.frame = mmap_last_capture_buff_;
-   vm.format=picture_ctrl.palette;
-   vm.width = v4l2_fmt_.fmt.pix.width;
-   vm.height = v4l2_fmt_.fmt.pix.height;
-   // v4l
-   if (ioctl(device_, VIDIOCMCAPTURE, &vm) < 0) {
-      perror("QCamV4L::mmapCapture");
-      // AEW: try and do something sensible here - the V4L source
-      // has gone away
-      close(device_);
-      exit(0);
-   }
+   return((uchar*)buffers[buffer.index].start);
 }
 
 void QCamV4L::mmapRelease() {
-   munmap(mmap_buffer_,mmap_mbuf_.size);
+   // stop streaming
+   ioctl(device_,VIDIOC_STREAMOFF,&mmap_reqbuf.type);
+   // release buffers, mem, etc.
+   if(mmap_reqbuf.count!=-1) {
+      //unmap each buffer
+      if(buffers!=NULL) {
+         for(int i=0;i<mmap_reqbuf.count;i++) {
+            if(buffers[i].start!=MAP_FAILED)
+               munmap(buffers[i].start,buffers[i].length);
+         }
+         free(buffers);
+         buffers=NULL;
+      }
+      // release driver buffers
+      mmap_reqbuf.count=0;
+      ioctl(device_,VIDIOC_REQBUFS, &mmap_reqbuf);
+   }
 }
 
 // gives os time in second (usec accuracy)

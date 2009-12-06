@@ -11,7 +11,7 @@ qastrocam-g2 (4.5beta20091206) jaunty; urgency=low
   * optimisation flags now applies on all the code
   * capture file name size no more limited
   * empty capture file name issue fixed
-  * everything except mmap migrated to v4l2
+  * everything migrated to v4l2
   * partialy detects control options
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Sat, 05 Dec 2009 18:46:02 +0100

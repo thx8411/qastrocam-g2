@@ -26,6 +26,7 @@ class QSocketNotifier;
 #define lxPar	1
 #define lxSer	2
 
+// video ctrl struct
 struct video_ctrl {
    int brightness;
    int brightness_min;
@@ -42,6 +43,12 @@ struct video_ctrl {
    int whiteness;
    int whiteness_min;
    int whiteness_max;
+};
+
+// mmap buffer
+struct mmap_buffer {
+   void *start;
+   size_t length;
 };
 
 /** QCam implementation to acces a basic Video4Linux device.*/
@@ -91,11 +98,10 @@ protected:
    //struct video_window window_;
    struct video_ctrl picture_;
    // mmap stuf
+   struct v4l2_requestbuffers mmap_reqbuf;
+   struct mmap_buffer* buffers;
    bool useMmap;
-   struct video_mbuf mmap_mbuf_;
-   uchar * mmap_buffer_;
-   long mmap_last_sync_buff_;
-   long mmap_last_capture_buff_;
+   // sizes table
    mutable QSize * sizeTable_;
    // pictures settings
    void updatePictureSettings();
@@ -132,10 +138,8 @@ private:
    void allocBuffers();
    // mmap functions
    bool mmapInit();
-   void mmapCapture();
-   void mmapSync();
+   uchar* mmapCapture();
    void mmapRelease();
-   uchar * mmapLastFrame() const;
    // gui
    QCamComboBox*  frameModeB;
    // image frame and buffer
