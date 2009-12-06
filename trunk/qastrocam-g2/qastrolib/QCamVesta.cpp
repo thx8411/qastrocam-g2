@@ -700,3 +700,16 @@ const QSize * QCamVesta::getAllowedSize() const {
    }
    return sizeTable_;
 }
+
+uchar* QCamVesta::mmapCapture() {
+   static v4l2_buffer buffer;
+   buffer.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   buffer.memory=V4L2_MEMORY_MMAP;
+   // enqueue previous buffer
+   //if(ioctl(device_, VIDIOC_QBUF,&buffer)!=0)
+   // dequeue new buffer
+   if(ioctl(device_, VIDIOC_DQBUF,&buffer)!=0)
+      perror("DQBUF");
+
+   return((uchar*)buffers[buffer.index].start);
+}
