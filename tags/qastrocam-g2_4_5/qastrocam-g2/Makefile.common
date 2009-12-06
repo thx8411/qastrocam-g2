@@ -1,0 +1,68 @@
+LDFLAGS+=$(OTHERLIB) $(OPTFLAGS)
+CFLAGS+=$(OTHERINC) $(OPTFLAGS)
+CXXFLAGS+=$(OTHERINC)
+
+SILENT=@
+PROG:=$(shell test -z "$(PROG)" || echo $(TMP_DESTDIR)/$(PROG))
+LIB:=$(shell test -z "$(LIBNAME)" || echo $(TMP_DESTDIR)/lib$(LIBNAME).a)
+
+OBJ=$(OBJ_QT) $(OBJ_c) $(OBJ_cpp) $(OBJ_asm)
+QT_MOC= $(OBJ_QT:.o=.moc)
+QT_H= $(OBJ_QT:.o=.hpp)
+SRC= $(OBJ_QT:.o=.cpp) $(OBJ_cpp:.o=.cpp)  $(OBJ_asm:.o=.S) $(OBJ_c:.o=.c) 
+
+all: dep $(PROG) $(LIB)
+full: all
+	$(MAKE) -C ..
+
+$(LIB): $(QT_MOC) $(OBJ) $(TMP_DESTDIR) $(EXTERNAL_DEPENDENCIES)
+	$(SILENT)echo linking $(LIB);$(AR) r $(LIB) $(OBJ)
+$(PROG): $(QT_MOC) $(OBJ) $(TMP_DESTDIR) $(EXTERNAL_DEPENDENCIES)
+	echo linking $(PROG);$(CXX) -o $(PROG) $(OBJ) $(CXXFLAGS) $(LDFLAGS) $(LIBS)
+setuid: $(PROG)
+	$(SILENT)test -f "$(PROG)" && su root -c 'chown root $(PROG); chmod +s $(PROG)'
+clean:
+	$(SILENT)echo cleaning ...
+	$(SILENT)(test -f "$(PROG)" && (echo erasing $(PROG); rm -f $(PROG))) || true
+	$(SILENT)(test -f "$(LIB)" && (echo erasing $(LIB);rm -f $(LIB))) || true
+	$(SILENT)rm -f $(OBJ) $(QT_MOC) dep
+	$(SILENT)rm -f *.rej *.orig
+	$(SILENT)echo ... done
+
+commit:
+	$(SILENT)vi qastrocamVersion.hpp
+	$(SILENT)$(MAKE) all
+	$(SILENT)cvs commit
+%.o: %.cpp
+	$(SILENT)echo $< "=>" $@
+	$(SILENT)$(CXX) -c $(CXXFLAGS) $(CFLAGS) $< -o $@
+
+%.o: %.c
+	$(SILENT)echo $< "=>" $@
+	$(SILENT)$(CC) -c $(CFALGS) $< -o $@
+
+%.o: %.S
+	$(SILENT)echo $< "=>" $@
+	$(SILENT)$(CC) -c $(CFLAGS) $< -o $@
+
+%.moc: %.hpp
+	$(SILENT)echo $< "=>" $@
+	$(SILENT)$(MOC) $< -o $@
+
+dep depend:
+	$(SILENT)echo -n "calculating dependencies ... "
+	$(SILENT)rm -f dep
+	$(SILENT)$(CXX) $(CXXFLAGS) -MM -MG > dep $(SRC)
+	$(SILENT)echo done
+doc: Doxyfile  $(SRC) *.hpp
+	doxygen
+	touch doc
+
+$(TMP_DESTDIR):
+	install -d $(TMP_DESTDIR)
+install:: all
+	install -d $(DESTDIR)/bin
+	test -z "$(PROG)" || install $(PROG) $(DESTDIR)/bin
+	(test -d icons/ && ( iconsDir="$(DESTDIR)/share/`basename $(PROG)`/icons"; install -d $$iconsDir; install icons/*.png $$iconsDir)) || true
+-include dep
+
