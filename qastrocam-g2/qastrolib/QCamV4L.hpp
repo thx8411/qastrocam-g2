@@ -117,6 +117,8 @@ protected:
        by the timer used to probe the camera for a new frame */
    virtual int getFrameRate() const { return(frameRate_);}
 
+   virtual uchar* mmapCapture();
+
    // gui
    QHGroupBox * remoteCTRLlx;
    QCamSlider * lxSlider;
@@ -138,7 +140,6 @@ private:
    void allocBuffers();
    // mmap functions
    bool mmapInit();
-   uchar* mmapCapture();
    void mmapRelease();
    // gui
    QCamComboBox*  frameModeB;

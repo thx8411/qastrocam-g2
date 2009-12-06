@@ -87,6 +87,7 @@ private:
    int type_;
    SCmod * SCmodCtrl_;
    //bool rawBayerMode_;
+   uchar* mmapCapture();
 public slots:
    void setGain(int value);
    void setExposure(int value);
