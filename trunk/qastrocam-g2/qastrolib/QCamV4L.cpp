@@ -320,39 +320,39 @@ void QCamV4L::init(int preferedPalette) {
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_RGB24)) {
       palette="rgb24";
-      cout << "found palette VIDEO_PALETTE_RGB24" <<endl<<endl;
+      cout << "found palette RGB24" <<endl<<endl;
       return;
    }
-   cout <<"VIDEO_PALETTE_RGB24 not supported.\n";
+   cout <<"palette RGB24 not supported.\n";
    /* trying VIDEO_PALETTE_YUYV */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUYV;
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_YUYV)) {
      palette="yuyv";
-     cout << "found palette VIDEO_PALETTE_YUYV"<<endl<<endl;
+     cout << "found palette YUYV"<<endl<<endl;
      return;
    }
-   cout <<"VIDEO_PALETTE_YUYV not supported.\n";
+   cout <<"palette YUYV not supported.\n";
    /* trying VIDEO_PALETTE_YUV420P (Planar) */
    /* yuv420i no more supported */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUV420;
    // v4l2
    if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_YUV420)) {
       palette="yuv420";
-      cout << "found palette VIDEO_PALETTE_YUV420"<<endl<<endl;
+      cout << "found palette YUV420"<<endl<<endl;
       return;
    }
-   cout <<"VIDEO_PALETTE_YUV420P not supported.\n";
+   cout <<"palette YUV420P not supported.\n";
    /* trying VIDEO_PALETTE_GREY */
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_GREY;
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)) {
       palette="grey";
-      cout << "found palette VIDEO_PALETTE_GREY"<<endl<<endl;
+      cout << "found palette GREY"<<endl<<endl;
       mode_=GreyFrame;
       return;
    }
-   cout <<"VIDEO_PALETTE_GREY not supported.\n";
+   cout << "palette GREY not supported.\n";
    // no supported palette, leaving
    cerr <<"could not find a supported palette.\n";
    exit(1);
@@ -467,7 +467,9 @@ bool QCamV4L::setSize(int x, int y) {
 
    v4l2_fmt_.fmt.pix.width=x;
    v4l2_fmt_.fmt.pix.height=y;
-
+   // release mapped mem
+   if(useMmap)
+      mmapRelease();
    // trying the size
    cout << "resizing : x=" << x << " " << "y=" << y << endl;
    // v4l2
@@ -502,10 +504,8 @@ bool QCamV4L::setSize(int x, int y) {
    // realloc buffers using new size
    allocBuffers();
    // updating mmap
-   if(useMmap) {
-      mmapRelease();
+   if(useMmap)
       useMmap=mmapInit();
-   }
    return(true);
 }
 
