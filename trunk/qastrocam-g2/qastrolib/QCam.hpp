@@ -104,6 +104,9 @@ public slots:
    bool capturePaused() const {  return doCapture_ && capturePaused_;}
    void setCaptureFile(const QString & file);
 protected:
+   // resizing mode
+   QCamComboBox * cropCombo;
+   int croppingMode;
    /** Must be called when a new YUV frame is
        avaible. It is used by frame() to opimize conversion
        from YUV to QImage.
@@ -168,6 +171,7 @@ private:
    void timebetweenCaptureTimeout();
    void setDirectory(const QString & dir);
    void setSizeFromAllowed(int index);
+   void setCropping(int index);
 };
 
 #endif

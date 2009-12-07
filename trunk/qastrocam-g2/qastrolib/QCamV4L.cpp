@@ -237,6 +237,16 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // palette detection/setting
    // *************************
    init(preferedPalette);
+   // *****************************
+   // getting cropping capabilities
+   // *****************************
+   memset(&v4l2_crop_,0,sizeof(v4l2_cropcap));
+   v4l2_crop_.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   if(ioctl(device_,VIDIOC_CROPCAP,&v4l2_crop_)==-1) {
+      options_&=~supportCropping;
+      cout << "trouble getting device cropping capabilities" << endl;
+   } else
+      options_|=supportCropping;
    // *********
    // mmap init
    // *********
@@ -800,6 +810,9 @@ void QCamV4L::refreshPictureSettings() {
 QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
    QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
+
+   if(!(options_ & supportCropping))
+      cropCombo->setEnabled(false);
 
    int labelNumber;
    if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
