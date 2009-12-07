@@ -47,6 +47,7 @@ QCam::QCam() {
    fileSeqenceNumber_=0;
    maxCaptureInSequence_=10;
    timebetweenCapture_=60;
+   croppingMode=0;
    remoteCTRL_=NULL;
    snapshot_=NULL;
    directory_=".";
@@ -430,6 +431,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    setCapture(false);
 
    if (sizeTable && !sizeTable[0].isEmpty()) {
+      QHGroupBox* sizeGroup= new QHGroupBox("Resizing",remoteCTRL_);
+
       int size=0;
       while (!sizeTable[size].isEmpty()) { size++;}
       const char ** labelList=new const char*[size];
@@ -445,7 +448,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
          }
       }
 
-      sizeCombo=new QCamComboBox("Frame size",remoteCTRL_,size,valueList,labelList);
+      //QLabel* l1=new QLabel("Size :",sizeGroup);
+      sizeCombo=new QCamComboBox("Frame size",sizeGroup,size,valueList,labelList);
       // looking for settings stored frame resolution
       if(settings.haveKey("FRAME_RESOLUTION"))
          indexOfCurrentSize=sizeCombo->getPosition(settings.getKey("FRAME_RESOLUTION"));
@@ -458,6 +462,21 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       sizeCombo->update(indexOfCurrentSize);
       setSizeFromAllowed(indexOfCurrentSize);
       connect(sizeCombo,SIGNAL(change(int)),this,SLOT(setSizeFromAllowed(int)));
+      QToolTip::add(sizeCombo,"Frame size");
+
+      // resizing mode combo
+      //QLabel* l2=new QLabel("Mode :",sizeGroup);
+      labelList=new const char*[3];
+      valueList=new int[3];
+      labelList[0]=strdup("Native");
+      labelList[1]=strdup("Cropping");
+      labelList[2]=strdup("Binning");
+      valueList[0]=0;
+      valueList[1]=1;
+      valueList[2]=2;
+      cropCombo=new QCamComboBox("Cropping mode",sizeGroup,/*3*/2,valueList,labelList);
+      connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
+      QToolTip::add(cropCombo,"Resizing mode");
    }
    return remoteCTRL_;
 }
@@ -615,4 +634,9 @@ void QCam::setSizeFromAllowed(int index) {
    // saving frame resolution
    settings.setKey("FRAME_RESOLUTION",sizeCombo->text(index));
    resize(sizeTable[index]);
+}
+
+void QCam::setCropping(int index) {
+   croppingMode=index;
+   resize(sizeTable[sizeCombo->value()]);
 }

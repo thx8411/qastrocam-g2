@@ -64,7 +64,8 @@ public:
       haveHue=(1<<4),
       haveColor=(1<<5),
       haveWhiteness=(1<<6),
-      sendJpegFrames=(1<<7)
+      sendJpegFrames=(1<<7),
+      supportCropping=(1<<8)
    };
    static const int DefaultOptions;
    // create the best camera instance, depending on the device
@@ -90,6 +91,7 @@ public:
    QWidget * buildGUI(QWidget * parent);
 protected:
    // V4L2 vars
+   struct v4l2_cropcap v4l2_crop_;
    struct v4l2_capability v4l2_cap_;
    struct v4l2_format v4l2_fmt_;
    // V4L vars
