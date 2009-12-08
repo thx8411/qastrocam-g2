@@ -1,6 +1,7 @@
-4.6beta20091207
+4.6beta20091208
 
-  -
+  - supports frame scaling (default) and cropping (centered)
+  - frame size now limited by INT_MAX
 
 4.5
 

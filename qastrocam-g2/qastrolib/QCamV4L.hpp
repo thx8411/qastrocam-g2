@@ -21,6 +21,9 @@ class QCamSlider;
 class QTimer;
 class QSocketNotifier;
 
+// buffer number
+#define BUFF_NUMBER	4
+
 // lx modes list
 #define	lxNone	0
 #define lxPar	1
@@ -104,6 +107,8 @@ protected:
    struct mmap_buffer* buffers;
    bool useMmap;
    // sizes table
+   int maxWidth;
+   int maxHeight;
    mutable QSize * sizeTable_;
    // pictures settings
    void updatePictureSettings();

@@ -468,12 +468,12 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       //QLabel* l2=new QLabel("Mode :",sizeGroup);
       labelList=new const char*[3];
       valueList=new int[3];
-      labelList[0]=strdup("Native");
+      labelList[0]=strdup("Scaling");
       labelList[1]=strdup("Cropping");
       labelList[2]=strdup("Binning");
-      valueList[0]=0;
-      valueList[1]=1;
-      valueList[2]=2;
+      valueList[0]=SCALING;
+      valueList[1]=CROPPING;
+      valueList[2]=BINNING;
       cropCombo=new QCamComboBox("Cropping mode",sizeGroup,/*3*/2,valueList,labelList);
       connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       QToolTip::add(cropCombo,"Resizing mode");

@@ -32,6 +32,10 @@ class QCamMovie;
 
 using namespace std;
 
+#define	SCALING		0
+#define	CROPPING	1
+#define	BINNING		2
+
 /** base class of any object producing frames.
  */
 class QCam : public QObject {
