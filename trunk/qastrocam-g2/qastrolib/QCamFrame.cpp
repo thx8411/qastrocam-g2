@@ -522,6 +522,12 @@ unsigned char * QCamFrame::VforOverwrite() {
    return common_->V();
 }
 
+void QCamFrame::cropping(int l, int t, int w, int h) {
+}
+
+void QCamFrame::binning(int w, int h) {
+}
+
 bool QCamFrame::isValide(int level) {
    int i;
    int frameSize;

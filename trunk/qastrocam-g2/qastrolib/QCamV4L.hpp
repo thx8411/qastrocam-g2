@@ -109,6 +109,8 @@ protected:
    // sizes table
    int maxWidth;
    int maxHeight;
+   int targetWidth;
+   int targetHeight;
    mutable QSize * sizeTable_;
    // pictures settings
    void updatePictureSettings();
