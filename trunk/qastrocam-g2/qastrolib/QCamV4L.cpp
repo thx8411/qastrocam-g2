@@ -242,11 +242,24 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // *****************************
    memset(&v4l2_crop_,0,sizeof(v4l2_cropcap));
    v4l2_crop_.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   // reading crop caps
    if(ioctl(device_,VIDIOC_CROPCAP,&v4l2_crop_)==-1) {
       options_&=~supportCropping;
+      // not v4l2...
       cout << "trouble getting device cropping capabilities" << endl;
-   } else
-      options_|=supportCropping;
+   } else {
+      // testing cropping with default rect.
+      struct v4l2_crop cropBounds;
+      memset(&cropBounds,0,sizeof(struct v4l2_crop));
+      cropBounds.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+      cropBounds.c=v4l2_crop_.defrect;
+      if(ioctl(device_,VIDIOC_S_CROP,&cropBounds)==0)
+         options_|=supportCropping;
+      else {
+         options_&=~supportCropping;
+         cout << "cropping not supported" << endl;
+      }
+   }
    // *********
    // mmap init
    // *********
@@ -259,6 +272,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // size detection
    // **************
    sizeTable=getAllowedSize();
+   maxWidth=sizeTable[0].width();
+   maxHeight=sizeTable[0].height();
    resize(sizeTable[0]);
 
    // some lx widgets init to avoid segfaults in updateFrame
@@ -424,8 +439,8 @@ const QSize * QCamV4L::getAllowedSize() const {
       min_x=v4l2_fmt_temp.fmt.pix.width;
       min_y=v4l2_fmt_temp.fmt.pix.height;
       // trying huge size to get max size
-      v4l2_fmt_temp.fmt.pix.width=8192;
-      v4l2_fmt_temp.fmt.pix.height=8192;
+      v4l2_fmt_temp.fmt.pix.width=INT_MAX;
+      v4l2_fmt_temp.fmt.pix.height=INT_MAX;
       // v4l2
       if (-1 == ioctl(device_,VIDIOC_TRY_FMT,&v4l2_fmt_temp))
          // VIDIOC_TRY_FMT not supported
@@ -474,20 +489,34 @@ const QSize * QCamV4L::getAllowedSize() const {
 // change the frame size
 bool QCamV4L::setSize(int x, int y) {
    static char buff[11];
+   struct v4l2_crop cropBounds;
 
-   v4l2_fmt_.fmt.pix.width=x;
-   v4l2_fmt_.fmt.pix.height=y;
+   cropBounds.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
    // release mapped mem
    if(useMmap)
       mmapRelease();
    // trying the size
    cout << "resizing : x=" << x << " " << "y=" << y << endl;
+
+   switch(croppingMode) {
+      // scaling : set wanted size
+      case SCALING :
+         v4l2_fmt_.fmt.pix.width=x;
+         v4l2_fmt_.fmt.pix.height=y;
+         break;
+      // cropping & binning : set max size
+      case CROPPING :
+      case BINNING :
+         v4l2_fmt_.fmt.pix.width=maxWidth;
+         v4l2_fmt_.fmt.pix.height=maxHeight;
+         break;
+   }
    // v4l2
    if(ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_))
    // reading the new size
    // v4l2
    if(ioctl(device_, VIDIOC_G_FMT, &v4l2_fmt_)) {
-       perror ("ioctl(VIDIOC_G_FMT)");
+      perror ("ioctl(VIDIOC_G_FMT)");
    }
    // if the two sizes are diffrent, the device does not
    // support hot resizing, closing and re-opening device
@@ -503,11 +532,58 @@ bool QCamV4L::setSize(int x, int y) {
       // v4l2
       ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
       // setting the size back
-      v4l2_fmt_.fmt.pix.width=x;
-      v4l2_fmt_.fmt.pix.height=y;
+      switch(croppingMode) {
+         // scaling : set wanted size
+         case SCALING :
+            v4l2_fmt_.fmt.pix.width=x;
+            v4l2_fmt_.fmt.pix.height=y;
+            break;
+         // cropping & binning : set max size
+         case CROPPING :
+         case BINNING :
+            v4l2_fmt_.fmt.pix.width=maxWidth;
+            v4l2_fmt_.fmt.pix.height=maxHeight;
+            break;
+      }
       // v4l2
       ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
    }
+   // cropping
+   if(options_ & supportCropping) {
+      switch(croppingMode) {
+         // scaling & binning : set default cropping rect.
+         case SCALING :
+         case BINNING :
+            if(ioctl(device_,VIDIOC_CROPCAP,&v4l2_crop_)==-1) {
+               // disabling the comboBox
+               cropCombo->update(SCALING);
+               cropCombo->setEnabled(false);
+               options_&=~supportCropping;
+               cout << "trouble while cropping" << endl;
+            } else
+               cropBounds.c=v4l2_crop_.defrect;
+            break;
+         // cropping : set wanted window
+         case CROPPING :
+            cropBounds.c.left=(maxWidth-x)/2;
+            cropBounds.c.top=(maxHeight-y)/2;
+            cropBounds.c.width=x;
+            cropBounds.c.height=y;
+            break;
+      }
+      if(ioctl(device_,VIDIOC_S_CROP,&cropBounds)==-1) {
+         // disabling the comboBox
+         cropCombo->update(SCALING);
+         cropCombo->setEnabled(false);
+         options_&=~supportCropping;
+         cout << "trouble while cropping" << endl;
+      }
+   }
+
+   //
+   // binning to be added !!
+   //
+
    // updating video stream properties
    snprintf(buff,10,"%dx%d",x,y);
    setProperty("FrameSize",buff,true);
@@ -811,6 +887,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
    QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
 
+   // if cropping not supported, disabling comboBox
    if(!(options_ & supportCropping))
       cropCombo->setEnabled(false);
 
@@ -1079,7 +1156,7 @@ void QCamV4L::LXlevel(int level) {
 // mmap init
 bool QCamV4L::mmapInit() {
    // setting struct
-   mmap_reqbuf.count=4;
+   mmap_reqbuf.count=BUFF_NUMBER;
 
    // request buffs
    if(ioctl(device_,VIDIOC_REQBUFS, &mmap_reqbuf)==-1) {
