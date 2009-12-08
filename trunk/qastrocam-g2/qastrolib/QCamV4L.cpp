@@ -498,11 +498,17 @@ bool QCamV4L::setSize(int x, int y) {
    // trying the size
    cout << "resizing : x=" << x << " " << "y=" << y << endl;
 
+
+   // if max size, nothing to crop or bin.
+   if((x==maxWidth)&&(y==maxHeight))
+      croppingMode=SCALING;
+   // if hardware cropping not supported, use software cropping
    if(!(options_ & supportCropping)&&(croppingMode==CROPPING)) {
       cout << "using software cropping" << endl;
       croppingMode=CROPPING_SOFT;
    }
 
+   // size to have after cropping or binnning
    targetWidth=x;
    targetHeight=y;
 

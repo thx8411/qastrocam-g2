@@ -523,9 +523,13 @@ unsigned char * QCamFrame::VforOverwrite() {
 }
 
 void QCamFrame::cropping(int l, int t, int w, int h) {
+   // temp, just to try
+   //cout << "cropping" << endl;
 }
 
 void QCamFrame::binning(int w, int h) {
+   // temp, just to try
+   //cout << "binning" << endl;
 }
 
 bool QCamFrame::isValide(int level) {
