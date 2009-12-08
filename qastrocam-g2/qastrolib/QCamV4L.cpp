@@ -498,14 +498,23 @@ bool QCamV4L::setSize(int x, int y) {
    // trying the size
    cout << "resizing : x=" << x << " " << "y=" << y << endl;
 
+   if(!(options_ & supportCropping)&&(croppingMode==CROPPING)) {
+      cout << "using software cropping" << endl;
+      croppingMode=CROPPING_SOFT;
+   }
+
+   targetWidth=x;
+   targetHeight=y;
+
    switch(croppingMode) {
       // scaling : set wanted size
       case SCALING :
+      case CROPPING :
          v4l2_fmt_.fmt.pix.width=x;
          v4l2_fmt_.fmt.pix.height=y;
          break;
-      // cropping & binning : set max size
-      case CROPPING :
+      // soft cropping & binning : set max size
+      case CROPPING_SOFT :
       case BINNING :
          v4l2_fmt_.fmt.pix.width=maxWidth;
          v4l2_fmt_.fmt.pix.height=maxHeight;
@@ -535,11 +544,12 @@ bool QCamV4L::setSize(int x, int y) {
       switch(croppingMode) {
          // scaling : set wanted size
          case SCALING :
+         case CROPPING :
             v4l2_fmt_.fmt.pix.width=x;
             v4l2_fmt_.fmt.pix.height=y;
             break;
-         // cropping & binning : set max size
-         case CROPPING :
+         // soft cropping & binning : set max size
+         case CROPPING_SOFT :
          case BINNING :
             v4l2_fmt_.fmt.pix.width=maxWidth;
             v4l2_fmt_.fmt.pix.height=maxHeight;
@@ -549,41 +559,38 @@ bool QCamV4L::setSize(int x, int y) {
       ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_);
    }
    // cropping
-   if(options_ & supportCropping) {
-      switch(croppingMode) {
-         // scaling & binning : set default cropping rect.
-         case SCALING :
-         case BINNING :
-            if(ioctl(device_,VIDIOC_CROPCAP,&v4l2_crop_)==-1) {
-               // disabling the comboBox
-               cropCombo->update(SCALING);
-               cropCombo->setEnabled(false);
-               options_&=~supportCropping;
-               cout << "trouble while cropping" << endl;
-            } else
-               cropBounds.c=v4l2_crop_.defrect;
-            break;
-         // cropping : set wanted window
-         case CROPPING :
-            cropBounds.c.left=(maxWidth-x)/2;
-            cropBounds.c.top=(maxHeight-y)/2;
-            cropBounds.c.width=x;
-            cropBounds.c.height=y;
-            break;
-      }
-      if(ioctl(device_,VIDIOC_S_CROP,&cropBounds)==-1) {
-         // disabling the comboBox
-         cropCombo->update(SCALING);
-         cropCombo->setEnabled(false);
-         options_&=~supportCropping;
-         cout << "trouble while cropping" << endl;
-      }
+   switch(croppingMode) {
+      // cropping soft : nothing to do
+      case CROPPING_SOFT :
+         break;
+      // scaling & binning : set default cropping rect.
+      case SCALING :
+         if(!(options_ & supportCropping)) break;
+      case BINNING :
+         if(ioctl(device_,VIDIOC_CROPCAP,&v4l2_crop_)==-1) {
+            // disabling the comboBox
+            //cropCombo->update(SCALING);
+            //cropCombo->setEnabled(false);
+            options_&=~supportCropping;
+            cout << "trouble while cropping" << endl;
+         } else
+            cropBounds.c=v4l2_crop_.defrect;
+         break;
+      // cropping : set wanted window
+      case CROPPING :
+         cropBounds.c.left=(maxWidth-x)/2;
+         cropBounds.c.top=(maxHeight-y)/2;
+         cropBounds.c.width=x;
+         cropBounds.c.height=y;
+         if(ioctl(device_,VIDIOC_S_CROP,&cropBounds)==-1) {
+            // disabling the comboBox
+            //cropCombo->update(SCALING);
+            //cropCombo->setEnabled(false);
+            options_&=~supportCropping;
+            cout << "trouble while cropping" << endl;
+         }
+         break;
    }
-
-   //
-   // binning to be added !!
-   //
-
    // updating video stream properties
    snprintf(buff,10,"%dx%d",x,y);
    setProperty("FrameSize",buff,true);
@@ -679,6 +686,14 @@ bool QCamV4L::updateFrame() {
          default:
             cerr << "invalid palette " << endl;
             exit(1);
+      }
+      switch(croppingMode) {
+         case CROPPING_SOFT :
+            yuvBuffer_.cropping(0,0,targetWidth,targetHeight);
+            break;
+         case BINNING :
+            yuvBuffer_.binning(targetWidth,targetHeight);
+            break;
       }
    }
    // if mmap, restoring tmpBuffer_
@@ -888,8 +903,8 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
 
    // if cropping not supported, disabling comboBox
-   if(!(options_ & supportCropping))
-      cropCombo->setEnabled(false);
+   //if(!(options_ & supportCropping))
+   //   cropCombo->setEnabled(false);
 
    int labelNumber;
    if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)

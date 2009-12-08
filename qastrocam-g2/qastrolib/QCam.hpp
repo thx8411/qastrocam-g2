@@ -35,6 +35,7 @@ using namespace std;
 #define	SCALING		0
 #define	CROPPING	1
 #define	BINNING		2
+#define	CROPPING_SOFT	3
 
 /** base class of any object producing frames.
  */
