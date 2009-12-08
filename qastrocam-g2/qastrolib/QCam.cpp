@@ -55,6 +55,8 @@ QCam::QCam() {
    displayFramesButton_=NULL;
    displayHistogramWindow_=NULL;
    displayHistogramButton_=NULL;
+   sizeCombo=NULL;
+   cropCombo=NULL;
    //initRemoteControl();
    //remoteCTRL_->show();
 #if HAVE_AVIFILE_H
@@ -474,7 +476,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       valueList[0]=SCALING;
       valueList[1]=CROPPING;
       valueList[2]=BINNING;
-      cropCombo=new QCamComboBox("Cropping mode",sizeGroup,/*3*/2,valueList,labelList);
+      cropCombo=new QCamComboBox("Cropping mode",sizeGroup,3,valueList,labelList);
       connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       QToolTip::add(cropCombo,"Resizing mode");
    }
@@ -633,10 +635,13 @@ void QCam::annotate(const Vector2D & pos) const {
 void QCam::setSizeFromAllowed(int index) {
    // saving frame resolution
    settings.setKey("FRAME_RESOLUTION",sizeCombo->text(index));
+   if(cropCombo!=NULL)
+      croppingMode=cropCombo->value();
    resize(sizeTable[index]);
 }
 
 void QCam::setCropping(int index) {
    croppingMode=index;
-   resize(sizeTable[sizeCombo->value()]);
+   if(sizeCombo!=NULL)
+      resize(sizeTable[sizeCombo->value()]);
 }
