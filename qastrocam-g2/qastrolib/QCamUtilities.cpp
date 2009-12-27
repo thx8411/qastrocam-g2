@@ -21,6 +21,7 @@ bool QCamUtilities::useSDL_=false;
 bool QCamUtilities::expertMode_=false;
 
 void QCamUtilities::computePathName(const char * path) {
+   char* tmp;
    DIR * tmpDir=opendir(basePath_.c_str());
    if (tmpDir != NULL) {
        // curren path is good
@@ -33,7 +34,7 @@ void QCamUtilities::computePathName(const char * path) {
    //cout <<"pass 2: "<<basePath_<<"\n";
    if (basePath_[0]!='/') {
       char cwd[512];
-      getcwd(cwd,512);
+      tmp=getcwd(cwd,512);
       basePath_=string(cwd)+(basePath_!="."?"/"+basePath_:"");
    }
    //cout <<"pass 2 bis: "<<basePath_<<"\n";

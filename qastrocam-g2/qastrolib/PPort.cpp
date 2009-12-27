@@ -36,13 +36,14 @@ PPort::PPort() {
 }
 
 PPort::~PPort() {
+   ssize_t tmp;
    unsigned char buff=0x00;
    int i;
 
    // clear all the entries
    for(i=0;i<pportTableSize;i++) {
       if(pportTable[i].type==LP_TYPE)
-         write(pportTable[i].fd,&buff,1);
+         tmp=write(pportTable[i].fd,&buff,1);
       else if (pportTable[i].type==PPDEV_TYPE)
          ioctl(pportTable[i].fd, PPWDATA, &buff);
       close(pportTable[i].fd);
@@ -60,6 +61,7 @@ int PPort::pportFind(const char* name) {
 }
 
 int PPort::getAccess(const char* device) {
+   ssize_t tmp;
    unsigned char buff=0x00;
    int index;
 
@@ -88,17 +90,17 @@ int PPort::getAccess(const char* device) {
       if (ioctl(pportTable[pportTableSize].fd, PPCLAIM, 0) != 0) {
          cout << "Not a ppdev device, using standard lp access" << endl;
          ioctl(pportTable[pportTableSize].fd, LPRESET);
-         write(pportTable[pportTableSize].fd,&buff,1);
+         tmp=write(pportTable[pportTableSize].fd,&buff,1);
          pportTable[pportTableSize].type=LP_TYPE;
          pportTableSize++;
          return(pportTableSize-1);
       }
-      // sets port direction, if fails, assuming this is an "lp" port 
+      // sets port direction, if fails, assuming this is an "lp" port
       int outputmode=0;
       if (ioctl(pportTable[pportTableSize].fd, PPDATADIR, &outputmode) != 0) {
          cout << "Unable to set the port direction, using it as a standard lp port" << endl;
          ioctl(pportTable[pportTableSize].fd, LPRESET);
-         write(pportTable[pportTableSize].fd,&buff,1);
+         tmp=write(pportTable[pportTableSize].fd,&buff,1);
          pportTable[pportTableSize].type=LP_TYPE;
          pportTableSize++;
          return(pportTableSize-1);
@@ -117,7 +119,7 @@ bool  PPort::setBit(int bit,bool value, int entry) {
    // tests the entry
    if((entry<0)||(entry>=pportTableSize)) {
       cerr << "wrong entry number for pport " << endl;
-      return(false); 
+      return(false);
    }
 
    // fixing new bit value

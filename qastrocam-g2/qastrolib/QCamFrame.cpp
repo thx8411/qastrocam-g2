@@ -542,11 +542,9 @@ bool QCamFrame::isValide(int level) {
    lum=Y();
    frameSize=ySize();
    for(i=0;i<frameSize;i++) {
-     //value+=lum[i];
      if(lum[i]>value)
        value=lum[i];
    }
-   //value/=framesize;
 
    // test
    if(value>level)

@@ -191,7 +191,7 @@ public:
 
    bool isValide(int level);
 private:
-   QCamFrameCommon * common_;
+   QCamFrameCommon* common_;
 };
 
 #endif
