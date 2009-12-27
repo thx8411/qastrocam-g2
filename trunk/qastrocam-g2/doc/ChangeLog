@@ -1,5 +1,6 @@
-4.6beta20091209
+4.6beta20091227
 
+  - build warning cleaned
   - supports frame scaling (default) and hardware cropping (centered)
   - frame size now limited by INT_MAX
 

@@ -442,14 +442,14 @@ bool QCamAdd::writeFit(const QString & name,
 }
 
 bool QCamAdd::loadFit(const QString & name,int * buff) const {
+   size_t tmp;
    cout << "loading " << name << endl;
    FILE *f=fopen((name+".fit").latin1(),"r");
    if (f==NULL) {
       perror(name.latin1());
       return false;
    }
-   fread(buff, sizeof(int), size().width()*size().height() *3/2,
-         f);
+   tmp=fread(buff, sizeof(int), size().width()*size().height()*3/2,f);
    fclose (f);
    return true;
 }

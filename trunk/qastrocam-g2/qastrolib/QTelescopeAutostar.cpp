@@ -56,8 +56,8 @@ void QTelescopeAutostar::buildGUI(QWidget * parent) {
    widget()->setCaption(version(versionFull).c_str());
 }
 
-string QTelescopeAutostar::sendCommand(CommandType com,
-                                       const string & param) {
+string QTelescopeAutostar::sendCommand(CommandType com,const string & param) {
+   ssize_t tmp;
    switch (com) {
    case moveWest:
       sendCmd("Mw");
@@ -92,7 +92,7 @@ string QTelescopeAutostar::sendCommand(CommandType com,
    case getAlignment:
       {
          char szACK[1]={(char)0x06};
-         write(descriptor_,szACK,1);
+         tmp=write(descriptor_,szACK,1);
          return recvCmd(singleChar);
       }
       break;

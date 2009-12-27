@@ -68,6 +68,7 @@ void settingsBackup::deSerialize() {
    FILE* fd;
    int i;
    int j;
+   char* tmp;
    char buffer[256];
    char key[256];
    char value[256];
@@ -77,7 +78,7 @@ void settingsBackup::deSerialize() {
       while(!feof(fd)) {
          i=0;
          j=0;
-         fgets(buffer,255,fd);
+         tmp=fgets(buffer,255,fd);
          while(buffer[i]!='\t'&&buffer[i]!='\0') {
             key[j]=buffer[i];
             i++; j++;

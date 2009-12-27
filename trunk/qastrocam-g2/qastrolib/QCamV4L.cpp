@@ -260,6 +260,11 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
          cout << "cropping not supported" << endl;
       }
    }
+
+   // temp
+   // get frames intervals
+
+
    // *********
    // mmap init
    // *********
@@ -610,6 +615,7 @@ bool QCamV4L::setSize(int x, int y) {
 
 // drop frames without treatment
 bool QCamV4L::dropFrame() {
+   ssize_t tmp;
    uchar* nullBuff=NULL;
    // mmap case
    if (useMmap) {
@@ -619,7 +625,7 @@ bool QCamV4L::dropFrame() {
    // else, allocates memory
    nullBuff=(uchar*)malloc(yuvFrameMemSize);
    // read the frame
-   read(device_,(void*)nullBuff,yuvFrameMemSize);
+   tmp=read(device_,(void*)nullBuff,yuvFrameMemSize);
    // free memory
    free(nullBuff);
 
