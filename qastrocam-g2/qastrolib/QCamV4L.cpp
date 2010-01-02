@@ -700,7 +700,6 @@ bool QCamV4L::updateFrame() {
             cerr << "invalid palette " << endl;
             exit(1);
       }
-      outputBuffer_.clear();
       switch(croppingMode) {
          case CROPPING_SOFT :
             outputBuffer_.cropping(inputBuffer_,(maxWidth-targetWidth)/2,(maxHeight-targetHeight)/2,targetWidth,targetHeight);

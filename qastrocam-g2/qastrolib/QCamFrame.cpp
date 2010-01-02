@@ -254,6 +254,7 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
       jinc=1;
       jref=dstY;
    }
+
    for (int j=srcY1;j<=srcY2;
         ++j) {
       if (!swapLeftRight) {
@@ -525,9 +526,7 @@ unsigned char * QCamFrame::VforOverwrite() {
 void QCamFrame::cropping(const QCamFrame & src, int l, int t, int w, int h) {
    setMode(src.getMode());
    setSize(QSize(w,h));
-   copy(src,l,t,w-1,h-1,0,0,true,false);
-
-   //cout << "cropping... " << l << ":" << t << ":" << w << ":" << h << endl;
+   copy(src,l,t,w+l-1,h+t-1,0,0,false,false);
 }
 
 void QCamFrame::binning(const QCamFrame & src, int w, int h) {
