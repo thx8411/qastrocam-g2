@@ -81,7 +81,7 @@ public:
    // destructor
    ~QCamV4L();
    // image access
-   QCamFrame yuvFrame() const { return yuvBuffer_; }
+   QCamFrame yuvFrame() const { return outputBuffer_; }
    int yuvFrameMemSize;
    const QSize & size() const;
    void resize(const QSize & s);
@@ -153,7 +153,8 @@ private:
    // gui
    QCamComboBox*  frameModeB;
    // image frame and buffer
-   QCamFrame yuvBuffer_;
+   QCamFrame inputBuffer_;
+   QCamFrame outputBuffer_;
    uchar * tmpBuffer_;
    // to probe the cam for new frame
    //QTimer * timer_;

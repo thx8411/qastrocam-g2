@@ -186,8 +186,8 @@ public:
    void exportProperties(map<string,string> & dest) const;
    void setAllProperies(const map<string,string> & src) const;
 
-   void cropping(int l, int t, int w, int h);
-   void binning(int w, int h);
+   void cropping(const QCamFrame & src, int l, int t, int w, int h);
+   void binning(const QCamFrame & src, int w, int h);
 
    bool isValide(int level);
 private:

@@ -392,7 +392,7 @@ void QCamV4L::init(int preferedPalette) {
 // frame size and palette
 void QCamV4L::allocBuffers() {
    delete tmpBuffer_;
-   yuvBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
+   inputBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
    switch (v4l2_fmt_.fmt.pix.pixelformat) {
    case V4L2_PIX_FMT_GREY:
       yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height;
@@ -637,8 +637,9 @@ bool QCamV4L::updateFrame() {
    static char nullBuf[720*576];
    bool res;
    double currentTime;
+
    void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
-   YBuf=(void*)yuvBuffer_.YforOverwrite();
+   YBuf=(void*)inputBuffer_.YforOverwrite();
    // compute raw modes (conversions)
    switch(mode_) {
       case GreyFrame:
@@ -649,8 +650,8 @@ bool QCamV4L::updateFrame() {
          UBuf=VBuf=nullBuf;
          break;
       case YuvFrame:
-         UBuf=(void*)yuvBuffer_.UforOverwrite();
-         VBuf=(void*)yuvBuffer_.VforOverwrite();
+         UBuf=(void*)inputBuffer_.UforOverwrite();
+         VBuf=(void*)inputBuffer_.VforOverwrite();
    }
 
    // if we are using mmap
@@ -699,12 +700,16 @@ bool QCamV4L::updateFrame() {
             cerr << "invalid palette " << endl;
             exit(1);
       }
+      outputBuffer_.clear();
       switch(croppingMode) {
          case CROPPING_SOFT :
-            yuvBuffer_.cropping(0,0,targetWidth,targetHeight);
+            outputBuffer_.cropping(inputBuffer_,(maxWidth-targetWidth)/2,(maxHeight-targetHeight)/2,targetWidth,targetHeight);
             break;
          case BINNING :
-            yuvBuffer_.binning(targetWidth,targetHeight);
+            outputBuffer_.binning(inputBuffer_,targetWidth,targetHeight);
+            break;
+         default :
+            outputBuffer_=inputBuffer_;
             break;
       }
    }
@@ -724,7 +729,7 @@ bool QCamV4L::updateFrame() {
          // update progress bar
          if(lxBar) lxBar->setProgress(lxFrameCounter);
          // is there an image on this frame ?
-         if(!yuvBuffer_.isValide(lxLevel)) {
+         if(!outputBuffer_.isValide(lxLevel)) {
             // frame not valide
             // if too much frames dropped, we missed the good frame, resetting
             if(lxFrameCounter>(int)(lxDelay*(double)(frameRate_)+4))
@@ -757,7 +762,7 @@ bool QCamV4L::updateFrame() {
 }
 
 const QSize & QCamV4L::size() const {
-   return yuvBuffer_.size();
+   return outputBuffer_.size();
 }
 
 void QCamV4L::setContrast(int val) {
@@ -1082,7 +1087,7 @@ void  QCamV4L::setMode(ImageMode val) {
       mode_=val;
       break;
    }
-   yuvBuffer_.setMode(mode_);
+   inputBuffer_.setMode(mode_);
 }
 
 // setting lx modes

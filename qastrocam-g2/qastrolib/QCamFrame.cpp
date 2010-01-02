@@ -522,13 +522,20 @@ unsigned char * QCamFrame::VforOverwrite() {
    return common_->V();
 }
 
-void QCamFrame::cropping(int l, int t, int w, int h) {
-   // temp, just to try
-   //cout << "cropping" << endl;
+void QCamFrame::cropping(const QCamFrame & src, int l, int t, int w, int h) {
+   setMode(src.getMode());
+   setSize(QSize(w,h));
+   copy(src,l,t,w-1,h-1,0,0,true,false);
+
+   //cout << "cropping... " << l << ":" << t << ":" << w << ":" << h << endl;
 }
 
-void QCamFrame::binning(int w, int h) {
-   // temp, just to try
+void QCamFrame::binning(const QCamFrame & src, int w, int h) {
+   setMode(src.getMode());
+   setSize(QSize(w,h));
+
+   // to be done
+
    //cout << "binning" << endl;
 }
 
