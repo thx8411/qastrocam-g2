@@ -1,4 +1,4 @@
-4.6beta20091227
+4.6beta20100102
 
   - build warning cleaned
   - supports frame scaling (default) and hardware cropping (centered)

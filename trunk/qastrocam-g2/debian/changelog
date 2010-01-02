@@ -1,4 +1,4 @@
-qastrocam-g2 (4.6beta20091227) jaunty; urgency=low
+qastrocam-g2 (4.6beta20100102) jaunty; urgency=low
 
   * frame size now limited by INT_MAX
   * now supports frame scaling (default) and hardware cropping (centered)
