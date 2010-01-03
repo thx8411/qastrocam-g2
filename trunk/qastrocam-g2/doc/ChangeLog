@@ -1,5 +1,6 @@
-4.6beta20100102
+4.6beta20100103
 
+  - snapshot button disabled when using AVI
   - supports software cropping
   - build warning cleaned
   - supports frame scaling (default) and hardware cropping (centered)

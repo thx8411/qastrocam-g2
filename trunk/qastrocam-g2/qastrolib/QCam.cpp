@@ -556,6 +556,12 @@ void QCam::writeProperties(const string & fileName) const {
 
 void QCam::updateFileFormat(int value) {
    fileFormatCurrent_=value;
+
+   if(getSaveFormat()=="AVI")
+      snapshot_->setEnabled(FALSE);
+   else
+      snapshot_->setEnabled(TRUE);
+
    // saving file format
    settings.setKey("FILE_FORMAT",getSaveFormat());
 }
