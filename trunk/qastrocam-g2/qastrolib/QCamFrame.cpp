@@ -404,28 +404,37 @@ void QCamFrameCommon::move(int srcX1,int srcY1,
 void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFactor) {
    int i,j,k,l,sum;
    int xOffset,yOffset;
+
+   // luminance plan
+   // for each dest. pixel
    for(i=0;i<size_.width();i++) {
       xOffset=i*xFactor;
       for(j=0;j<size_.height();j++) {
+         // we sum source pixels arround
          sum=0;
          yOffset=j*yFactor;
          // lines
          for(k=0;k<yFactor;k++) {
             const unsigned char* line=src.YLine(yOffset+k);
+            // outside dynamic range, summing is useless
             if(sum>=255)
                break;
             // rows
             for(l=0;l<xFactor;l++) {
                sum+=line[xOffset+l];
+               // outside dynamic range, summing is useless
                if(sum>=255)
                   break;
             }
          }
+         // outside dynamic range
          if(sum>255)
             sum=255;
+         // update dest pixel
          yFrame_[j*size_.width()+i]=(unsigned char)sum;
       }
    }
+
    // binning u and v plans is a non sens, just get one significant value;
    if(getMode()==YuvFrame) {
       for(i=0;i<size_.width()/2;i++) {
@@ -579,13 +588,17 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
 
    if((w==0)||(h==0))
       return;
+   // compute binning factors
    xFactor=src.size().width()/w;
    yFactor=src.size().height()/h;
+   // keep mode and set size
    setMode(src.getMode());
    setSize(QSize(src.size().width()/xFactor,src.size().height()/yFactor));
+   // binning...
    setCommon()->binning(*src.getCommon(),xFactor,yFactor);
 }
 
+// is the frame a good frame or black one (depending on black level)
 bool QCamFrame::isValide(int level) {
    int i;
    int frameSize;
