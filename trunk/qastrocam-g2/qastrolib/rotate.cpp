@@ -1,3 +1,25 @@
+/******************************************************************
+Qastrocam
+Copyright (C) 2003-2009   Franck Sicard
+Qastrocam-g2
+Copyright (C) 2009   Blaise-Florentin Collin
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License v2
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA  02110-1301, USA.
+*******************************************************************/
+
+
 #include "QCamFrame.hpp"
 #include "rasterOp.hpp"
 #include <math.h>
@@ -20,7 +42,7 @@ void QCamFrameCommon::rotate(int center_x,
    while (angle>M_PI) {
       angle-=M_PI*2;
    }
-   
+
    if (angle>M_PI_2) {
       rotatePI(center_x,center_y);
       angle-=M_PI;
@@ -46,12 +68,12 @@ void QCamFrameCommon::hShear(int liney,
    if (empty()) {
       return;
    }
- 
+
    sign = SIGN(radang);
    w = size_.width();
    h = size_.height();
    tanangle = tan(radang);
-   invangle = ABS(1. / tanangle); 
+   invangle = ABS(1. / tanangle);
    inityincr = (int)(invangle / 2.);
    yincr = (int)invangle;
 
@@ -73,7 +95,6 @@ void QCamFrameCommon::hShear(int liney,
       y -= yincr;
    }
 }
-            	    
 
 void QCamFrameCommon::vShear(int     linex,
                              double radang) {
@@ -84,17 +105,17 @@ void QCamFrameCommon::vShear(int     linex,
    if (empty()) {
       return;
    }
-   
+
    sign = SIGN(radang);
    w = size_.width();
    h = size_.height();
    tanangle = tan(radang);
-   invangle = ABS(1. / tanangle); 
+   invangle = ABS(1. / tanangle);
    initxincr = (int)(invangle / 2.);
    xincr = (int)invangle;
-   
+
    rasterOpV(linex - initxincr, 2 * initxincr, 0);
-   
+
    for (vshift = 1, x = linex + initxincr; x < w; vshift++) {
       xincr = (int)(invangle * (vshift + 0.5) + 0.5) - (x - linex);
       if (w - x < xincr)  /* reduce for last one if req'd */
@@ -102,7 +123,7 @@ void QCamFrameCommon::vShear(int     linex,
       rasterOpV(x, xincr, sign*vshift);
       x += xincr;
    }
-   
+
    for (vshift = -1, x = linex - initxincr; x > 0; vshift--) {
       xincr = (x - linex) - (int)(invangle * (vshift - 0.5) + 0.5);
       if (x < xincr)  /* reduce for last one if req'd */
@@ -123,7 +144,7 @@ void QCamFrameCommon::rasterOpV(int   x,
                   8, size_.width()/4,
                   x, w, -vshift);
 #endif
-   
+
 }
 
 
