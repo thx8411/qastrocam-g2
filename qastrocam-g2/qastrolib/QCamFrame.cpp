@@ -400,6 +400,10 @@ void QCamFrameCommon::move(int srcX1,int srcY1,
    }
 }
 
+// frame binning
+void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFactor) {
+}
+
 QCamFrame::QCamFrame(ImageMode mode) {
    common_=new QCamFrameCommon(mode);
    common_->incRef();
@@ -523,19 +527,30 @@ unsigned char * QCamFrame::VforOverwrite() {
    return common_->V();
 }
 
+// frame cropping
+// l : x start
+// t : y start
+// w : width
+// h : height
 void QCamFrame::cropping(const QCamFrame & src, int l, int t, int w, int h) {
    setMode(src.getMode());
    setSize(QSize(w,h));
    copy(src,l,t,w+l-1,h+t-1,0,0,false,false);
 }
 
+// frame binning
+// w : new target width
+// h : new target height
 void QCamFrame::binning(const QCamFrame & src, int w, int h) {
+   int xFactor, yFactor;
+
+   if((w==0)||(h==0))
+      return;
+   xFactor=src.size().width()/w;
+   yFactor=src.size().height()/h;
    setMode(src.getMode());
-   setSize(QSize(w,h));
-
-   // to be done
-
-   //cout << "binning" << endl;
+   setSize(QSize(src.size().width()/xFactor,src.size().height()/yFactor));
+   setCommon()->binning(*src.getCommon(),w,h);
 }
 
 bool QCamFrame::isValide(int level) {
