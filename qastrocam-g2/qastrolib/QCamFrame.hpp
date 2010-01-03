@@ -94,6 +94,7 @@ protected:
    void move(int srcX1,int srcY1,
              int srcX2,int srcY2,
              int dstX,int dstY);
+   // binning source frame using x and y factors
    void binning(const QCamFrameCommon & src,int xFactor, int yFactor);
    void setMode(ImageMode val) { mode_=val; allocBuff();}
    ImageMode getMode() const { return mode_;}
