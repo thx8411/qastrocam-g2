@@ -179,7 +179,7 @@ void ccvt_420p_bgr32(int width, int height, const void *srcy, const void *srcu, 
       }
       u = *pu - 128; ug = 88*u;  ub = 454*u;
       v = *pv - 128; vg = 183*v; vr = 359 * v;
-    } 
+    }
   }
 }
 

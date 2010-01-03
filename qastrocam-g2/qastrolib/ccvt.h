@@ -19,8 +19,11 @@
     reached at nemosoft@smcc.demon.nl.
 */
 
-/* 
+/*
  $Log: not supported by cvs2svn $
+ Revision 1.2  2009/09/11 17:09:28  thx8411
+ ccvt updated to 0.3
+
  Revision 1.10  2003/10/24 16:55:18  nemosoft
  removed erronous log messages
 
@@ -47,9 +50,9 @@ extern "C" {
    420i = "4:2:0 interlaced"
            YYYY UU YYYY UU   even lines
            YYYY VV YYYY VV   odd lines
-           U/V data is subsampled by 2 both in horizontal 
+           U/V data is subsampled by 2 both in horizontal
            and vertical directions, and intermixed with the Y values.
-   
+
    420p = "4:2:0 planar"
            YYYYYYYY      N lines
            UUUU          N/2 lines
@@ -66,7 +69,7 @@ extern "C" {
    bgr24 = 3 bytes per pixel, in the order Blue Green Red (whoever came up
            with that idea...)
    rgb24 = 3 bytes per pixel, in the order Red Green Blue (which is sensible)
-   rgb32 = 4 bytes per pixel, in the order Red Green Blue Alpha, with 
+   rgb32 = 4 bytes per pixel, in the order Red Green Blue Alpha, with
            Alpha really being a filler byte (0)
    bgr32 = last but not least, 4 bytes per pixel, in the order Blue Green Red
            Alpha, Alpha again a filler byte (0)
