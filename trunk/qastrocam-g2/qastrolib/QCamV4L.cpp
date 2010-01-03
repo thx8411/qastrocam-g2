@@ -700,6 +700,10 @@ bool QCamV4L::updateFrame() {
             cerr << "invalid palette " << endl;
             exit(1);
       }
+      // debayer the input frame if needed
+      if((mode_!=GreyFrame)&&(mode_!=YuvFrame))
+         inputBuffer_.debayer();
+      // apply software resizing if needed
       switch(croppingMode) {
          case CROPPING_SOFT :
             outputBuffer_.cropping(inputBuffer_,(maxWidth-targetWidth)/2,(maxHeight-targetHeight)/2,targetWidth,targetHeight);

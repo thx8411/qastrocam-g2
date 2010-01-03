@@ -1,5 +1,6 @@
 4.6beta20100103
 
+  - supports binning
   - snapshot button disabled when using AVI
   - supports software cropping
   - build warning cleaned

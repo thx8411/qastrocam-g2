@@ -98,6 +98,9 @@ protected:
    void binning(const QCamFrameCommon & src,int xFactor, int yFactor);
    void setMode(ImageMode val) { mode_=val; allocBuff();}
    ImageMode getMode() const { return mode_;}
+   // debayer the frame using the known mode
+   void debayer();
+
    friend class QCamFrame;
    void rotate(int center_x, int center_y, double angle);
    void rotatePI(int center_x,int center_y);
@@ -188,9 +191,13 @@ public:
    void exportProperties(map<string,string> & dest) const;
    void setAllProperies(const map<string,string> & src) const;
 
+   // cropping the frame l,t = start point
    void cropping(const QCamFrame & src, int l, int t, int w, int h);
+   // binning the frame to the new given size
    void binning(const QCamFrame & src, int w, int h);
-
+   // debayer the frame using the known mode
+   void debayer();
+   // is the frame max luminance bigger than the black level ?
    bool isValide(int level);
 private:
    QCamFrameCommon* common_;
