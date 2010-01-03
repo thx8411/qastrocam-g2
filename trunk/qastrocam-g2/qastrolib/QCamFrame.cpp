@@ -402,6 +402,39 @@ void QCamFrameCommon::move(int srcX1,int srcY1,
 
 // frame binning
 void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFactor) {
+   int i,j,k,l,sum;
+   int xOffset,yOffset;
+   for(i=0;i<size_.width();i++) {
+      xOffset=i*xFactor;
+      for(j=0;j<size_.height();j++) {
+         sum=0;
+         yOffset=j*yFactor;
+         // lines
+         for(k=0;k<yFactor;k++) {
+            const unsigned char* line=src.YLine(yOffset+k);
+            if(sum>=255)
+               break;
+            // rows
+            for(l=0;l<xFactor;l++) {
+               sum+=line[xOffset+l];
+               if(sum>=255)
+                  break;
+            }
+         }
+         if(sum>255)
+            sum=255;
+         yFrame_[j*size_.width()+i]=(unsigned char)sum;
+      }
+   }
+   // binning u and v plans is a non sens, just get one significant value;
+   if(getMode()==YuvFrame) {
+      for(i=0;i<size_.width()/2;i++) {
+         for(j=0;j<size_.height()/2;j++) {
+            uFrame_[j*size_.width()/2+i]=src.ULine(j*yFactor*2)[i*xFactor];
+            vFrame_[j*size_.width()/2+i]=src.VLine(j*yFactor*2)[i*xFactor];
+         }
+      }
+   }
 }
 
 QCamFrame::QCamFrame(ImageMode mode) {
@@ -550,7 +583,7 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
    yFactor=src.size().height()/h;
    setMode(src.getMode());
    setSize(QSize(src.size().width()/xFactor,src.size().height()/yFactor));
-   setCommon()->binning(*src.getCommon(),w,h);
+   setCommon()->binning(*src.getCommon(),xFactor,yFactor);
 }
 
 bool QCamFrame::isValide(int level) {
