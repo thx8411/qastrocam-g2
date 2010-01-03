@@ -94,7 +94,8 @@ const QImage & QCamFrameCommon::colorImage() const {
       ccvt_420p_bgr32(size_.width(),size_.height(),
                       Y(),U(),V(),(void*)colorImageBuff_);
       break;
-   case RawRgbFrame1:
+   // allready "debayerized", no more needed;
+   /*case RawRgbFrame1:
    case RawRgbFrame2:
    case RawRgbFrame3:
    case RawRgbFrame4:
@@ -108,6 +109,7 @@ const QImage & QCamFrameCommon::colorImage() const {
       }
       raw2rgb(colorImageBuff_,Y(),size_.width(),size_.height(),getMode());
       break;
+   */
    }
    return *colorImage_;
 }
@@ -446,6 +448,16 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
    }
 }
 
+void QCamFrameCommon::debayer() {
+   unsigned char* yTemp;
+   ImageMode modeTemp=getMode();
+   yTemp=(unsigned char*)malloc(ySize());
+   memcpy(yTemp,yFrame_,ySize());
+   setMode(YuvFrame);
+   raw2yuv420p(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
+   free(yTemp);
+}
+
 QCamFrame::QCamFrame(ImageMode mode) {
    common_=new QCamFrameCommon(mode);
    common_->incRef();
@@ -596,6 +608,14 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
    setSize(QSize(src.size().width()/xFactor,src.size().height()/yFactor));
    // binning...
    setCommon()->binning(*src.getCommon(),xFactor,yFactor);
+}
+
+// debayer the frame if needed
+void QCamFrame::debayer() {
+   if((getMode()!=GreyFrame)&&(getMode()!=YuvFrame)) {
+      common_->debayer();
+      //setMode(YuvFrame);
+   }
 }
 
 // is the frame a good frame or black one (depending on black level)

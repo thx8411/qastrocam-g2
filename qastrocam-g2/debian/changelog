@@ -5,8 +5,9 @@ qastrocam-g2 (4.6beta20100103) jaunty; urgency=low
   * build warning cleaned
   * supports software cropping
   * snapshot button disabled when using AVI
+  * supports binning
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 03 Jan 2010 02:41:40 +0100
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 03 Jan 2010 17:19:52 +0100
 
 qastrocam-g2 (4.5) jaunty; urgency=low
 
