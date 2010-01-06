@@ -147,78 +147,78 @@ int getPixelColor(int x,int y,int mode) {
    int x_odd = x % 2;
    int y_odd = y % 2;
    switch (mode) {
-   case RawRgbFrame1:
-      if(x_odd==y_odd) {
-         // green pixel
-         if(y_odd)
-            // blue line
-            return(GREEN2);
-         else
-            // red line
-            return(GREEN1);
-      } else {
-         if(y_odd)
-            // blue pixel
-            return(BLUE);
-         else
+      case RawRgbFrame1:
+         if(x_odd==y_odd) {
+            // green pixel
+            if(y_odd)
+               // blue line
+               return(GREEN2);
+            else
+               // red line
+               return(GREEN1);
+         } else {
+            if(y_odd)
+               // blue pixel
+               return(BLUE);
+            else
+               // red pixel
+               return(RED);
+         }
+         break;
+      case RawRgbFrame2:
+         if(x_odd!=y_odd) {
+            // green pixel
+            if(y_odd)
+               // blue line
+               return(GREEN2);
+            else
+               // red line
+               return(GREEN1);
+         } else {
+            if(y_odd)
+               // blue pixel
+               return(BLUE);
+            else
             // red pixel
-            return(RED);
-      }
-      break;
-   case RawRgbFrame2:
-      if(x_odd!=y_odd) {
-         // green pixel
-         if(y_odd)
-            // blue line
-            return(GREEN2);
-         else
-            // red line
-            return(GREEN1);
-      } else {
-         if(y_odd)
-            // blue pixel
-            return(BLUE);
-         else
-            // red pixel
-            return(RED);
-      }
-      break;
-   case RawRgbFrame3:
-      if(x_odd!=y_odd) {
-         // green pixel
-         if(y_odd)
-            // red line
-            return(GREEN1);
-         else
-            // blue line
-            return(GREEN2);
-      } else {
-         if(y_odd)
-            // red pixel
-            return(RED);
-         else
-            // blue pixel
-            return(BLUE);
-      }
-      break;
-   case RawRgbFrame4:
-      if(x_odd==y_odd) {
-         // green pixel
-         if(y_odd)
-            // red line
-            return(GREEN1);
-         else
-            // blue line
-            return(GREEN2);
-      } else {
-         if(y_odd)
-            // red pixel
-            return(RED);
-         else
-            // blue pixel
-            return(BLUE);
-      }
-      break;
+               return(RED);
+         }
+         break;
+      case RawRgbFrame3:
+         if(x_odd!=y_odd) {
+            // green pixel
+            if(y_odd)
+               // red line
+               return(GREEN1);
+            else
+               // blue line
+               return(GREEN2);
+         } else {
+            if(y_odd)
+               // red pixel
+               return(RED);
+            else
+               // blue pixel
+               return(BLUE);
+         }
+         break;
+      case RawRgbFrame4:
+         if(x_odd==y_odd) {
+            // green pixel
+            if(y_odd)
+               // red line
+               return(GREEN1);
+            else
+               // blue line
+               return(GREEN2);
+         } else {
+            if(y_odd)
+               // red pixel
+               return(RED);
+            else
+               // blue pixel
+               return(BLUE);
+         }
+         break;
    }
    return(color);
 }
@@ -234,9 +234,9 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
          pixelOffset=(y*w+x);
          // manage edges
          if((x==0)||(x==w-1)||(y==0)||(y==h-1)) {
-            Y[pixelOffset]=0;
-            U[pixelOffset]=0;
-            V[pixelOffset]=0;
+            red=0;
+            green=0;
+            blue=0;
          } else {
             switch(getPixelColor(x,y,mode)) {
                case RED :
@@ -272,10 +272,10 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
                   blue=data[pixelOffset];
                   break;
             }
-            Y[pixelOffset]=((66*red+129*green+25*blue)>>8) + 16;
-            U[pixelOffset]=((-38*red-74*green+112*blue)>>8) + 128;
-            V[pixelOffset]=((112*red-94*green-18*blue)>>8) + 128;
          }
+         Y[pixelOffset]=((66*red+129*green+25*blue)>>8) + 16;
+         U[pixelOffset]=((-38*red-74*green+112*blue)>>8) + 128;
+         V[pixelOffset]=((112*red-94*green-18*blue)>>8) + 128;
       }
    }
 }

@@ -678,6 +678,7 @@ bool QCamV4L::updateFrame() {
          UBuf=(void*)inputBuffer_.UforOverwrite();
          VBuf=(void*)inputBuffer_.VforOverwrite();
    }
+   inputBuffer_.setMode(mode_);
 
    // if we are using mmap
    if (useMmap) {
