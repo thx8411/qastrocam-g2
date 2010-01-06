@@ -626,13 +626,15 @@ bool QCamV4L::setSize(int x, int y) {
          break;
    }
    // updating video stream properties
-   snprintf(buff,10,"%dx%d",x,y);
+   snprintf(buff,10,"%dx%d",targetWidth,targetHeight);
    setProperty("FrameSize",buff,true);
    // realloc buffers using new size
    allocBuffers();
    // updating mmap
    if(useMmap)
       useMmap=mmapInit();
+   // setting controls back
+   updatePictureSettings();
    return(true);
 }
 
@@ -1223,7 +1225,7 @@ bool QCamV4L::mmapInit() {
       mmapRelease();
       return(false);
    }
-   cout << "Using " << mmap_reqbuf.count << " buffers for video streaming" << endl;
+   //cout << "Using " << mmap_reqbuf.count << " buffers for video streaming" << endl;
 
    // alloc buffers table
    buffers=(struct mmap_buffer*)calloc(mmap_reqbuf.count, sizeof(struct mmap_buffer));
