@@ -132,7 +132,7 @@ void ccvt_420p_bgr32(int width, int height, const void *srcy, const void *srcu, 
   int    r, g, b, row, col, w2;
 
   py=(unsigned char *)srcy;
-  pu=(unsigned char *)srcu; 
+  pu=(unsigned char *)srcu;
   pv=(unsigned char *)srcv;
   d=dst;
   lastY = &py[width*height-1];
@@ -144,29 +144,29 @@ void ccvt_420p_bgr32(int width, int height, const void *srcy, const void *srcu, 
   v = *pv - 128; vg = 183*v; vr = 359 * v;
   col=1; /* Makes the col%2 test easier if we count from 1 instead of 0. */
   while (py<lastY) {
-    y = *py - 16;  
+    y = *py - 16;
     yy = y<<8;
     r = (yy+vr)>>8;
     g = (yy - ug - vg) >> 8;
-    b = (yy + ub) >> 8;        
+    b = (yy + ub) >> 8;
     /* This clamping is expensive, and should be done in a better way. */
     r = MAX(MIN(255, r), 0);
     g = MAX(MIN(255, g), 0);
     b = MAX(MIN(255, b), 0);
-    *d++ = (char)b; 
-    *d++ = (char)g; 
-    *d++ = (char)r; 
+    *d++ = (char)b;
+    *d++ = (char)g;
+    *d++ = (char)r;
     *d++ = 0; /* filler byte for alpha */
     col++;
     py++;
 
     if (col&1) {
       pu++; pv++;
-      u = *pu - 128; 
-      v = *pv - 128; 
-      ug = 88*u;  
+      u = *pu - 128;
+      v = *pv - 128;
+      ug = 88*u;
       ub = 454*u;
-      vg = 183*v; 
+      vg = 183*v;
       vr = 359 * v;
     }
 
@@ -291,11 +291,12 @@ void ccvt_444p_420p(int width, int height, const void *const srcY, const void *c
    unsigned char* vSrcPlan=(unsigned char*)srcV;
    unsigned char* uDstPlan=(unsigned char*)dstU;
    unsigned char* vDstPlan=(unsigned char*)dstV;
+   unsigned char* yDstPlan=(unsigned char*)dstY;
    memcpy(dstY,srcY,width*height);
    for(i=0;i<width/2;i++) {
       for(j=0;j<height/2;j++) {
-         uDstPlan[j*width/2+i]=uSrcPlan[j*width+i*2];
-         vDstPlan[j*width/2+i]=vSrcPlan[j*width+i*2];
+         uDstPlan[j*width/2+i]=uSrcPlan[j*width*2+i*2];
+         vDstPlan[j*width/2+i]=vSrcPlan[j*width*2+i*2];
       }
    }
 }

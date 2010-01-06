@@ -632,12 +632,9 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
    setCommon()->binning(*src.getCommon(),xFactor,yFactor);
 }
 
-// debayer the frame if needed
+// debayer the frame
 void QCamFrame::debayer() {
-   if((getMode()!=GreyFrame)&&(getMode()!=YuvFrame)) {
-      common_->debayer();
-      //setMode(YuvFrame);
-   }
+   common_->debayer();
 }
 
 // is the frame a good frame or black one (depending on black level)
