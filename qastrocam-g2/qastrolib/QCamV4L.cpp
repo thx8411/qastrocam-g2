@@ -523,8 +523,7 @@ bool QCamV4L::setSize(int x, int y) {
    if(useMmap)
       mmapRelease();
    // trying the size
-   cout << "resizing : x=" << x << " " << "y=" << y << endl;
-
+   //cout << "resizing : x=" << x << " " << "y=" << y << endl;
 
    // if max size, nothing to crop or bin.
    if((x==maxWidth)&&(y==maxHeight))
@@ -543,14 +542,16 @@ bool QCamV4L::setSize(int x, int y) {
       // scaling : set wanted size
       case SCALING :
       case CROPPING :
-         v4l2_fmt_.fmt.pix.width=x;
-         v4l2_fmt_.fmt.pix.height=y;
+         v4l2_fmt_.fmt.pix.width=targetWidth;
+         v4l2_fmt_.fmt.pix.height=targetHeight;
          break;
       // soft cropping & binning : set max size
       case CROPPING_SOFT :
       case BINNING :
          v4l2_fmt_.fmt.pix.width=maxWidth;
          v4l2_fmt_.fmt.pix.height=maxHeight;
+         x=maxWidth;
+         y=maxHeight;
          break;
    }
    // v4l2
@@ -578,8 +579,8 @@ bool QCamV4L::setSize(int x, int y) {
          // scaling : set wanted size
          case SCALING :
          case CROPPING :
-            v4l2_fmt_.fmt.pix.width=x;
-            v4l2_fmt_.fmt.pix.height=y;
+            v4l2_fmt_.fmt.pix.width=targetWidth;
+            v4l2_fmt_.fmt.pix.height=targetHeight;
             break;
          // soft cropping & binning : set max size
          case CROPPING_SOFT :
