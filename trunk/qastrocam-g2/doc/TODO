@@ -12,6 +12,8 @@ Later - binning in boxsize of hotspot search
 Later - binning module
 Later - static build
 Later - Multi language support
+DONE - 4.6   - support software cropping and binning
+DONE - 4.6   - support hardware cropping
 DONE - 4.5   - migration to v4l2
 DONE - 4.5   - settings file name can now be forced
 DONE - 4.5   - add V4L generic usage "forcing"

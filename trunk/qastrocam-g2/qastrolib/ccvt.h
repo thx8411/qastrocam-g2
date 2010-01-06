@@ -21,6 +21,9 @@
 
 /*
  $Log: not supported by cvs2svn $
+ Revision 1.3  2010/01/03 21:44:34  thx8411
+ gpl v2 licence headers added
+
  Revision 1.2  2009/09/11 17:09:28  thx8411
  ccvt updated to 0.3
 
@@ -112,6 +115,12 @@ void ccvt_rgb24_bgr32(int width, int height, const void *const src, void *const 
 void ccvt_rgb24_rgb32(int width, int height, const void *const src, void *const dst);
 void ccvt_rgb32_bgr24(int width, int height, const void *const src, void *const dst);
 void ccvt_rgb32_rgb24(int width, int height, const void *const src, void *const dst);
+
+// added by Blaise-Florentin Collin
+// (c) 2009
+
+// 4:4:4 planar yuv to planar 4:2:0 yuv
+void ccvt_444p_420p(int width, int height, const void *const srcY, const void *const srcU, const void *const srcV, const void *const dstY, const void *const dstU, const void *const dstV);
 
 
 #ifdef __cplusplus
