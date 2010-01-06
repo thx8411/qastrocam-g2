@@ -4,6 +4,8 @@
  * Code by Tony Hague (C) 2001.
  */
 
+#include <string.h>
+
 #include <assert.h>
 
 #include "ccvt.h"
@@ -282,3 +284,18 @@ void ccvt_yuyv_420p(int width, int height, const void *src, void *dsty, void *ds
    }
 }
 
+// 4:4:4 planar yuv to planar 4:2:0 yuv
+void ccvt_444p_420p(int width, int height, const void *const srcY, const void *const srcU, const void *const srcV, const void *const dstY, const void *const dstU, const void *const dstV) {
+   int i,j;
+   unsigned char* uSrcPlan=(unsigned char*)srcU;
+   unsigned char* vSrcPlan=(unsigned char*)srcV;
+   unsigned char* uDstPlan=(unsigned char*)dstU;
+   unsigned char* vDstPlan=(unsigned char*)dstV;
+   memcpy(dstY,srcY,width*height);
+   for(i=0;i<width/2;i++) {
+      for(j=0;j<height/2;j++) {
+         uDstPlan[j*width/2+i]=uSrcPlan[j*width+i*2];
+         vDstPlan[j*width/2+i]=vSrcPlan[j*width+i*2];
+      }
+   }
+}

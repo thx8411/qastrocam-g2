@@ -1,5 +1,6 @@
-4.6beta20100103
+4.6beta20100106
 
+  - all file formats now support raw color frames
   - supports binning
   - snapshot button disabled when using AVI
   - supports software cropping
