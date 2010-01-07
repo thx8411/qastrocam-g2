@@ -1,4 +1,4 @@
-qastrocam-g2 (4.6beta20100106) jaunty; urgency=low
+qastrocam-g2 (4.6beta20100107) jaunty; urgency=low
 
   * frame size now limited by INT_MAX
   * now supports frame scaling (default) and hardware cropping (centered)
@@ -7,8 +7,9 @@ qastrocam-g2 (4.6beta20100106) jaunty; urgency=low
   * snapshot button disabled when using AVI
   * supports binning
   * all file format now support raw color frames
+  * minor GUI modifications
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 03 Jan 2010 23:03:08 +0100
+ -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 07 Jan 2010 03:20:04 +0100
 
 qastrocam-g2 (4.5) jaunty; urgency=low
 
