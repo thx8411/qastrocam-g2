@@ -946,33 +946,50 @@ void QCamV4L::refreshPictureSettings() {
 
 QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
-   QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
 
-   // if cropping not supported, disabling comboBox
-   //if(!(options_ & supportCropping))
-   //   cropCombo->setEnabled(false);
-
+   // frame mode number
    int labelNumber;
    if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
       labelNumber=1;
    else
       labelNumber=6;
-
    // raw mode settings box
    int frameModeTable[]={GreyFrame,YuvFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
    const char* frameModeLabel[]={"Grey", "RGB", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
    infoBox=new QHGroupBox(tr("Source"),remoteCTRL);
+
+   // palette and input display
+   infoLabel1=new QLabel(infoBox);
+   infoLabel1->setText("Input :");
+   infoLabel1->setMaximumWidth(48);
+   infoInput=new QLabel(infoBox);
+   infoInput->setAlignment(AlignLeft|AlignVCenter);
+   infoInput->setText((char*)input.name);
+   infoLabel2=new QLabel(infoBox);
+   infoLabel2->setText("Palette :");
+   infoLabel2->setMaximumWidth(56);
+   infoPalette=new QLabel(infoBox);
+   infoPalette->setText(palette);
+   infoPalette->setAlignment(AlignLeft|AlignVCenter);
+   // Tips
+   QToolTip::add(infoInput,"V4L2 input used");
+   QToolTip::add(infoPalette,"V4L2 palette used");
+
+   // adding frames mode
    frameModeB= new QCamComboBox("frame type",infoBox,labelNumber,frameModeTable,frameModeLabel);
    frameModeB->setMaximumWidth(136);
    connect(frameModeB,SIGNAL(change(int)),this,SLOT(setMode(int)));
    // looking for a saved raw mode
    if(settings.haveKey("RAW_MODE")) {
-	int index=frameModeB->getPosition(settings.getKey("RAW_MODE"));
-	if (index!=-1) setMode(index);
-	frameModeB->setCurrentItem(index);
+        int index=frameModeB->getPosition(settings.getKey("RAW_MODE"));
+        if (index!=-1) setMode(index);
+        frameModeB->setCurrentItem(index);
    // else use default
    } else setMode(0);
+   QToolTip::add(frameModeB,"Frame mode");
 
+   // controls
+   QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
       remoteCTRLcontrast_->setMinValue(picture_.contrast_min);
@@ -1029,23 +1046,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxSlider->setValue(lxLevel);
    connect(lxSlider,SIGNAL(valueChange(int)),this,SLOT(LXlevel(int)));
    QToolTip::add(lxSlider,"Dropping frame level");
-
-   // palette and input display
-   infoLabel1=new QLabel(infoBox);
-   infoLabel1->setText("Input :");
-   infoLabel1->setMaximumWidth(48);
-   infoInput=new QLabel(infoBox);
-   infoInput->setAlignment(AlignLeft|AlignVCenter);
-   infoInput->setText((char*)input.name);
-   infoLabel2=new QLabel(infoBox);
-   infoLabel2->setText("Palette :");
-   infoLabel2->setMaximumWidth(56);
-   infoPalette=new QLabel(infoBox);
-   infoPalette->setText(palette);
-   infoPalette->setAlignment(AlignLeft|AlignVCenter);
-   // Tips
-   QToolTip::add(infoInput,"V4L input used");
-   QToolTip::add(infoPalette,"V4L palette used");
 
    // V4L generic long exposure
    // container
