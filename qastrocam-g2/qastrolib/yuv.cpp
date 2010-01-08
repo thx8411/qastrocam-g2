@@ -23,20 +23,15 @@ MA  02110-1301, USA.
 // yuv444 conversion tools
 
 // 4:4:4 planar yuv to 4:2:0 planar
-void yuv444_to_yuv420(int width, int height, const void* srcY, const void* srcU, const void* srcV, void* dstY, void* dstU, void* dstV) {
+void yuv444_to_yuv420(int width, int height, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV) {
    int i,j;
    int maxX=width/2;
    int maxY=height/2;
-   unsigned char* uSrcPlan=(unsigned char*)srcU;
-   unsigned char* vSrcPlan=(unsigned char*)srcV;
-   unsigned char* uDstPlan=(unsigned char*)dstU;
-   unsigned char* vDstPlan=(unsigned char*)dstV;
-   unsigned char* yDstPlan=(unsigned char*)dstY;
    memcpy(dstY,srcY,width*height);
    for(i=0;i<maxX;i++) {
       for(j=0;j<maxY;j++) {
-         uDstPlan[j*maxX+i]=uSrcPlan[(j*width+i)*2];
-         vDstPlan[j*maxX+i]=vSrcPlan[(j*width+i)*2];
+         dstU[j*maxX+i]=srcU[(j*width+i)*2];
+         dstV[j*maxX+i]=srcV[(j*width+i)*2];
       }
    }
 }
