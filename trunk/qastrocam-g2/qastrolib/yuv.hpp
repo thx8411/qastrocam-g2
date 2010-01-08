@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 // yuv444 conversion tools
 
 // 4:4:4 planar yuv to 4:2:0 planar yuv
-void yuv444_to_yuv420(int width, int height, const void* srcY, const void* srcU, const void* srcV, void* dstY, void* dstU, void* dstV);
+void yuv444_to_yuv420(int width, int height, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
 
 #endif
