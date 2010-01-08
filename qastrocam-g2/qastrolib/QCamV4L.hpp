@@ -173,7 +173,9 @@ private:
    bool mmapInit();
    void mmapRelease();
    // gui
-   QCamComboBox*  frameModeB;
+   QCamComboBox* sourceB;
+   QCamComboBox* paletteB;
+   QCamComboBox* frameModeB;
    // image frame and buffer
    QCamFrame inputBuffer_;
    QCamFrame outputBuffer_;

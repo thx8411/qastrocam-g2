@@ -947,15 +947,7 @@ void QCamV4L::refreshPictureSettings() {
 QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
-   // frame mode number
-   int labelNumber;
-   if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
-      labelNumber=1;
-   else
-      labelNumber=6;
-   // raw mode settings box
-   int frameModeTable[]={GreyFrame,YuvFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
-   const char* frameModeLabel[]={"Grey", "RGB", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
+   // source box
    infoBox=new QHGroupBox(tr("Source"),remoteCTRL);
 
    // palette and input display
@@ -975,6 +967,15 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QToolTip::add(infoInput,"V4L2 input used");
    QToolTip::add(infoPalette,"V4L2 palette used");
 
+   // frame mode number
+   int labelNumber;
+   if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
+      labelNumber=1;
+   else
+      labelNumber=6;
+   // raw mode settings box
+   int frameModeTable[]={GreyFrame,YuvFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4};
+   const char* frameModeLabel[]={"Grey", "RGB", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
    // adding frames mode
    frameModeB= new QCamComboBox("frame type",infoBox,labelNumber,frameModeTable,frameModeLabel);
    frameModeB->setMaximumWidth(136);
