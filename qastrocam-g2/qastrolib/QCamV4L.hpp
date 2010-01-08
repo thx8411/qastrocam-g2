@@ -172,10 +172,7 @@ private:
    // mmap functions
    bool mmapInit();
    void mmapRelease();
-   // gui
-   QCamComboBox* sourceB;
-   QCamComboBox* paletteB;
-   QCamComboBox* frameModeB;
+
    // image frame and buffer
    QCamFrame inputBuffer_;
    QCamFrame outputBuffer_;
@@ -192,12 +189,11 @@ private:
    QCamSlider * remoteCTRLcolor_;
    QCamSlider * remoteCTRLwhiteness_;
 
-   // palette and input display
+   // input, palette and frame mode
    QHGroupBox * infoBox;
-   QLabel * infoLabel1;
-   QLabel * infoPalette;
-   QLabel * infoLabel2;
-   QLabel * infoInput;
+   QCamComboBox* sourceB;
+   QCamComboBox* paletteB;
+   QCamComboBox* frameModeB;
 
    // lx mode widgets
    //QCamSlider * lxSlider;   -> cf. protected

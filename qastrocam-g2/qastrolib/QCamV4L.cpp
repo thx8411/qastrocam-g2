@@ -951,21 +951,19 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    infoBox=new QHGroupBox(tr("Source"),remoteCTRL);
 
    // palette and input display
-   infoLabel1=new QLabel(infoBox);
-   infoLabel1->setText("Input :");
-   infoLabel1->setMaximumWidth(48);
-   infoInput=new QLabel(infoBox);
-   infoInput->setAlignment(AlignLeft|AlignVCenter);
-   infoInput->setText((char*)input.name);
-   infoLabel2=new QLabel(infoBox);
-   infoLabel2->setText("Palette :");
-   infoLabel2->setMaximumWidth(56);
-   infoPalette=new QLabel(infoBox);
-   infoPalette->setText(palette);
-   infoPalette->setAlignment(AlignLeft|AlignVCenter);
-   // Tips
-   QToolTip::add(infoInput,"V4L2 input used");
-   QToolTip::add(infoPalette,"V4L2 palette used");
+   int sourceTable[]={1};
+   const char* sourceLabel[1];
+   sourceLabel[0]=(char*)input.name;
+   sourceB=new QCamComboBox("source",infoBox,1,sourceTable,sourceLabel);
+   sourceB->setEnabled(false);
+   int paletteTable[]={1};
+   const char* paletteLabel[1];
+   paletteLabel[0]=palette;
+   paletteB=new QCamComboBox("source",infoBox,1,paletteTable,paletteLabel);
+   paletteB->setEnabled(false);
+   // tips
+   QToolTip::add(sourceB,"V4L2 input used");
+   QToolTip::add(paletteB,"V4L2 palette used");
 
    // frame mode number
    int labelNumber;
@@ -978,7 +976,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    const char* frameModeLabel[]={"Grey", "RGB", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB"};
    // adding frames mode
    frameModeB= new QCamComboBox("frame type",infoBox,labelNumber,frameModeTable,frameModeLabel);
-   frameModeB->setMaximumWidth(136);
    connect(frameModeB,SIGNAL(change(int)),this,SLOT(setMode(int)));
    // looking for a saved raw mode
    if(settings.haveKey("RAW_MODE")) {
