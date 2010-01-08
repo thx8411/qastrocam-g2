@@ -21,7 +21,8 @@ MA  02110-1301, USA.
 
 
 #include "bayer.hpp"
-#include "ccvt.h"
+#include "yuv.hpp"
+//#include "ccvt.h"
 
 using namespace std;
 
@@ -289,7 +290,7 @@ void raw2yuv420p(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned 
    uTemp=(unsigned char*)malloc(w*h);
    vTemp=(unsigned char*)malloc(w*h);
    raw2yuv444(yTemp,uTemp,vTemp,input,w,h,mode);
-   ccvt_444p_420p(w,h,yTemp,uTemp,vTemp,Y,U,V);
+   yuv444_to_yuv420(w,h,yTemp,uTemp,vTemp,Y,U,V);
    free(yTemp);
    free(uTemp);
    free(vTemp);

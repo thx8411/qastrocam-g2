@@ -40,7 +40,7 @@ OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o Vector2D.o ShiftInfo.o QCamFrame.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o SettingsBackup.o \
-	  SCmodParPortPPdev.o PPort.o
+	  SCmodParPortPPdev.o PPort.o yuv.o
 
 OBJ_c = ccvt_c2.o
 
