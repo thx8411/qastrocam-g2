@@ -274,9 +274,9 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
                   break;
             }
          }
-         Y[pixelOffset]=((66*red+129*green+25*blue)>>8) + 16;
-         U[pixelOffset]=((-38*red-74*green+112*blue)>>8) + 128;
-         V[pixelOffset]=((112*red-94*green-18*blue)>>8) + 128;
+         Y[pixelOffset]=((66*red+129*green+25*blue+128)>>8) + 16;
+         U[pixelOffset]=((-38*red-74*green+112*blue+128)>>8) + 128;
+         V[pixelOffset]=((112*red-94*green-18*blue+128)>>8) + 128;
       }
    }
 }
