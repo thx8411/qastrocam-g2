@@ -22,8 +22,27 @@ MA  02110-1301, USA.
 
 // yuv444 conversion tools
 
-// 4:4:4 planar yuv to 4:2:0 planar yuv
-void yuv444_to_yuv420(int width, int height, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
+//
+// TO YUV444
+//
 
+// rgb24 to yuv444 planar
+void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
+
+// yuv422 planar to yuv444 planar
+void yuv422_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
+
+// yuv420 planar to yuv444 planar
+void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
+
+//
+// FROM YUV444
+//
+
+// yuv444 planar to rgb24
+void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
+
+// 4:4:4 planar yuv to 4:2:0 planar yuv
+void yuv444_to_yuv420(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
 #endif
