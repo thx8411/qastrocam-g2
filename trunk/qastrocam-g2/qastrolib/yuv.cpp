@@ -22,16 +22,84 @@ MA  02110-1301, USA.
 
 // yuv444 conversion tools
 
-// 4:4:4 planar yuv to 4:2:0 planar
-void yuv444_to_yuv420(int width, int height, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV) {
+int clip(int v) {
+   if(v<0) return(0);
+   if(v>255) return(255);
+   return(v);
+}
+
+//
+// TO YUV444
+//
+
+// rgb24 to yuv444 planar
+void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
+   int p,size;
+   int R,G,B;
+   size=h*w;
+   for(p=0;p<size;p++) {
+         R=src[p*3];
+         G=src[p*3+1];
+         B=src[p*3+2];
+         dstY[p]=((66*R+129*G+25*B+128)>>8)+16;
+         dstU[p]=((-38*R-74*G+112*B+128)>>8)+128;
+         dstV[p]=((112*R-94*G-18*B+128)>>8)+128;
+   }
+}
+
+// yuv422 planar to yuv444 planar
+void yuv422_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
    int i,j;
-   int maxX=width/2;
-   int maxY=height/2;
-   memcpy(dstY,srcY,width*height);
+   memcpy(dstY,srcY,w*h);
+   for(i=0;i<w;i++){
+      for(j=0;j<h;j++){
+         dstU[j*w+i]=srcU[j*w/2+i/2];
+         dstV[j*w+i]=srcV[j*w/2+i/2];
+      }
+   }
+}
+
+// yuv420 planar to yuv444 planar
+void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
+   int i,j;
+   memcpy(dstY,srcY,w*h);
+   for(i=0;i<w;i++){
+      for(j=0;j<h;j++){
+         dstU[j*w+i]=srcU[j*w/4+i/2];
+         dstV[j*w+i]=srcV[j*w/4+i/2];
+      }
+   }
+}
+
+//
+// FROM YUV444
+//
+
+// yuv444 planar to rgb24
+void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst){
+   int p,size;
+   int Y,U,V;
+   size=h*w;
+   for(p=0;p<size;p++) {
+      Y=srcY[p]-16;
+      U=srcU[p]-128;
+      V=srcV[p]-128;
+      dst[p*3]=clip((298*Y+ 409*V+128)>>8);
+      dst[p*3+1]=clip((298*Y-100*U-208*V+128)>>8);
+      dst[p*3+2]=clip((298*Y+516*U+128)>>8);
+   }
+}
+
+// 4:4:4 planar yuv to 4:2:0 planar
+void yuv444_to_yuv420(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV) {
+   int i,j;
+   int maxX=w/2;
+   int maxY=h/2;
+   memcpy(dstY,srcY,w*h);
    for(i=0;i<maxX;i++) {
       for(j=0;j<maxY;j++) {
-         dstU[j*maxX+i]=srcU[(j*width+i)*2];
-         dstV[j*maxX+i]=srcV[(j*width+i)*2];
+         dstU[j*maxX+i]=srcU[(j*w+i)*2];
+         dstV[j*maxX+i]=srcV[(j*w+i)*2];
       }
    }
 }
