@@ -101,7 +101,7 @@ void QCamAdd::moveFrame(const QCamFrame & frame,
                maxCrValue=tmpValue;
             }
          } else {
-            *dest-=(-128+*src); 
+            *dest-=(-128+*src);
          }
          ++dest;
          ++src;
@@ -519,23 +519,3 @@ void QCamAdd::modeDisplay(int val) {
       //emit (newFrame());
    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
