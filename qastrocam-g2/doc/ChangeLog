@@ -1,5 +1,6 @@
-4.6beta20100110
+4.6beta20100111
 
+  - FITS-GZ output removed
   - ccvt no more used
   - webcam RGB palette now fully supported
   - native format is yuv444 instead yuv420 for better colors

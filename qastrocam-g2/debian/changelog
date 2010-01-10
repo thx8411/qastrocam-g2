@@ -1,4 +1,4 @@
-qastrocam-g2 (4.6beta20100110) jaunty; urgency=low
+qastrocam-g2 (4.6beta20100111) jaunty; urgency=low
 
   * frame size now limited by INT_MAX
   * now supports frame scaling (default) and hardware cropping (centered)
@@ -11,8 +11,9 @@ qastrocam-g2 (4.6beta20100110) jaunty; urgency=low
   * ccvt no more used     
   * webcam RGB palette now fully supported
   * native format is yuv444 instead yuv420 for better colors
+  * FITS-GZ output removed
 
- -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 10 Jan 2010 02:53:58 +0100
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 10 Jan 2010 21:44:42 +0100
 
 qastrocam-g2 (4.5) jaunty; urgency=low
 
