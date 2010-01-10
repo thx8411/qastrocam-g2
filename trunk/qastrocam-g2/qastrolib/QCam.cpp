@@ -111,9 +111,9 @@ bool QCam::saveFrame(const string& file) const {
    if (fileFormat=="FITS") {
       FitsImageCFITSIO fit(file+".fit");
             return fit.save(yuvFrame());
-   }  else if (fileFormat=="FITS-GZ") {
+   /*}  else if (fileFormat=="FITS-GZ") {
       FitsImageCFITSIO fit= FitsImageCFITSIO(file+".fit.gz");
-      return fit.save(yuvFrame());
+      return fit.save(yuvFrame());*/
    } else if (fileFormat=="AVI") {
       cout << "AVI snapshots unsupported, using BMP instead" << endl;
       return yuvFrame().colorImage().save((file+"."+"bmp"),"BMP", quality);
@@ -316,9 +316,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    tmpTab[size]=size;
    ++size;
    // adds fits-gz format
-   fileFormatList_[size]="FITS-GZ";
-   tmpTab[size]=size;
-   ++size;
+   //fileFormatList_[size]="FITS-GZ";
+   //tmpTab[size]=size;
+   //++size;
 #if HAVE_AVIFILE_H
    // adds avi format
    fileFormatList_[size]="AVI";
