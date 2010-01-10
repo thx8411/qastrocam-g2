@@ -28,7 +28,7 @@ MA  02110-1301, USA.
 #include <qpainter.h>
 #include <qpen.h>
 
-#include "bayer.hpp"
+#include "yuv.hpp"
 
 /*
  * SDL
@@ -193,36 +193,8 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          GreyImage_->pixels=(Uint8*)frame.Y();
       }
       SDL_BlitSurface(GreyImage_, NULL, screen_, &dst);
-
       break;
    case YuvFrame:
-      if (YUVImage_ == NULL
-          || YUVImage_->w!=frame.size().width()
-          || YUVImage_->h!=frame.size().height()) {
-         if (YUVImage_) {
-            //SDL_FreeYUVOverlay(YUVImage_);
-         }
-         YUVImage_=SDL_CreateYUVOverlay(frame.size().width(),frame.size().height(),
-                                        SDL_IYUV_OVERLAY,screen_);
-         if ( ! YUVImage_ ) {
-            fprintf(stderr, "Unable to create YUV overlay: %s\n", SDL_GetError());
-            return;
-         }
-      }
-      SDL_LockYUVOverlay(YUVImage_);
-      YUVImage_->pixels[0]=(Uint8*)frame.Y();
-      YUVImage_->pixels[1]=(Uint8*)frame.U();
-      YUVImage_->pixels[2]=(Uint8*)frame.V();
-      //YUVImage_->pixels=data;
-      SDL_UnlockYUVOverlay(YUVImage_);
-      if (SDL_DisplayYUVOverlay(YUVImage_, &dst)) {
-         fprintf(stderr, "Unable to display YUV overlay %s.\n",SDL_GetError());
-      }
-      break;
-   case RawRgbFrame1:
-   case RawRgbFrame2:
-   case RawRgbFrame3:
-   case RawRgbFrame4:
       if (RGBImage_ == NULL
           || RGBImage_->w!=frame.size().width()
           || RGBImage_->h!=frame.size().height()) {
@@ -238,8 +210,7 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
             exit(1);
          }
       }
-      raw2rgb((unsigned char*)RGBImage_->pixels,
-              frame.Y(),RGBImage_->w,RGBImage_->h,frame.getMode());
+      yuv444_to_bgr32(RGBImage_->w,RGBImage_->h,frame.Y(),frame.U(),frame.V(),(unsigned char*)RGBImage_->pixels);
       SDL_BlitSurface(RGBImage_, NULL, screen_, &dst);
    }
    //SDL_FillRect(screen_, NULL, 0);
