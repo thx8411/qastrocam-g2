@@ -40,7 +40,7 @@ MA  02110-1301, USA.
 #include <qtooltip.h>
 
 #include "QCamSlider.hpp"
-#include "ccvt.h"
+#include "yuv.hpp"
 #include "QGridBox.hpp"
 #include "QCamComboBox.hpp"
 #include "SettingsBackup.hpp"
@@ -602,9 +602,6 @@ bool QCamV4L::setSize(int x, int y) {
          if(!(options_ & supportCropping)) break;
       case BINNING :
          if(ioctl(device_,VIDIOC_CROPCAP,&v4l2_crop_)==-1) {
-            // disabling the comboBox
-            //cropCombo->update(SCALING);
-            //cropCombo->setEnabled(false);
             options_&=~supportCropping;
             cout << "trouble while cropping" << endl;
          } else
@@ -617,9 +614,6 @@ bool QCamV4L::setSize(int x, int y) {
          cropBounds.c.width=x;
          cropBounds.c.height=y;
          if(ioctl(device_,VIDIOC_S_CROP,&cropBounds)==-1) {
-            // disabling the comboBox
-            //cropCombo->update(SCALING);
-            //cropCombo->setEnabled(false);
             options_&=~supportCropping;
             cout << "trouble while cropping" << endl;
          }
@@ -659,12 +653,13 @@ bool QCamV4L::dropFrame() {
 
 // we should have a new frame
 bool QCamV4L::updateFrame() {
-   static char nullBuf[720*576];
+   static unsigned char* nullBuf;
    bool res;
    double currentTime;
 
-   void * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
-   YBuf=(void*)inputBuffer_.YforOverwrite();
+   nullBuf=(unsigned char*)malloc(v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
+   unsigned char * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
+   YBuf=(unsigned char*)inputBuffer_.YforOverwrite();
    // compute raw modes (conversions)
    switch(mode_) {
       case GreyFrame:
@@ -675,8 +670,8 @@ bool QCamV4L::updateFrame() {
          UBuf=VBuf=nullBuf;
          break;
       case YuvFrame:
-         UBuf=(void*)inputBuffer_.UforOverwrite();
-         VBuf=(void*)inputBuffer_.VforOverwrite();
+         UBuf=(unsigned char*)inputBuffer_.UforOverwrite();
+         VBuf=(unsigned char*)inputBuffer_.VforOverwrite();
    }
    inputBuffer_.setMode(mode_);
 
@@ -699,28 +694,16 @@ bool QCamV4L::updateFrame() {
             memcpy(YBuf,tmpBuffer_,v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             break;
          case V4L2_PIX_FMT_YUV420:
-            memcpy(YBuf,tmpBuffer_, v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
-            memcpy(UBuf,
-               tmpBuffer_+ v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height,
-               (v4l2_fmt_.fmt.pix.width/2) * (v4l2_fmt_.fmt.pix.height/2));
-            memcpy(VBuf,
-               tmpBuffer_+ v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height+(v4l2_fmt_.fmt.pix.width/2) * (v4l2_fmt_.fmt.pix.height/2),
-               (v4l2_fmt_.fmt.pix.width/2) * (v4l2_fmt_.fmt.pix.height/2));
+            yuv420_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
+               tmpBuffer_, tmpBuffer_+ v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height,
+               tmpBuffer_+v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height+(v4l2_fmt_.fmt.pix.width/2)*(v4l2_fmt_.fmt.pix.height/2),YBuf,UBuf,VBuf);
             break;
          // and frame convertions
          case V4L2_PIX_FMT_RGB24:
-            ccvt_rgb24_420p(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
-                         tmpBuffer_,
-                         YBuf,
-                         UBuf,
-                         VBuf);
+            rgb24_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
             break;
          case V4L2_PIX_FMT_YUYV:
-             ccvt_yuyv_420p(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
-                         tmpBuffer_,
-                         YBuf,
-                         UBuf,
-                         VBuf);
+            yuv422_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
             break;
          default:
             cerr << "invalid palette " << endl;
@@ -742,6 +725,8 @@ bool QCamV4L::updateFrame() {
             break;
       }
    }
+   if(nullBuf!=NULL)
+      free(nullBuf);
    // if mmap, restoring tmpBuffer_
    if(useMmap)
       tmpBuffer_=NULL;

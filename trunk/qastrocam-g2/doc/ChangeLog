@@ -1,5 +1,8 @@
-4.6beta20100108
+4.6beta20100110
 
+  - ccvt no more used
+  - webcam RGB palette now fully supported
+  - native format is yuv444 instead yuv420 for better colors
   - minor GUI modifications
   - all file formats now support raw color frames
   - supports binning

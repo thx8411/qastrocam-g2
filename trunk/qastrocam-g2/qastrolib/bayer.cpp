@@ -22,7 +22,6 @@ MA  02110-1301, USA.
 
 #include "bayer.hpp"
 #include "yuv.hpp"
-//#include "ccvt.h"
 
 using namespace std;
 
@@ -282,7 +281,7 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
 }
 
 // vesta raw to yuv420p conversion
-void raw2yuv420p(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* input, const int w, const int h, int mode) {
+/*void raw2yuv420p(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* input, const int w, const int h, int mode) {
    unsigned char* yTemp;
    unsigned char* uTemp;
    unsigned char* vTemp;
@@ -294,4 +293,4 @@ void raw2yuv420p(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned 
    free(yTemp);
    free(uTemp);
    free(vTemp);
-}
+}*/

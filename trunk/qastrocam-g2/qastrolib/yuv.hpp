@@ -29,8 +29,8 @@ MA  02110-1301, USA.
 // rgb24 to yuv444 planar
 void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
-// yuv422 planar to yuv444 planar
-void yuv422_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
+// yuv422 to yuv444 planar
+void yuv422_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
 // yuv420 planar to yuv444 planar
 void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
@@ -41,6 +41,9 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
 
 // yuv444 planar to rgb24
 void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
+
+// yuv444 planar to rgb32
+void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
 
 // 4:4:4 planar yuv to 4:2:0 planar yuv
 void yuv444_to_yuv420(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
