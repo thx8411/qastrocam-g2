@@ -31,8 +31,6 @@ MA  02110-1301, USA.
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "ccvt.h"
-
 #include <qimage.h>
 #include <qvbox.h>
 #include <qhbox.h>

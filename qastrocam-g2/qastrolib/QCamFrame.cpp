@@ -22,7 +22,7 @@ MA  02110-1301, USA.
 
 #include "QCamFrame.hpp"
 #include <qimage.h>
-#include "ccvt.h"
+#include "yuv.cpp"
 #include "bayer.hpp"
 #include <assert.h>
 #include <math.h>
@@ -40,8 +40,8 @@ QCamFrameCommon::~QCamFrameCommon() {
 void QCamFrameCommon::clear() {
    memset(yFrame_,0,size_.width()*size_.height());
    if (getMode()==YuvFrame) {
-      memset(uFrame_,128,(size_.width()/2)*(size_.height()/2));
-      memset(vFrame_,128,(size_.width()/2)*(size_.height()/2));
+      memset(uFrame_,128,(size_.width())*(size_.height()));
+      memset(vFrame_,128,(size_.width())*(size_.height()));
    }
 }
 
@@ -74,7 +74,7 @@ void QCamFrameCommon::allocBuff() {
    delete vFrame_;
 
    ySize_=size_.width()*size_.height();
-   uSize_=vSize_=(getMode()!=YuvFrame)?0:((size_.width()/2)*(size_.height()/2));
+   uSize_=vSize_=(getMode()!=YuvFrame)?0:(size_.width()*size_.height());
    yFrame_ = new unsigned char[ySize()];
    uFrame_ = (getMode()!=YuvFrame)?NULL:new unsigned char[uSize()];
    vFrame_ = (getMode()!=YuvFrame)?NULL:new unsigned char[vSize()];
@@ -113,25 +113,9 @@ const QImage & QCamFrameCommon::colorImage() const {
          colorImage_=new QImage(colorImageBuff_,size_.width(),size_.height(),
                                 32,0,0,QImage::BigEndian);
       }
-      ccvt_420p_bgr32(size_.width(),size_.height(),
-                      Y(),U(),V(),(void*)colorImageBuff_);
+      yuv444_to_bgr32(size_.width(),size_.height(),
+                      Y(),U(),V(),(unsigned char*)colorImageBuff_);
       break;
-   // allready "debayerized", no more needed;
-   /*case RawRgbFrame1:
-   case RawRgbFrame2:
-   case RawRgbFrame3:
-   case RawRgbFrame4:
-      if (!colorImage_) {
-         colorImageBuff_
-            =new unsigned char[size_.width()*size_.height()*4];
-         memset(colorImageBuff_,0,size_.width() * size_.height()* 4);
-         colorImage_=new QImage(colorImageBuff_,
-                                size_.width(),size_.height(),
-                                32,0,0,QImage::BigEndian);
-      }
-      raw2rgb(colorImageBuff_,Y(),size_.width(),size_.height(),getMode());
-      break;
-   */
    }
    return *colorImage_;
 }
@@ -284,21 +268,21 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
       if (!swapLeftRight) {
          memcpy(YLine(jref)+dstX,
                 src.YLine(j)+srcX1,lineSize);
-         if (j%2==0 && colorMode) {
-            memcpy(ULine(jref)+dstX/2,
-                   src.ULine(j)+srcX1/2,lineSize/2);
-            memcpy(VLine(jref)+dstX/2,
-                   src.VLine(j)+srcX1/2,lineSize/2);
+         if (colorMode) {
+            memcpy(ULine(jref)+dstX,
+                   src.ULine(j)+srcX1,lineSize);
+            memcpy(VLine(jref)+dstX,
+                   src.VLine(j)+srcX1,lineSize);
          }
          jref+=jinc;
       } else {
          memswap(YLine(jref)+dstX,
                 src.YLine(j)+srcX1,lineSize);
-         if (j%2==0 && colorMode) {
-            memswap(ULine(jref)+dstX/2,
-                   src.ULine(j)+srcX1/2,lineSize/2);
-            memswap(VLine(jref)+dstX/2,
-                   src.VLine(j)+srcX1/2,lineSize/2);
+         if (colorMode) {
+            memswap(ULine(jref)+dstX,
+                   src.ULine(j)+srcX1,lineSize);
+            memswap(VLine(jref)+dstX,
+                   src.VLine(j)+srcX1,lineSize);
          }
          jref+=jinc;
       }
@@ -399,11 +383,11 @@ void QCamFrameCommon::move(int srcX1,int srcY1,
            ++j) {
          memmove(YLine(jref)+dstX,
                  YLine(j)+srcX1,lineSize);
-         if (j%2==0 && colorMode) {
-            memmove(ULine(jref)+dstX/2,
-                    ULine(j)+srcX1/2,lineSize/2);
-            memmove(VLine(jref)+dstX/2,
-                    VLine(j)+srcX1/2,lineSize/2);
+         if (colorMode) {
+            memmove(ULine(jref)+dstX,
+                    ULine(j)+srcX1,lineSize);
+            memmove(VLine(jref)+dstX,
+                    VLine(j)+srcX1,lineSize);
          }
          ++jref;
       }
@@ -413,11 +397,11 @@ void QCamFrameCommon::move(int srcX1,int srcY1,
            --j) {
          memmove(YLine(jref)+dstX,
                  YLine(j)+srcX1,lineSize);
-         if (j%2==0 && colorMode) {
-            memmove(ULine(jref)+dstX/2,
-                    ULine(j)+srcX1/2,lineSize/2);
-            memmove(VLine(jref)+dstX/2,
-                    VLine(j)+srcX1/2,lineSize/2);
+         if (colorMode) {
+            memmove(ULine(jref)+dstX,
+                    ULine(j)+srcX1,lineSize);
+            memmove(VLine(jref)+dstX,
+                    VLine(j)+srcX1,lineSize);
          }
          --jref;
       }
@@ -459,12 +443,12 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
       }
    }
 
-   // binning u and v plans is a non sens, just get one significant value;
+   // binning u and v plans is a non sens;
    if(getMode()==YuvFrame) {
-      for(i=0;i<size_.width()/2;i++) {
-         for(j=0;j<size_.height()/2;j++) {
-            uFrame_[j*size_.width()/2+i]=src.ULine(j*yFactor*2)[i*xFactor];
-            vFrame_[j*size_.width()/2+i]=src.VLine(j*yFactor*2)[i*xFactor];
+      for(i=0;i<size_.width();i++) {
+         for(j=0;j<size_.height();j++) {
+            uFrame_[j*size_.width()+i]=src.ULine(j*yFactor)[i*xFactor];
+            vFrame_[j*size_.width()+i]=src.VLine(j*yFactor)[i*xFactor];
          }
       }
    }
@@ -476,7 +460,7 @@ void QCamFrameCommon::debayer() {
    yTemp=(unsigned char*)malloc(ySize());
    memcpy(yTemp,yFrame_,ySize());
    setMode(YuvFrame);
-   raw2yuv420p(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
+   raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
    free(yTemp);
 }
 
@@ -539,8 +523,8 @@ void QCamFrame::copy(const QCamFrame & src,
 const unsigned char * QCamFrameCommon::UVGreyBuff() const {
    static unsigned char *emptyBuff=NULL;
    static int size=0;
-   if (emptyBuff==NULL || size<(ySize()/4) ) {
-      emptyBuff= new unsigned char[size=(ySize()/4)];
+   if (emptyBuff==NULL || size<ySize() ) {
+      emptyBuff= new unsigned char[size=ySize()];
       memset(emptyBuff,127,size);
    }
    return emptyBuff;

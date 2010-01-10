@@ -30,6 +30,8 @@ MA  02110-1301, USA.
 #include <math.h>
 #include "FitsImage.hpp"
 
+#include "yuv.hpp"
+
 #define DEFINC 4
 #define DEFDEC 20
 
@@ -52,8 +54,6 @@ FitsImageCFITSIO::~FitsImageCFITSIO() {
 
 bool FitsImageCFITSIO::load(QCamFrame& frame) {
 }
-
-#include "ccvt.h"
 
 bool FitsImageCFITSIO::initFits(const QCamFrame& frame) {
 
@@ -100,13 +100,13 @@ bool FitsImageCFITSIO::save(const QCamFrame& frame) {
       break;
    case 3:
    {
-      uchar * colorImageBuff = new uchar[axesDim_[0] * axesDim_[1] * 4];
-      ccvt_420p_bgr32(axesDim_[0],axesDim_[1],
-                      frame.Y(),frame.U(),frame.V(),(void*)colorImageBuff);
+      uchar * colorImageBuff = new uchar[axesDim_[0] * axesDim_[1] * 3];
+      yuv444_to_rgb24(axesDim_[0],axesDim_[1],
+                      frame.Y(),frame.U(),frame.V(),colorImageBuff);
       uchar * colorImagePlane= new uchar[axesDim_[0] * axesDim_[1]];
       for (int i=0;i<3;++i) {
          for(int j=0;j<axesDim_[0] * axesDim_[1];++j) {
-            colorImagePlane[j]=colorImageBuff[j*4+i];
+            colorImagePlane[j]=colorImageBuff[j*3+i];
          }
          base_[2]=3-i;
          fits_write_pix(fptr_,TBYTE, base_,axesDim_[0]*axesDim_[1],(void*)colorImagePlane,&status_);

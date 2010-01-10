@@ -47,15 +47,14 @@ void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
    }
 }
 
-// yuv422 planar to yuv444 planar
-void yuv422_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
-   int i,j;
-   memcpy(dstY,srcY,w*h);
-   for(i=0;i<w;i++){
-      for(j=0;j<h;j++){
-         dstU[j*w+i]=srcU[j*w/2+i/2];
-         dstV[j*w+i]=srcV[j*w/2+i/2];
-      }
+// yuv422 to yuv444 planar
+void yuv422_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
+   int i;
+   int size=w*h;
+   for(i=0;i<size;i++){
+      dstY[i]=src[i*2];
+      dstU[i]=src[(i/2)*4+1];
+      dstV[i]=src[(i/2)*4+3];
    }
 }
 
@@ -87,6 +86,22 @@ void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned cha
       dst[p*3]=clip((298*Y+ 409*V+128)>>8);
       dst[p*3+1]=clip((298*Y-100*U-208*V+128)>>8);
       dst[p*3+2]=clip((298*Y+516*U+128)>>8);
+   }
+}
+
+// yuv444 planar to rgb32
+void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst){
+   int p,size;
+   int Y,U,V;
+   size=h*w;
+   for(p=0;p<size;p++) {
+      Y=srcY[p]-16;
+      U=srcU[p]-128;
+      V=srcV[p]-128;
+      dst[p*4]=clip((298*Y+516*U+128)>>8);
+      dst[p*4+1]=clip((298*Y-100*U-208*V+128)>>8);
+      dst[p*4+2]=clip((298*Y+ 409*V+128)>>8);
+      dst[p*4+3]=0;
    }
 }
 

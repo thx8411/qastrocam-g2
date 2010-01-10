@@ -24,6 +24,8 @@ MA  02110-1301, USA.
 
 #if HAVE_AVIFILE_H
 
+#include "yuv.hpp"
+
 #include "QCamMovieAvi.hpp"
 #include "QCamFrame.hpp"
 #include "QCam.hpp"
@@ -107,9 +109,11 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    bi.biCompression = codec;
 
    if(deinterlaceBuf_) {
-      memcpy(deinterlaceBuf_, newFrame.Y(), bi.biWidth * bi.biHeight);
-      memcpy(deinterlaceBuf_ + (bi.biWidth * bi.biHeight), newFrame.U(), (bi.biWidth * bi.biHeight) / 4);
-      memcpy(deinterlaceBuf_ + (bi.biWidth * bi.biHeight) + (bi.biWidth * bi.biHeight) / 4, newFrame.V(), (bi.biWidth * bi.biHeight) / 4);
+      yuv444_to_yuv420(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_,
+         deinterlaceBuf_ + (bi.biWidth * bi.biHeight),deinterlaceBuf_ + (bi.biWidth * bi.biHeight) + (bi.biWidth * bi.biHeight) / 4);
+      //memcpy(deinterlaceBuf_, newFrame.Y(), bi.biWidth * bi.biHeight);
+      //memcpy(deinterlaceBuf_ + (bi.biWidth * bi.biHeight), newFrame.U(), (bi.biWidth * bi.biHeight) / 4);
+      //memcpy(deinterlaceBuf_ + (bi.biWidth * bi.biHeight) + (bi.biWidth * bi.biHeight) / 4, newFrame.V(), (bi.biWidth * bi.biHeight) / 4);
       bi.biHeight = - bi.biHeight;
       avm::BitmapInfo info(bi);
       avm::CImage img(&info, deinterlaceBuf_, false);

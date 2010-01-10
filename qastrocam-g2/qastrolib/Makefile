@@ -42,6 +42,6 @@ OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieSeq.o SettingsBackup.o \
 	  SCmodParPortPPdev.o PPort.o yuv.o
 
-OBJ_c = ccvt_c2.o
+OBJ_c = 
 
 include ../Makefile.common

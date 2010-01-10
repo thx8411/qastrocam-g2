@@ -85,19 +85,19 @@ protected:
       return yFrame_+line*size_.width();
    }
    const unsigned char * ULine(int line) const {
-      return (mode_!=YuvFrame)?UVGreyBuff():(uFrame_+(line/2)*(size_.width()/2));
+      return (mode_!=YuvFrame)?UVGreyBuff():(uFrame_+line*size_.width());
    }
    const unsigned char * VLine(int line) const {
-      return (mode_!=YuvFrame)?UVGreyBuff():(vFrame_+(line/2)*(size_.width()/2));
+      return (mode_!=YuvFrame)?UVGreyBuff():(vFrame_+line*size_.width());
    }
    unsigned char * YLine(int line) {
       return yFrame_+line*size_.width();
    }
    unsigned char * ULine(int line) {
-      return (mode_!=YuvFrame)?UVGreyBuff():(uFrame_+(line/2)*(size_.width()/2));
+      return (mode_!=YuvFrame)?UVGreyBuff():(uFrame_+line*size_.width());
    }
    unsigned char * VLine(int line) {
-      return (mode_!=YuvFrame)?UVGreyBuff():(vFrame_+(line/2)*(size_.width()/2));
+      return (mode_!=YuvFrame)?UVGreyBuff():(vFrame_+line*size_.width());
    }
    void clear();
    bool empty() const;
