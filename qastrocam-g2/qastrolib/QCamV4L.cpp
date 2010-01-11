@@ -71,6 +71,10 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    sizeTable_=NULL;
    device_=-1;
    devpath_=devpath;
+   memset(&v4l2_fmt_,0,sizeof(v4l2_format));
+   memset(&v4l2_cap_,0,sizeof(v4l2_capability));
+   memset(&_id,0,sizeof(v4l2_std_id));
+   memset(&standard,0,sizeof(v4l2_standard));
 
    // ************************************
    // opening the video device (non block)
@@ -93,6 +97,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // ***********************
    // get bounds
    v4l2_queryctrl qctrl;
+   memset(&qctrl,0,sizeof(v4l2_queryctrl));
    // brightness
    qctrl.id=V4L2_CID_BRIGHTNESS;
    // v4l2
@@ -136,6 +141,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
 
    // get values
    v4l2_control ctrl;
+   memset(&ctrl,0,sizeof(v4l2_control));
    // brightness
    ctrl.id=V4L2_CID_BRIGHTNESS;
    // v4l2
@@ -165,6 +171,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // enumerate available inputs
    // **************************
    cout << endl << "available inputs : " << endl;
+   memset(&input,0,sizeof(v4l2_input));
    input.index=0;
    // v4l2
    while(!ioctl(device_,VIDIOC_ENUMINPUT,&input)) {
@@ -246,6 +253,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       cout << "unable to get video frame rate" << endl;
       // try to get framerate for pwc
       struct video_window window_;
+      memset(&window_,0,sizeof(struct video_window));
       // v4l
       if(ioctl(device_,VIDIOCGWIN, &window_)==0)
          frameRate_=(window_.flags&/*PWC_FPS_FRMASK*/0x00FF0000)>>/*PWC_FPS_SHIFT*/16;
@@ -447,6 +455,7 @@ const QSize * QCamV4L::getAllowedSize() const {
       int min_y;
       sizeTable_=new QSize[8];
       v4l2_format v4l2_fmt_temp;
+      memset(&v4l2_fmt_temp,0,sizeof(v4l2_format));
 
       cout << "Frame size detection" << endl;
 
@@ -896,6 +905,7 @@ void QCamV4L::updatePictureSettings() {
 
 void QCamV4L::refreshPictureSettings() {
    v4l2_control ctrl;
+   memset(&ctrl,0,sizeof(v4l2_control));
    // get properties
    // brightness
    ctrl.id=V4L2_CID_BRIGHTNESS;

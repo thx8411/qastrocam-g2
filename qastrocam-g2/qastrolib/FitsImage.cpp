@@ -85,9 +85,11 @@ bool FitsImageCFITSIO::save(const QCamFrame& frame) {
       fits_report_error(stdout,status_);
       break;
    case 3:
-      uchar* colorImageBuff = new uchar[axesDim_[0] * axesDim_[1] * 3];
+      unsigned char* colorImageBuff;
+      unsigned char* colorImagePlane;
+      colorImageBuff=(unsigned char*)malloc(axesDim_[0]*axesDim_[1]*3*sizeof(unsigned char));
       yuv444_to_rgb24(axesDim_[0],axesDim_[1],frame.Y(),frame.U(),frame.V(),colorImageBuff);
-      uchar* colorImagePlane= new uchar[axesDim_[0] * axesDim_[1]];
+      colorImagePlane=(unsigned char*)malloc(axesDim_[0]*axesDim_[1]*sizeof(unsigned char));
       for (int i=0;i<3;++i) {
          for(int j=0;j<axesDim_[0] * axesDim_[1];++j) {
             colorImagePlane[j]=colorImageBuff[j*3+i];
@@ -96,8 +98,10 @@ bool FitsImageCFITSIO::save(const QCamFrame& frame) {
          fits_write_pix(fptr_,TBYTE, base_,axesDim_[0]*axesDim_[1],(void*)colorImagePlane,&status_);
          fits_report_error(stdout,status_);
       }
-      delete colorImageBuff;
-      delete colorImagePlane;
+      if(colorImageBuff!=NULL)
+         free(colorImageBuff);
+      if(colorImagePlane!=NULL)
+         free(colorImagePlane);
    break;
    }
    return (status_==0);
