@@ -433,7 +433,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QHGroupBox * savePeriodicGroup = new QHGroupBox("Periodic capture",
                                                    saveGroup);
    int valueList[]={0,1,2};
-   const char *  labelList[] = {"none","snap.","sequ."};
+   const char* labelList[] = {"none","snap.","sequ."};
    periodicCaptureW_ =
       new QCamComboBox("Periodic capture",savePeriodicGroup,3,valueList,
                        labelList);
@@ -461,9 +461,10 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       QHGroupBox* sizeGroup= new QHGroupBox("Resizing",remoteCTRL_);
 
       int size=0;
-      while (!sizeTable[size].isEmpty()) { size++;}
-      const char ** labelList=new const char*[size];
-      int * valueList=new int[size];
+      while (!sizeTable[size].isEmpty())
+         size++;
+      const char ** labelList=(const char**)malloc(size*sizeof(char*));
+      int* valueList=(int*)malloc(size*sizeof(int));
       int indexOfCurrentSize=-1;
       for(int i=0;i<size;++i) {
          char tmpBuff[15];
@@ -477,6 +478,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
       //QLabel* l1=new QLabel("Size :",sizeGroup);
       sizeCombo=new QCamComboBox("Frame size",sizeGroup,size,valueList,labelList);
+      free(labelList);
+      free(valueList);
       // looking for settings stored frame resolution
       if(settings.haveKey("FRAME_RESOLUTION"))
          indexOfCurrentSize=sizeCombo->getPosition(settings.getKey("FRAME_RESOLUTION"));
@@ -492,16 +495,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       QToolTip::add(sizeCombo,"Frame size");
 
       // resizing mode combo
-      //QLabel* l2=new QLabel("Mode :",sizeGroup);
-      labelList=new const char*[3];
-      valueList=new int[3];
-      labelList[0]=strdup("Scaling");
-      labelList[1]=strdup("Cropping");
-      labelList[2]=strdup("Binning");
-      valueList[0]=SCALING;
-      valueList[1]=CROPPING;
-      valueList[2]=BINNING;
-      cropCombo=new QCamComboBox("Cropping mode",sizeGroup,3,valueList,labelList);
+      const char* labelList2[]={"Scaling","Cropping","Binning"};
+      int valueList2[]={SCALING,CROPPING,BINNING};
+      cropCombo=new QCamComboBox("Cropping mode",sizeGroup,3,valueList2,labelList2);
       connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       QToolTip::add(cropCombo,"Resizing mode");
    }

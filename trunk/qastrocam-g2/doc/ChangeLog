@@ -1,5 +1,6 @@
-4.6beta20100111
+4.6beta20100112
 
+  - many memory bugs fixed
   - FITS-GZ output removed
   - ccvt no more used
   - webcam RGB palette now fully supported

@@ -353,7 +353,7 @@ int main(int argc, char ** argv) {
          theTelescope = new QTelescopeAPM(telescopeDeviceName.c_str());
       } else if (telescopeType=="fifo") {
          theTelescope = new QTelescopeFifo(telescopeDeviceName.c_str());
-      } else if (telescopeType=="mts") { 
+      } else if (telescopeType=="mts") {
          theTelescope = new QTelescopeMTS(telescopeDeviceName.c_str());
       } else if (telescopeType=="file") {
 	 theTelescope = new QTelescopeFile(telescopeDeviceName.c_str());

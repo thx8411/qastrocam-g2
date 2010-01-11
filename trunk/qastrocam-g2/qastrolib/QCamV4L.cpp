@@ -71,6 +71,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    sizeTable_=NULL;
    device_=-1;
    devpath_=devpath;
+   mode_=(ImageMode)0;
    memset(&v4l2_fmt_,0,sizeof(v4l2_format));
    memset(&v4l2_cap_,0,sizeof(v4l2_capability));
    memset(&_id,0,sizeof(v4l2_std_id));
@@ -249,15 +250,17 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
          frameRate_=standard.frameperiod.denominator/standard.frameperiod.numerator;
       }
    }
-   if(frameRate_==0) {
+   if(frameRate_<=0) {
       cout << "unable to get video frame rate" << endl;
       // try to get framerate for pwc
       struct video_window window_;
       memset(&window_,0,sizeof(struct video_window));
       // v4l
-      if(ioctl(device_,VIDIOCGWIN, &window_)==0)
+      if(ioctl(device_,VIDIOCGWIN, &window_)==0) {
          frameRate_=(window_.flags&/*PWC_FPS_FRMASK*/0x00FF0000)>>/*PWC_FPS_SHIFT*/16;
-      else {
+         if(frameRate_<=0)
+            frameRate_=10;
+      } else {
          frameRate_=10;
          cout <<  "Using default Framerate: " << frameRate_ << " fps" << endl;
       }
@@ -316,13 +319,13 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    lxBar=NULL;
    lxBlink=NULL;
    // setting up the notifier
-   notifier_=NULL;
+   //notifier_=NULL;
    // *************************************************
    // notifier (all V4L2 devices must support "select")
    // *************************************************
-   notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
-   connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
-   cout << "Using select to wait for new frames.\n" << endl;
+   //notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
+   //connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
+   //cout << "Using select to wait for new frames.\n" << endl;
 
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
@@ -669,6 +672,7 @@ bool QCamV4L::updateFrame() {
 
    nullBuf=(unsigned char*)malloc(v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
    unsigned char * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
+   inputBuffer_.setMode(mode_);
    YBuf=(unsigned char*)inputBuffer_.YforOverwrite();
    // compute raw modes (conversions)
    switch(mode_) {
@@ -683,7 +687,6 @@ bool QCamV4L::updateFrame() {
          UBuf=(unsigned char*)inputBuffer_.UforOverwrite();
          VBuf=(unsigned char*)inputBuffer_.VforOverwrite();
    }
-   inputBuffer_.setMode(mode_);
 
    // if we are using mmap
    if (useMmap) {
@@ -1082,6 +1085,15 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    // lx events connector
    connect(lxSelector,SIGNAL(change(int)),this,SLOT(setLXmode(int)));
    connect(lxSet,SIGNAL(released()),this,SLOT(setLXtime()));
+
+   // setting up the notifier
+   notifier_=NULL;
+   // *************************************************
+   // notifier (all V4L2 devices must support "select")
+   // *************************************************
+   notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
+   connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
+   cout << "Using select to wait for new frames.\n" << endl;
 
    return remoteCTRL;
 }
