@@ -25,6 +25,7 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 #include <qbuttongroup.h>
 #include <iostream>
+#include <stdlib.h>
 #include <string.h>
 
 using namespace std;
@@ -33,7 +34,7 @@ QCamComboBox::QCamComboBox(const char * label,QWidget * parent,
                            int numOfbutton, int valueList[],
                            const char * labelList[]):
    QComboBox(false,parent,label) {
-   valueList_=new int[numOfbutton];
+   valueList_=(int*)malloc(numOfbutton*sizeof(int));
    numOfButton_=numOfbutton;
 
    for (int i=0;i<numOfButton_;++i) {
@@ -46,7 +47,7 @@ QCamComboBox::QCamComboBox(const char * label,QWidget * parent,
 }
 
 QCamComboBox::~QCamComboBox() {
-   delete valueList_;
+   free(valueList_);
 }
 
 int QCamComboBox::getPosition(const char* item) {

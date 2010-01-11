@@ -52,6 +52,7 @@ QCamVesta::QCamVesta(const char * devpath):
    QCamV4L(devpath,V4L2_PIX_FMT_YUV420, "",(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
    SCmodCtrl_=NULL;
    exposureTimeLeft_=NULL;
+   whiteBalanceMode_=-1;
 
    {
       /* sanity check */

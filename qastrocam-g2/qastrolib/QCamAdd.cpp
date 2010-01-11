@@ -278,7 +278,7 @@ void QCamAdd::zeroBuff(const QSize & size) {
 
 void QCamAdd::allocBuff(const QSize & size) {
    delete integrationBuff_;
-   integrationBuff_=new int[size.height()*size.width() * 3 / 2];
+   integrationBuff_=new int[size.height()*size.width()* 3 / 2 ];
    computedFrame_.setSize(size);
 
    for (int i=0;i<numOfBuffers_;++i) {
