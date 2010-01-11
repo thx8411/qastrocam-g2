@@ -191,6 +191,7 @@ void QCamDisplay::setCrossLum(int l) {
 QCamDisplayImpl::QCamDisplayImpl(QCamDisplay & camClient,QWidget * parent):
    QWidget(parent), camClient_(camClient) {
    firtsFrameReceived_=false;
+   currentCross_=QCamDisplay::None;
    crossCenterY_=crossCenterX_=-1000;
    QToolTip::add(this,tr("double click to move center of the reticul"));
    painter_ = new QPainter();

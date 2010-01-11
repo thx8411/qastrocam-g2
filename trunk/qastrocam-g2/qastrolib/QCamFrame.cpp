@@ -31,9 +31,18 @@ using namespace std;
 
 QCamFrameCommon::~QCamFrameCommon() {
    assert(nbRef_==0);
-   delete yFrame_; yFrame_=NULL;
-   delete uFrame_; uFrame_=NULL;
-   delete vFrame_; vFrame_=NULL;
+   if(yFrame_!=NULL){
+      free(yFrame_);
+      yFrame_=NULL;
+   }
+   if(uFrame_!=NULL){
+      free(uFrame_);
+      uFrame_=NULL;
+   }
+   if(yFrame_!=NULL){
+      free(vFrame_);
+      vFrame_=NULL;
+   }
    clearCache();
 }
 
@@ -63,21 +72,21 @@ QCamFrameCommon * QCamFrameCommon::clone() {
 void QCamFrameCommon::decRef() {
    assert(this);
    --nbRef_;
-   if (nbRef_<=0) {
-      delete this;
-   }
 }
 
 void QCamFrameCommon::allocBuff() {
-   delete yFrame_;
-   delete uFrame_;
-   delete vFrame_;
+   if(yFrame_!=NULL)
+      free(yFrame_);
+   if(uFrame_!=NULL)
+      free(uFrame_);
+   if(vFrame_!=NULL)
+      free(vFrame_);
 
    ySize_=size_.width()*size_.height();
    uSize_=vSize_=(getMode()!=YuvFrame)?0:(size_.width()*size_.height());
-   yFrame_ = new unsigned char[ySize()];
-   uFrame_ = (getMode()!=YuvFrame)?NULL:new unsigned char[uSize()];
-   vFrame_ = (getMode()!=YuvFrame)?NULL:new unsigned char[vSize()];
+   yFrame_=(unsigned char*)malloc(ySize());
+   uFrame_=(getMode()!=YuvFrame)?NULL:(unsigned char*)malloc(uSize());
+   vFrame_=(getMode()!=YuvFrame)?NULL:(unsigned char*)malloc(vSize());
 }
 
 void QCamFrameCommon::setSize(QSize s) {
@@ -98,9 +107,18 @@ void QCamFrameCommon::setSize(QSize s) {
 }
 
 void QCamFrameCommon::clearCache() {
-   delete colorImage_; colorImage_=NULL;
-   delete grayImage_; grayImage_=NULL;
-   delete colorImageBuff_; colorImageBuff_=NULL;
+   if(colorImage_!=NULL){
+      delete colorImage_;
+      colorImage_=NULL;
+   }
+   if(grayImage_!=NULL){
+      delete grayImage_;
+      grayImage_=NULL;
+   }
+   if(colorImageBuff_!=NULL){
+      free(colorImageBuff_);
+      colorImageBuff_=NULL;
+   }
 }
 
 const QImage & QCamFrameCommon::colorImage() const {
@@ -109,7 +127,7 @@ const QImage & QCamFrameCommon::colorImage() const {
       return grayImage();
    case YuvFrame:
       if (!colorImage_) {
-         colorImageBuff_ = new uchar[ size_.width() * size_.height()* 4];
+         colorImageBuff_ =(unsigned char*)malloc(size_.width()*size_.height()*4);
          colorImage_=new QImage(colorImageBuff_,size_.width(),size_.height(),
                                 32,0,0,QImage::BigEndian);
       }
@@ -458,10 +476,15 @@ void QCamFrameCommon::debayer() {
    unsigned char* yTemp;
    ImageMode modeTemp=getMode();
    yTemp=(unsigned char*)malloc(ySize());
-   memcpy(yTemp,yFrame_,ySize());
-   setMode(YuvFrame);
-   raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
-   free(yTemp);
+   if(yTemp!=NULL){
+      memcpy(yTemp,yFrame_,ySize());
+      setMode(YuvFrame);
+      raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
+      free(yTemp);
+   } else {
+      cout << "No more mem" << endl;
+      exit(1);
+   }
 }
 
 QCamFrame::QCamFrame(ImageMode mode) {
@@ -476,6 +499,8 @@ QCamFrame::QCamFrame(const QCamFrame& other) {
 
 QCamFrame & QCamFrame::operator=(const QCamFrame & other) {
    common_->decRef();
+   if(common_->nbRef()==0)
+      delete common_;
    other.common_->incRef();
    common_=other.common_;
    return *this;
@@ -483,11 +508,15 @@ QCamFrame & QCamFrame::operator=(const QCamFrame & other) {
 
 QCamFrame::~QCamFrame() {
    common_->decRef();
+   if(common_->nbRef()==0)
+      delete common_;
 }
 
 QCamFrameCommon * QCamFrame::setCommon() {
    if (common_->nbRef() != 1 ) {
       common_->decRef();
+      if(common_->nbRef()==0)
+         delete common_;
       QCamFrameCommon * tmpFrame = common_->clone();
       tmpFrame->incRef();
       common_= tmpFrame;
@@ -560,6 +589,8 @@ unsigned char *  QCamFrame::YforOverwrite() {
       newFrame->incRef();
       newFrame->setSize(common_->size_);
       common_->decRef();
+      if(common_->nbRef()==0)
+         delete common_;
       common_=newFrame;
    }
    return common_->Y();
@@ -571,6 +602,8 @@ unsigned char * QCamFrame::UforOverwrite() {
       newFrame->incRef();
       newFrame->setSize(common_->size_);
       common_->decRef();
+      if(common_->nbRef()==0)
+         delete common_;
       common_=newFrame;
    }
    return common_->U();
@@ -582,6 +615,8 @@ unsigned char * QCamFrame::VforOverwrite() {
       newFrame->incRef();
       newFrame->setSize(common_->size_);
       common_->decRef();
+      if(common_->nbRef()==0)
+         delete common_;
       common_=newFrame;
    }
    return common_->V();
@@ -593,8 +628,8 @@ unsigned char * QCamFrame::VforOverwrite() {
 // w : width
 // h : height
 void QCamFrame::cropping(const QCamFrame & src, int l, int t, int w, int h) {
-   setMode(src.getMode());
    setSize(QSize(w,h));
+   setMode(src.getMode());
    copy(src,l,t,w+l-1,h+t-1,0,0,false,false);
 }
 
@@ -610,8 +645,8 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
    xFactor=src.size().width()/w;
    yFactor=src.size().height()/h;
    // keep mode and set size
-   setMode(src.getMode());
    setSize(QSize(src.size().width()/xFactor,src.size().height()/yFactor));
+   setMode(src.getMode());
    // binning...
    setCommon()->binning(*src.getCommon(),xFactor,yFactor);
 }

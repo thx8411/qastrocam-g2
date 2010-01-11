@@ -222,6 +222,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    }
    // iterate to find the used video standard
    standard.index=0;
+   standard.id=-1;
    res=0;
    while((res!=-1)&&(standard.id!=_id)) {
       // v4l2
@@ -413,7 +414,7 @@ void QCamV4L::init(int preferedPalette) {
 // allocate memory for buffers, depending on
 // frame size and palette
 void QCamV4L::allocBuffers() {
-   delete tmpBuffer_;
+   free(tmpBuffer_);
    inputBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
    switch (v4l2_fmt_.fmt.pix.pixelformat) {
    case V4L2_PIX_FMT_GREY:
@@ -432,7 +433,7 @@ void QCamV4L::allocBuffers() {
       yuvFrameMemSize=0;
       tmpBuffer_=NULL;
    }
-   tmpBuffer_=new uchar[yuvFrameMemSize];
+   tmpBuffer_=(unsigned char*)malloc(yuvFrameMemSize);
 }
 
 // get frame sizes supported by the
@@ -646,8 +647,8 @@ bool QCamV4L::dropFrame() {
    // read the frame
    tmp=read(device_,(void*)nullBuff,yuvFrameMemSize);
    // free memory
-   free(nullBuff);
-
+   if(nullBuff!=NULL)
+      free(nullBuff);
    return(true);
 }
 
@@ -827,7 +828,7 @@ int QCamV4L::getWhiteness() const {
 QCamV4L::~QCamV4L() {
    // release buffer mem if needed
    if(tmpBuffer_!=NULL)
-      delete tmpBuffer_;
+      free(tmpBuffer_);
    // release mmap zone i needed
    if(useMmap)
       mmapRelease();

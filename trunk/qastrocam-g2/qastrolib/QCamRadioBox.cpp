@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <stdlib.h>
 
 #include "QCamRadioBox.moc"
 #include <qradiobutton.h>
@@ -33,8 +34,8 @@ QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,
                            const char * labelList[],
                            int maxPerRow ):
    QVGroupBox(label,parent) {
-   valueList_=new int[numOfbutton];
-   buttonTable_=new QRadioButton*[numOfbutton];
+   valueList_=(int*)malloc(numOfbutton*sizeof(int));
+   buttonTable_=(QRadioButton**)malloc(sizeof(QRadioButton*)*numOfbutton);
    numOfButton_=numOfbutton;
    rowTable_=new QHBox*[numOfbutton/maxPerRow+1];
    for (int i=0;i<=numOfbutton/maxPerRow;++i) {
@@ -63,8 +64,8 @@ QCamRadioBox::~QCamRadioBox() {
       buttonTable_[numOfButton_]->hide();
       delete buttonTable_[numOfButton_];
    }
-   delete buttonTable_;
-   delete valueList_;
+   free(buttonTable_);
+   free(valueList_);
 }
 
 
