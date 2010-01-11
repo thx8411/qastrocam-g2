@@ -27,6 +27,7 @@ MA  02110-1301, USA.
 #include <qpainter.h>
 #include <qpixmap.h>
 
+#include <stdlib.h>
 #include <math.h>
 
 using namespace std;
@@ -53,7 +54,8 @@ QHistogram::QHistogram(QWidget * parent, const char * name, WFlags f):
 }
 
 QHistogram::~QHistogram() {
-   delete dataTable_;
+   if(dataTable_!=NULL)
+      free(dataTable_);
    delete normPen_;
    delete averagePen_;
 }
@@ -66,8 +68,9 @@ void QHistogram::reset() {
 
 void QHistogram::setDataSize(int size) {
    dataSize_=currentPos_=0;
-   delete dataTable_;
-   dataTable_= new double[size];
+   if(dataTable_!=NULL)
+      free(dataTable_);
+   dataTable_=(double*)malloc(size*sizeof(double));
    dataSize_=size;
    reset();
 }

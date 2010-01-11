@@ -396,6 +396,7 @@ void QCamVesta::getWhiteBalance() {
 
 void QCamVesta::setWhiteBalance() {
    struct pwc_whitebalance wb;
+   memset(&wb,0,sizeof(struct pwc_whitebalance));
    wb.mode=whiteBalanceMode_;
    if (wb.mode == PWC_WB_MANUAL) {
       wb.manual_red=whiteBalanceRed_;

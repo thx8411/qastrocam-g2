@@ -24,6 +24,8 @@ MA  02110-1301, USA.
 
 #if HAVE_AVIFILE_H
 
+#include <stdlib.h>
+
 #include "yuv.hpp"
 
 #include "QCamMovieAvi.hpp"
@@ -43,12 +45,12 @@ MA  02110-1301, USA.
 QCamMovieAvi::QCamMovieAvi() {
    aviFile_ = 0;
    aviStream_ = 0;
-   deinterlaceBuf_ = 0;
+   deinterlaceBuf_ =NULL;
 }
 
 QCamMovieAvi::~QCamMovieAvi() {
-   if(deinterlaceBuf_)
-      delete deinterlaceBuf_;
+   if(deinterlaceBuf_!=NULL)
+      free(deinterlaceBuf_);
 }
 
 QWidget * QCamMovieAvi::buildGUI(QWidget  * father) {
@@ -77,7 +79,7 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    aviStream_->SetQuality(10000);
    aviStream_->Start();
 
-   deinterlaceBuf_ = new unsigned char[bi.biSizeImage];
+   deinterlaceBuf_ =(unsigned char*)malloc(bi.biSizeImage*sizeof(unsigned char));
 
    cam.writeProperties(seqName+".properties");
    return true;
@@ -89,8 +91,9 @@ void QCamMovieAvi::closeImpl() {
       delete aviFile_;
       aviFile_ = 0;
       aviStream_ = 0;
-      delete deinterlaceBuf_;
-      deinterlaceBuf_ = 0;
+      if(deinterlaceBuf_!=NULL)
+         free(deinterlaceBuf_);
+      deinterlaceBuf_ =NULL;
    }
 }
 
@@ -111,9 +114,6 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    if(deinterlaceBuf_) {
       yuv444_to_yuv420(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_,
          deinterlaceBuf_ + (bi.biWidth * bi.biHeight),deinterlaceBuf_ + (bi.biWidth * bi.biHeight) + (bi.biWidth * bi.biHeight) / 4);
-      //memcpy(deinterlaceBuf_, newFrame.Y(), bi.biWidth * bi.biHeight);
-      //memcpy(deinterlaceBuf_ + (bi.biWidth * bi.biHeight), newFrame.U(), (bi.biWidth * bi.biHeight) / 4);
-      //memcpy(deinterlaceBuf_ + (bi.biWidth * bi.biHeight) + (bi.biWidth * bi.biHeight) / 4, newFrame.V(), (bi.biWidth * bi.biHeight) / 4);
       bi.biHeight = - bi.biHeight;
       avm::BitmapInfo info(bi);
       avm::CImage img(&info, deinterlaceBuf_, false);
