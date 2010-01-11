@@ -422,6 +422,11 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    snapshot_->show();
    capture_->show();
 
+   if(getSaveFormat()=="AVI")
+      snapshot_->setEnabled(FALSE);
+   else
+      snapshot_->setEnabled(TRUE);
+
    setCaptureFile(captureFile_.c_str());
 
    /* periodic capture */
