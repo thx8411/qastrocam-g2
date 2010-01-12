@@ -162,8 +162,7 @@ QCamAdd::QCamAdd(QCam* cam) :
 
 QCamAdd::~QCamAdd() {
    //clear();
-   if(integrationBuff_!=NULL)
-      free(integrationBuff_);
+   free(integrationBuff_);
    delete frameHistory_;
 }
 
@@ -279,8 +278,7 @@ void QCamAdd::zeroBuff(const QSize & size) {
 }
 
 void QCamAdd::allocBuff(const QSize & size) {
-   if(integrationBuff_!=NULL)
-      free(integrationBuff_);
+   free(integrationBuff_);
    integrationBuff_=(int*)malloc(size.height()*size.width()*3*sizeof(int));
    computedFrame_.setSize(size);
 

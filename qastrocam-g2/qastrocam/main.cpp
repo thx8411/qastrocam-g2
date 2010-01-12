@@ -500,5 +500,9 @@ int main(int argc, char ** argv) {
    getAllRemoteCTRL()->adjustSize();
 
    // QT event loop
-   return app.exec();
+   app.exec();
+
+   // release all
+   delete cam;
+   return(0);
 }

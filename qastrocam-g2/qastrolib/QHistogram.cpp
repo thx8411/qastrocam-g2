@@ -54,8 +54,7 @@ QHistogram::QHistogram(QWidget * parent, const char * name, WFlags f):
 }
 
 QHistogram::~QHistogram() {
-   if(dataTable_!=NULL)
-      free(dataTable_);
+   free(dataTable_);
    delete normPen_;
    delete averagePen_;
 }
@@ -68,8 +67,7 @@ void QHistogram::reset() {
 
 void QHistogram::setDataSize(int size) {
    dataSize_=currentPos_=0;
-   if(dataTable_!=NULL)
-      free(dataTable_);
+   free(dataTable_);
    dataTable_=(double*)malloc(size*sizeof(double));
    dataSize_=size;
    reset();
