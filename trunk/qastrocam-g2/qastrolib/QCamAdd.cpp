@@ -270,7 +270,7 @@ void QCamAdd::addNewFrame() {
 
 
 void QCamAdd::zeroBuff(const QSize & size) {
-   memset(integrationBuff_,0,sizeof(int) * size.height()*size.width() * 3 / 2);
+   memset(integrationBuff_,0,sizeof(int) * size.height()*size.width()*3);
    for (int i=0;i<numOfActivatedBuffers_;++i) {
       frameHistory_[i].clear();
    }
@@ -278,7 +278,7 @@ void QCamAdd::zeroBuff(const QSize & size) {
 
 void QCamAdd::allocBuff(const QSize & size) {
    delete integrationBuff_;
-   integrationBuff_=new int[size.height()*size.width()* 3 / 2 ];
+   integrationBuff_=new int[size.height()*size.width()*3];
    computedFrame_.setSize(size);
 
    for (int i=0;i<numOfBuffers_;++i) {
@@ -296,11 +296,12 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    }
    switch (frame.getMode()) {
    case GreyFrame:
-   case RawRgbFrame1:
+/*   case RawRgbFrame1:
    case RawRgbFrame2:
    case RawRgbFrame3:
    case RawRgbFrame4:
-      mode_=frame.getMode();
+      mode_=frame.getMode();*/
+      mode_=GreyFrame;
       break;
    case YuvFrame:
       mode_=(maxCrValueAutoSaturated_==0)?GreyFrame:YuvFrame;
@@ -449,7 +450,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    return remoteCTRL;
 }
 
-bool QCamAdd::writeFit(const QString & name,
+/*bool QCamAdd::writeFit(const QString & name,
                        int * buff) const {
    cout << "writting " << name << endl;
    FILE *f=fopen((name+".fit").latin1(),"w");
@@ -461,9 +462,9 @@ bool QCamAdd::writeFit(const QString & name,
           f);
    fclose (f);
    return true;
-}
+}*/
 
-bool QCamAdd::loadFit(const QString & name,int * buff) const {
+/*bool QCamAdd::loadFit(const QString & name,int * buff) const {
    size_t tmp;
    cout << "loading " << name << endl;
    FILE *f=fopen((name+".fit").latin1(),"r");
@@ -474,7 +475,7 @@ bool QCamAdd::loadFit(const QString & name,int * buff) const {
    tmp=fread(buff, sizeof(int), size().width()*size().height()*3/2,f);
    fclose (f);
    return true;
-}
+}*/
 
 void QCamAdd::resetBufferFill() {
    curBuff_=0;

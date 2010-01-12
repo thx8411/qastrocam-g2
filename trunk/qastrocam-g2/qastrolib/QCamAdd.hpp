@@ -82,8 +82,8 @@ class QCamAdd : public QCam {
    void allocBuff(const QSize &);
    void zeroBuff(const QSize & size);
    void addFrame(const QCamFrame &);
-   bool writeFit(const QString & name,int * buff) const;
-   bool loadFit(const QString & name,int * buff) const;
+   //bool writeFit(const QString & name,int * buff) const;
+   //bool loadFit(const QString & name,int * buff) const;
    void integration2yuv(const int * integration,
                         QCamFrame & yuv ) const ;
    void removeFrame(const QCamFrame & frame);
