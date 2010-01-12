@@ -659,14 +659,14 @@ bool QCamV4L::dropFrame() {
    // read the frame
    tmp=read(device_,(void*)nullBuff,yuvFrameMemSize);
    // free memory
-   if(nullBuff!=NULL)
       free(nullBuff);
    return(true);
 }
 
 // we should have a new frame
 bool QCamV4L::updateFrame() {
-   static unsigned char* nullBuf;
+   unsigned char* nullBuf;
+   unsigned char* oldTmpBuffer_;
    bool res;
    double currentTime;
 
@@ -690,6 +690,7 @@ bool QCamV4L::updateFrame() {
 
    // if we are using mmap
    if (useMmap) {
+      oldTmpBuffer_=tmpBuffer_;
       tmpBuffer_=mmapCapture();
       res=true;
    } else {
@@ -738,11 +739,10 @@ bool QCamV4L::updateFrame() {
             break;
       }
    }
-   if(nullBuf!=NULL)
-      free(nullBuf);
+   free(nullBuf);
    // if mmap, restoring tmpBuffer_
    if(useMmap)
-      tmpBuffer_=NULL;
+      tmpBuffer_=oldTmpBuffer_;
    // lx support
    // V4L generic may use very diffrent devices, and we can't know the number
    // of frame we should drop. So, we use a threshold tip. We fix a threshold
@@ -839,8 +839,7 @@ int QCamV4L::getWhiteness() const {
 
 QCamV4L::~QCamV4L() {
    // release buffer mem if needed
-   if(tmpBuffer_!=NULL)
-      free(tmpBuffer_);
+   free(tmpBuffer_);
    // release mmap zone i needed
    if(useMmap)
       mmapRelease();

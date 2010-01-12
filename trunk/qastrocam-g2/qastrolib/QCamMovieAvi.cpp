@@ -49,8 +49,7 @@ QCamMovieAvi::QCamMovieAvi() {
 }
 
 QCamMovieAvi::~QCamMovieAvi() {
-   if(deinterlaceBuf_!=NULL)
-      free(deinterlaceBuf_);
+   free(deinterlaceBuf_);
 }
 
 QWidget * QCamMovieAvi::buildGUI(QWidget  * father) {
@@ -91,8 +90,7 @@ void QCamMovieAvi::closeImpl() {
       delete aviFile_;
       aviFile_ = 0;
       aviStream_ = 0;
-      if(deinterlaceBuf_!=NULL)
-         free(deinterlaceBuf_);
+      free(deinterlaceBuf_);
       deinterlaceBuf_ =NULL;
    }
 }

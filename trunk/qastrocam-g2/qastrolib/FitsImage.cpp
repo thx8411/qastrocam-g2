@@ -98,10 +98,8 @@ bool FitsImageCFITSIO::save(const QCamFrame& frame) {
          fits_write_pix(fptr_,TBYTE, base_,axesDim_[0]*axesDim_[1],(void*)colorImagePlane,&status_);
          fits_report_error(stdout,status_);
       }
-      if(colorImageBuff!=NULL)
-         free(colorImageBuff);
-      if(colorImagePlane!=NULL)
-         free(colorImagePlane);
+      free(colorImageBuff);
+      free(colorImagePlane);
    break;
    }
    return (status_==0);

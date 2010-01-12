@@ -31,18 +31,9 @@ using namespace std;
 
 QCamFrameCommon::~QCamFrameCommon() {
    assert(nbRef_==0);
-   if(yFrame_!=NULL){
-      free(yFrame_);
-      yFrame_=NULL;
-   }
-   if(uFrame_!=NULL){
-      free(uFrame_);
-      uFrame_=NULL;
-   }
-   if(yFrame_!=NULL){
-      free(vFrame_);
-      vFrame_=NULL;
-   }
+   free(yFrame_);
+   free(uFrame_);
+   free(vFrame_);
    clearCache();
 }
 
@@ -75,12 +66,9 @@ void QCamFrameCommon::decRef() {
 }
 
 void QCamFrameCommon::allocBuff() {
-   if(yFrame_!=NULL)
-      free(yFrame_);
-   if(uFrame_!=NULL)
-      free(uFrame_);
-   if(vFrame_!=NULL)
-      free(vFrame_);
+   free(yFrame_);
+   free(uFrame_);
+   free(vFrame_);
 
    ySize_=size_.width()*size_.height();
    uSize_=vSize_=(getMode()!=YuvFrame)?0:(size_.width()*size_.height());
@@ -107,18 +95,12 @@ void QCamFrameCommon::setSize(QSize s) {
 }
 
 void QCamFrameCommon::clearCache() {
-   if(colorImage_!=NULL){
-      delete colorImage_;
-      colorImage_=NULL;
-   }
-   if(grayImage_!=NULL){
-      delete grayImage_;
-      grayImage_=NULL;
-   }
-   if(colorImageBuff_!=NULL){
-      free(colorImageBuff_);
-      colorImageBuff_=NULL;
-   }
+   delete colorImage_;
+   colorImage_=NULL;
+   delete grayImage_;
+   grayImage_=NULL;
+   free(colorImageBuff_);
+   colorImageBuff_=NULL;
 }
 
 const QImage & QCamFrameCommon::colorImage() const {
@@ -476,15 +458,10 @@ void QCamFrameCommon::debayer() {
    unsigned char* yTemp;
    ImageMode modeTemp=getMode();
    yTemp=(unsigned char*)malloc(ySize());
-   if(yTemp!=NULL){
-      memcpy(yTemp,yFrame_,ySize());
-      setMode(YuvFrame);
-      raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
-      free(yTemp);
-   } else {
-      cout << "No more mem" << endl;
-      exit(1);
-   }
+   memcpy(yTemp,yFrame_,ySize());
+   setMode(YuvFrame);
+   raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
+   free(yTemp);
 }
 
 QCamFrame::QCamFrame(ImageMode mode) {
