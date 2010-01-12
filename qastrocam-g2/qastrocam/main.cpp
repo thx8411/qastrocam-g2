@@ -335,10 +335,13 @@ int main(int argc, char ** argv) {
    QCamUtilities::setLocale(app);
 
    // main window setting
+   QPixmap* tmpIcon;
    QVBox mainWindow;
    QPushButton quit(&mainWindow,"Quit");
    QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
-   quit.setPixmap(*QCamUtilities::getIcon("exit.png"));
+   tmpIcon=QCamUtilities::getIcon("exit.png");
+   quit.setPixmap(*tmpIcon);
+   delete tmpIcon;
    app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
 

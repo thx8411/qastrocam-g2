@@ -88,6 +88,12 @@ QCam::QCam() {
 }
 
 QCam::~QCam() {
+   delete periodicCaptureT_;
+   free(fileFormatList_);
+   delete movieWritterAvi_;
+   delete movieWritterSeq_;
+   delete displayWindow_;
+   delete displayHistogramWindow_;
 }
 
 const QSize * QCam::getAllowedSize() const {
@@ -274,6 +280,7 @@ void QCam::displayHistogram(bool val) {
 }
 
 QWidget * QCam::buildGUI(QWidget * parent) {
+   QPixmap* tmpIcon;
 
    QSizePolicy sizePolicyMin;
    sizePolicyMin.setVerData(QSizePolicy::Minimum);
@@ -287,7 +294,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    displayFramesButton_ = new QPushButton("display",buttonBox_);
    QToolTip::add(displayFramesButton_,"display frames");
    displayFramesButton_->setToggleButton(true);
-   displayFramesButton_->setPixmap(*QCamUtilities::getIcon("displayFrames.png"));
+   tmpIcon=QCamUtilities::getIcon("displayFrames.png");
+   displayFramesButton_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    if (displayWindow_ && displayWindow_->isActive()) {
       cout << "set displayFramesButton_ on\n";
       displayFramesButton_->setOn(true);
@@ -297,7 +306,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    displayHistogramButton_ = new QPushButton("histo",buttonBox_);
    QToolTip::add(displayHistogramButton_,"display frames histograms,\nand focus information");
    displayHistogramButton_->setToggleButton(true);
-   displayHistogramButton_->setPixmap(*QCamUtilities::getIcon("displayHistogram.png"));
+   tmpIcon=QCamUtilities::getIcon("displayHistogram.png");
+   displayHistogramButton_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    displayHistogramButton_->setMinimumHeight(28);
    if (displayHistogramWindow_ && displayHistogramWindow_->isActive()) {
       cout << "set displayHistogramButton_ on\n";
@@ -310,7 +321,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    int size=0;
    int tmpTab[16];
 
-   fileFormatList_= new const char*[16];
+   fileFormatList_=(const char**)malloc(sizeof(const char*)*16);
    // adds fits format
    fileFormatList_[size]="FITS";
    tmpTab[size]=size;
@@ -387,16 +398,22 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    QHBox * buttons2=new QHBox(saveGroup);
    snapshot_=new QPushButton("snapshot",buttons2);
-   snapshot_->setPixmap(*QCamUtilities::getIcon("snapshot.png"));
+   tmpIcon=QCamUtilities::getIcon("snapshot.png");
+   snapshot_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    capture_=new QPushButton("capture",buttons2);
    capture_->setToggleButton(true);
-   capture_->setPixmap(*QCamUtilities::getIcon("movie.png"));
+   tmpIcon=QCamUtilities::getIcon("movie.png");
+   capture_->setPixmap(*tmpIcon);
+   delete tmpIcon;
 
    pauseCapture_=new QPushButton("pause",buttons2);
    QToolTip::add(pauseCapture_,
                  "Suspend the current capture");
    pauseCapture_->setToggleButton(true);
-   pauseCapture_->setPixmap(*QCamUtilities::getIcon("movie_pause.png"));
+   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+   pauseCapture_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    capturedFrame_=new QLCDNumber(buttons2);
    capturedFrame_->setSegmentStyle(QLCDNumber::Flat);
    capturedFrame_->setNumDigits(2);
