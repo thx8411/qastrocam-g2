@@ -12,6 +12,9 @@ Later - binning in boxsize of hotspot search
 Later - binning module
 Later - static build
 Later - Multi language support
+DONE - 4.6   - webcam RGB palette now fully supported
+DONE - 4.6   - native format is yuv444 instead yuv420 for better colors
+DONE - 4.6   - all file formats now support raw color frames
 DONE - 4.6   - support software cropping and binning
 DONE - 4.6   - support hardware cropping
 DONE - 4.5   - migration to v4l2
