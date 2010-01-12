@@ -68,6 +68,7 @@ QCam::QCam() {
    maxCaptureInSequence_=10;
    timebetweenCapture_=60;
    croppingMode=0;
+   sizeTable=NULL;
    remoteCTRL_=NULL;
    snapshot_=NULL;
    directory_=".";
@@ -480,7 +481,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       int size=0;
       while (!sizeTable[size].isEmpty())
          size++;
-      const char ** labelList=(const char**)malloc(size*sizeof(char*));
+      char** labelList=(char**)malloc(size*sizeof(char*));
       int* valueList=(int*)malloc(size*sizeof(int));
       int indexOfCurrentSize=-1;
       for(int i=0;i<size;++i) {
@@ -494,7 +495,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       }
 
       //QLabel* l1=new QLabel("Size :",sizeGroup);
-      sizeCombo=new QCamComboBox("Frame size",sizeGroup,size,valueList,labelList);
+      sizeCombo=new QCamComboBox("Frame size",sizeGroup,size,valueList,(const char**)labelList);
+      for(int i=0;i<size;i++)
+         free(labelList[i]);
       free(labelList);
       free(valueList);
       // looking for settings stored frame resolution

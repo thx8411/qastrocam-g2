@@ -37,7 +37,7 @@ QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,
    valueList_=(int*)malloc(numOfbutton*sizeof(int));
    buttonTable_=(QRadioButton**)malloc(sizeof(QRadioButton*)*numOfbutton);
    numOfButton_=numOfbutton;
-   rowTable_=new QHBox*[numOfbutton/maxPerRow+1];
+   rowTable_=(QHBox**)malloc((numOfbutton/maxPerRow+1)*sizeof(QHBox*));
    for (int i=0;i<=numOfbutton/maxPerRow;++i) {
       rowTable_[i]=new QHBox(this);
    }
@@ -66,7 +66,7 @@ QCamRadioBox::~QCamRadioBox() {
    }
    free(buttonTable_);
    free(valueList_);
-   delete rowTable_;
+   free(rowTable_);
 }
 
 

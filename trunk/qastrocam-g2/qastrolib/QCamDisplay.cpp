@@ -50,12 +50,7 @@ QCamDisplay::QCamDisplay(QWidget * parent) :
 
 QCamDisplay::~QCamDisplay() {
    mainWidget_->hide();
-   delete mainWidget_;
-   //delete widget_;
-   //delete buttonsContainer_;
-   //delete crossLabel_;
-   //delete crossLumSlider_;
-   //delete crossButton_;
+   delete widget_;
 }
 
 QCamDisplay::QCamDisplay(QCam &theCam,QWidget * parent) :
@@ -199,6 +194,11 @@ QCamDisplayImpl::QCamDisplayImpl(QCamDisplay & camClient,QWidget * parent):
    pen_->setStyle(DotLine);
    pen_->setColor(QColor(QCamDisplay::defaultLum_,0,0));
    displayMode_=QCamDisplay::Color;
+}
+
+QCamDisplayImpl::~QCamDisplayImpl() {
+   delete painter_;
+   delete pen_;
 }
 
 void QCamDisplayImpl::mouseDoubleClickEvent ( QMouseEvent * e ) {
