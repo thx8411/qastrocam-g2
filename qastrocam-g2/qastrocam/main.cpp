@@ -436,13 +436,14 @@ int main(int argc, char ** argv) {
       //histo->show();
    }
 
+   QCamAutoAlign * autoAlignCam=NULL;
    // autoaligne creation
    if (autoAlign) {
       assert(findShift);
-      QCamAutoAlign * autoAlign=new QCamAutoAlign();
-      autoAlign->setTracker(findShift);
-      addRemoteCTRL(autoAlign);
-      camSrc=autoAlign;
+      autoAlignCam=new QCamAutoAlign();
+      autoAlignCam->setTracker(findShift);
+      addRemoteCTRL(autoAlignCam);
+      camSrc=autoAlignCam;
 
       if (autoAlignDisplay) {
          camSrc->displayFrames(true);
@@ -458,9 +459,11 @@ int main(int argc, char ** argv) {
    }
 
    // mirror module
+   QCamTrans  * camMirror=NULL;
+   FrameMirror * mirrorAlgo=NULL;
    if (mirror) {
-      QCamTrans  * camMirror = new QCamTrans();
-      FrameMirror * mirrorAlgo = new FrameMirror();
+      camMirror = new QCamTrans();
+      mirrorAlgo = new FrameMirror();
       camMirror->connectCam(*camSrc);
       camMirror->connectAlgo(*mirrorAlgo);
       addRemoteCTRL(camMirror);
@@ -473,8 +476,9 @@ int main(int argc, char ** argv) {
    }
 
    // accumulation module
+   QCam* camAdd=NULL;
    if (accum) {
-      QCam  * camAdd = new QCamAdd(camSrc);
+      camAdd = new QCamAdd(camSrc);
       addRemoteCTRL(camAdd);
       camAdd->setCaptureFile("add");
       camSrc=camAdd;
@@ -483,9 +487,10 @@ int main(int argc, char ** argv) {
          camSrc->displayFrames(true);
       }
    }
+   QCam* camMax=NULL;
    if (max) {
       //creation du module d'acumulation
-      QCam  * camMax = new QCamMax(camSrc);
+      camMax = new QCamMax(camSrc);
       addRemoteCTRL(camMax);
       camMax->setCaptureFile("max");
       camSrc=camMax;
@@ -506,6 +511,15 @@ int main(int argc, char ** argv) {
    app.exec();
 
    // release all
+   delete theTelescope;
+   delete kingClient;
+   delete findShift;
+   delete tracker;
+   delete autoAlignCam;
+   delete camMirror;
+   delete mirrorAlgo;
+   delete camAdd;
+   delete camMax;
    delete cam;
    return(0);
 }

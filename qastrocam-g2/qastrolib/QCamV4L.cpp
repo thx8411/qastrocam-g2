@@ -845,6 +845,8 @@ QCamV4L::~QCamV4L() {
       mmapRelease();
    // close the video device
    close(device_);
+
+   delete sizeTable_;
 }
 
 void QCamV4L::updatePictureSettings() {

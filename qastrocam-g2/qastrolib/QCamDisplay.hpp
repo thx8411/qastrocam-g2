@@ -98,6 +98,7 @@ protected slots:
    virtual void setCrossLum(int l);
 protected:
    QCamDisplayImpl(QCamDisplay &, QWidget * parent);
+   ~QCamDisplayImpl();
    virtual void paintEvent(QPaintEvent * ev)=0;
    virtual void resizeEvent(QResizeEvent*ev);
    QSize sizeHint () const;

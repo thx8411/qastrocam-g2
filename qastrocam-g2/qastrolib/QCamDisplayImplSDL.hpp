@@ -41,7 +41,7 @@ protected:
    void setPalette();
 private:
    SDL_Surface *screen_;
-   SDL_Overlay *YUVImage_;
+   SDL_Surface * YUVImage_;
    SDL_Surface * RGBImage_;
    SDL_Surface * GreyImage_;
    friend class QCamDisplay;
