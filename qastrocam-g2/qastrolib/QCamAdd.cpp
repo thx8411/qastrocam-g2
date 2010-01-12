@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -30,6 +30,7 @@ MA  02110-1301, USA.
 #include <qvgroupbox.h>
 #include <qhgroupbox.h>
 
+#include <stdlib.h>
 #include <math.h>
 
 #include "QCamRadioBox.hpp"
@@ -161,7 +162,8 @@ QCamAdd::QCamAdd(QCam* cam) :
 
 QCamAdd::~QCamAdd() {
    //clear();
-   delete integrationBuff_;
+   if(integrationBuff_!=NULL)
+      free(integrationBuff_);
    delete frameHistory_;
 }
 
@@ -277,8 +279,9 @@ void QCamAdd::zeroBuff(const QSize & size) {
 }
 
 void QCamAdd::allocBuff(const QSize & size) {
-   delete integrationBuff_;
-   integrationBuff_=new int[size.height()*size.width()*3];
+   if(integrationBuff_!=NULL)
+      free(integrationBuff_);
+   integrationBuff_=(int*)malloc(size.height()*size.width()*3*sizeof(int));
    computedFrame_.setSize(size);
 
    for (int i=0;i<numOfBuffers_;++i) {
@@ -449,33 +452,6 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    //remoteCTRL->setCaption("accumulation");
    return remoteCTRL;
 }
-
-/*bool QCamAdd::writeFit(const QString & name,
-                       int * buff) const {
-   cout << "writting " << name << endl;
-   FILE *f=fopen((name+".fit").latin1(),"w");
-   if (f==NULL) {
-      perror(name.latin1());
-      return false;
-   }
-   fwrite(buff, sizeof(int), size().width()*size().height() *3/2,
-          f);
-   fclose (f);
-   return true;
-}*/
-
-/*bool QCamAdd::loadFit(const QString & name,int * buff) const {
-   size_t tmp;
-   cout << "loading " << name << endl;
-   FILE *f=fopen((name+".fit").latin1(),"r");
-   if (f==NULL) {
-      perror(name.latin1());
-      return false;
-   }
-   tmp=fread(buff, sizeof(int), size().width()*size().height()*3/2,f);
-   fclose (f);
-   return true;
-}*/
 
 void QCamAdd::resetBufferFill() {
    curBuff_=0;
