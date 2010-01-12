@@ -66,6 +66,7 @@ QCamRadioBox::~QCamRadioBox() {
    }
    free(buttonTable_);
    free(valueList_);
+   delete rowTable_;
 }
 
 
