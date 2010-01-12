@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -82,8 +82,6 @@ class QCamAdd : public QCam {
    void allocBuff(const QSize &);
    void zeroBuff(const QSize & size);
    void addFrame(const QCamFrame &);
-   //bool writeFit(const QString & name,int * buff) const;
-   //bool loadFit(const QString & name,int * buff) const;
    void integration2yuv(const int * integration,
                         QCamFrame & yuv ) const ;
    void removeFrame(const QCamFrame & frame);
