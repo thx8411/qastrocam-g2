@@ -41,18 +41,27 @@ QTelescope::QTelescope() {
 }
 
 void QTelescope::buildGUI(QWidget * parent) {
+   QPixmap* tmpIcon;
    mainWidget_=new QVGroupBox("Telescope CTRL",parent);
    QCamUtilities::setQastrocamIcon(mainWidget_);
    arrows_ = new QWidget(mainWidget_);
    arrowsLayout_=new QGridLayout(arrows_,3,3);
    upButton_=new QPushButton(arrows_,"U");
-   upButton_->setPixmap(*QCamUtilities::getIcon("up.png"));
+   tmpIcon=QCamUtilities::getIcon("up.png");
+   upButton_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    downButton_=new QPushButton(arrows_,"D");
-   downButton_->setPixmap(*QCamUtilities::getIcon("down.png"));
+   tmpIcon=QCamUtilities::getIcon("down.png");
+   downButton_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    leftButton_=new QPushButton(arrows_,"L");
-   leftButton_->setPixmap(*QCamUtilities::getIcon("left.png"));
+   tmpIcon=QCamUtilities::getIcon("left.png");
+   leftButton_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    rightButton_=new QPushButton(arrows_,"R");
-   rightButton_->setPixmap(*QCamUtilities::getIcon("right.png"));
+   tmpIcon=QCamUtilities::getIcon("right.png");
+   rightButton_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    arrowsLayout_->addWidget(upButton_,0,1);
    arrowsLayout_->addWidget(downButton_,2,1);
    arrowsLayout_->addWidget(leftButton_,1,0);
@@ -71,13 +80,6 @@ void QTelescope::buildGUI(QWidget * parent) {
 }
 
 QTelescope::~QTelescope() {
-   delete mainWidget_;
-   delete arrowsLayout_;
-   delete arrows_;
-   delete upButton_;
-   delete downButton_;
-   delete leftButton_;
-   delete rightButton_;
 }
 
 QWidget * QTelescope::widget() {
