@@ -139,11 +139,11 @@ private:
    QCamFrameCommon & operator=(const QCamFrameCommon&);
    void init() {
       nbRef_=0;
-      yFrame_=uFrame_=vFrame_=0;
+      yFrame_=uFrame_=vFrame_=NULL;
       size_=QSize(0,0);
       ySize_=uSize_=vSize_=0;
-      colorImage_=grayImage_=0;
-      colorImageBuff_=0;
+      colorImage_=grayImage_=NULL;
+      colorImageBuff_=NULL;
    }
    void allocBuff();
    ImageMode mode_;

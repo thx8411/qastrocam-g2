@@ -30,7 +30,6 @@ MA  02110-1301, USA.
 using namespace std;
 
 QCamFrameCommon::~QCamFrameCommon() {
-   assert(nbRef_==0);
    free(yFrame_);
    free(uFrame_);
    free(vFrame_);
@@ -61,7 +60,6 @@ QCamFrameCommon * QCamFrameCommon::clone() {
 }
 
 void QCamFrameCommon::decRef() {
-   assert(this);
    --nbRef_;
 }
 
@@ -530,7 +528,9 @@ const unsigned char * QCamFrameCommon::UVGreyBuff() const {
    static unsigned char *emptyBuff=NULL;
    static int size=0;
    if (emptyBuff==NULL || size<ySize() ) {
-      emptyBuff= new unsigned char[size=ySize()];
+      delete emptyBuff;
+      size=ySize();
+      emptyBuff= new unsigned char[size];
       memset(emptyBuff,127,size);
    }
    return emptyBuff;

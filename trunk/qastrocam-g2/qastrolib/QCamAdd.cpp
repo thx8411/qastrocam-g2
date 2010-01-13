@@ -163,7 +163,7 @@ QCamAdd::QCamAdd(QCam* cam) :
 QCamAdd::~QCamAdd() {
    //clear();
    free(integrationBuff_);
-   delete frameHistory_;
+   //delete frameHistory_;
 }
 
 void QCamAdd::integration2yuv(const int * integration,
