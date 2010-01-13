@@ -34,6 +34,7 @@ class QPen;
 class QFrameDisplay : public QWidget {
 public:
    QFrameDisplay(QWidget * parent,const char * label);
+   ~QFrameDisplay();
    void frame(const QCamFrame &);
 protected:
    void paintEvent(QPaintEvent * ev);

@@ -35,6 +35,11 @@ QFrameDisplay::QFrameDisplay(QWidget * parent,const char * label) :
    setWFlags(WRepaintNoErase);
 }
 
+QFrameDisplay::~QFrameDisplay() {
+   delete pen_;
+   delete painter_;
+}
+
 void QFrameDisplay::frame(const QCamFrame &frame) {
    frame_=frame;
    setMinimumSize(frame_.size());
