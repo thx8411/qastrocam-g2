@@ -76,11 +76,14 @@ void QCamClient::resume() {
 }
 
 QWidget * QCamClient::buildGUI(QWidget *parent) {
+   QPixmap* tmpIcon;
    QPushButton * pauseCapture_=new QPushButton("pause",parent);
    QToolTip::add(pauseCapture_,
                  "Suspend the current capture");
    pauseCapture_->setToggleButton(true);
-   pauseCapture_->setPixmap(*QCamUtilities::getIcon("movie_pause.png"));
+   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+   pauseCapture_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    connect(pauseCapture_,SIGNAL(toggled(bool)),this,SLOT(disable(bool)));
    return parent;
 }
