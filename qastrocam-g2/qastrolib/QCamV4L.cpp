@@ -291,7 +291,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
          options_|=supportCropping;
       else {
          options_&=~supportCropping;
-         cout << "cropping not supported" << endl;
+         cout << "cropping not supported" << endl << "using software cropping" << endl;
       }
    }
 
@@ -543,7 +543,7 @@ bool QCamV4L::setSize(int x, int y) {
       croppingMode=SCALING;
    // if hardware cropping not supported, use software cropping
    if(!(options_ & supportCropping)&&(croppingMode==CROPPING)) {
-      cout << "using software cropping" << endl;
+      //cout << "using software cropping" << endl;
       croppingMode=CROPPING_SOFT;
    }
 
@@ -846,7 +846,7 @@ QCamV4L::~QCamV4L() {
    // close the video device
    close(device_);
 
-   delete sizeTable_;
+   delete [] sizeTable_;
 }
 
 void QCamV4L::updatePictureSettings() {
