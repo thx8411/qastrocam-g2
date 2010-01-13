@@ -57,6 +57,10 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
    static char variable[64];
    sprintf(variable, "SDL_WINDOWID=0x%lx", winId());
    putenv(variable);
+   SDL_FreeSurface(GreyImage_);
+   SDL_FreeSurface(RGBImage_);
+   //SDL_FreeSurface(YUVImage_);
+   SDL_FreeSurface(screen_);
    SDL_QuitSubSystem(SDL_INIT_VIDEO);
    unsetenv("SDL_WINDOWID");
 
@@ -66,7 +70,22 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
 void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
    QCamDisplayImpl::resizeEvent(ev);
    // We could get a resize event at any time, so clean previous mode
-   screen_ = NULL;
+   //if (YUVImage_) {
+   //   SDL_FreeSurface(YUVImage_);
+   //   YUVImage_=NULL;
+   //}
+   if (RGBImage_) {
+      SDL_FreeSurface(RGBImage_);
+      RGBImage_=NULL;
+   }
+   if (GreyImage_) {
+      SDL_FreeSurface(GreyImage_);
+      GreyImage_=NULL;
+   }
+   if (screen_) {
+      SDL_FreeSurface(screen_);
+      screen_ = NULL;
+   }
    // Set the new video mode with the new window size
    static char variable[64];
    sprintf(variable, "SDL_WINDOWID=0x%lx", winId());
@@ -75,26 +94,12 @@ void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
 
    if ( SDL_InitSubSystem(SDL_INIT_VIDEO) < 0 ) {
       fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
-      return;
+      exit(1);
    }
    screen_ = SDL_SetVideoMode(width(), height(), 0 /*32*/, SDL_SWSURFACE);
    if ( ! screen_ ) {
       fprintf(stderr, "Unable to set video mode: %s\n", SDL_GetError());
-      return;
-   }
-
-   if (YUVImage_) {
-      //SDL_FreeYUVOverlay(YUVImage_);
-      YUVImage_=NULL;
-   }
-   if (RGBImage_) {
-      //SDL_FreeSurface(RGBImage_);
-      RGBImage_=NULL;
-   }
-
-   if (GreyImage_) {
-      //SDL_FreeYUVOverlay(GreyImage_);
-      GreyImage_=NULL;
+      exit(1);
    }
 }
 
@@ -178,7 +183,7 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
           || GreyImage_->w!=frame.size().width()
           || GreyImage_->h!=frame.size().height()) {
          if (GreyImage_) {
-            //SDL_FreeYUVOverlay(GreyImage_);
+            SDL_FreeSurface(GreyImage_);
          }
          GreyImage_=SDL_CreateRGBSurfaceFrom((Uint8*)frame.Y(), frame.size().width(),
                                              frame.size().height(), 8,
