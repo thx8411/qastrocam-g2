@@ -40,7 +40,8 @@ MA  02110-1301, USA.
 #include <avm_creators.h>
 #include <avm_except.h>
 
-#define _CODEC_	RIFFINFO_I420
+//#define _CODEC_	RIFFINFO_I420
+#define _CODEC_	mmioFOURCC('D', 'I', 'B', ' ')
 
 QCamMovieAvi::QCamMovieAvi() {
    aviFile_ = 0;
@@ -67,16 +68,14 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    bi.biSize = sizeof(bi);
    bi.biWidth = cam.size().width();
    bi.biHeight = cam.size().height();
-   bi.biSizeImage = (bi.biWidth * bi.biHeight * 3) / 2;
-   bi.biPlanes = 3;
-   bi.biBitCount = 12;
-   bi.biCompression = codec;
+   bi.biSizeImage =bi.biWidth*bi.biHeight*3;
+   bi.biPlanes = 1;
+   bi.biBitCount = 24;
+   bi.biCompression = BI_RGB;
 
    int frameRate=atoi(cam.getProperty("FrameRateSecond").c_str());
    if (frameRate<1) frameRate=1;
-   aviStream_ = aviFile_->AddVideoStream(codec, &bi, 1000*1000/frameRate);
-   aviStream_->SetQuality(10000);
-   aviStream_->Start();
+   aviStream_ = aviFile_->AddStream(AviStream::Video, &bi, sizeof(bi), bi.biCompression = BI_RGB,1000*1000/frameRate);
 
    deinterlaceBuf_ =(unsigned char*)malloc(bi.biSizeImage*sizeof(unsigned char));
 
@@ -86,10 +85,9 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
 
 void QCamMovieAvi::closeImpl() {
    if(aviStream_) {
-      aviStream_->Stop();
       delete aviFile_;
-      aviFile_ = 0;
-      aviStream_ = 0;
+      aviFile_ = NULL;
+      aviStream_ = NULL;
       free(deinterlaceBuf_);
       deinterlaceBuf_ =NULL;
    }
@@ -104,18 +102,16 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    bi.biSize = sizeof(bi);
    bi.biWidth = newFrame.size().width();
    bi.biHeight = newFrame.size().height();
-   bi.biSizeImage = (bi.biWidth * bi.biHeight * 3) / 2;
-   bi.biPlanes = 3;
-   bi.biBitCount = 12;
-   bi.biCompression = codec;
+   bi.biSizeImage =bi.biWidth*bi.biHeight*3;
+   bi.biPlanes = 1;
+   bi.biBitCount = 24;
+   bi.biCompression = BI_RGB;
 
    if(deinterlaceBuf_) {
-      yuv444_to_yuv420(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_,
-         deinterlaceBuf_ + (bi.biWidth * bi.biHeight),deinterlaceBuf_ + (bi.biWidth * bi.biHeight) + (bi.biWidth * bi.biHeight) / 4);
-      bi.biHeight = - bi.biHeight;
-      avm::BitmapInfo info(bi);
-      avm::CImage img(&info, deinterlaceBuf_, false);
-      aviStream_->AddFrame(&img);
+      //yuv444_to_swapped_rgb24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
+      yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
+      rgb24_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
+      aviStream_->AddChunk(deinterlaceBuf_,bi.biSizeImage,1);
       return true;
    } else {
       cerr << "no AVI buffer allocated." << endl;
