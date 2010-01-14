@@ -1,6 +1,6 @@
-4.6beta20100114
+4.6beta20100115
 
-  - now saving avi in raw rgb24
+  - now saving avi in raw rgb24 or 8 bits grey depending on frame type
   - many memory bugs/leaks fixed
   - FITS-GZ output removed
   - ccvt no more used

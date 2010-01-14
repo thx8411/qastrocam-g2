@@ -1,4 +1,4 @@
-qastrocam-g2 (4.6beta20100114) jaunty; urgency=low
+qastrocam-g2 (4.6beta20100115) jaunty; urgency=low
 
   * frame size now only limited by INT_MAX
   * now supports frame scaling (default) and hardware cropping (centered)
@@ -13,7 +13,7 @@ qastrocam-g2 (4.6beta20100114) jaunty; urgency=low
   * native format is yuv444 instead yuv420 for better colors
   * FITS-GZ output removed
   * many memory bugs/leaks fixed
-  * now saving avi in raw rgb24
+  * now saving avi in raw rgb24 or 8 bits grey depending on frame type
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 14 Jan 2010 01:35:01 +0100
 
