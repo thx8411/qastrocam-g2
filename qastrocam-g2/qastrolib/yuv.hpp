@@ -42,6 +42,12 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
 // yuv444 planar to rgb24
 void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
 
+// yuv444 planar to bgr24
+void yuv444_to_bgr24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
+
+// swap rgb24 (upside down)
+void rgb24_vertical_swap(int w, int h, unsigned char* data);
+
 // yuv444 planar to rgb32
 void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
 

@@ -17,6 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <stdlib.h>
 #include <string.h>
 #include "yuv.hpp"
 
@@ -87,6 +88,32 @@ void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned cha
       dst[p*3+1]=clip((298*Y-100*U-208*V+128)>>8);
       dst[p*3+2]=clip((298*Y+516*U+128)>>8);
    }
+}
+
+// yuv444 planar to bgr24
+void yuv444_to_bgr24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst){
+   int p,size;
+   int Y,U,V;
+   size=h*w;
+   for(p=0;p<size;p++) {
+      Y=srcY[p]-16;
+      U=srcU[p]-128;
+      V=srcV[p]-128;
+      dst[p*3+2]=clip((298*Y+ 409*V+128)>>8);
+      dst[p*3+1]=clip((298*Y-100*U-208*V+128)>>8);
+      dst[p*3]=clip((298*Y+516*U+128)>>8);
+   }
+}
+
+// swap rgb24 (upside down)
+void rgb24_vertical_swap(int w, int h, unsigned char* data){
+   unsigned char* tmp;
+   tmp=(unsigned char*)malloc(w*h*3);
+   memcpy(tmp,data,w*h*3);
+   for(int i=0;i<h;i++) {
+      memcpy(&data[i*w*3],&tmp[(h-i-1)*w*3],w*3);
+   }
+   free(tmp);
 }
 
 // yuv444 planar to rgb32

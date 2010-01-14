@@ -41,7 +41,7 @@ public:
    bool addImpl(const QCamFrame & newFrame, const QCam & cam);
 private:
    mutable avm::IWriteFile *aviFile_;
-   mutable avm::IVideoWriteStream *aviStream_;
+   mutable avm::IWriteStream *aviStream_;
    mutable unsigned char *deinterlaceBuf_;
 };
 
