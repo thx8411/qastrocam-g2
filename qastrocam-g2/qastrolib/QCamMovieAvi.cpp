@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -40,9 +40,6 @@ MA  02110-1301, USA.
 #include <avm_creators.h>
 #include <avm_except.h>
 
-//#define _CODEC_	RIFFINFO_I420
-#define _CODEC_	mmioFOURCC('D', 'I', 'B', ' ')
-
 QCamMovieAvi::QCamMovieAvi() {
    aviFile_ = 0;
    aviStream_ = 0;
@@ -61,23 +58,41 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    cam.writeProperties(seqName+".properties");
    aviFile_ = avm::CreateWriteFile((seqName+".avi").c_str());
 
-   BITMAPINFOHEADER bi;
-   fourcc_t codec = _CODEC_;
+   if(cam.yuvFrame().getMode()==GreyFrame) {
+      BITMAPINFO* bi;
+      bi=(BITMAPINFO*)malloc(sizeof(BITMAPINFOHEADER)+256*4);
+      memset(bi, 0, sizeof(BITMAPINFOHEADER)+256*4);
+      bi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER)+256*4;
+      bi->bmiHeader.biWidth = cam.size().width();
+      bi->bmiHeader.biHeight = cam.size().height();
+      bi->bmiHeader.biSizeImage =bi->bmiHeader.biWidth*bi->bmiHeader.biHeight;
+      bi->bmiHeader.biPlanes = 1;
+      bi->bmiHeader.biBitCount = 8;
+      bi->bmiHeader.biCompression = BI_RGB;
+      for(int i=0;i<256;i++)
+         bi->bmiColors[i]=(i << 16) + (i << 8) + i;
 
-   memset(&bi, 0, sizeof(bi));
-   bi.biSize = sizeof(bi);
-   bi.biWidth = cam.size().width();
-   bi.biHeight = cam.size().height();
-   bi.biSizeImage =bi.biWidth*bi.biHeight*3;
-   bi.biPlanes = 1;
-   bi.biBitCount = 24;
-   bi.biCompression = BI_RGB;
+      int frameRate=atoi(cam.getProperty("FrameRateSecond").c_str());
+      if (frameRate<1) frameRate=1;
+      aviStream_ = aviFile_->AddStream(AviStream::Video, bi, sizeof(BITMAPINFOHEADER)+256*4, BI_RGB, 1000*1000/frameRate);
+      deinterlaceBuf_ =(unsigned char*)malloc(bi->bmiHeader.biSizeImage*sizeof(unsigned char));
+      free(bi);
+   } else {
+      BITMAPINFOHEADER bi;
+      memset(&bi, 0, sizeof(bi));
+      bi.biSize = sizeof(bi);
+      bi.biWidth = cam.size().width();
+      bi.biHeight = cam.size().height();
+      bi.biSizeImage =bi.biWidth*bi.biHeight*3;
+      bi.biPlanes = 1;
+      bi.biBitCount = 24;
+      bi.biCompression = BI_RGB;
 
-   int frameRate=atoi(cam.getProperty("FrameRateSecond").c_str());
-   if (frameRate<1) frameRate=1;
-   aviStream_ = aviFile_->AddStream(AviStream::Video, &bi, sizeof(bi), bi.biCompression = BI_RGB,1000*1000/frameRate);
-
-   deinterlaceBuf_ =(unsigned char*)malloc(bi.biSizeImage*sizeof(unsigned char));
+      int frameRate=atoi(cam.getProperty("FrameRateSecond").c_str());
+      if (frameRate<1) frameRate=1;
+      aviStream_ = aviFile_->AddStream(AviStream::Video, &bi, sizeof(bi),BI_RGB,1000*1000/frameRate);
+      deinterlaceBuf_ =(unsigned char*)malloc(bi.biSizeImage*sizeof(unsigned char));
+   }
 
    cam.writeProperties(seqName+".properties");
    return true;
@@ -96,21 +111,30 @@ void QCamMovieAvi::closeImpl() {
 bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    BITMAPINFOHEADER bi;
 
-   fourcc_t codec= _CODEC_;
-
    memset(&bi, 0, sizeof(bi));
    bi.biSize = sizeof(bi);
    bi.biWidth = newFrame.size().width();
    bi.biHeight = newFrame.size().height();
-   bi.biSizeImage =bi.biWidth*bi.biHeight*3;
-   bi.biPlanes = 1;
-   bi.biBitCount = 24;
-   bi.biCompression = BI_RGB;
+   if(newFrame.getMode()==GreyFrame) {
+      bi.biSizeImage =bi.biWidth*bi.biHeight;
+      bi.biPlanes = 1;
+      bi.biBitCount = 8;
+      bi.biCompression = BI_RGB;
+   } else {
+      bi.biSizeImage =bi.biWidth*bi.biHeight*3;
+      bi.biPlanes = 1;
+      bi.biBitCount = 24;
+      bi.biCompression = BI_RGB;
+   }
 
    if(deinterlaceBuf_) {
-      //yuv444_to_swapped_rgb24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
-      yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
-      rgb24_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
+      if(newFrame.getMode()==GreyFrame) {
+         memcpy(deinterlaceBuf_,newFrame.Y(),bi.biSizeImage);
+         grey_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
+      } else {
+         yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
+         rgb24_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
+      }
       aviStream_->AddChunk(deinterlaceBuf_,bi.biSizeImage,1);
       return true;
    } else {

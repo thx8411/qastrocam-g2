@@ -54,4 +54,14 @@ void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned cha
 // 4:4:4 planar yuv to 4:2:0 planar yuv
 void yuv444_to_yuv420(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
+//
+// TRANSFORM
+//
+
+// swap 8 bit grey (upside down)
+void grey_vertical_swap(int w, int h, unsigned char* data);
+
+// swap rgb24 (upside down)
+void rgb24_vertical_swap(int w, int h, unsigned char* data);
+
 #endif
