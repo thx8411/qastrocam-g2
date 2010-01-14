@@ -281,6 +281,7 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
       options_&=~supportCropping;
       // not v4l2...
       cout << "trouble getting device cropping capabilities" << endl;
+      cout << "using software cropping" << endl;
    } else {
       // testing cropping with default rect.
       struct v4l2_crop cropBounds;
