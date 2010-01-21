@@ -1,3 +1,7 @@
+4.7beta20100121
+
+  - debian packaging modified for multi-platform
+
 4.6
 
   - now saving avi in raw rgb24 or 8 bits grey depending on frame type
