@@ -50,7 +50,7 @@ show-avaible-arch:
 	@echo "   QT_LIB_DIR (full path to the directory that contains QT libraries)"
 	@echo "   QT_LIBS ( the libs needed to do the link (usualy -lqt or -lqt-mt))"
 	@echo ""
-	@echo "   CFITSIO_LINK (the link command neede to link cfitsio (path + lib))"
+	@echo "   CFITSIO_LINK (the link command needed to link cfitsio (path + lib))"
 	@echo "   CFITSIO_INC (full path to the directory that contains cfitsio.h)"
 	@echo "then please send by email the new entry"
 	@echo

@@ -33,8 +33,6 @@ AC_LANG(C++)
 
 AC_CANONICAL_HOST
 
-#sinclude(gwqt.m4)
-
 AC_CONFIG_SRCDIR([qastrolib/QCam.cpp])
 
 AC_SUBST(ARCHTYPE)
