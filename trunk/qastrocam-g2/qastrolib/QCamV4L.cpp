@@ -47,6 +47,24 @@ MA  02110-1301, USA.
 
 #include "SCmodParPortPPdev.hpp"
 
+// supported palettes
+struct palette_datas supported_palettes[]={
+   {V4L2_PIX_FMT_RGB24,3,1,"rgb24"},
+   {V4L2_PIX_FMT_YUYV,2,1,"yuyv"},
+   {V4L2_PIX_FMT_YUV420,3,2,"yuv420"},
+   {V4L2_PIX_FMT_GREY,1,1,"grey"},
+   {-1,0,0,""}
+};
+
+// find supported tab index depending on the v4l2 palette name/num
+// returns -1 if not found
+int getSupportedPaletteIndex(int v4l2_palette) {
+   int index=0;
+   while((supported_palettes[index].index>0)&&(supported_palettes[index].index!=v4l2_palette))
+      index++;
+   return(index);
+}
+
 // settings object, needed everywhere
 extern settingsBackup settings;
 
@@ -59,8 +77,10 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    // V4L2 needed vars
    v4l2_std_id _id; // video stream standard id
    v4l2_standard standard; // video stream standard
+   v4l2_fmtdesc fmtdesc;
    int _index=0;
    // init defaults value
+   palette=0;
    options_=options;
    tmpBuffer_=NULL;
    remoteCTRLbrightness_=NULL;
@@ -221,6 +241,18 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette, const char* devsource
    cout << "using : " << input.name << endl << endl;
    // storing used source
    settings.setKey(keyName.c_str(),(char*)input.name);
+   // ****************************
+   // enumerate available palettes
+   // ****************************
+   cout << "available palettes :" << endl;
+   memset(&fmtdesc,0,sizeof(v4l2_fmtdesc));
+   fmtdesc.index=0;
+   fmtdesc.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   while(!ioctl(device_,VIDIOC_ENUM_FMT,&fmtdesc)) {
+      cout << "palette #" << fmtdesc.index << " : " << fmtdesc.description << endl;
+      fmtdesc.index++;
+   }
+   cout << endl;
    // ********************************************
    // getting video standard to compute frame rate
    // ********************************************
@@ -370,7 +402,7 @@ void QCamV4L::init(int preferedPalette) {
       v4l2_fmt_.fmt.pix.pixelformat=preferedPalette;
       // v4l2
       if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)) {
-         palette="prefered";
+         palette=getSupportedPaletteIndex(v4l2_fmt_.fmt.pix.pixelformat);
          cout << "found preferedPalette " << endl<< endl;
          if(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)
             mode_=GreyFrame;
@@ -384,7 +416,7 @@ void QCamV4L::init(int preferedPalette) {
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_RGB24;
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_RGB24)) {
-      palette="rgb24";
+      palette=0;
       cout << "found palette RGB24" <<endl<<endl;
       return;
    }
@@ -393,7 +425,7 @@ void QCamV4L::init(int preferedPalette) {
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUYV;
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_YUYV)) {
-     palette="yuyv";
+     palette=1;
      cout << "found palette YUYV"<<endl<<endl;
      return;
    }
@@ -403,7 +435,7 @@ void QCamV4L::init(int preferedPalette) {
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_YUV420;
    // v4l2
    if (0 == ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_YUV420)) {
-      palette="yuv420";
+      palette=2;
       cout << "found palette YUV420"<<endl<<endl;
       return;
    }
@@ -412,7 +444,7 @@ void QCamV4L::init(int preferedPalette) {
    v4l2_fmt_.fmt.pix.pixelformat=V4L2_PIX_FMT_GREY;
    // v4l2
    if ( 0== ioctl(device_, VIDIOC_S_FMT, &v4l2_fmt_)&&(v4l2_fmt_.fmt.pix.pixelformat==V4L2_PIX_FMT_GREY)) {
-      palette="grey";
+      palette=3;
       cout << "found palette GREY"<<endl<<endl;
       mode_=GreyFrame;
       return;
@@ -428,23 +460,7 @@ void QCamV4L::init(int preferedPalette) {
 void QCamV4L::allocBuffers() {
    free(tmpBuffer_);
    inputBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
-   switch (v4l2_fmt_.fmt.pix.pixelformat) {
-   case V4L2_PIX_FMT_GREY:
-      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height;
-      break;
-   case V4L2_PIX_FMT_RGB24:
-      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * 3;
-      break;
-   case V4L2_PIX_FMT_YUV420:
-      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * 3/2;
-      break;
-   case V4L2_PIX_FMT_YUYV:
-      yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * 2;
-      break;
-   default:
-      yuvFrameMemSize=0;
-      tmpBuffer_=NULL;
-   }
+   yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * supported_palettes[palette].memfactor_numerator / supported_palettes[palette].memfactor_denominator;
    tmpBuffer_=(unsigned char*)malloc(yuvFrameMemSize);
 }
 
@@ -957,9 +973,11 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    sourceLabel[0]=(char*)input.name;
    sourceB=new QCamComboBox("source",infoBox,1,sourceTable,sourceLabel);
    sourceB->setEnabled(false);
+   //
    int paletteTable[]={1};
    const char* paletteLabel[1];
-   paletteLabel[0]=palette;
+   paletteLabel[0]=supported_palettes[palette].name;
+   //
    paletteB=new QCamComboBox("source",infoBox,1,paletteTable,paletteLabel);
    paletteB->setEnabled(false);
    // tips
