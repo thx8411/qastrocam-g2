@@ -41,6 +41,7 @@ public:
    virtual ~SCmod();
    virtual QWidget * buildGUI(QWidget * parent) { return parent; }
    void setLevels(bool polarity);
+   virtual void waitGrabPulse() {};
 protected :
    bool inverted_;
 };
