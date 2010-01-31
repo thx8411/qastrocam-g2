@@ -1211,8 +1211,8 @@ void QCamV4L::LXframeReady() {
    // stop integration
    lxControler->stopAccumulation();
    // wait for the canera to send the frames
-   // worst case : we must wait for 2 complet fields
-   usleep((int)(1000000.0/(1.25*frameRate_)));
+   // worst case : we must wait for 1 complet field
+   usleep((int)(1000000.0/(1.1*frameRate_)));
    // integration starting for the next frame
    lxControler->startAccumulation();
 }
