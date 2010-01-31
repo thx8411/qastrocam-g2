@@ -76,6 +76,14 @@ struct mmap_buffer {
    size_t length;
 };
 
+// palette informations
+struct palette_datas {
+   int index;			// v4l2 name/num
+   int memfactor_numerator;	// numerator for memory usage : buffer size = w*h*numeroator/denominator
+   int memfactor_denominator;	// denominator
+   char name[32];		// palette name
+};
+
 /** QCam implementation to acces a basic Video4Linux device.*/
 class QCamV4L : public QCam {
    Q_OBJECT
@@ -159,8 +167,8 @@ private:
    double getTime();
    // V4L2 vars
    v4l2_input input;
-   // palette name
-   QString palette;
+   // current palette index
+   int palette;
    // device settings stored
    int deviceSource;
    // device name
