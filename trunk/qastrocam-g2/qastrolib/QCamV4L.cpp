@@ -53,6 +53,8 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_YUYV,2,1,"yuyv",YuvFrame},
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
+   // just a try for debug
+   //{V4L2_PIX_FMT_PWC2,3,1,"philips raw",YuvFrame},
    {-1,0,0,"",0}
 };
 
@@ -266,7 +268,7 @@ QCamV4L::QCamV4L(const char * devpath, const char* devsource,
    while(!ioctl(device_,VIDIOC_ENUM_FMT,&fmtdesc)) {
       int index=getSupportedPaletteIndex(fmtdesc.pixelformat);
       if(index!=-1) {
-         paletteTable[paletteNumber]=index;
+         paletteTable[paletteNumber]=paletteNumber;
          paletteLabel[paletteNumber]=(char*)malloc(32);
          memcpy((void*)paletteLabel[paletteNumber],supported_palettes[index].name,32);
          cout << "Supported palette :  " << supported_palettes[index].name << endl;
@@ -713,6 +715,8 @@ bool QCamV4L::updateFrame() {
          case V4L2_PIX_FMT_GREY:
             memcpy(YBuf,tmpBuffer_,v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             break;
+         // just a try for debug
+         //case V4L2_PIX_FMT_PWC2 :
          case V4L2_PIX_FMT_YUV420:
             yuv420_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
                tmpBuffer_, tmpBuffer_+ v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height,
@@ -963,8 +967,10 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    sourceB=new QCamComboBox("source",infoBox,1,sourceTable,sourceLabel);
    sourceB->setEnabled(false);
    paletteB=new QCamComboBox("source",infoBox,paletteNumber,paletteTable,paletteLabel);
+   paletteB->setCurrentText(QString(supported_palettes[palette].name));
    connect(paletteB,SIGNAL(change(int)),this,SLOT(setPalette(int)));
-   //paletteB->setEnabled(false);
+   if(paletteNumber<2)
+      paletteB->setEnabled(false);
    // tips
    QToolTip::add(sourceB,"V4L2 input used");
    QToolTip::add(paletteB,"V4L2 palette used");
@@ -1107,9 +1113,14 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
 
 // changing palette
 void QCamV4L::setPalette(int val) {
-   palette=val;
+   palette=getSupportedPaletteIndex(paletteB->text(val));
    updatePalette();
    allocBuffers();
+   // updating mmap
+   if(useMmap)
+      useMmap=mmapInit();
+   // setting controls back
+   updatePictureSettings();
 }
 
 // changing raw mode
