@@ -40,7 +40,6 @@ enum ImageMode {
    GreyFrame,
    /* GR
       BG */
-   YuvFrame,
    RawRgbFrame1,
    /* RG
       GB */
@@ -51,6 +50,7 @@ enum ImageMode {
    /* GB
       RG */
    RawRgbFrame4,
+   YuvFrame
 };
 
 /*** to not be used */

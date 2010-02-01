@@ -98,24 +98,7 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource, boo
    cout << "Using generic V4L driver : " << vcap.card << endl;
    close(cam_fd);
 
-   // looking for a stored palette
-   if(settings.haveKey("PALETTE")) {
-      string palette_=settings.getKey("PALETTE");
-      if(strcasecmp(palette_.c_str(),"rgb24")==0) {
-         palette=V4L2_PIX_FMT_RGB24;
-      } else if(strcasecmp(palette_.c_str(),"yuyv")==0){
-         palette=V4L2_PIX_FMT_YUYV;
-      } else if(strcasecmp(palette_.c_str(),"yuv420")==0){
-         palette=V4L2_PIX_FMT_YUV420;
-      } else if(strcasecmp(palette_.c_str(),"grey")==0){
-         palette=V4L2_PIX_FMT_GREY;
-      } else {
-         palette=0;
-      }
-   } else {
-      palette=0;
-   }
-   camFound = new QCamV4L(devpath,palette,devsource);
+   camFound = new QCamV4L(devpath,devsource);
    return camFound;
 }
 
