@@ -1,5 +1,9 @@
-4.7beta20100131
+4.7beta20100201
 
+  - option '-p' not available anymore (now useless)
+  - chosen palette now saved in th settings file
+  - palette and mode now saved for each diffrent device
+  - palette combobox added
   - debian packaging modified for multi-platform
 
 4.6

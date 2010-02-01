@@ -76,7 +76,6 @@ const string SDLon("--SDL");
 const string SDLoff("--noSDL");
 const string ExpertMode("--expert");
 const string DeviceSource("-i");
-const string DevicePalette("-p");
 const string ForceGeneric("-df");
 const string ForceSettings("-sf");
 
@@ -106,7 +105,6 @@ void usage(const char * progName) {
    cerr << "  "<<VideoDeviceOptionString << " <deviceName> to choose the V4L device name.\n"
 	<< "     default is /dev/video0.\n";
    cerr << "  "<<DeviceSource<< " <source> to set the V4L device source.\n";
-   cerr << "  "<<DevicePalette<<" <palette> to force the V4L device palette.\n";
    cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
    cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n"
 	<< "     type 'help' will give the list of avaible telescope type\n";
@@ -241,13 +239,6 @@ int main(int argc, char ** argv) {
             exit(1);
          }
          videoDeviceSource=argv[i];
-      } else if ( DevicePalette == argv[i]) {
-         i++;
-         if(i==argc) {
-            usage(argv[0]);
-            exit(1);
-         }
-         settings.setKey("PALETTE",argv[i]);
       } else if ( TelescopeTypeOption == argv[i]) {
          ++i;
          if (i==argc) {

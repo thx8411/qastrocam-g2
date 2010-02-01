@@ -82,6 +82,7 @@ struct palette_datas {
    int memfactor_numerator;	// numerator for memory usage : buffer size = w*h*numeroator/denominator
    int memfactor_denominator;	// denominator
    char name[32];		// palette name
+   int mode;			// grey or color frames
 };
 
 /** QCam implementation to acces a basic Video4Linux device.*/
@@ -105,7 +106,6 @@ public:
    static QCam * openBestDevice(const char * devpath = "/dev/video0",const char * devsource = "",bool force = false);
    // constructor
    QCamV4L(const char * devpath="/dev/video0",
-           int preferedPalette = 0 /* auto palette*/,
            const char* devsource=NULL,
            unsigned long options =  DefaultOptions /* cf QCamV4L::options */);
    // destructor
@@ -169,13 +169,16 @@ private:
    v4l2_input input;
    // current palette index
    int palette;
+   int paletteNumber;
+   int paletteTable[8];
+   const char* paletteLabel[8];
    // device settings stored
    int deviceSource;
    // device name
    string devpath_;
    // basic operations
    bool setSize(int x, int y);
-   void init(int preferedPalette);
+   void updatePalette();
    void allocBuffers();
    // mmap functions
    bool mmapInit();
@@ -234,6 +237,7 @@ public slots:
    void setColor(int value);
    void setHue(int value);
    void setWhiteness(int value);
+   void setPalette(int value);
    void setMode(ImageMode val);
    void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */
    // lx mode slots

@@ -23,10 +23,10 @@ MA  02110-1301, USA.
 #include "QCamOV511.moc"
 
 QCamOV511::QCamOV511(const char * devpath):
-   QCamV4L(devpath,0,"",ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
+   QCamV4L(devpath,"",ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
    resize(QSize(176,144));
 }
 
 QCamOV519::QCamOV519(const char * devpath):
-   QCamV4L(devpath,0,"",DefaultOptions|QCamV4L::sendJpegFrames) {
+   QCamV4L(devpath,"",DefaultOptions|QCamV4L::sendJpegFrames) {
 }
