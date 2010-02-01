@@ -103,10 +103,9 @@ public:
    };
    static const int DefaultOptions;
    // create the best camera instance, depending on the device
-   static QCam * openBestDevice(const char * devpath = "/dev/video0",const char * devsource = "",bool force = false);
+   static QCam * openBestDevice(const char * devpath = "/dev/video0",bool force = false);
    // constructor
    QCamV4L(const char * devpath="/dev/video0",
-           const char* devsource=NULL,
            unsigned long options =  DefaultOptions /* cf QCamV4L::options */);
    // destructor
    ~QCamV4L();
@@ -165,8 +164,11 @@ protected:
 private:
    // get os time in seconds (usec accuracy)
    double getTime();
-   // V4L2 vars
+   // inputs
    v4l2_input input;
+   int sourceNumber;
+   int sourceTable[8];
+   const char* sourceLabel[8];
    // current palette index
    int palette;
    int paletteNumber;
@@ -237,6 +239,7 @@ public slots:
    void setColor(int value);
    void setHue(int value);
    void setWhiteness(int value);
+   void setSource(int value);
    void setPalette(int value);
    void setMode(ImageMode val);
    void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */

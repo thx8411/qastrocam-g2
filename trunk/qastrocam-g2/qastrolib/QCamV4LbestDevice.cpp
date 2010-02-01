@@ -37,7 +37,7 @@ extern settingsBackup settings;
 
 // Creat the best QCamV4l object depending on the device.
 // Usage of default object can be done using "force"
-QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource, bool force) {
+QCam * QCamV4L::openBestDevice(const char * devpath, bool force) {
    int cam_fd;
    int palette;
    QCam * camFound=NULL;
@@ -98,7 +98,7 @@ QCam * QCamV4L::openBestDevice(const char * devpath, const char * devsource, boo
    cout << "Using generic V4L driver : " << vcap.card << endl;
    close(cam_fd);
 
-   camFound = new QCamV4L(devpath,devsource);
+   camFound = new QCamV4L(devpath);
    return camFound;
 }
 

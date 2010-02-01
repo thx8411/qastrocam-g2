@@ -49,7 +49,7 @@ MA  02110-1301, USA.
 #include "QCamUtilities.hpp"
 
 QCamVesta::QCamVesta(const char * devpath):
-   QCamV4L(devpath, "",(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
+   QCamV4L(devpath,(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
    SCmodCtrl_=NULL;
    exposureTimeLeft_=NULL;
    whiteBalanceMode_=-1;

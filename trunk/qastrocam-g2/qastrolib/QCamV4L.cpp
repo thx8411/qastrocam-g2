@@ -38,6 +38,7 @@ MA  02110-1301, USA.
 #include <qsocketnotifier.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+#include <qmessagebox.h>
 
 #include "QCamSlider.hpp"
 #include "yuv.hpp"
@@ -53,7 +54,9 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_YUYV,2,1,"yuyv",YuvFrame},
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
-   // just a try for debug
+   {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
+   //{V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
+   //{V4L2_PIX_FMT_PWC1,3,1,"philips raw",YuvFrame},
    //{V4L2_PIX_FMT_PWC2,3,1,"philips raw",YuvFrame},
    {-1,0,0,"",0}
 };
@@ -86,8 +89,7 @@ extern settingsBackup settings;
 const int QCamV4L::DefaultOptions=(haveBrightness|haveContrast|haveHue|haveColor|haveWhiteness);
 
 // constructor
-QCamV4L::QCamV4L(const char * devpath, const char* devsource,
-                 unsigned long options /* cf QCamV4L::options */) {
+QCamV4L::QCamV4L(const char * devpath, unsigned long options /* cf QCamV4L::options */) {
    // V4L2 needed vars
    v4l2_std_id _id; // video stream standard id
    v4l2_standard standard; // video stream standard
@@ -211,10 +213,15 @@ QCamV4L::QCamV4L(const char * devpath, const char* devsource,
    cout << endl << "available inputs : " << endl;
    memset(&input,0,sizeof(v4l2_input));
    input.index=0;
+   sourceNumber=0;
    // v4l2
    while(!ioctl(device_,VIDIOC_ENUMINPUT,&input)) {
-      cout << "input #" << input.index << " : " << input.name << endl;
+      sourceTable[sourceNumber]=input.index;
+      sourceLabel[sourceNumber]=(char*)malloc(32);
+      memcpy((void*)sourceLabel[sourceNumber],input.name,32);
+      cout << " - " << input.name << endl;
       input.index++;
+      sourceNumber++;
    }
    // choosing stored source if there is one
    // the storing key is "SOURCE"+<device_name>
@@ -222,8 +229,6 @@ QCamV4L::QCamV4L(const char * devpath, const char* devsource,
    int res;
    string keyName("SOURCE_");
    keyName+=(char*)v4l2_cap_.card;
-   // if we allready have a source in params, store it
-   if(strlen(devsource)) settings.setKey(keyName.c_str(),devsource);
    // looking for the source in settings file
    if(settings.haveKey(keyName.c_str())) {
       // we have a stored prefered source
@@ -246,8 +251,7 @@ QCamV4L::QCamV4L(const char * devpath, const char* devsource,
          // v4l2
          ioctl(device_, VIDIOC_S_INPUT, &_index);
       }
-   // no source found, using default
-   } else cout << "\nIn order to set the default source\nfor this device, use the -i option\n(generic V4L devices only)\n\n" ;
+   }
    // get the used source
    // v4l2
    ioctl(device_,VIDIOC_G_INPUT,&_index);
@@ -271,12 +275,12 @@ QCamV4L::QCamV4L(const char * devpath, const char* devsource,
          paletteTable[paletteNumber]=paletteNumber;
          paletteLabel[paletteNumber]=(char*)malloc(32);
          memcpy((void*)paletteLabel[paletteNumber],supported_palettes[index].name,32);
-         cout << "Supported palette :  " << supported_palettes[index].name << endl;
+         cout << " - supported palette :  " << supported_palettes[index].name << endl;
          paletteNumber++;
          palette=index;
       }
       else
-         cout << "Unsupported palette : " << fmtdesc.description << endl;
+         cout << " - unsupported palette : " << fmtdesc.description << endl;
       fmtdesc.index++;
    }
    if(paletteNumber==0) {
@@ -296,8 +300,8 @@ QCamV4L::QCamV4L(const char * devpath, const char* devsource,
       if(index!=-1)
          palette=index;
    }
-   cout << endl;
    updatePalette();
+   cout << "using : " << supported_palettes[palette].name << endl << endl ;
    // ********************************************
    // getting video standard to compute frame rate
    // ********************************************
@@ -392,14 +396,6 @@ QCamV4L::QCamV4L(const char * devpath, const char* devsource,
    // some lx widgets init to avoid segfaults in updateFrame
    lxBar=NULL;
    lxBlink=NULL;
-   // setting up the notifier
-   //notifier_=NULL;
-   // *************************************************
-   // notifier (all V4L2 devices must support "select")
-   // *************************************************
-   //notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
-   //connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
-   //cout << "Using select to wait for new frames.\n" << endl;
 
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
@@ -508,7 +504,7 @@ const QSize * QCamV4L::getAllowedSize() const {
                currentIndex++;
                last_x=v4l2_fmt_temp.fmt.pix.width;
                last_y=v4l2_fmt_temp.fmt.pix.height;
-               cout << "Adding " << last_x << "x" << last_y << endl;
+               cout << " - adding " << last_x << "x" << last_y << endl;
             }
          } else
             // VIDIOC_TRY_FMT not supported
@@ -520,7 +516,7 @@ const QSize * QCamV4L::getAllowedSize() const {
                   currentIndex++;
                   last_x=v4l2_fmt_temp.fmt.pix.width;
                   last_y=v4l2_fmt_temp.fmt.pix.height;
-                  cout << "Adding " << last_x << "x" << last_y << endl;
+                  cout << " - adding " << last_x << "x" << last_y << endl;
                }
             else perror("ioctl (VIDIOC_S_FMT)");
          }
@@ -712,11 +708,10 @@ bool QCamV4L::updateFrame() {
       // ...dependings on the palette...
       switch (supported_palettes[palette].index) {
          // mem copies
+         case V4L2_PIX_FMT_SBGGR8:
          case V4L2_PIX_FMT_GREY:
             memcpy(YBuf,tmpBuffer_,v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             break;
-         // just a try for debug
-         //case V4L2_PIX_FMT_PWC2 :
          case V4L2_PIX_FMT_YUV420:
             yuv420_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
                tmpBuffer_, tmpBuffer_+ v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height,
@@ -728,6 +723,15 @@ bool QCamV4L::updateFrame() {
             break;
          case V4L2_PIX_FMT_YUYV:
             yuv422_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            break;
+         case V4L2_PIX_FMT_JPEG:
+            //
+            break;
+         case V4L2_PIX_FMT_PWC1:
+            //
+            break;
+         case V4L2_PIX_FMT_PWC2:
+            //
             break;
          default:
             cerr << "invalid palette " << endl;
@@ -961,16 +965,16 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    infoBox=new QHGroupBox(tr("Source"),remoteCTRL);
 
    // palette and input display
-   int sourceTable[]={1};
-   const char* sourceLabel[1];
-   sourceLabel[0]=(char*)input.name;
-   sourceB=new QCamComboBox("source",infoBox,1,sourceTable,sourceLabel);
-   sourceB->setEnabled(false);
+   sourceB=new QCamComboBox("source",infoBox,sourceNumber,sourceTable,sourceLabel);
+   sourceB->setCurrentText(QString((char*)input.name));
+   if(sourceNumber<2)
+      sourceB->setEnabled(false);
+   connect(sourceB,SIGNAL(change(int)),this,SLOT(setSource(int)));
    paletteB=new QCamComboBox("source",infoBox,paletteNumber,paletteTable,paletteLabel);
    paletteB->setCurrentText(QString(supported_palettes[palette].name));
-   connect(paletteB,SIGNAL(change(int)),this,SLOT(setPalette(int)));
    if(paletteNumber<2)
       paletteB->setEnabled(false);
+   connect(paletteB,SIGNAL(change(int)),this,SLOT(setPalette(int)));
    // tips
    QToolTip::add(sourceB,"V4L2 input used");
    QToolTip::add(paletteB,"V4L2 palette used");
@@ -1106,9 +1110,16 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    // *************************************************
    notifier_ = new QSocketNotifier(device_, QSocketNotifier::Read, this);
    connect(notifier_,SIGNAL(activated(int)),this,SLOT(updateFrame()));
-   cout << "Using select to wait for new frames.\n" << endl;
+   //cout << "Using select to wait for new frames.\n" << endl;
 
    return remoteCTRL;
+}
+
+void QCamV4L::setSource(int val) {
+   string keyName("SOURCE_");
+   keyName+=(char*)v4l2_cap_.card;
+   settings.setKey(keyName.c_str(),sourceB->text(val).ascii());
+   QMessageBox::information(0,"Qastrocam-g2","Please restart Qastrocam-g2\nto get the new source");
 }
 
 // changing palette
