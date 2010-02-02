@@ -2,11 +2,12 @@ qastrocam-g2 (4.7beta20100202) jaunty; urgency=low
 
   * debian packaging modified for multi-platform
   * option '-p' not available anymore (now useless)
-  * chosen palette now saved in th settings file
+  * chosen palette now saved in the settings file
   * palette and mode now saved for each diffrent device
   * palette combobox added
+  * source combobox added
   * support added for BA81 palette
-  * option -i- not available anymore (now useless)
+  * option '-i' not available anymore (now useless)
   * device source can now be changed in gui
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 21 Jan 2010 03:21:44 +0100
