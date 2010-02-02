@@ -1,11 +1,12 @@
 4.7beta20100201
 
-  - option -i- not available anymore (now useless)
+  - option '-i' not available anymore (now useless)
   - device source can now be changed in gui
   - support added for BA81 palette
   - option '-p' not available anymore (now useless)
-  - chosen palette now saved in th settings file
+  - chosen palette now saved in the settings file
   - palette and mode now saved for each diffrent device
+  - source combobox added
   - palette combobox added
   - debian packaging modified for multi-platform
 
