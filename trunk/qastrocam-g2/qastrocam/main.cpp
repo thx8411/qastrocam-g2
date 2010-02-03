@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include "stdlib.h"
+
 #include "QCamSlider.hpp"
 #include "QCamV4L.hpp"
 #include "QCamVesta.hpp"
@@ -152,9 +154,12 @@ int main(int argc, char ** argv) {
    string telescopeDeviceName("/dev/ttyS1");
    string libPath;
    string settingsFileName(".qastrocam-g2.conf");
-   string logFileName(".qastrocam-g2.log");
+   string logFileName(".qastrocam-g2");
 
    // cout redirection
+   char pid[16];
+   sprintf(pid,"%i",getpid());
+   logFileName+="-"+string(pid)+".log";
    FILE* logFile=freopen(logFileName.c_str(),"w",stdout);
 
    cout << qastrocamName << " " << qastroCamVersion
