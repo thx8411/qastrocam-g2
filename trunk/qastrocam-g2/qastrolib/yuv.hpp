@@ -54,6 +54,14 @@ void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned cha
 // 4:4:4 planar yuv to 4:2:0 planar yuv
 void yuv444_to_yuv420(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
+
+//
+// TO YUY2
+//
+
+// 8 bits grey to yuy2
+void grey_to_yuy2(int w, int h, const unsigned char* src, unsigned char* dst);
+
 //
 // TRANSFORM
 //
