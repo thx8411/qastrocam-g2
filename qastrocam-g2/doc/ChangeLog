@@ -1,5 +1,6 @@
-4.7beta20100201
+4.7beta20100203
 
+  - avi lossless recording added (huffyuv)
   - option '-i' not available anymore (now useless)
   - device source can now be changed in gui
   - support added for BA81 palette

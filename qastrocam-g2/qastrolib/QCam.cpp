@@ -53,6 +53,7 @@ MA  02110-1301, USA.
 #include "QGridBox.hpp"
 #include "FitsImage.hpp"
 #include "QCamMovieAvi.hpp"
+#include "QCamMovieAviLossless.hpp"
 #include "QCamMovieSeq.hpp"
 #include "SettingsBackup.hpp"
 
@@ -82,6 +83,7 @@ QCam::QCam() {
    //remoteCTRL_->show();
 #if HAVE_AVIFILE_H
    movieWritterAvi_=new QCamMovieAvi();
+   movieWritterAviLossless_=new QCamMovieAviLossless();
 #endif
    movieWritterSeq_=new QCamMovieSeq();
    movieWritter_=NULL;
@@ -92,6 +94,7 @@ QCam::~QCam() {
    delete periodicCaptureT_;
    free(fileFormatList_);
    delete movieWritterAvi_;
+   delete movieWritterAviLossless_;
    delete movieWritterSeq_;
    delete displayWindow_;
    delete displayHistogramWindow_;
@@ -121,10 +124,10 @@ bool QCam::saveFrame(const string& file) const {
    /*}  else if (fileFormat=="FITS-GZ") {
       FitsImageCFITSIO fit= FitsImageCFITSIO(file+".fit.gz");
       return fit.save(yuvFrame());*/
-   } else if (fileFormat=="AVI") {
+   } else /*if (fileFormat=="AVI raw") {
       cout << "AVI snapshots unsupported, using BMP instead" << endl;
       return yuvFrame().colorImage().save((file+"."+"bmp"),"BMP", quality);
-   } else
+   } else */
       return yuvFrame().colorImage().save((file
                                            +"."
                                            +QString(fileFormat).lower().latin1()).c_str(),
@@ -160,8 +163,10 @@ void QCam::setCapture(bool doCapture) const {
       movieWritter_=movieWritterSeq_;
 #if HAVE_AVIFILE_H
       string fileFormat=getSaveFormat();
-      if (fileFormat=="AVI") {
+      if (fileFormat=="AVI raw") {
          movieWritter_=movieWritterAvi_;
+      } else if (fileFormat=="AVI huff") {
+         movieWritter_=movieWritterAviLossless_;
       }
 #endif
               string fileName=directory_+"/"+captureFile_+"-"+getFileName();
@@ -192,8 +197,8 @@ void QCam::setCaptureFile(const QString & afile) {
                         + captureFile_ +"-<date>.<type>'").c_str());
 #if HAVE_AVIFILE_H
          QToolTip::add(capture_,
-                       (string("Save sequence in uncompressed AVI file '")
-                        + captureFile_ +"-<date>.avi'").c_str());
+                       (string("Save sequence in raw/lossless AVI file or picture sequence '")
+                        + captureFile_ +"-<date>.<type>'").c_str());
 #else
          QToolTip::add(capture_,
                        (string("Save sequence in directory '")
@@ -333,7 +338,11 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    //++size;
 #if HAVE_AVIFILE_H
    // adds avi format
-   fileFormatList_[size]="AVI";
+   fileFormatList_[size]="AVI raw";
+   tmpTab[size]=size;
+   ++size;
+   // adds avi huff format
+   fileFormatList_[size]="AVI huff";
    tmpTab[size]=size;
    ++size;
 #endif
@@ -440,7 +449,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    snapshot_->show();
    capture_->show();
 
-   if(getSaveFormat()=="AVI")
+   if((getSaveFormat()=="AVI raw")||(getSaveFormat()=="AVI huff"))
       snapshot_->setEnabled(FALSE);
    else
       snapshot_->setEnabled(TRUE);
@@ -598,7 +607,7 @@ void QCam::writeProperties(const string & fileName) const {
 void QCam::updateFileFormat(int value) {
    fileFormatCurrent_=value;
 
-   if(getSaveFormat()=="AVI")
+   if((getSaveFormat()=="AVI raw")||(getSaveFormat()=="AVI huff"))
       snapshot_->setEnabled(FALSE);
    else
       snapshot_->setEnabled(TRUE);

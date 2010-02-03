@@ -180,10 +180,11 @@ private:
    string directory_;
    map<string,string> properties_;
    QString label_;
-   mutable QCamMovie * movieWritter_;
-   QCamMovie * movieWritterSeq_;
+   mutable QCamMovie* movieWritter_;
+   QCamMovie* movieWritterSeq_;
 #if HAVE_AVIFILE_H
-   QCamMovie * movieWritterAvi_;
+   QCamMovie* movieWritterAvi_;
+   QCamMovie* movieWritterAviLossless_;
 #endif
  public:
    mutable Vector2D annotationPos_;

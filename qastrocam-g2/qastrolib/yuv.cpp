@@ -136,6 +136,22 @@ void yuv444_to_yuv420(int w, int h, const unsigned char* srcY, const unsigned ch
 }
 
 //
+// TO YUY2
+//
+
+// 8 bits grey to yuyv
+void grey_to_yuy2(int w, int h, const unsigned char* src, unsigned char* dst) {
+   int i;
+   int size=w*h/2;
+   for(i=0;i<size;i++) {
+      dst[i*4]=src[i*2];
+      dst[i*4+1]=128;
+      dst[i*4+2]=src[i*2+1];
+      dst[i*4+3]=128;
+   }
+}
+
+//
 // TRANSFORM
 //
 
