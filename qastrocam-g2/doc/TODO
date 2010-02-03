@@ -4,13 +4,13 @@ Please look at sourceforge for an up-to-date version of this list
 - Telescope configuration GUI (port, protocole)
 - Autoguide GUI (on / off)
 - king module GUI
-- save camera / telescope / autoguide / stack / king parameters for next run
 Later - dark/flat support
 Later - viewport support for V4L module
-Later - croping in raw window camera
-Later - binning in boxsize of hotspot search
-Later - static build
 Later - Multi language support
+DONE - 4.7   - log file added
+DONE - 4.7   - lossless avi record added
+DONE - 4.7   - BA81 palette added
+DONE - 4.7   - palette and source GUI added
 DONE - 4.6   - AVI saved in raw rgb24
 DONE - 4.6   - webcam RGB palette now fully supported
 DONE - 4.6   - native format is yuv444 instead yuv420 for better colors
