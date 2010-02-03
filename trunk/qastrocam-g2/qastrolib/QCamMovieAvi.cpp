@@ -41,16 +41,19 @@ MA  02110-1301, USA.
 #include <avm_except.h>
 
 QCamMovieAvi::QCamMovieAvi() {
+   // init
    aviFile_ = 0;
    aviStream_ = 0;
    deinterlaceBuf_ =NULL;
 }
 
 QCamMovieAvi::~QCamMovieAvi() {
+   // free buffer if needed
    free(deinterlaceBuf_);
 }
 
 QWidget * QCamMovieAvi::buildGUI(QWidget  * father) {
+   // nothing to do yet
    return father;
 }
 
@@ -58,6 +61,7 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    cam.writeProperties(seqName+".properties");
    aviFile_ = avm::CreateWriteFile((seqName+".avi").c_str());
 
+   // build header for grey frames (we must add a palette)
    if(cam.yuvFrame().getMode()==GreyFrame) {
       BITMAPINFO* bi;
       bi=(BITMAPINFO*)malloc(sizeof(BITMAPINFOHEADER)+256*4);
@@ -69,14 +73,19 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
       bi->bmiHeader.biPlanes = 1;
       bi->bmiHeader.biBitCount = 8;
       bi->bmiHeader.biCompression = BI_RGB;
+      // build the palette
       for(int i=0;i<256;i++)
          bi->bmiColors[i]=(i << 16) + (i << 8) + i;
 
+      // get the framerate
       int frameRate=atoi(cam.getProperty("FrameRateSecond").c_str());
       if (frameRate<1) frameRate=1;
+      // build the stream
       aviStream_ = aviFile_->AddStream(AviStream::Video, bi, sizeof(BITMAPINFOHEADER)+256*4, BI_RGB, 1000*1000/frameRate);
       deinterlaceBuf_ =(unsigned char*)malloc(bi->bmiHeader.biSizeImage*sizeof(unsigned char));
+      // release the header
       free(bi);
+   // build header for rgb24
    } else {
       BITMAPINFOHEADER bi;
       memset(&bi, 0, sizeof(bi));
@@ -88,9 +97,12 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
       bi.biBitCount = 24;
       bi.biCompression = BI_RGB;
 
+      // get the framerate
       int frameRate=atoi(cam.getProperty("FrameRateSecond").c_str());
       if (frameRate<1) frameRate=1;
+      // build the stream
       aviStream_ = aviFile_->AddStream(AviStream::Video, &bi, sizeof(bi),BI_RGB,1000*1000/frameRate);
+      // alloc the frame buffer
       deinterlaceBuf_ =(unsigned char*)malloc(bi.biSizeImage*sizeof(unsigned char));
    }
 
@@ -99,6 +111,7 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
 }
 
 void QCamMovieAvi::closeImpl() {
+   // free all
    if(aviStream_) {
       delete aviFile_;
       aviFile_ = NULL;
@@ -109,17 +122,20 @@ void QCamMovieAvi::closeImpl() {
 }
 
 bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
-   BITMAPINFOHEADER bi;
 
+   // build the header
+   BITMAPINFOHEADER bi;
    memset(&bi, 0, sizeof(bi));
    bi.biSize = sizeof(bi);
    bi.biWidth = newFrame.size().width();
    bi.biHeight = newFrame.size().height();
+   // grey frame
    if(newFrame.getMode()==GreyFrame) {
       bi.biSizeImage =bi.biWidth*bi.biHeight;
       bi.biPlanes = 1;
       bi.biBitCount = 8;
       bi.biCompression = BI_RGB;
+   // rgb24
    } else {
       bi.biSizeImage =bi.biWidth*bi.biHeight*3;
       bi.biPlanes = 1;
@@ -127,20 +143,17 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
       bi.biCompression = BI_RGB;
    }
 
-   if(deinterlaceBuf_) {
-      if(newFrame.getMode()==GreyFrame) {
-         memcpy(deinterlaceBuf_,newFrame.Y(),bi.biSizeImage);
-         grey_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
-      } else {
-         yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
-         rgb24_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
-      }
-      aviStream_->AddChunk(deinterlaceBuf_,bi.biSizeImage,1);
-      return true;
+   // transform frames
+   if(newFrame.getMode()==GreyFrame) {
+      memcpy(deinterlaceBuf_,newFrame.Y(),bi.biSizeImage);
+      grey_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
    } else {
-      cerr << "no AVI buffer allocated." << endl;
-      return false;
+      yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
+      rgb24_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
    }
+   // add the frame
+   aviStream_->AddChunk(deinterlaceBuf_,bi.biSizeImage,1);
+   return true;
 }
 
 #endif

@@ -31,18 +31,25 @@ MA  02110-1301, USA.
 
 #include <avifile.h>
 
+// raw avi recording class
 class QCamMovieAvi : public QCamMovie {
 public:
    QCamMovieAvi();
    ~QCamMovieAvi();
-   QWidget * buildGUI(QWidget  * father);
+   QWidget* buildGUI(QWidget* father);
+   // open the stream
    bool openImpl(const string & seqName, const QCam & cam);
+   // close the stream
    void closeImpl();
+   // add a frame
    bool addImpl(const QCamFrame & newFrame, const QCam & cam);
 private:
-   mutable avm::IWriteFile *aviFile_;
-   mutable avm::IWriteStream *aviStream_;
-   mutable unsigned char *deinterlaceBuf_;
+   // file
+   mutable avm::IWriteFile* aviFile_;
+   // stream
+   mutable avm::IWriteStream* aviStream_;
+   // frame buffer
+   mutable unsigned char* deinterlaceBuf_;
 };
 
 #endif
