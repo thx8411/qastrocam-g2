@@ -151,7 +151,11 @@ int main(int argc, char ** argv) {
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
    string libPath;
-   string settingsFileName(".qastrocam-g2-settings");
+   string settingsFileName(".qastrocam-g2.conf");
+   string logFileName(".qastrocam-g2.log");
+
+   // cout redirection
+   FILE* logFile=freopen(logFileName.c_str(),"w",stdout);
 
    cout << qastrocamName << " " << qastroCamVersion
         << " (build "<<qastrocamBuild<<")"<<endl;

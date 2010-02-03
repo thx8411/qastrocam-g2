@@ -1,5 +1,6 @@
 4.7beta20100203
 
+  - cout is redirected to the file '.qastrocam-g2.log'
   - avi lossless recording added (huffyuv)
   - option '-i' not available anymore (now useless)
   - device source can now be changed in gui
