@@ -111,7 +111,7 @@ public:
    const map<string,string> & getProperties() const;
    /** build the GUI */
    virtual QWidget* buildGUI(QWidget * parent);
-   /** indicate thet the GUI have been build */
+   /** indicate the GUI have been build */
    bool guiBuild() const { return remoteCTRL_ != NULL; }
    QWidget * gui() { return remoteCTRL_;}
    const QString & label() const;
