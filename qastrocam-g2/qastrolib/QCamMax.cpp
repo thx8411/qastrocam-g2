@@ -53,14 +53,14 @@ void QCamMax::addNewFrame() {
       oriU=origFrame.U();
       oriV=origFrame.V();
    }
-   int uvLineSize=frameWidth/2 /* 2/2 */;
+   int uvLineSize=frameWidth;
    for(int i=0;i<frameSize;++i) {
       if (oriY[i] > locY[i]) {
          locY[i]=oriY[i];
          if (colorMode) {
             int x=i%frameWidth;
             int y=i/frameWidth;
-            int shift2=(y/2)*uvLineSize+(x/2);
+            int shift2=y*uvLineSize+x;
             locU[shift2]=oriU[shift2];
             locV[shift2]=oriV[shift2];
          }
