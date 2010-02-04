@@ -388,10 +388,8 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
       new QCamComboBox(tr("Num of Buffers"),
                        accumulationWidget_,
                        10,ActiveBufferList,NULL);
-   connect(this,SIGNAL(numOfBufferChange(int)),
-           remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
-   connect(remoteCTRLnumOfActiveBuffer_,SIGNAL(change(int)),
-           this,SLOT(setNumOfBuffer(int)));
+   connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
+   connect(remoteCTRLnumOfActiveBuffer_,SIGNAL(change(int)),this,SLOT(setNumOfBuffer(int)));
 
    bufferFill_= new QProgressBar(accumulationWidget_);
    bufferFill_->setCenterIndicator(true);
@@ -440,6 +438,8 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
            remoteCTRLminYvalue_,SLOT(setValue(int)));
    connect(remoteCTRLminYvalue_,SIGNAL(valueChange(int)),
            this,SLOT(setMinYvalue(int)));
+
+   //remoteCTRLnumOfActiveBuffer_->setCurrentItem(4);
 
    remoteCTRLnumOfActiveBuffer_->show();
    bufferFill_->show();
