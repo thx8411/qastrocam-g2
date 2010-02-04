@@ -51,6 +51,7 @@ MA  02110-1301, USA.
 #include "PPort.hpp"
 #include "QKingClient.hpp"
 #include "SettingsBackup.hpp"
+#include "QSetting.hpp"
 
 // options strings
 const string AccumOptionString("-a");
@@ -104,20 +105,25 @@ void usage(const char * progName) {
    cerr << endl;
 }
 
-// ??
-QTabWidget * getAllRemoteCTRL(QWidget * parent=0) {
-   static QTabWidget * allRemote = new QTabWidget(parent,"allRemoteCTRL");
+// tab widget
+QTabWidget* getAllRemoteCTRL(QWidget* parent=0) {
+   static QTabWidget* allRemote = new QTabWidget(parent,"allRemoteCTRL");
    return allRemote;
 }
 
-// ??
-void addRemoteCTRL(QCam * cam) {
+// add tab for cam object
+void addRemoteCTRL(QCam* cam) {
    getAllRemoteCTRL()->addTab(cam->buildGUI(getAllRemoteCTRL()),cam->label());
 }
 
-// ??
-void addRemoteCTRL(QCamClient * client) {
+// add tab for client object
+void addRemoteCTRL(QCamClient* client) {
    getAllRemoteCTRL()->addTab(client->buildGUI(getAllRemoteCTRL()),client->label());
+}
+
+// add tab for setting widget
+void addRemoteCTRL(QSetting* object) {
+   getAllRemoteCTRL()->addTab(object->buildGUI(getAllRemoteCTRL()),object->label());
 }
 
 int main(int argc, char ** argv) {
@@ -429,6 +435,11 @@ int main(int argc, char ** argv) {
       camSrc=camMax;
    }
 
+   // settings tab
+   QSetting* settingsTab;
+   settingsTab= new QSetting();
+   addRemoteCTRL(settingsTab);
+
    // main window display
    QCamUtilities::setQastrocamIcon(&mainWindow);
    mainWindow.show();
@@ -444,6 +455,7 @@ int main(int argc, char ** argv) {
       unlink(logFileName.c_str());
 
    // release all
+   delete settingsTab;
    delete theTelescope;
    delete kingClient;
    delete findShift;
