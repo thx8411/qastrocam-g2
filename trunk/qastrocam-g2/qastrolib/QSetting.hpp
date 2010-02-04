@@ -23,6 +23,10 @@ MA  02110-1301, USA.
 
 #include <qobject.h>
 #include <qwidget.h>
+#include <qhbox.h>
+#include <qhgroupbox.h>
+#include <qvgroupbox.h>
+#include <qpushbutton.h>
 
 // settings gui for qastrocam-g2
 
@@ -33,9 +37,19 @@ public :
    ~QSetting();
    virtual QWidget* buildGUI(QWidget * parent);
    const QString & label() const;
+public slots:
+   void saveSettings();
+   void restoreSettings();
 private :
-   QWidget* remoteCTRL_;
+   QVBox* remoteCTRL_;
    QString label_;
+   QHGroupBox* videoBox;
+   QVGroupBox* telescopeBox;
+   QVGroupBox* lxBox;
+   QVGroupBox* optionsBox;
+   QHBox* buttonsBox;
+   QPushButton* save;
+   QPushButton* restore;
 };
 
 #endif
