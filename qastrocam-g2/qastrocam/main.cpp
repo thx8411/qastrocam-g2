@@ -53,34 +53,28 @@ MA  02110-1301, USA.
 #include "SettingsBackup.hpp"
 
 // options strings
-const string BrutDisplayString("-db");
-const string PPortOptionString("-pc");
-const string HistogramOptionString("-h");
 const string AccumOptionString("-a");
-const string AccumDisplayString("-da");
 const string MirrorOptionString("-M");
-const string MirrorDisplayString("-dM");
 const string AutoAlignOptionString("-c");
-const string AutoAlignDisplayString("-dc");
 const string MaxOptionString("-m");
-const string MaxDisplayString("-dm");
 const string KingOption("-K");
 const string VideoDeviceOptionString("-dv");
 const string TelescopeTypeOption("-t");
 const string TelescopeDeviceOptionString("-dt");
 const string LongexposureDeviceOptionString("-dx");
+const string PPortOptionString("-pc");
 const string LxLevelsInvertedOptionString("--lx-levels-inverted");
 const string LxLevelsNormalOptionString("--lx-levels-normal");
 const string TsLevelsInvertedOptionString("--ts-levels-inverted");
 const string TsLevelsNormalOptionString("--ts-levels-normal");
 const string LibDirOptionString("--libdir");
 const string SDLon("--SDL");
-const string SDLoff("--noSDL");
 const string ExpertMode("--expert");
+const string LogMode("--log");
 const string ForceGeneric("-df");
 const string ForceSettings("-sf");
 
-// back object, present everywhere
+// backup object, present everywhere
 settingsBackup settings;
 
 // qastrocam-g2 usage
@@ -88,39 +82,25 @@ void usage(const char * progName) {
    cerr << "usage: "<< progName<< " <options>"<<endl;
    cerr << "\nValid options are:"<<endl;
    cerr << "  "<<ForceSettings<<" to set the settings file name to use\n";
-   cerr << "  "<<BrutDisplayString<<" to see the raw images from the cam\n";
-   cerr << "  "<<HistogramOptionString<<" to see the histogram of the image from the cam and focus level info (needs '-b')\n";
+   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
    cerr << "  "<<MirrorOptionString<<" to swap left/right top/bottom of the image\n";
-   cerr << "  "<<MirrorDisplayString<<" for options "<<MirrorOptionString
-        << " diplay the swapped frames.\n";
    cerr << "  "<<AccumOptionString<<" to stack the images\n";
-   cerr << "  "<<AccumDisplayString<<" for options "<<AccumOptionString
-        << " display the frame after the stacking process\n";
    cerr << "  "<<MaxOptionString<<" to simulate very long exposure on fixed mount\n";
    cerr << "     It keeps the max of each pixel\n";
-   cerr << "  "<<MaxDisplayString<<" for options "<<MaxOptionString
-        << " display the frame after the stacking process\n";
    cerr << "  "<<AutoAlignOptionString<<" for options "<<AccumOptionString<<" & "<<MaxOptionString<<" align the frames before stacking\n";
-   cerr << "  "<<AutoAlignDisplayString<<" for options "<<AutoAlignOptionString
-        << " display the frame after the Align process\n";
-   cerr << "  "<<VideoDeviceOptionString << " <deviceName> to choose the V4L device name.\n"
-	<< "     default is /dev/video0.\n";
-   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
-   cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n"
-	<< "     type 'help' will give the list of avaible telescope type\n";
-   cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope control device or file.\n"
-	<< "     default is /dev/ttyS1.\n";
-   cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n"
-        << "     default is /dev/ttyS0 or /dev/parport0.\n";
+   cerr << "  "<<KingOption<<" help to align the telescope with the king method.\n";
+   cerr << "  "<<VideoDeviceOptionString << " <deviceName> to choose the V4L device name.\n" << "     default is /dev/video0.\n";
+   cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n" << "     type 'help' will give the list of avaible telescope type\n";
+   cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope control device or file.\n" << "     default is /dev/ttyS1.\n";
+   cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n" << "     default is /dev/ttyS0 or /dev/parport0.\n";
    cerr << "  "<<LxLevelsInvertedOptionString<<" to invert polarity levels for serial and LED long exposure mods\n";
    cerr << "  "<<LxLevelsNormalOptionString<<" reset long exposure levels to non-inverted\n";
    cerr << "  "<<TsLevelsInvertedOptionString<<" to invert polarity levels for APM telescope\n";
    cerr << "  "<<TsLevelsNormalOptionString<<" reset APM levels to non-inverted\n";
    cerr << "  "<<LibDirOptionString<<" <directory> to set the library directory\n";
    cerr << "  "<<SDLon<<" use lib SDL to display frames (fast display).\n";
-   cerr << "  "<<SDLoff<<" don't use lib SDL to display frames (slow display).\n";
-   cerr << "  "<<KingOption<<" help to align the telescope with the king method.\n";
    cerr << "  "<<ExpertMode<<" enable some 'expert' options in the GUI\n";
+   cerr << "  "<<LogMode<<" Logs qastrocam-g2 in a file for debug purpose";
    cerr << endl;
 }
 
@@ -144,22 +124,27 @@ int main(int argc, char ** argv) {
    int i;
    // default options values
    bool accum=false,max=false,mirror=false;
-   bool brutDisplay=false,accumDisplay=false,maxDisplay=false,mirrorDisplay=false;
-   bool autoAlign=false,autoAlignDisplay=false;
-   bool histogram=false,telescope=false;
+   bool autoAlign=false;
+   bool telescope=false;
    bool kingOption=false;
    bool V4Lforce=false;
+   bool log=false;
    string videoDeviceName("/dev/video0");
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
    string libPath;
    string settingsFileName(".qastrocam-g2.conf");
-   string logFileName(".qastrocam-g2");
+   string logFileName("qastrocam-g2");
 
    // cout redirection
-   char pid[16];
-   sprintf(pid,"%i",getpid());
-   logFileName+="-"+string(pid)+".log";
+   char buff[30];
+   time_t timet;
+   time(&timet);
+   struct tm * t=gmtime(&timet);
+   snprintf(buff,30,"%04d.%02d.%02d-%02dh%02dm%02ds",
+            t->tm_year+1900,t->tm_mon+1,t->tm_mday,
+            t->tm_hour,t->tm_min,t->tm_sec);
+   logFileName+="-"+string(buff)+".log";
    FILE* logFile=freopen(logFileName.c_str(),"w",stdout);
 
    cout << qastrocamName << " " << qastroCamVersion
@@ -191,36 +176,20 @@ int main(int argc, char ** argv) {
 
    // decode all options
    for (i=1;i <argc;++i) {
-      if (BrutDisplayString == argv[i]) {
-         brutDisplay=true;
-      } else if (MirrorOptionString == argv[i]) {
-         mirror=true;
-      } else if (MirrorDisplayString == argv[i]) {
-         mirrorDisplay=true;
+      if (MirrorOptionString == argv[i]) {
          mirror=true;
       }  else if (AccumOptionString == argv[i]) {
          accum=true;
-      } else if (AccumDisplayString == argv[i]) {
-         accumDisplay=true;
-         accum=true;
       } else if (MaxOptionString == argv[i]) {
          max=true;
-      } else if (MaxDisplayString == argv[i]) {
-         maxDisplay=true;
-         max=true;
-      } else if (HistogramOptionString == argv[i]) {
-         histogram=true;
       } else if (AutoAlignOptionString == argv[i]) {
-         autoAlign=true;
-      } else if (AutoAlignDisplayString == argv[i]) {
-         autoAlignDisplay =true;
          autoAlign=true;
       } else if (SDLon == argv[i]) {
          QCamUtilities::useSDL(true);
-      } else if (SDLoff == argv[i]) {
-         QCamUtilities::useSDL(false);
       } else if (ExpertMode == argv[i]) {
          QCamUtilities::expertMode(true);
+      } else if (LogMode == argv[i]) {
+         log=true;
       } else if (ForceGeneric == argv[i]) {
          i++;
          if (i==argc) {
@@ -315,10 +284,8 @@ int main(int argc, char ** argv) {
    cout << endl;
 
    // use SDL messages
-   if (QCamUtilities::useSDL()) {
-	   cout << "SDL display enabled. (If only a black windows is displayed,"
-                << " try option "<<SDLoff<<" when launchnig qastrocam)\n";
-   }
+   if (QCamUtilities::useSDL())
+      cout << "SDL display enabled. (If only a black windows is displayed, try without " << SDLon << ")" << endl;
 
    // QT app settings
    QApplication app(argc,argv);
@@ -383,10 +350,6 @@ int main(int argc, char ** argv) {
       }
    } while (cam==NULL);
 
-   if (brutDisplay) {
-      cam->displayFrames(true);
-   }
-
    addRemoteCTRL(cam);
    cam->setCaptureFile("raw");
    QCam * camSrc=cam;
@@ -418,14 +381,6 @@ int main(int argc, char ** argv) {
       //GUI build later
       //tracker->buildGUI();
    }
-
-   // histogram creation
-   if (histogram) {
-      camSrc->displayHistogram(true);
-      //CamHistogram * histo= new CamHistogram(*camSrc);
-      //histo->show();
-   }
-
    QCamAutoAlign * autoAlignCam=NULL;
    // autoaligne creation
    if (autoAlign) {
@@ -434,10 +389,6 @@ int main(int argc, char ** argv) {
       autoAlignCam->setTracker(findShift);
       addRemoteCTRL(autoAlignCam);
       camSrc=autoAlignCam;
-
-      if (autoAlignDisplay) {
-         camSrc->displayFrames(true);
-      }
    }
 
    if (tracker) {
@@ -459,10 +410,6 @@ int main(int argc, char ** argv) {
       addRemoteCTRL(camMirror);
       camMirror->setCaptureFile("mirror");
       camSrc=camMirror;
-
-      if (mirrorDisplay) {
-         camSrc->displayFrames(true);
-      }
    }
 
    // accumulation module
@@ -472,10 +419,6 @@ int main(int argc, char ** argv) {
       addRemoteCTRL(camAdd);
       camAdd->setCaptureFile("add");
       camSrc=camAdd;
-
-      if (accumDisplay) {
-         camSrc->displayFrames(true);
-      }
    }
    QCam* camMax=NULL;
    if (max) {
@@ -484,10 +427,6 @@ int main(int argc, char ** argv) {
       addRemoteCTRL(camMax);
       camMax->setCaptureFile("max");
       camSrc=camMax;
-
-      if (maxDisplay) {
-         camSrc->displayFrames(true);
-      }
    }
 
    // main window display
@@ -499,6 +438,10 @@ int main(int argc, char ** argv) {
 
    // QT event loop
    app.exec();
+
+   // delete log file if needed
+   if(!log)
+      unlink(logFileName.c_str());
 
    // release all
    delete theTelescope;
