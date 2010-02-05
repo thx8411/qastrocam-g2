@@ -134,30 +134,12 @@ int main(int argc, char ** argv) {
    bool telescope=false;
    bool kingOption=false;
    bool V4Lforce=false;
-   bool log=false;
    string videoDeviceName("/dev/video0");
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
    string libPath;
    string settingsFileName(".qastrocam-g2.conf");
-   string logFileName("qastrocam-g2");
-
-   // cout redirection
-   char buff[30];
-   time_t timet;
-   time(&timet);
-   struct tm * t=gmtime(&timet);
-   snprintf(buff,30,"%04d.%02d.%02d-%02dh%02dm%02ds",
-            t->tm_year+1900,t->tm_mon+1,t->tm_mday,
-            t->tm_hour,t->tm_min,t->tm_sec);
-   logFileName+="-"+string(buff)+".log";
-   FILE* logFile=freopen(logFileName.c_str(),"w",stdout);
-
-   cout << qastrocamName << " " << qastroCamVersion
-        << " (build "<<qastrocamBuild<<")"<<endl;
-   cout << "* based on " << QCamUtilities::getVersionId() <<endl;
-   cout << "* " << qastrocamWeb << endl;
-   cout << "* " << qastrocamMail << endl;
+   string logFileName("/dev/null");
 
    // looking for settings name option first
    for(i=1;i<argc;i++) {
@@ -195,7 +177,14 @@ int main(int argc, char ** argv) {
       } else if (ExpertMode == argv[i]) {
          QCamUtilities::expertMode(true);
       } else if (LogMode == argv[i]) {
-         log=true;
+         char buff[30];
+         time_t timet;
+         time(&timet);
+         struct tm * t=gmtime(&timet);
+         snprintf(buff,30,"%04d.%02d.%02d-%02dh%02dm%02ds",
+            t->tm_year+1900,t->tm_mon+1,t->tm_mday,
+            t->tm_hour,t->tm_min,t->tm_sec);
+         logFileName="qastrocam-g2-"+string(buff)+".log";
       } else if (ForceGeneric == argv[i]) {
          i++;
          if (i==argc) {
@@ -270,7 +259,7 @@ int main(int argc, char ** argv) {
 
    // displays telescope liste
    if (telescopeType == "help") {
-      cout << "supported scopes:\n"
+      cerr << "supported scopes:\n"
            << "* apm\n"
            << "* autostar\n"
            << "* fifo\n"
@@ -279,6 +268,16 @@ int main(int argc, char ** argv) {
 	   << "* file\n";
       exit(0);
    }
+
+   // cout redirection
+   FILE* logFile=freopen(logFileName.c_str(),"w",stdout);
+
+   // for log trace
+   cout << qastrocamName << " " << qastroCamVersion
+        << " (build "<<qastrocamBuild<<")"<<endl;
+   cout << "* based on " << QCamUtilities::getVersionId() <<endl;
+   cout << "* " << qastrocamWeb << endl;
+   cout << "* " << qastrocamMail << endl;
 
    // setting path
    if (libPath.empty()) {
@@ -449,10 +448,6 @@ int main(int argc, char ** argv) {
 
    // QT event loop
    app.exec();
-
-   // delete log file if needed
-   if(!log)
-      unlink(logFileName.c_str());
 
    // release all
    delete settingsTab;
