@@ -121,13 +121,7 @@ bool QCam::saveFrame(const string& file) const {
    if (fileFormat=="FITS") {
       FitsImageCFITSIO fit(file+".fit");
             return fit.save(yuvFrame());
-   /*}  else if (fileFormat=="FITS-GZ") {
-      FitsImageCFITSIO fit= FitsImageCFITSIO(file+".fit.gz");
-      return fit.save(yuvFrame());*/
-   } else /*if (fileFormat=="AVI raw") {
-      cout << "AVI snapshots unsupported, using BMP instead" << endl;
-      return yuvFrame().colorImage().save((file+"."+"bmp"),"BMP", quality);
-   } else */
+   } else
       return yuvFrame().colorImage().save((file
                                            +"."
                                            +QString(fileFormat).lower().latin1()).c_str(),
