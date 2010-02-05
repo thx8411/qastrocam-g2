@@ -17,13 +17,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+// all these conversions use ITU-R formulas
+
 #include <stdlib.h>
 #include <string.h>
 #include "yuv.hpp"
 
 // yuv444 conversion tools
 
-int clip(int v) {
+int clip(double v) {
    if(v<0) return(0);
    if(v>255) return(255);
    return(v);
@@ -36,15 +38,15 @@ int clip(int v) {
 // rgb24 to yuv444 planar
 void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
    int p,size;
-   int R,G,B;
+   double R,G,B;
    size=h*w;
    for(p=0;p<size;p++) {
          R=src[p*3];
          G=src[p*3+1];
          B=src[p*3+2];
-         dstY[p]=((66*R+129*G+25*B+128)>>8)+16;
-         dstU[p]=((-38*R-74*G+112*B+128)>>8)+128;
-         dstV[p]=((112*R-94*G-18*B+128)>>8)+128;
+         dstY[p]=clip(0.299*R+0.587*G+0.114*B);
+         dstU[p]=clip(-0.169*R-0.331*G+0.499*B+128);
+         dstV[p]=clip(0.499*R-0.418*G-0.0813*B+128);
    }
 }
 
@@ -78,45 +80,45 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
 // yuv444 planar to rgb24
 void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst){
    int p,size;
-   int Y,U,V;
+   double Y,U,V;
    size=h*w;
    for(p=0;p<size;p++) {
-      Y=srcY[p]-16;
+      Y=srcY[p];
       U=srcU[p]-128;
       V=srcV[p]-128;
-      dst[p*3]=clip((298*Y+ 409*V+128)>>8);
-      dst[p*3+1]=clip((298*Y-100*U-208*V+128)>>8);
-      dst[p*3+2]=clip((298*Y+516*U+128)>>8);
+      dst[p*3]=clip(Y+1.402*V);
+      dst[p*3+1]=clip(Y-0.344*U-0.714*V);
+      dst[p*3+2]=clip(Y+1.772*U);
    }
 }
 
 // yuv444 planar to bgr24
 void yuv444_to_bgr24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst){
    int p,size;
-   int Y,U,V;
+   double Y,U,V;
    size=h*w;
    for(p=0;p<size;p++) {
-      Y=srcY[p]-16;
+      Y=srcY[p];
       U=srcU[p]-128;
       V=srcV[p]-128;
-      dst[p*3+2]=clip((298*Y+ 409*V+128)>>8);
-      dst[p*3+1]=clip((298*Y-100*U-208*V+128)>>8);
-      dst[p*3]=clip((298*Y+516*U+128)>>8);
+      dst[p*3+2]=clip(Y+1.402*V);
+      dst[p*3+1]=clip(Y-0.344*U-0.714*V);
+      dst[p*3]=clip(Y+1.772*U);
    }
 }
 
 // yuv444 planar to rgb32
 void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst){
    int p,size;
-   int Y,U,V;
+   double Y,U,V;
    size=h*w;
    for(p=0;p<size;p++) {
-      Y=srcY[p]-16;
+      Y=srcY[p];
       U=srcU[p]-128;
       V=srcV[p]-128;
-      dst[p*4]=clip((298*Y+516*U+128)>>8);
-      dst[p*4+1]=clip((298*Y-100*U-208*V+128)>>8);
-      dst[p*4+2]=clip((298*Y+ 409*V+128)>>8);
+      dst[p*4]=clip(Y+1.772*U);
+      dst[p*4+1]=clip(Y-0.344*U-0.714*V);
+      dst[p*4+2]=clip(Y+1.402*V);
       dst[p*4+3]=0;
    }
 }

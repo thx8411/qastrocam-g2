@@ -1,5 +1,6 @@
-4.7beta20100204
+4.7beta20100205
 
+  - better color conversions
   - some options removed/changed (can be accessed by gui)
   - cout is redirected to a log file
   - avi lossless recording added (huffyuv)
