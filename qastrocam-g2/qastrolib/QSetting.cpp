@@ -37,11 +37,11 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(videoBox,10);
 
    // telescope box
-   telescopeBox=new QVGroupBox("Telescope control",remoteCTRL_);
+   telescopeBox=new QHGroupBox("Telescope control",remoteCTRL_);
    remoteCTRL_->setStretchFactor(telescopeBox,10);
 
    // long exposure box
-   lxBox=new QVGroupBox("Longue exposure",remoteCTRL_);
+   lxBox=new QHGroupBox("Longue exposure",remoteCTRL_);
    remoteCTRL_->setStretchFactor(lxBox,10);
 
    // options box
