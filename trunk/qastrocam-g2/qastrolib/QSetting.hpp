@@ -44,8 +44,8 @@ private :
    QVBox* remoteCTRL_;
    QString label_;
    QHGroupBox* videoBox;
-   QVGroupBox* telescopeBox;
-   QVGroupBox* lxBox;
+   QHGroupBox* telescopeBox;
+   QHGroupBox* lxBox;
    QVGroupBox* optionsBox;
    QHBox* buttonsBox;
    QPushButton* save;
