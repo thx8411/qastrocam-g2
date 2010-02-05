@@ -22,6 +22,9 @@ MA  02110-1301, USA.
 
 // yuv444 conversion tools
 
+// clip value between 0 and 255
+int clip(double v);
+
 //
 // TO YUV444
 //

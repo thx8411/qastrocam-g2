@@ -121,7 +121,7 @@ int getPixelColor(int x,int y,int mode) {
 
 // rgb raw to yuv 4:4:4 color conversion
 void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* data, const int w, const int h, int mode) {
-   int red, green, blue;
+   double red, green, blue;
    int pixelOffset;
    int rowOffset=1;
    int lineOffset=w;
@@ -130,9 +130,9 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
          pixelOffset=(y*w+x);
          // manage edges
          if((x==0)||(x==w-1)||(y==0)||(y==h-1)) {
-            red=0;
-            green=0;
-            blue=0;
+            red=0.0;
+            green=0.0;
+            blue=0.0;
          } else {
             switch(getPixelColor(x,y,mode)) {
                case RED :
@@ -169,9 +169,9 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
                   break;
             }
          }
-         Y[pixelOffset]=((66*red+129*green+25*blue+128)>>8) + 16;
-         U[pixelOffset]=((-38*red-74*green+112*blue+128)>>8) + 128;
-         V[pixelOffset]=((112*red-94*green-18*blue+128)>>8) + 128;
+         Y[pixelOffset]=clip(0.299*red+0.587*green+0.114*blue);
+         U[pixelOffset]=clip(-0.169*red-0.331*green+0.499*blue+128);
+         V[pixelOffset]=clip(0.499*red-0.418*green-0.0813*blue+128);
       }
    }
 }
