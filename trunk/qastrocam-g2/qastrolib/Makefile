@@ -32,8 +32,8 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
          QCamAutoGuidage.o QCamAutoGuidageSimple.o QCamAutoAlign.o \
          QCamMax.o QCamFindShift_hotSpot.o QVectorMap.o QCamComboBox.o \
          QCamTrans.o  FrameMirror.o FrameAlgo.o QCamOV511.o \
-         QGridBox.o QDirectoryChooser.o QBlink.o QSetting.o\
-         QCamDisplayImplSDL.o QTelescopeFifo.o \
+         QGridBox.o QDirectoryChooser.o QBlink.o QSetting.o \
+         QCamDisplayImplSDL.o QTelescopeFifo.o QFileChooser.o \
 	 QKingClient.o QTelescopeMCU.o QTelescopeMTS.o QTelescopeFile.o
 
 OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
