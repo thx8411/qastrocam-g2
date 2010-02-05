@@ -338,100 +338,93 @@ int main(int argc, char ** argv) {
    }
 
    // capture module creation
-   QCam  * cam =NULL;
-   do {
-      cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),V4Lforce);
-      if (cam == NULL) {
-         static QMessageBox mb("Qastrocam-g2",
-			      QMessageBox::tr("No camera detected (did you plug it?)"),
-			      QMessageBox::Critical,
-			      QMessageBox::Retry | QMessageBox::Default,
-			      QMessageBox::Abort  | QMessageBox::Escape,
-			      QMessageBox::NoButton);
-         if ( mb.exec() == QMessageBox::Abort ) {
-            cerr << "No camera detected" <<endl;
-            exit(1);
-         }
-      }
-   } while (cam==NULL);
+   QCam* cam =NULL;
+   cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),V4Lforce);
+   if (cam == NULL) {
+      QMessageBox::information(0,"Qastrocam-g2","No camera detected\nSettings panel only");
+      cout << "No camera detected" <<endl;
+   }
 
-   addRemoteCTRL(cam);
-   cam->setCaptureFile("raw");
-   QCam * camSrc=cam;
-
-   // King client object creation
    QKingClient * kingClient=NULL;
-   if (kingOption) {
-      cout << "King aligment enabled\n";
-      kingClient=new QKingClient();
-      sleep(1);
-      kingClient->connectCam(*camSrc);
-      //addRemoteCTRL(kingClient);
-      kingClient->buildGUI(NULL)->show();
-   }
-
-   // alignement object
    QCamFindShift * findShift=NULL;
-   if (theTelescope || autoAlign) {
-      //QCamFindShift * baryShift=new QCamFindShift_barycentre();
-      findShift=new QCamFindShift_hotSpot(theTelescope);
-      findShift->connectCam(*camSrc);
-   }
    QCamAutoGuidage * tracker=NULL;
-   if (theTelescope) {
-      tracker = new QCamAutoGuidageSimple();
-      tracker->setCam(camSrc);
-      tracker->setTracker(findShift);
-      tracker->setScope(theTelescope);
-      //GUI build later
-      //tracker->buildGUI();
-   }
    QCamAutoAlign * autoAlignCam=NULL;
-   // autoaligne creation
-   if (autoAlign) {
-      assert(findShift);
-      autoAlignCam=new QCamAutoAlign();
-      autoAlignCam->setTracker(findShift);
-      addRemoteCTRL(autoAlignCam);
-      camSrc=autoAlignCam;
-   }
-
-   if (tracker) {
-      if (autoAlign) {
-         tracker->buildGUI(camSrc->gui());
-      } else {
-         tracker->buildGUI();
-      }
-   }
-
-   // mirror module
    QCamTrans  * camMirror=NULL;
    FrameMirror * mirrorAlgo=NULL;
-   if (mirror) {
-      camMirror = new QCamTrans();
-      mirrorAlgo = new FrameMirror();
-      camMirror->connectCam(*camSrc);
-      camMirror->connectAlgo(*mirrorAlgo);
-      addRemoteCTRL(camMirror);
-      camMirror->setCaptureFile("mirror");
-      camSrc=camMirror;
-   }
-
-   // accumulation module
    QCam* camAdd=NULL;
-   if (accum) {
-      camAdd = new QCamAdd(camSrc);
-      addRemoteCTRL(camAdd);
-      camAdd->setCaptureFile("add");
-      camSrc=camAdd;
-   }
    QCam* camMax=NULL;
-   if (max) {
-      //creation du module d'acumulation
-      camMax = new QCamMax(camSrc);
-      addRemoteCTRL(camMax);
-      camMax->setCaptureFile("max");
-      camSrc=camMax;
+
+   if(cam!=NULL) {
+      addRemoteCTRL(cam);
+      cam->setCaptureFile("raw");
+      QCam * camSrc=cam;
+
+      // King client object creation
+      if (kingOption) {
+         cout << "King aligment enabled\n";
+         kingClient=new QKingClient();
+         sleep(1);
+         kingClient->connectCam(*camSrc);
+         //addRemoteCTRL(kingClient);
+         kingClient->buildGUI(NULL)->show();
+      }
+
+      // alignement object
+      if (theTelescope || autoAlign) {
+         //QCamFindShift * baryShift=new QCamFindShift_barycentre();
+         findShift=new QCamFindShift_hotSpot(theTelescope);
+         findShift->connectCam(*camSrc);
+      }
+      if (theTelescope) {
+         tracker = new QCamAutoGuidageSimple();
+         tracker->setCam(camSrc);
+         tracker->setTracker(findShift);
+         tracker->setScope(theTelescope);
+         //GUI build later
+         //tracker->buildGUI();
+      }
+      // autoaligne creation
+      if (autoAlign) {
+         assert(findShift);
+         autoAlignCam=new QCamAutoAlign();
+         autoAlignCam->setTracker(findShift);
+         addRemoteCTRL(autoAlignCam);
+         camSrc=autoAlignCam;
+      }
+
+      if (tracker) {
+         if (autoAlign) {
+            tracker->buildGUI(camSrc->gui());
+         } else {
+            tracker->buildGUI();
+         }
+      }
+
+      // mirror module
+      if (mirror) {
+         camMirror = new QCamTrans();
+         mirrorAlgo = new FrameMirror();
+         camMirror->connectCam(*camSrc);
+         camMirror->connectAlgo(*mirrorAlgo);
+         addRemoteCTRL(camMirror);
+         camMirror->setCaptureFile("mirror");
+         camSrc=camMirror;
+      }
+
+      // accumulation module
+      if (accum) {
+         camAdd = new QCamAdd(camSrc);
+         addRemoteCTRL(camAdd);
+         camAdd->setCaptureFile("add");
+         camSrc=camAdd;
+      }
+      if (max) {
+         //creation du module d'acumulation
+         camMax = new QCamMax(camSrc);
+         addRemoteCTRL(camMax);
+         camMax->setCaptureFile("max");
+         camSrc=camMax;
+      }
    }
 
    // settings tab
