@@ -25,24 +25,33 @@ MA  02110-1301, USA.
 
 using namespace std;
 
-#define NB_RECORDS	32
+#define NB_RECORDS	64
 
 // store settings as a pair of strings : key<tab>value
 // strings may contain spaces
 //
 // known and used keys :
 //
-// FILE_FORMAT
-// FRAME_RESOLUTION
-// RAW_MODE
-// LX_LEVELS_INVERTED
-// LX_LEVELS_INVERTED
-// TS_LEVELS_INVERTED
-// SOURCE_<name>
-// PALETTE
-// TELESCOPE_DEVICE
-// LX_DEVICE
-// FORCE_V4LGENERIC
+// device dependent :
+//
+// SOURCE_* <name>
+// PALETTE_* <rgb24/yuyv/yuv420/grey/BA81>
+// RAW_MODE_* <Grey/Raw color GR/Raw color RG (Vesta)/Raw color BG (TUC)/Raw color GB/RGB>
+//
+// global :
+//
+// FILE_FORMAT <FITS/AVI raw/AVI huff/BMP/PNG>
+// FRAME_RESOLUTION <width>x<heigt>
+// LX_LEVELS_INVERTED <yes/no>
+// TS_LEVELS_INVERTED <yes/no>
+// TELESCOPE_DEVICE <file>
+// LX_DEVICE <file>
+// FORCE_V4LGENERIC <yes/no>
+// SDL <yes/no>
+// EXPERT <yes/no>
+// LOG <yes/no>
+// TELESCOPE <none/apm/autostar/fifo/mcu/mts/file>
+// VIDEO_DEVICE <file>
 
 class settingsBackup {
    private :
