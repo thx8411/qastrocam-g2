@@ -27,6 +27,14 @@ MA  02110-1301, USA.
 #include <qhgroupbox.h>
 #include <qvgroupbox.h>
 #include <qpushbutton.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
+#include <qlayout.h>
+#include <qlabel.h>
+
+#include "QDirectoryChooser.hpp"
+#include "QFileChooser.hpp"
+#include "QCamComboBox.hpp"
 
 // settings gui for qastrocam-g2
 
@@ -44,9 +52,35 @@ private :
    QVBox* remoteCTRL_;
    QString label_;
    QHGroupBox* videoBox;
-   QHGroupBox* telescopeBox;
+   QLabel* videoDeviceLabel;
+   QLineEdit* videoDeviceEntry;
+   QFileChooser* videoDeviceChooser;
+   QVGroupBox* telescopeBox;
+   QHBox* lineOne;
+   QHBox* lineTwo;
+   QLabel* telescopeListLabel;
+   QCamComboBox* telescopeList;
+   QLabel* telescopeDeviceLabel;
+   QLineEdit* telescopeDeviceEntry;
+   QFileChooser* telescopeDeviceChooser;
+   QCheckBox* telescopeLevels;
    QHGroupBox* lxBox;
+   QLabel* lxDeviceLabel;
+   QLineEdit* lxDeviceEntry;
+   QFileChooser* lxDeviceChooser;
+   QCheckBox* lxLevels;
    QVGroupBox* optionsBox;
+   //QGridLayout* optionsGrid;
+   QHBox* lineThree;
+   QHBox* lineFour;
+   QCheckBox* optionsSdl;
+   QCheckBox* optionsExpert;
+   QCheckBox* optionsLog;
+   QCheckBox* optionsForceGeneric;
+   QHBox* libBox;
+   QLabel* libpathLabel;
+   QLineEdit* libpathEntry;
+   QDirectoryChooser* libpathChooser;
    QHBox* buttonsBox;
    QPushButton* save;
    QPushButton* restore;
