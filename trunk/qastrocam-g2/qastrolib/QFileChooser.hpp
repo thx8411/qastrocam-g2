@@ -34,10 +34,12 @@ class QFileChooser : public QPushButton {
 public:
    QFileChooser(QWidget * parent=0,int type=1);
    ~QFileChooser();
+   void setType(int type);
+private:
+   int fileType;
 private slots:
    void selectFile();
    void setFile(const QString &);
-   int fileType;
 signals:
    void fileChanged(const QString &);
 };

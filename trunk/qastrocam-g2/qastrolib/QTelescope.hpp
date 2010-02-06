@@ -56,7 +56,7 @@ private:
    QPushButton * leftButton_;
    QPushButton * rightButton_;
    /** copy constructor not implemented. */
-   QTelescope(const QTelescope&); 
+   QTelescope(const QTelescope&);
 public slots:
    /// move East
    virtual void goE(float shift)=0;

@@ -59,7 +59,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
    lineOne->setStretchFactor(telescopeListLabel,0);
    int telescopeTable[]={0,1,2,3,4,5,6};
-   const char* telescopeLabel[]={"none","apm","autostar","fifo","mcu","mts","file"};
+   const char* telescopeLabel[]={"none","autostar","mcu","mts","apn","fifo","file"};
    telescopeList=new QCamComboBox("telescope type : ",lineOne,7,telescopeTable,telescopeLabel);
    lineOne->setStretchFactor(telescopeList,10);
    padding1=new QWidget(lineOne);
@@ -302,7 +302,13 @@ void QSetting::changeTelescope(int index) {
       telescopeDeviceEntry->setEnabled(false);
       telescopeDeviceChooser->setEnabled(false);
       telescopeLevels->setEnabled(false);
+   } else if(telescopeList->currentText()==QString("file")||telescopeList->currentText()==QString("fifo")) {
+      telescopeDeviceEntry->setEnabled(true);
+      telescopeDeviceChooser->setType(REGULAR_FILE);
+      telescopeDeviceChooser->setEnabled(true);
+      telescopeLevels->setEnabled(false);
    } else {
+      telescopeDeviceChooser->setType(DEVICE_FILE);
       telescopeDeviceEntry->setEnabled(true);
       telescopeDeviceChooser->setEnabled(true);
       telescopeLevels->setEnabled(true);

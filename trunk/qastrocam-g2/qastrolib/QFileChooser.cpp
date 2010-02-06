@@ -44,6 +44,10 @@ QFileChooser::QFileChooser(QWidget * parent, int type):
 QFileChooser::~QFileChooser() {
 }
 
+void QFileChooser::setType(int type) {
+   fileType=type;
+}
+
 void QFileChooser::selectFile() {
    setDisabled(true);
    QString newFile;
@@ -58,10 +62,10 @@ void QFileChooser::selectFile() {
    } else {
       newFile  = QFileDialog::getSaveFileName(
          get_current_dir_name(),
-         "Devices/Files (*)",
+         "Files (*)",
          this,
-         "get device or set a file name",
-         "Choose a device/file");
+         "get a file name",
+         "Choose a file");
    }
    setDisabled(false);
    if (!newFile.isEmpty() && !newFile.isNull()) {
