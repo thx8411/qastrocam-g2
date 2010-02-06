@@ -222,6 +222,7 @@ void QSetting::saveSettings() {
    restore->setEnabled(false);
 
    // save fields
+
    // entries
    if(!videoDeviceEntry->text().isEmpty())
       settings.setKey("VIDEO_DEVICE",videoDeviceEntry->text().latin1());

@@ -63,10 +63,8 @@ const string VideoDeviceOptionString("-dv");
 const string TelescopeTypeOption("-t");
 const string TelescopeDeviceOptionString("-dt");
 const string LongexposureDeviceOptionString("-dx");
-const string LxLevelsInvertedOptionString("--lx-levels-inverted");
-const string LxLevelsNormalOptionString("--lx-levels-normal");
-const string TsLevelsInvertedOptionString("--ts-levels-inverted");
-const string TsLevelsNormalOptionString("--ts-levels-normal");
+const string LxLevelsInvertedOptionString("--lx-levels");
+const string TsLevelsInvertedOptionString("--ts-levels");
 const string LibDirOptionString("--libdir");
 const string SDLon("--sdl");
 const string ExpertMode("--expert");
@@ -92,14 +90,12 @@ void usage(const char * progName) {
    cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n" << "     type 'help' will give the list of avaible telescope type\n";
    cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope control device or file.\n" << "     default is /dev/ttyS1.\n";
    cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n" << "     default is /dev/ttyS0 or /dev/parport0.\n\n";
-   cerr << "  "<<LxLevelsInvertedOptionString<<" to invert polarity levels for serial and LED long exposure mods\n";
-   cerr << "  "<<LxLevelsNormalOptionString<<" reset long exposure levels to non-inverted\n";
-   cerr << "  "<<TsLevelsInvertedOptionString<<" to invert polarity levels for APM telescope\n";
-   cerr << "  "<<TsLevelsNormalOptionString<<" reset APM levels to non-inverted\n\n";
+   cerr << "  "<<LxLevelsInvertedOptionString<<" <yes/no> to invert polarity levels for serial and LED long exposure mods\n";
+   cerr << "  "<<TsLevelsInvertedOptionString<<" <yes/no> to invert polarity levels for APM telescope\n";
    cerr << "  "<<LibDirOptionString<<" <directory> to set the library directory\n";
-   cerr << "  "<<SDLon<<" use lib SDL to display frames (fast display).\n";
-   cerr << "  "<<ExpertMode<<" enable some 'expert' options in the GUI\n";
-   cerr << "  "<<LogMode<<" Logs qastrocam-g2 in a file for debug purpose\n";
+   cerr << "  "<<SDLon<<" <yes/no> use lib SDL to display frames (fast display).\n";
+   cerr << "  "<<ExpertMode<<" <yes/no> enable some 'expert' options in the GUI\n";
+   cerr << "  "<<LogMode<<" <yes/no> Logs qastrocam-g2 in a file for debug purpose\n";
    cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
    cerr << endl;
 }
@@ -130,7 +126,6 @@ int main(int argc, char ** argv) {
    // default options values
    bool accum=false,max=false,mirror=false;
    bool autoAlign=false;
-   bool telescope=false;
    bool kingOption=false;
    bool V4Lforce=false;
    string videoDeviceName("/dev/video0");
@@ -158,32 +153,29 @@ int main(int argc, char ** argv) {
    // reading settings
    settings.deSerialize();
 
-   // set telescope device, using settings
-   if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
-
    // decode all options
    for (i=1;i <argc;++i) {
-      if (MirrorOptionString == argv[i]) {
+      // settings file
+      if (ForceSettings== argv[i]) {
+         ++i;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         // nothing to be done
+         // allready scanned
+
+      // cam clients options
+      } else if (MirrorOptionString == argv[i]) {
          mirror=true;
-      }  else if (AccumOptionString == argv[i]) {
+      } else if (AccumOptionString == argv[i]) {
          accum=true;
       } else if (MaxOptionString == argv[i]) {
          max=true;
       } else if (AutoAlignOptionString == argv[i]) {
          autoAlign=true;
-      } else if (SDLon == argv[i]) {
-         QCamUtilities::useSDL(true);
-      } else if (ExpertMode == argv[i]) {
-         QCamUtilities::expertMode(true);
-      } else if (LogMode == argv[i]) {
-         char buff[30];
-         time_t timet;
-         time(&timet);
-         struct tm * t=gmtime(&timet);
-         snprintf(buff,30,"%04d.%02d.%02d-%02dh%02dm%02ds",
-            t->tm_year+1900,t->tm_mon+1,t->tm_mday,
-            t->tm_hour,t->tm_min,t->tm_sec);
-         logFileName="qastrocam-g2-"+string(buff)+".log";
+      } else if ( KingOption == argv[i]) {
+         kingOption=true;
       } else if (ForceGeneric == argv[i]) {
          i++;
          if (i==argc) {
@@ -194,61 +186,83 @@ int main(int argc, char ** argv) {
             settings.setKey("FORCE_V4LGENERIC","yes");
          else
             settings.setKey("FORCE_V4LGENERIC","no");
-      } else if (VideoDeviceOptionString == argv[i]) {
-         ++i;
-         if (i==argc) {
-            usage(argv[0]);
-            exit(1);
-         }
-	 videoDeviceName=argv[i];
-      } else if ( TelescopeTypeOption == argv[i]) {
-         ++i;
-         if (i==argc) {
-            usage(argv[0]);
-            exit(1);
-         }
-	 telescopeType=argv[i];
-         telescope=true;
       } else if ( TelescopeDeviceOptionString == argv[i]) {
          ++i;
           if (i==argc) {
             usage(argv[0]);
             exit(1);
          }
-	 telescopeDeviceName=argv[i];
          settings.setKey("TELESCOPE_DEVICE",argv[i]);
       } else if ( LongexposureDeviceOptionString == argv[i]) {
-	 ++i;
-	  if(i==argc) {
-	    usage(argv[0]);
+         ++i;
+          if(i==argc) {
+            usage(argv[0]);
             exit(1);
-	 }
+         }
          settings.setKey("LX_DEVICE",argv[i]);
       } else if ( LxLevelsInvertedOptionString == argv[i]) {
-         settings.setKey("LX_LEVELS_INVERTED","yes");
-      } else if ( LxLevelsNormalOptionString == argv[i]) {
-         settings.setKey("LX_LEVELS_INVERTED","no");
+         ++i;
+          if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("LX_LEVELS_INVERTED",argv[i]);
       } else if ( TsLevelsInvertedOptionString == argv[i]) {
-         settings.setKey("TS_LEVELS_INVERTED","yes");
-      } else if ( TsLevelsNormalOptionString == argv[i]) {
-         settings.setKey("TS_LEVELS_INVERTED","no");
+         ++i;
+          if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("TS_LEVELS_INVERTED",argv[i]);
+      } else if (VideoDeviceOptionString == argv[i]) {
+         ++i;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("VIDEO_DEVICE",argv[i]);
+      } else if (SDLon == argv[i]) {
+         ++i;
+          if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("SDL",argv[i]);
+      } else if (ExpertMode == argv[i]) {
+         ++i;
+          if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("EXPERT",argv[i]);
+       } else if (VideoDeviceOptionString == argv[i]) {
+         ++i;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("VIDEO_DEVICE",argv[i]);
+      } else if (LogMode == argv[i]) {
+         ++i;
+          if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("LOG",argv[i]);
       } else if ( LibDirOptionString == argv[i]) {
          ++i;
          if (i==argc) {
             usage(argv[0]);
             exit(1);
          }
-         libPath=argv[i];
-      } else if ( KingOption == argv[i]) {
-         kingOption=true;
-      } else if (ForceSettings== argv[i]) {
+         settings.setKey("LIB_PATH",argv[i]);
+      } else if ( TelescopeTypeOption == argv[i]) {
          ++i;
          if (i==argc) {
             usage(argv[0]);
             exit(1);
          }
-         // nothing to be done
-         // allready scanned
+	 settings.setKey("TELESCOPE",argv[i]);
       } else {
          cerr << "Invalid option '"<<argv[i]<<"'"<<endl;
          usage(argv[0]);
@@ -256,9 +270,28 @@ int main(int argc, char ** argv) {
       }
    }
 
+   // set devices/options, using settings
+   if(settings.haveKey("VIDEO_DEVICE")) videoDeviceName=settings.getKey("VIDEO_DEVICE");
+   if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
+   if(settings.haveKey("SDL")&&string(settings.getKey("SDL"))=="yes") QCamUtilities::useSDL(true);
+   if(settings.haveKey("EXPERT")&&string(settings.getKey("EXPERT"))=="yes") QCamUtilities::expertMode(true);
+   if(settings.haveKey("LOG")&&string(settings.getKey("LOG"))=="yes") {
+      char buff[30];
+         time_t timet;
+         time(&timet);
+         struct tm * t=gmtime(&timet);
+         snprintf(buff,30,"%04d.%02d.%02d-%02dh%02dm%02ds",
+            t->tm_year+1900,t->tm_mon+1,t->tm_mday,
+            t->tm_hour,t->tm_min,t->tm_sec);
+         logFileName="qastrocam-g2-"+string(buff)+".log";
+   }
+   if(settings.haveKey("LIB_PATH")) libPath=settings.getKey("LIB_PATH");
+   if(settings.haveKey("TELESCOPE")) telescopeType=settings.getKey("TELESCOPE");
+
    // displays telescope liste
    if (telescopeType == "help") {
       cerr << "supported scopes:\n"
+           << "* none\n"
            << "* apm\n"
            << "* autostar\n"
            << "* fifo\n"
@@ -307,6 +340,7 @@ int main(int argc, char ** argv) {
    getAllRemoteCTRL(&mainWindow);
 
    // creating telescope object
+   if(telescopeType=="none") telescopeType="";
    QTelescope * theTelescope=NULL;
    if (telescopeType.length() != 0) {
       if (telescopeType=="autostar") {

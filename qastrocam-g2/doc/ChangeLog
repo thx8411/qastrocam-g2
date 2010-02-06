@@ -1,5 +1,6 @@
-4.7beta20100205
+4.7beta20100206
 
+  - settings can be changed in gui
   - better color conversions
   - some options removed/changed (can be accessed by gui)
   - cout is redirected to a log file

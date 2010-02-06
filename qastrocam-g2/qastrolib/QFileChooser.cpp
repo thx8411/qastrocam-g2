@@ -52,6 +52,7 @@ void QFileChooser::selectFile() {
    setDisabled(true);
    QString newFile;
 
+   // device dialog box
    if(fileType==DEVICE_FILE) {
       newFile  = QFileDialog::getOpenFileName(
          "/dev/",
@@ -59,6 +60,7 @@ void QFileChooser::selectFile() {
          this,
          "get device",
          "Choose a device");
+   // file dialog box
    } else {
       newFile  = QFileDialog::getSaveFileName(
          get_current_dir_name(),
