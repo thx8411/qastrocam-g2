@@ -18,9 +18,11 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 #include <qvbox.h>
+#include <qmessagebox.h>
 
 #include "QSetting.moc"
 
+#include "QCamUtilities.hpp"
 #include "SettingsBackup.hpp"
 
 // settings object, needed everywhere
@@ -56,9 +58,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    lineOne->setStretchFactor(padding0,5);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
    lineOne->setStretchFactor(telescopeListLabel,0);
-   int telescopeTable[]={0,1,2,3,4,5};
-   const char* telescopeLabel[]={"apm","autostar","fifo","mcu","mts","file"};
-   telescopeList=new QCamComboBox("telescope type : ",lineOne,6,telescopeTable,telescopeLabel);
+   int telescopeTable[]={0,1,2,3,4,5,6};
+   const char* telescopeLabel[]={"none","apm","autostar","fifo","mcu","mts","file"};
+   telescopeList=new QCamComboBox("telescope type : ",lineOne,7,telescopeTable,telescopeLabel);
    lineOne->setStretchFactor(telescopeList,10);
    padding1=new QWidget(lineOne);
    lineOne->setStretchFactor(padding1,5);
@@ -138,7 +140,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    connect(optionsForceGeneric,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
 
    // combobox connection
-   connect(telescopeList,SIGNAL(activated(int)),this,SLOT(hasChanged()));
+   connect(telescopeList,SIGNAL(activated(int)),this,SLOT(changeTelescope(int)));
 
    return(remoteCTRL_);
 }
@@ -148,17 +150,123 @@ const QString & QSetting::label() const {
 }
 
 void QSetting::fillFields() {
-   // TODO
+
+   // entries
+   if(settings.haveKey("VIDEO_DEVICE"))
+      videoDeviceEntry->setText(settings.getKey("VIDEO_DEVICE"));
+   else {
+      videoDeviceEntry->setText("/dev/video0");
+      hasChanged();
+   }
+   if(settings.haveKey("TELESCOPE_DEVICE"))
+      telescopeDeviceEntry->setText(settings.getKey("TELESCOPE_DEVICE"));
+   else {
+     telescopeDeviceEntry->setText("/dev/ttyS1");
+      hasChanged();
+   }
+   if(settings.haveKey("LX_DEVICE"))
+      lxDeviceEntry->setText(settings.getKey("LX_DEVICE"));
+   else {
+      lxDeviceEntry->setText("/dev/ttyS0");
+      hasChanged();
+   }
+   if(settings.haveKey("LIB_PATH"))
+      libpathEntry->setText(settings.getKey("LIB_PATH"));
+   else {
+      libpathEntry->setText(QCamUtilities::basePathName());
+      hasChanged();
+   }
+
+   // combobox
+   if(settings.haveKey("TELESCOPE")) {
+      telescopeList->setCurrentText(settings.getKey("TELESCOPE"));
+      changeTelescope(-1);
+   } else {
+      telescopeList->setCurrentText("none");
+      changeTelescope(-1);
+   }
+
+   // checkboxs
+   if(settings.haveKey("TS_LEVELS_INVERTED"))
+      telescopeLevels->setChecked(string(settings.getKey("TS_LEVELS_INVERTED"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("LX_LEVELS_INVERTED"))
+      lxLevels->setChecked(string(settings.getKey("LX_LEVELS_INVERTED"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("SDL"))
+      optionsSdl->setChecked(string(settings.getKey("SDL"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("EXPERT"))
+      optionsExpert->setChecked(string(settings.getKey("EXPERT"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("LOG"))
+      optionsLog->setChecked(string(settings.getKey("LOG"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("FORCE_V4LGENERIC"))
+      optionsForceGeneric->setChecked(string(settings.getKey("FORCE_V4LGENERIC"))=="yes");
+   else
+      hasChanged();
 }
 
 // slots
 
 void QSetting::saveSettings() {
+   QString temp;
+
    save->setEnabled(false);
    restore->setEnabled(false);
 
    // save fields
-   // TODO
+   // entries
+   if(!videoDeviceEntry->text().isEmpty())
+      settings.setKey("VIDEO_DEVICE",videoDeviceEntry->text().latin1());
+   if(!telescopeDeviceEntry->text().isEmpty())
+      settings.setKey("TELESCOPE_DEVICE",telescopeDeviceEntry->text().latin1());
+   if(!lxDeviceEntry->text().isEmpty())
+      settings.setKey("LX_DEVICE",lxDeviceEntry->text().latin1());
+   if(!libpathEntry->text().isEmpty())
+      settings.setKey("LIB_PATH",libpathEntry->text().latin1());
+   // combo
+   settings.setKey("TELESCOPE",telescopeList->currentText().latin1());
+   // checkboxes
+   if(telescopeLevels->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("TS_LEVELS_INVERTED",temp.latin1());
+   if(lxLevels->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("LX_LEVELS_INVERTED",temp.latin1());
+   if(optionsSdl->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("SDL",temp.latin1());
+   if(optionsExpert->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("EXPERT",temp.latin1());
+   if(optionsLog->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("LOG",temp.latin1());
+   if(optionsForceGeneric->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("FORCE_V4LGENERIC",temp.latin1());
+
+   // message box
+   QMessageBox::information(0,"Qastrocam-g2","Please restart Qastrocam-g2\nto get the new settings");
 }
 
 void QSetting::restoreSettings() {
@@ -190,7 +298,17 @@ void QSetting::changeLibpath(const QString& name) {
 // combox slot
 
 void QSetting::changeTelescope(int index) {
-   hasChanged();
+   if(telescopeList->currentText()==QString("none")) {
+      telescopeDeviceEntry->setEnabled(false);
+      telescopeDeviceChooser->setEnabled(false);
+      telescopeLevels->setEnabled(false);
+   } else {
+      telescopeDeviceEntry->setEnabled(true);
+      telescopeDeviceChooser->setEnabled(true);
+      telescopeLevels->setEnabled(true);
+   }
+   if(index!=-1)
+      hasChanged();
 }
 
 // global slot
