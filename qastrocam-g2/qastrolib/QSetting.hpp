@@ -77,6 +77,7 @@ private :
    QLabel* telescopeDeviceLabel;
    QLineEdit* telescopeDeviceEntry;
    QFileChooser* telescopeDeviceChooser;
+   int telescopeDeviceType;
    QWidget* padding0;
    QWidget* padding1;
    QWidget* padding2;

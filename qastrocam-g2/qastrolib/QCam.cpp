@@ -59,6 +59,7 @@ MA  02110-1301, USA.
 
 #include <sys/time.h>
 
+// external settings
 extern settingsBackup settings;
 
 QCam::QCam() {
