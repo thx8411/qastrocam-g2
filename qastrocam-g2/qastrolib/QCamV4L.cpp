@@ -734,7 +734,7 @@ bool QCamV4L::updateFrame() {
             //
             break;
          default:
-            cerr << "invalid palette " << endl;
+            cout << "invalid palette " << endl;
             exit(1);
       }
       // debayer the input frame if needed

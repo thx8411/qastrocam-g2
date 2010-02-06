@@ -52,6 +52,7 @@ using namespace std;
 // LOG <yes/no>
 // TELESCOPE <none/apm/autostar/fifo/mcu/mts/file>
 // VIDEO_DEVICE <file>
+// LIB_PATH <directory>
 
 class settingsBackup {
    private :
