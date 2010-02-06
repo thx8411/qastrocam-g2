@@ -1,12 +1,11 @@
 Please look at sourceforge for an up-to-date version of this list
 
 - rewrite documentation
-- Telescope configuration GUI (port, protocole)
-- Autoguide GUI (on / off)
-- king module GUI
+- modules GUI (on / off)
 Later - dark/flat support
 Later - viewport support for V4L module
 Later - Multi language support
+DONE - 4.7   - global configuration GUI (port, protocol)
 DONE - 4.7   - log file added
 DONE - 4.7   - lossless avi record added
 DONE - 4.7   - BA81 palette added
