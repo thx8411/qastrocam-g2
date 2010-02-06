@@ -24,15 +24,20 @@ MA  02110-1301, USA.
 #include <qpushbutton.h>
 #include <qobject.h>
 
+// files types :
+#define	DEVICE_FILE	0
+#define REGULAR_FILE	1
+
 class QFileChooser : public QPushButton {
    Q_OBJECT;
    QString currentDir_;
 public:
-   QFileChooser(QWidget * parent=0);
+   QFileChooser(QWidget * parent=0,int type=1);
    ~QFileChooser();
 private slots:
    void selectFile();
    void setFile(const QString &);
+   int fileType;
 signals:
    void fileChanged(const QString &);
 };

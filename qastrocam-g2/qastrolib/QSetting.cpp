@@ -21,9 +21,13 @@ MA  02110-1301, USA.
 
 #include "QSetting.moc"
 
+#include "SettingsBackup.hpp"
+
+// settings object, needed everywhere
+extern settingsBackup settings;
+
 QSetting::QSetting() {
    label_=QString("Settings");
-   hasChanged=false;
 }
 
 QSetting::~QSetting() {
@@ -40,7 +44,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(videoBox,0);
    videoDeviceLabel=new QLabel("Video device : ",videoBox);
    videoDeviceEntry=new QLineEdit(videoBox);
-   videoDeviceChooser=new QFileChooser(videoBox);
+   videoDeviceChooser=new QFileChooser(videoBox,DEVICE_FILE);
 
    padding6=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding6,5);
@@ -73,7 +77,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
-   lxDeviceChooser=new QFileChooser(lxBox);
+   lxDeviceChooser=new QFileChooser(lxBox,DEVICE_FILE);
    lxLevels=new QCheckBox("Invert levels",lxBox);
 
    padding8=new QWidget(remoteCTRL_);
@@ -106,10 +110,35 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding5=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding5,5);
 
+   // fill all the fields
+   fillFields();
+
+   // buttons connections
    connect(save,SIGNAL(released()),this,SLOT(saveSettings()));
    connect(restore,SIGNAL(released()),this,SLOT(restoreSettings()));
 
-   // fill all the fields
+   // choosers connections
+   connect(videoDeviceChooser,SIGNAL(fileChanged(const QString &)),this,SLOT(changeVideoDevice(const QString &)));
+   connect(telescopeDeviceChooser,SIGNAL(fileChanged(const QString &)),this,SLOT(changeTelescopeDevice(const QString &)));
+   connect(lxDeviceChooser,SIGNAL(fileChanged(const QString &)),this,SLOT(changeLxDevice(const QString &)));
+   connect(libpathChooser,SIGNAL(directoryChanged(const QString &)),this,SLOT(changeLibpath(const QString &)));
+
+   // entries connection
+   connect(videoDeviceEntry,SIGNAL(textChanged(const QString &)),this,SLOT(hasChanged()));
+   connect(telescopeDeviceEntry,SIGNAL(textChanged(const QString &)),this,SLOT(hasChanged()));
+   connect(lxDeviceEntry,SIGNAL(textChanged(const QString &)),this,SLOT(hasChanged()));
+   connect(libpathEntry,SIGNAL(textChanged(const QString &)),this,SLOT(hasChanged()));
+
+   // checkboxs connection
+   connect(telescopeLevels,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(lxLevels,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(optionsSdl,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(optionsExpert,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(optionsLog,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(optionsForceGeneric,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+
+   // combobox connection
+   connect(telescopeList,SIGNAL(activated(int)),this,SLOT(hasChanged()));
 
    return(remoteCTRL_);
 }
@@ -118,8 +147,55 @@ const QString & QSetting::label() const {
    return label_;
 }
 
+void QSetting::fillFields() {
+   // TODO
+}
+
+// slots
+
 void QSetting::saveSettings() {
+   save->setEnabled(false);
+   restore->setEnabled(false);
+
+   // save fields
+   // TODO
 }
 
 void QSetting::restoreSettings() {
+   save->setEnabled(false);
+   restore->setEnabled(false);
+
+   // restore fields
+   fillFields();
+}
+
+// entries slots
+
+void QSetting::changeVideoDevice(const QString& name) {
+   videoDeviceEntry->setText(name);
+}
+
+void QSetting::changeTelescopeDevice(const QString& name) {
+   telescopeDeviceEntry->setText(name);
+}
+
+void QSetting::changeLxDevice(const QString& name) {
+   lxDeviceEntry->setText(name);
+}
+
+void QSetting::changeLibpath(const QString& name) {
+   libpathEntry->setText(name);
+}
+
+// combox slot
+
+void QSetting::changeTelescope(int index) {
+   hasChanged();
+}
+
+// global slot
+
+void QSetting::hasChanged() {
+   save->setEnabled(true);
+   restore->setEnabled(true);
 }

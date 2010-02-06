@@ -47,11 +47,21 @@ public :
    virtual QWidget* buildGUI(QWidget * parent);
    const QString & label() const;
 public slots:
+   // buttons
    void saveSettings();
    void restoreSettings();
+   // entry boxs
+   void changeVideoDevice(const QString& name);
+   void changeTelescopeDevice(const QString& name);
+   void changeLxDevice(const QString& name);
+   void changeLibpath(const QString& name);
+   // combobox
+   void changeTelescope(int index);
+   // global
+   void hasChanged();
 private :
-   // vars
-   bool hasChanged;
+   // functions
+   void fillFields();
    // gui
    QVBox* remoteCTRL_;
    QString label_;
