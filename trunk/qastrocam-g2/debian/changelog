@@ -1,4 +1,4 @@
-qastrocam-g2 (4.7beta20100205) jaunty; urgency=low
+qastrocam-g2 (4.7beta20100206) jaunty; urgency=low
 
   * debian packaging modified for multi-platform
   * option '-p' not available anymore (now useless)
@@ -13,6 +13,7 @@ qastrocam-g2 (4.7beta20100205) jaunty; urgency=low
   * cout is redirected to a log file
   * some options removed/changed (can be accessed by gui)
   * better color conversions
+  * settings can be changed in gui
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 21 Jan 2010 03:21:44 +0100
 
