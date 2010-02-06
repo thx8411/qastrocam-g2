@@ -63,16 +63,15 @@ const string VideoDeviceOptionString("-dv");
 const string TelescopeTypeOption("-t");
 const string TelescopeDeviceOptionString("-dt");
 const string LongexposureDeviceOptionString("-dx");
-const string PPortOptionString("-pc");
 const string LxLevelsInvertedOptionString("--lx-levels-inverted");
 const string LxLevelsNormalOptionString("--lx-levels-normal");
 const string TsLevelsInvertedOptionString("--ts-levels-inverted");
 const string TsLevelsNormalOptionString("--ts-levels-normal");
 const string LibDirOptionString("--libdir");
-const string SDLon("--SDL");
+const string SDLon("--sdl");
 const string ExpertMode("--expert");
 const string LogMode("--log");
-const string ForceGeneric("-df");
+const string ForceGeneric("--force-generic");
 const string ForceSettings("-sf");
 
 // backup object, present everywhere
@@ -80,28 +79,28 @@ settingsBackup settings;
 
 // qastrocam-g2 usage
 void usage(const char * progName) {
-   cerr << "usage: "<< progName<< " <options>"<<endl;
-   cerr << "\nValid options are:"<<endl;
-   cerr << "  "<<ForceSettings<<" to set the settings file name to use\n";
-   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
+   cerr << "usage: "<< progName << " <options>"<< endl;
+   cerr << "\nValid options are:"<< endl << endl;
+   cerr << "  "<<ForceSettings<<" to set the settings file name to use\n\n";
    cerr << "  "<<MirrorOptionString<<" to swap left/right top/bottom of the image\n";
    cerr << "  "<<AccumOptionString<<" to stack the images\n";
    cerr << "  "<<MaxOptionString<<" to simulate very long exposure on fixed mount\n";
    cerr << "     It keeps the max of each pixel\n";
    cerr << "  "<<AutoAlignOptionString<<" for options "<<AccumOptionString<<" & "<<MaxOptionString<<" align the frames before stacking\n";
-   cerr << "  "<<KingOption<<" help to align the telescope with the king method.\n";
+   cerr << "  "<<KingOption<<" help to align the telescope with the king method.\n\n";
    cerr << "  "<<VideoDeviceOptionString << " <deviceName> to choose the V4L device name.\n" << "     default is /dev/video0.\n";
    cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n" << "     type 'help' will give the list of avaible telescope type\n";
    cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope control device or file.\n" << "     default is /dev/ttyS1.\n";
-   cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n" << "     default is /dev/ttyS0 or /dev/parport0.\n";
+   cerr << "  "<<LongexposureDeviceOptionString << " <deviceName> to choose de long exposure port (serial only).\n" << "     default is /dev/ttyS0 or /dev/parport0.\n\n";
    cerr << "  "<<LxLevelsInvertedOptionString<<" to invert polarity levels for serial and LED long exposure mods\n";
    cerr << "  "<<LxLevelsNormalOptionString<<" reset long exposure levels to non-inverted\n";
    cerr << "  "<<TsLevelsInvertedOptionString<<" to invert polarity levels for APM telescope\n";
-   cerr << "  "<<TsLevelsNormalOptionString<<" reset APM levels to non-inverted\n";
+   cerr << "  "<<TsLevelsNormalOptionString<<" reset APM levels to non-inverted\n\n";
    cerr << "  "<<LibDirOptionString<<" <directory> to set the library directory\n";
    cerr << "  "<<SDLon<<" use lib SDL to display frames (fast display).\n";
    cerr << "  "<<ExpertMode<<" enable some 'expert' options in the GUI\n";
-   cerr << "  "<<LogMode<<" Logs qastrocam-g2 in a file for debug purpose";
+   cerr << "  "<<LogMode<<" Logs qastrocam-g2 in a file for debug purpose\n";
+   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
    cerr << endl;
 }
 
