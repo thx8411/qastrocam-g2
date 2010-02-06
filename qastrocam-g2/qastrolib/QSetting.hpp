@@ -31,6 +31,7 @@ MA  02110-1301, USA.
 #include <qcheckbox.h>
 #include <qlayout.h>
 #include <qlabel.h>
+#include <qwidget.h>
 
 #include "QDirectoryChooser.hpp"
 #include "QFileChooser.hpp"
@@ -49,6 +50,9 @@ public slots:
    void saveSettings();
    void restoreSettings();
 private :
+   // vars
+   bool hasChanged;
+   // gui
    QVBox* remoteCTRL_;
    QString label_;
    QHGroupBox* videoBox;
@@ -63,6 +67,15 @@ private :
    QLabel* telescopeDeviceLabel;
    QLineEdit* telescopeDeviceEntry;
    QFileChooser* telescopeDeviceChooser;
+   QWidget* padding0;
+   QWidget* padding1;
+   QWidget* padding2;
+   QWidget* padding3;
+   QWidget* padding4;
+   QWidget* padding5;
+   QWidget* padding6;
+   QWidget* padding7;
+   QWidget* padding8;
    QCheckBox* telescopeLevels;
    QHGroupBox* lxBox;
    QLabel* lxDeviceLabel;
@@ -70,7 +83,6 @@ private :
    QFileChooser* lxDeviceChooser;
    QCheckBox* lxLevels;
    QVGroupBox* optionsBox;
-   //QGridLayout* optionsGrid;
    QHBox* lineThree;
    QHBox* lineFour;
    QCheckBox* optionsSdl;
