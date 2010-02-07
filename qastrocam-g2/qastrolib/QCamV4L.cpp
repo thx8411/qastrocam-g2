@@ -1003,7 +1003,8 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    QToolTip::add(frameModeB,"Frame mode");
 
    // controls
-   QGridBox * hbox= new QGridBox(remoteCTRL,Qt::Vertical,3);
+   QHGroupBox* ctrlBox=new QHGroupBox(tr("Controls"),remoteCTRL);
+   QGridBox * hbox= new QGridBox(ctrlBox,Qt::Vertical,3);
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
       remoteCTRLcontrast_->setMinValue(picture_.contrast_min);
@@ -1090,6 +1091,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxBar->reset();
    // blink
    lxBlink=new QBlink(remoteCTRLlx);
+   padding=new QWidget(remoteCTRL);
    // tips
    QToolTip::add(lxRate,"Current frame rate");
    QToolTip::add(lxSelector,"Long exposure mode");

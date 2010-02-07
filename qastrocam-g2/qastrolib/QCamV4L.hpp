@@ -29,6 +29,7 @@ MA  02110-1301, USA.
 #include <qlineedit.h>
 #include <qprogressbar.h>
 #include <qpushbutton.h>
+#include <qwidget.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -219,6 +220,7 @@ private:
    QPushButton * lxSet;
    QProgressBar * lxBar;
    QBlink* lxBlink;
+   QWidget* padding;
    QTimer * lxTimer;
    // video stream vars
    ImageMode mode_;

@@ -553,7 +553,8 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    remoteCTRLlx->hide();
    lxSlider->hide();
 
-   QGridBox * sliders= new QGridBox(remoteCTRL,Qt::Vertical,3);
+   QHGroupBox* vestaCtrl=new QHGroupBox("Vesta controls",remoteCTRL);
+   QGridBox * sliders= new QGridBox(vestaCtrl,Qt::Vertical,3);
    /*
    QHBox * sliders=new QHBox(remoteCTRL);
    QVBox * left = new QVBox(sliders);
