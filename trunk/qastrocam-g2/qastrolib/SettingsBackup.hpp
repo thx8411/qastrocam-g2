@@ -53,6 +53,11 @@ using namespace std;
 // TELESCOPE <none/apm/autostar/fifo/mcu/mts/file>
 // VIDEO_DEVICE <file>
 // LIB_PATH <directory>
+// ADD_MODULE <yes/no>
+// MAX_MODULE <yes/no>
+// MIRROR_MODULE <yes/no>
+// KING_MODULE <yes/no>
+// ALIGN_MODULE <yes/no>
 
 class settingsBackup {
    private :

@@ -82,6 +82,24 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    lxDeviceChooser=new QFileChooser(lxBox,DEVICE_FILE);
    lxLevels=new QCheckBox("Invert levels",lxBox);
 
+   padding9=new QWidget(remoteCTRL_);
+   remoteCTRL_->setStretchFactor(padding9,5);
+   // modules box
+   modulesBox=new QVGroupBox("Modules",remoteCTRL_);
+   remoteCTRL_->setStretchFactor(modulesBox,0);
+   lineFive=new QHBox(modulesBox);
+   modulesMirror=new QCheckBox("Horizontal/Vertical swap",lineFive);
+   modulesAdd=new QCheckBox("Frame stacking module",lineFive);
+   lineSix=new QHBox(modulesBox);
+   modulesMax=new QCheckBox("Frame 'ghost' module",lineSix);
+   modulesKing=new QCheckBox("King method module",lineSix);
+   lineSeven=new QHBox(modulesBox);
+   padding10=new QWidget(lineSeven);
+   remoteCTRL_->setStretchFactor(padding10,5);
+   modulesAlign=new QCheckBox("Align frames for stacking and 'ghost' modules",lineSeven);
+   padding11=new QWidget(lineSeven);
+   remoteCTRL_->setStretchFactor(padding11,5);
+
    padding8=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding8,5);
    // options box
@@ -138,6 +156,11 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    connect(optionsExpert,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsLog,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsForceGeneric,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(modulesMirror,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(modulesAdd,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(modulesMax,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(modulesKing,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(modulesAlign,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
 
    // combobox connection
    connect(telescopeList,SIGNAL(activated(int)),this,SLOT(changeTelescope(int)));
@@ -211,6 +234,26 @@ void QSetting::fillFields() {
       optionsForceGeneric->setChecked(string(settings.getKey("FORCE_V4LGENERIC"))=="yes");
    else
       hasChanged();
+   if(settings.haveKey("ADD_MODULE"))
+      modulesAdd->setChecked(string(settings.getKey("ADD_MODULE"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("MAX_MODULE"))
+      modulesMax->setChecked(string(settings.getKey("MAX_MODULE"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("MIRROR_MODULE"))
+      modulesMirror->setChecked(string(settings.getKey("MIRROR_MODULE"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("KING_MODULE"))
+      modulesKing->setChecked(string(settings.getKey("KING_MODULE"))=="yes");
+   else
+      hasChanged();
+   if(settings.haveKey("ALIGN_MODULE"))
+      modulesAlign->setChecked(string(settings.getKey("ALIGN_MODULE"))=="yes");
+   else
+      hasChanged();
 }
 
 // slots
@@ -265,6 +308,31 @@ void QSetting::saveSettings() {
    else
       temp="no";
    settings.setKey("FORCE_V4LGENERIC",temp.latin1());
+   if(modulesAdd->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("ADD_MODULE",temp.latin1());
+   if(modulesMax->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("MAX_MODULE",temp.latin1());
+   if(modulesAlign->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("ALIGN_MODULE",temp.latin1());
+   if(modulesKing->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("KING_MODULE",temp.latin1());
+   if(modulesMirror->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("MIRROR_MODULE",temp.latin1());
 
    // message box
    QMessageBox::information(0,"Qastrocam-g2","Please restart Qastrocam-g2\nto get the new settings");
