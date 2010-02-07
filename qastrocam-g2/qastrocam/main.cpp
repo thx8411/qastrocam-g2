@@ -80,12 +80,12 @@ void usage(const char * progName) {
    cerr << "usage: "<< progName << " <options>"<< endl;
    cerr << "\nValid options are:"<< endl << endl;
    cerr << "  "<<ForceSettings<<" to set the settings file name to use\n\n";
-   cerr << "  "<<MirrorOptionString<<" to swap left/right top/bottom of the image\n";
-   cerr << "  "<<AccumOptionString<<" to stack the images\n";
-   cerr << "  "<<MaxOptionString<<" to simulate very long exposure on fixed mount\n";
+   cerr << "  "<<MirrorOptionString<<" <yes/no> to swap left/right top/bottom of the image\n";
+   cerr << "  "<<AccumOptionString<<" <yes/no> to stack the images\n";
+   cerr << "  "<<MaxOptionString<<" <yes/no> to simulate very long exposure on fixed mount\n";
    cerr << "     It keeps the max of each pixel\n";
-   cerr << "  "<<AutoAlignOptionString<<" for options "<<AccumOptionString<<" & "<<MaxOptionString<<" align the frames before stacking\n";
-   cerr << "  "<<KingOption<<" help to align the telescope with the king method.\n\n";
+   cerr << "  "<<AutoAlignOptionString<<" <yes/no> for options "<<AccumOptionString<<" & "<<MaxOptionString<<" align the frames before stacking\n";
+   cerr << "  "<<KingOption<<" <yes/no> help to align the telescope with the king method.\n\n";
    cerr << "  "<<VideoDeviceOptionString << " <deviceName> to choose the V4L device name.\n" << "     default is /dev/video0.\n";
    cerr << "  "<<TelescopeTypeOption<<" <type> to select the telescope type\n" << "     type 'help' will give the list of avaible telescope type\n";
    cerr << "  "<<TelescopeDeviceOptionString << " <deviceName> to choose the telescope control device or file.\n" << "     default is /dev/ttyS1.\n";
@@ -167,15 +167,55 @@ int main(int argc, char ** argv) {
 
       // cam clients options
       } else if (MirrorOptionString == argv[i]) {
-         mirror=true;
+         i++;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         if(strcasecmp("yes",argv[i])==0)
+            settings.setKey("MIRROR_MODULE","yes");
+         else
+            settings.setKey("MIRROR_MODULE","no");
       } else if (AccumOptionString == argv[i]) {
-         accum=true;
+         i++;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         if(strcasecmp("yes",argv[i])==0)
+            settings.setKey("ADD_MODULE","yes");
+         else
+            settings.setKey("ADD_MODULE","no");
       } else if (MaxOptionString == argv[i]) {
-         max=true;
+         i++;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         if(strcasecmp("yes",argv[i])==0)
+            settings.setKey("MAX_MODULE","yes");
+         else
+            settings.setKey("MAX_MODULE","no");
       } else if (AutoAlignOptionString == argv[i]) {
-         autoAlign=true;
+         i++;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         if(strcasecmp("yes",argv[i])==0)
+            settings.setKey("ALIGN_MODULE","yes");
+         else
+            settings.setKey("ALIGN_MODULE","no");
       } else if ( KingOption == argv[i]) {
-         kingOption=true;
+         i++;
+         if (i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         if(strcasecmp("yes",argv[i])==0)
+            settings.setKey("KING_MODULE","yes");
+         else
+            settings.setKey("KING_MODULE","no");
       } else if (ForceGeneric == argv[i]) {
          i++;
          if (i==argc) {
@@ -287,6 +327,11 @@ int main(int argc, char ** argv) {
    }
    if(settings.haveKey("LIB_PATH")) libPath=settings.getKey("LIB_PATH");
    if(settings.haveKey("TELESCOPE")) telescopeType=settings.getKey("TELESCOPE");
+   if(settings.haveKey("ADD_MODULE")&&string(settings.getKey("ADD_MODULE"))=="yes") accum=true;
+   if(settings.haveKey("MAX_MODULE")&&string(settings.getKey("MAX_MODULE"))=="yes") max=true;
+   if(settings.haveKey("MIRROR_MODULE")&&string(settings.getKey("MIRROR_MODULE"))=="yes") mirror=true;
+   if(settings.haveKey("ALIGN_MODULE")&&string(settings.getKey("ALIGN_MODULE"))=="yes") autoAlign=true;
+   if(settings.haveKey("KING_MODULE")&&string(settings.getKey("KING_MODULE"))=="yes") kingOption=true;
 
    // displays telescope liste
    if (telescopeType == "help") {
