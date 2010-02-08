@@ -633,23 +633,3 @@ void QCamFrame::debayer() {
    common_->debayer();
 }
 
-// is the frame a good frame or black one (depending on black level)
-bool QCamFrame::isValide(int level) {
-   int i;
-   int frameSize;
-   int value=0;
-   const unsigned char* lum;
-
-   // check the frame level
-   lum=Y();
-   frameSize=ySize();
-   for(i=0;i<frameSize;i++) {
-     if(lum[i]>value)
-       value=lum[i];
-   }
-
-   // test
-   if(value>level)
-      return(true);
-   return(false);
-}

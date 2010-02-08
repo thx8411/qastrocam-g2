@@ -373,10 +373,6 @@ QCamV4L::QCamV4L(const char * devpath, unsigned long options /* cf QCamV4L::opti
       }
    }
 
-   // temp
-   // get frames intervals
-
-
    // *********
    // mmap init
    // *********
@@ -395,7 +391,6 @@ QCamV4L::QCamV4L(const char * devpath, unsigned long options /* cf QCamV4L::opti
 
    // some lx widgets init to avoid segfaults in updateFrame
    lxBar=NULL;
-   lxBlink=NULL;
 
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
@@ -674,6 +669,33 @@ bool QCamV4L::updateFrame() {
    bool res;
    double currentTime;
 
+   if(lxEnabled) {
+      if(lxFramesToDrop>1) {
+         // we still drop frames
+         lxFrameCounter++;
+         // update progress bar
+         if(lxBar) lxBar->setProgress(lxFrameCounter);
+         dropFrame();
+         return(true);
+      } else if (lxFramesToDrop==1) {
+         // last frame to drop
+         lxFramesToDrop--;
+         lxFrameCounter++;
+         // update progress bar
+         if(lxBar) lxBar->setProgress(lxFrameCounter);
+         dropFrame();
+         return(true);
+      } else {
+         // we have a frame, reset for the next period;
+         lxFramesToDrop=2;
+         // resetting dropped frames counter
+         lxFrameCounter=0;
+         // resetting progress bar
+         lxBar->reset();
+         lxControler->startAccumulation();
+      }
+   }
+
    nullBuf=(unsigned char*)malloc(v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
    unsigned char * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
    inputBuffer_.setMode(mode_);
@@ -757,42 +779,13 @@ bool QCamV4L::updateFrame() {
    // if mmap, restoring tmpBuffer_
    if(useMmap)
       tmpBuffer_=oldTmpBuffer_;
-   // lx support
-   // V4L generic may use very diffrent devices, and we can't know the number
-   // of frame we should drop. So, we use a threshold tip. We fix a threshold
-   // value with a slider, and all the frames with an average luminance below
-   // the threshold will be dropped.
    if (res) {
-      // if lx activated
-      if(lxEnabled) {
-         // count dropped frames
-         lxFrameCounter++;
-         // update progress bar
-         if(lxBar) lxBar->setProgress(lxFrameCounter);
-         // is there an image on this frame ?
-         if(!outputBuffer_.isValide(lxLevel)) {
-            // frame not valide
-            // if too much frames dropped, we missed the good frame, resetting
-            if(lxFrameCounter>(int)(lxDelay*(double)(frameRate_)+4))
-               lxFrameCounter=0;
-            // ignoring frame
-            //cout << "frame dropped" << endl;
-            return(0);
-         }
-         // the frame is ok
-         // resetting dropped frames counter
-         lxFrameCounter=0;
-         // resetting progress bar
-         lxBar->reset();
-         // blinking
-         if(lxBlink) lxBlink->step();
-      }
-      newFrameAvaible();
-        if (options_ & haveBrightness) emit brightnessChange(getBrightness());
-        if (options_ & haveContrast) emit contrastChange(getContrast());
-        if (options_ & haveHue) emit hueChange(getHue());
-        if (options_ & haveColor) emit colorChange(getColor());
-        if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
+     newFrameAvaible();
+     if (options_ & haveBrightness) emit brightnessChange(getBrightness());
+     if (options_ & haveContrast) emit contrastChange(getContrast());
+     if (options_ & haveHue) emit hueChange(getHue());
+     if (options_ & haveColor) emit colorChange(getColor());
+     if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
    }
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
@@ -1056,12 +1049,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
               this,SLOT(setWhiteness(int)));
    }
 
-   // level slider
-   lxSlider=new QCamSlider("Lvl.",false,hbox,0,255);
-   lxSlider->setValue(lxLevel);
-   connect(lxSlider,SIGNAL(valueChange(int)),this,SLOT(LXlevel(int)));
-   QToolTip::add(lxSlider,"Dropping frame level");
-
    // V4L generic long exposure
    // container
    remoteCTRLlx= new QHGroupBox(tr("long exposure"),remoteCTRL);
@@ -1090,7 +1077,6 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    lxBar->setTotalSteps(0);
    lxBar->reset();
    // blink
-   lxBlink=new QBlink(remoteCTRLlx);
    padding=new QWidget(remoteCTRL);
    // tips
    QToolTip::add(lxRate,"Current frame rate");
@@ -1195,9 +1181,10 @@ void QCamV4L::setLXmode(int value) {
          lxSet->setEnabled(true);
          lxBar->reset();
          lxEnabled=true;
-         lxTimer->start((int)((lxDelay/*+lxFineDelay*/)*1000));
+         lxTimer->start((int)(lxDelay*1000));
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
+         lxFramesToDrop=2;
          lxControler->startAccumulation();
          break;
       // serial mode lx on
@@ -1212,6 +1199,7 @@ void QCamV4L::setLXmode(int value) {
          lxTimer->start((int)(lxDelay*1000));
          lxControler->enterLongPoseMode();
          lxFrameCounter=0;
+         lxFramesToDrop=2;
          lxControler->startAccumulation();
          break;
    }
@@ -1248,16 +1236,8 @@ void QCamV4L::setLXtime() {
 void QCamV4L::LXframeReady() {
    // stop integration
    lxControler->stopAccumulation();
-   // wait for the canera to send the frames
-   // worst case : we must wait for 1 complet field
-   usleep((int)(1000000.0/(1.1*frameRate_)));
-   // integration starting for the next frame
-   lxControler->startAccumulation();
-}
-
-// lx level slider change slot
-void QCamV4L::LXlevel(int level) {
-   lxLevel=level;
+   // last frame to drop
+   lxFramesToDrop=1;
 }
 
 // mmap init

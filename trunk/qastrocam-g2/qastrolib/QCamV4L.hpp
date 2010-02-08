@@ -36,7 +36,6 @@ MA  02110-1301, USA.
 #include <linux/videodev.h>
 
 #include "QCam.hpp"
-#include "QBlink.hpp"
 
 #include "SCmod.hpp"
 
@@ -160,7 +159,6 @@ protected:
 
    // gui
    QHGroupBox * remoteCTRLlx;
-   QCamSlider * lxSlider;
 
 private:
    // get os time in seconds (usec accuracy)
@@ -219,7 +217,6 @@ private:
    QLineEdit * lxTime;
    QPushButton * lxSet;
    QProgressBar * lxBar;
-   QBlink* lxBlink;
    QWidget* padding;
    QTimer * lxTimer;
    // video stream vars
@@ -233,6 +230,7 @@ private:
    bool lxEnabled; // is lx mode on ?
    int lxFrameCounter; // dropped frames number
    int lxLevel; // level used to decide if a frame should be dropped, based on mean frame luminance
+   int lxFramesToDrop;
 
 public slots:
    // controls
@@ -249,7 +247,6 @@ public slots:
    void setLXmode(int val);
    void setLXtime();
    void LXframeReady();
-   void LXlevel(int level);
 protected slots:
    // a new frame is up
    virtual bool updateFrame();
