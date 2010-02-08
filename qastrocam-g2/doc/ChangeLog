@@ -1,5 +1,6 @@
-4.7beta20100206
+4.7beta20100208
 
+  - much better lx frame detection
   - settings can be changed in gui
   - better color conversions
   - some options removed/changed (can be accessed by gui)

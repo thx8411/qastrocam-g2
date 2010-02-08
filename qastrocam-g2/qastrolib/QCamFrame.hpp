@@ -219,8 +219,6 @@ public:
    void binning(const QCamFrame & src, int w, int h);
    // debayer the frame using the known mode
    void debayer();
-   // is the frame max luminance bigger than the black level ?
-   bool isValide(int level);
 private:
    QCamFrameCommon* common_;
 };
