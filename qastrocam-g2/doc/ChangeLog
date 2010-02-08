@@ -1,5 +1,6 @@
 4.7beta20100208
 
+  - better frame size detection
   - much better lx frame detection
   - settings can be changed in gui
   - better color conversions
