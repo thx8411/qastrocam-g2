@@ -284,6 +284,7 @@ QCamV4L::QCamV4L(const char * devpath, unsigned long options /* cf QCamV4L::opti
       fmtdesc.index++;
    }
    if(paletteNumber==0) {
+      QMessageBox::information(0,"Qastrocam-g2","No supported palette found\nLeaving...");
       cout << "No supported palette found, living " << endl;
       exit(1);
    }

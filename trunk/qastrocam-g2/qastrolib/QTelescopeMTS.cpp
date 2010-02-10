@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qmessagebox.h>
 
 #include "QTelescopeMTS.moc"
 
@@ -57,7 +58,8 @@ QTelescopeMTS::QTelescopeMTS(const char * deviceName) :
 
    /* Check if the controller is idle */
    if ( sendCommand( ready ) != 0 ) {
-     cerr << "Error: MTS controller busy\n\n";
+     QMessageBox::information(0,"Qastrocam-g2","Error: MTS controller busy");
+     cout << "Error: MTS controller busy\n\n";
      exit(0);
    }
    /* Display redirection must be disabled during PC operation */

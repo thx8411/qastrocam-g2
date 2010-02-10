@@ -27,6 +27,7 @@ MA  02110-1301, USA.
 #include "QCamDisplayImplSDL.moc"
 #include <qpainter.h>
 #include <qpen.h>
+#include <qmessagebox.h>
 
 #include "yuv.hpp"
 
@@ -93,12 +94,14 @@ void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
    SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
    if ( SDL_InitSubSystem(SDL_INIT_VIDEO) < 0 ) {
-      fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+      QMessageBox::information(0,"Qastrocam-g2","Unable to init SDL\nLeaving...");
+      fprintf(stdout, "Unable to init SDL: %s\n", SDL_GetError());
       exit(1);
    }
    screen_ = SDL_SetVideoMode(width(), height(), 0 /*32*/, SDL_SWSURFACE);
    if ( ! screen_ ) {
-      fprintf(stderr, "Unable to set video mode: %s\n", SDL_GetError());
+      QMessageBox::information(0,"Qastrocam-g2","Unable to set SDL video mode\nLeaving...");
+      fprintf(stdout, "Unable to set video mode: %s\n", SDL_GetError());
       exit(1);
    }
 }
@@ -211,7 +214,8 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
                                           frame.size().height(), 32,
                                           rmask, gmask, bmask, 0);
          if(RGBImage_ == NULL) {
-            fprintf(stderr, "CreateRGBSurface failed: %s\n", SDL_GetError());
+            QMessageBox::information(0,"Qastrocam-g2","CreateRGBSurface failed\nLeaving...");
+            fprintf(stdout, "CreateRGBSurface failed: %s\n", SDL_GetError());
             exit(1);
          }
       }
