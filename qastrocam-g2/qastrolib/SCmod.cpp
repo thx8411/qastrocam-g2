@@ -63,16 +63,16 @@ void SCmodTucLed::leaveLongPoseMode() {
 
 void SCmodTucLed::stopAccumulation() {
    if (inverted_)
-      cam_.setLed(1000,0);
+      cam_.setLed(25500,0);
    else
-      cam_.setLed(0,1000); // switching led ON/OFF for TUC USB
+      cam_.setLed(0,25500); // switching led ON/OFF for TUC USB
 }
 
 void SCmodTucLed::startAccumulation() {
    if (inverted_)
-      cam_.setLed(0,1000);
+      cam_.setLed(0,25500);
    else
-      cam_.setLed(1000,0); // switching led ON  for TUC USB
+      cam_.setLed(25500,0); // switching led ON/OFF for TUC USB
 }
 
 

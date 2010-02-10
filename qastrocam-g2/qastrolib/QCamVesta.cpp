@@ -38,6 +38,7 @@ MA  02110-1301, USA.
 #include <qtooltip.h>
 #include <qhgroupbox.h>
 #include <qpushbutton.h>
+#include <qmessagebox.h>
 
 #include "QCamSlider.hpp"
 #include "QGridBox.hpp"
@@ -69,7 +70,8 @@ QCamVesta::QCamVesta(const char * devpath):
          }
       }
       if (!IsPhilips) {
-         cerr << "QCamVesta::QCamVesta() called on a non Philips Webcam.\n"
+      QMessageBox::information(0,"Qastrocam-g2","QCamVesta::QCamVesta() called on a non Philips Webcam.\ndid you use QCamV4L::openBestDevice() to open your device?");
+         cout << "QCamVesta::QCamVesta() called on a non Philips Webcam.\n"
               << "did you use QCamV4L::openBestDevice() to open your device?"
               << endl;
          exit(1);
