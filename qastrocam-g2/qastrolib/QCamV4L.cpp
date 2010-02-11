@@ -45,7 +45,6 @@ MA  02110-1301, USA.
 #include "QGridBox.hpp"
 #include "QCamComboBox.hpp"
 #include "SettingsBackup.hpp"
-#include "jmemsrc.hpp"
 
 #include "SCmodParPortPPdev.hpp"
 
@@ -109,6 +108,8 @@ QCamV4L::QCamV4L(const char * devpath, unsigned long options /* cf QCamV4L::opti
    remoteCTRLcolor_=NULL;
    remoteCTRLwhiteness_=NULL;
    sizeTable_=NULL;
+   jpegImageBuffer=NULL;
+   jpegCopyBuffer=NULL;
    device_=-1;
    devpath_=devpath;
    mode_=(ImageMode)0;
@@ -443,9 +444,20 @@ void QCamV4L::updatePalette() {
 // frame size and palette
 void QCamV4L::allocBuffers() {
    free(tmpBuffer_);
+   free(jpegImageBuffer);
+   free(jpegCopyBuffer);
+   free(jpegLineBuffer[0]);
    inputBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
    yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * supported_palettes[palette].memfactor_numerator / supported_palettes[palette].memfactor_denominator;
    tmpBuffer_=(unsigned char*)malloc(yuvFrameMemSize);
+   // jpeg stuff
+   // everything oversized...
+   if(supported_palettes[palette].index==V4L2_PIX_FMT_JPEG) {
+      row_size=v4l2_fmt_.fmt.pix.width*3;
+      jpegImageBuffer=(unsigned char*)malloc(yuvFrameMemSize);
+      jpegCopyBuffer=(unsigned char*)malloc(yuvFrameMemSize);
+      jpegLineBuffer[0]=(unsigned char *)malloc(row_size);
+   }
 }
 
 // get frame sizes supported by the
@@ -695,15 +707,6 @@ bool QCamV4L::dropFrame() {
 
 // we should have a new frame
 bool QCamV4L::updateFrame() {
-   // for jpeg frames
-   int compressed_size;
-   int row;
-   int row_size;
-   JSAMPROW jpegLineBuffer[1];
-   struct jpeg_decompress_struct cinfo;
-   struct jpeg_error_mgr jerr;
-   unsigned char* jpegImageBuffer;
-
    unsigned char* nullBuf;
    unsigned char* oldTmpBuffer_;
    bool res;
@@ -787,29 +790,16 @@ bool QCamV4L::updateFrame() {
             yuv422_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
             break;
          case V4L2_PIX_FMT_JPEG:
-            jpegImageBuffer=(unsigned char*)malloc(v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height*3);
-            // get the frame size
-            /*compressed_size=0;
-            while(compressed_size<yuvFrameMemSize-1) {
-               if(tmpBuffer_[compressed_size]==0xFF)
-                  if(tmpBuffer_[compressed_size+1]==0xD9)
-                     break;
-               compressed_size++;
-            }
-            compressed_size+=2;*/
+            // copy driver buffer to avoid buffer underun
+            memcpy(jpegCopyBuffer,tmpBuffer_,v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height*3);
+            // create jpeg object
             cinfo.err = jpeg_std_error(&jerr);
             jpeg_create_decompress(&cinfo);
-            jpeg_mem_src(&cinfo,tmpBuffer_,yuvFrameMemSize/*compressed_size*/);
+            jpeg_mem_src(&cinfo,jpegCopyBuffer,yuvFrameMemSize);
             jpeg_read_header(&cinfo, TRUE);
             // output colorspace
-            cinfo.out_color_space= JCS_RGB;
+            cinfo.out_color_space= JCS_YCbCr;
             jpeg_start_decompress(&cinfo);
-
-            //cerr << cinfo.output_width << "*" << cinfo.output_height << endl;
-
-            // allocate buffer
-            row_size = cinfo.output_width * cinfo.output_components;
-            jpegLineBuffer[0]=(unsigned char *)malloc( cinfo.output_width*cinfo.num_components );
             // for each scanline
             row=0;
             while (cinfo.output_scanline < cinfo.output_height) {
@@ -817,11 +807,11 @@ bool QCamV4L::updateFrame() {
                memcpy(&jpegImageBuffer[row*row_size],jpegLineBuffer[0],row_size);
                row++;
             }
-            rgb24_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,jpegImageBuffer,YBuf,UBuf,VBuf);
+            // convert
+            ycbcr_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,jpegImageBuffer,YBuf,UBuf,VBuf);
+            // destroy jpeg object
             jpeg_finish_decompress(&cinfo);
             jpeg_destroy_decompress(&cinfo);
-            free(jpegImageBuffer);
-            //
             break;
          case V4L2_PIX_FMT_PWC1:
             //

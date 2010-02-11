@@ -35,8 +35,9 @@ MA  02110-1301, USA.
 #include <stdlib.h>
 #include <linux/videodev.h>
 
-#include "QCam.hpp"
+#include "jmemsrc.hpp"
 
+#include "QCam.hpp"
 #include "SCmod.hpp"
 
 class QCamSlider;
@@ -189,6 +190,16 @@ private:
    QCamFrame inputBuffer_;
    QCamFrame outputBuffer_;
    uchar * tmpBuffer_;
+   // jpeg decoding stuff
+   // for jpeg frames
+   int row;
+   int row_size;
+   JSAMPROW jpegLineBuffer[1];
+   struct jpeg_decompress_struct cinfo;
+   struct jpeg_error_mgr jerr;
+   unsigned char* jpegImageBuffer;
+   unsigned char* jpegCopyBuffer;
+
    // to probe the cam for new frame
    //QTimer * timer_;
    // to probe the cam if it support select

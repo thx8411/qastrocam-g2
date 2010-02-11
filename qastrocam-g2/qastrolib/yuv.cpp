@@ -73,6 +73,17 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
    }
 }
 
+// YCbCr to yuv444
+void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV) {
+   int i;
+   int size=w*h;
+   for(i=0;i<size;i++) {
+      dstY[i]=src[i*3];
+      dstU[i]=src[i*3+1];
+      dstV[i]=src[i*3+2];
+   }
+}
+
 //
 // FROM YUV444
 //
