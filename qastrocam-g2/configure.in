@@ -64,7 +64,8 @@ AC_SUBST(QT_LIBS)
 CXXFLAGS="$CXXFLAGS -I $QT_INC_DIR"
 CFLAGS="$CFLAGS -I $QT_INC_DIR"
 CPPFLAGS="$CPPFLAGS -I $QT_INC_DIR"
-AC_CHECK_HEADERS(qobject.h)
+AC_CHECK_HEADER(qobject.h)
+
 AC_CHECK_HEADER([jpeglib.h],,
     [AC_MSG_ERROR([cannot find libjpeg headers])])
 
@@ -81,7 +82,7 @@ test -n "$CFITSIO_LINK" || CFITSIO_LINK=QT_LIB_DIR_var_not_set
 
 CXXFLAGS="$CXXFLAGS $CFITSIO_INC"
 CFLAGS="$CFLAGS $CFITSIO_INC"
-AC_CHECK_HEADERS(fitsio.h)
+AC_CHECK_HEADER(fitsio.h)
 
 #SDL present? (optional)
 AC_PATH_PROG(SDLCONFIG, sdl-config, no)
@@ -102,10 +103,10 @@ then
    CPPFLAGS="$CPPFLAGS "`$AVICONFIG --cflags`
    LDFLAGS="$LDFLAGS "`$AVICONFIG --libs`
 fi
-AC_CHECK_HEADERS(avifile.h)
+AC_CHECK_HEADER(avifile.h)
+AC_CHECK_FILE(/usr/lib/win32/huffyuv.dll,,[AC_MSG_ERROR([cannot find huffyuv.dll needed for avi lossless recording])])
 
-
-AC_CHECK_HEADERS(SDL.h)
+AC_CHECK_HEADER(SDL.h)
 #AC_CHECK_LIB(pthread,pthread_create)
 #AC_CHECK_LIB(SDL,SDL_InitSubSystem)
 
