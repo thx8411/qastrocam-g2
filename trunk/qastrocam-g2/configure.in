@@ -65,6 +65,8 @@ CXXFLAGS="$CXXFLAGS -I $QT_INC_DIR"
 CFLAGS="$CFLAGS -I $QT_INC_DIR"
 CPPFLAGS="$CPPFLAGS -I $QT_INC_DIR"
 AC_CHECK_HEADERS(qobject.h)
+AC_CHECK_HEADER([jpeglib.h],,
+    [AC_MSG_ERROR([cannot find libjpeg headers])])
 
 test -n "$MOC" || MOC=MOC_var_not_set
 test -n "$QT_INC_DIR" || QT_INC_DIR=QT_INC_DIR_var_not_set
