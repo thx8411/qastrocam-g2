@@ -40,8 +40,8 @@ OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o Vector2D.o ShiftInfo.o QCamFrame.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieAviLossless.o QCamMovieSeq.o \
-	  SettingsBackup.o SCmodParPortPPdev.o PPort.o yuv.o
+	  SettingsBackup.o SCmodParPortPPdev.o PPort.o yuv.o jmemsrc.o
 
-OBJ_c = 
+OBJ_c =
 
 include ../Makefile.common
