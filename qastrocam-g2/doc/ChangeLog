@@ -1,5 +1,6 @@
-4.7beta20100208
+4.7beta20100211
 
+  - jpeg palette support added
   - better frame size detection
   - much better lx frame detection
   - settings can be changed in gui
