@@ -110,6 +110,7 @@ QCamV4L::QCamV4L(const char * devpath, unsigned long options /* cf QCamV4L::opti
    sizeTable_=NULL;
    jpegImageBuffer=NULL;
    jpegCopyBuffer=NULL;
+   jpegLineBuffer[0]=NULL;
    device_=-1;
    devpath_=devpath;
    mode_=(ImageMode)0;
