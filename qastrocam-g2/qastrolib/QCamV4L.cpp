@@ -45,6 +45,7 @@ MA  02110-1301, USA.
 #include "QGridBox.hpp"
 #include "QCamComboBox.hpp"
 #include "SettingsBackup.hpp"
+#include "jmemsrc.hpp"
 
 #include "SCmodParPortPPdev.hpp"
 
@@ -55,7 +56,7 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
-   //{V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
+   {V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
    //{V4L2_PIX_FMT_PWC1,3,1,"philips raw",YuvFrame},
    //{V4L2_PIX_FMT_PWC2,3,1,"philips raw",YuvFrame},
    {-1,0,0,"",0}
@@ -694,6 +695,15 @@ bool QCamV4L::dropFrame() {
 
 // we should have a new frame
 bool QCamV4L::updateFrame() {
+   // for jpeg frames
+   int compressed_size;
+   int row;
+   int row_size;
+   JSAMPROW jpegLineBuffer[1];
+   struct jpeg_decompress_struct cinfo;
+   struct jpeg_error_mgr jerr;
+   unsigned char* jpegImageBuffer;
+
    unsigned char* nullBuf;
    unsigned char* oldTmpBuffer_;
    bool res;
@@ -777,6 +787,40 @@ bool QCamV4L::updateFrame() {
             yuv422_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
             break;
          case V4L2_PIX_FMT_JPEG:
+            jpegImageBuffer=(unsigned char*)malloc(v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height*3);
+            // get the frame size
+            /*compressed_size=0;
+            while(compressed_size<yuvFrameMemSize-1) {
+               if(tmpBuffer_[compressed_size]==0xFF)
+                  if(tmpBuffer_[compressed_size+1]==0xD9)
+                     break;
+               compressed_size++;
+            }
+            compressed_size+=2;*/
+            cinfo.err = jpeg_std_error(&jerr);
+            jpeg_create_decompress(&cinfo);
+            jpeg_mem_src(&cinfo,tmpBuffer_,yuvFrameMemSize/*compressed_size*/);
+            jpeg_read_header(&cinfo, TRUE);
+            // output colorspace
+            cinfo.out_color_space= JCS_RGB;
+            jpeg_start_decompress(&cinfo);
+
+            //cerr << cinfo.output_width << "*" << cinfo.output_height << endl;
+
+            // allocate buffer
+            row_size = cinfo.output_width * cinfo.output_components;
+            jpegLineBuffer[0]=(unsigned char *)malloc( cinfo.output_width*cinfo.num_components );
+            // for each scanline
+            row=0;
+            while (cinfo.output_scanline < cinfo.output_height) {
+               jpeg_read_scanlines(&cinfo, jpegLineBuffer, 1);
+               memcpy(&jpegImageBuffer[row*row_size],jpegLineBuffer[0],row_size);
+               row++;
+            }
+            rgb24_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,jpegImageBuffer,YBuf,UBuf,VBuf);
+            jpeg_finish_decompress(&cinfo);
+            jpeg_destroy_decompress(&cinfo);
+            free(jpegImageBuffer);
             //
             break;
          case V4L2_PIX_FMT_PWC1:
@@ -1332,6 +1376,7 @@ bool QCamV4L::mmapInit() {
       return(false);
    }
 
+   cout << "Using mmap with " << mmap_reqbuf.count << " buffers" << endl;
    return(true);
 }
 
