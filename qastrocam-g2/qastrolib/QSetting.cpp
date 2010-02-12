@@ -106,7 +106,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    optionsBox=new QVGroupBox("Options",remoteCTRL_);
    remoteCTRL_->setStretchFactor(optionsBox,0);
    lineThree=new QHBox(optionsBox);
+#if HAVE_SDL_H
    optionsSdl=new QCheckBox("Use SDL",lineThree);
+#endif
    optionsExpert=new QCheckBox("Use expert mode",lineThree);
    lineFour=new QHBox(optionsBox);
    optionsLog=new QCheckBox("Write log file",lineFour);
@@ -152,7 +154,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    // checkboxs connection
    connect(telescopeLevels,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(lxLevels,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+#if HAVE_SDL_H
    connect(optionsSdl,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+#endif
    connect(optionsExpert,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsLog,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsForceGeneric,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
@@ -218,10 +222,12 @@ void QSetting::fillFields() {
       lxLevels->setChecked(string(settings.getKey("LX_LEVELS_INVERTED"))=="yes");
    else
       hasChanged();
+#if HAVE_SDL_H
    if(settings.haveKey("SDL"))
       optionsSdl->setChecked(string(settings.getKey("SDL"))=="yes");
    else
       hasChanged();
+#endif
    if(settings.haveKey("EXPERT"))
       optionsExpert->setChecked(string(settings.getKey("EXPERT"))=="yes");
    else
@@ -288,11 +294,13 @@ void QSetting::saveSettings() {
    else
       temp="no";
    settings.setKey("LX_LEVELS_INVERTED",temp.latin1());
+#if HAVE_SDL_H
    if(optionsSdl->isChecked())
       temp="yes";
    else
       temp="no";
    settings.setKey("SDL",temp.latin1());
+#endif
    if(optionsExpert->isChecked())
       temp="yes";
    else

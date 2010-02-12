@@ -94,8 +94,10 @@ QCam::QCam() {
 QCam::~QCam() {
    delete periodicCaptureT_;
    free(fileFormatList_);
+#if HAVE_AVIFILE_H
    delete movieWritterAvi_;
    delete movieWritterAviLossless_;
+#endif
    delete movieWritterSeq_;
    delete displayWindow_;
    delete displayHistogramWindow_;
