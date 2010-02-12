@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 #ifndef _BAYER_HPP_
 #define _BAYER_HPP_
 
-// vesta raw to yuv444 conversion
+// vesta raw to yuv444 conversion (bilinear)
 void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* input, const int w, const int h, int mode);
 
 #endif

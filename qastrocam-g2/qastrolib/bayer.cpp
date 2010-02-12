@@ -32,100 +32,15 @@ using namespace std;
 #define GREEN2	2	// green pixel on a blue line
 #define	BLUE	3
 
-// color offsets
-#define	RED_OFFSET	0
-#define	GREEN_OFFSET	1
-#define	BLUE_OFFSET	2
-
-// get the bayer pixel color depending on its position
-// and bayer pattern
-int getPixelColor(int x,int y,int mode) {
-   int color;
-   int x_odd = x % 2;
-   int y_odd = y % 2;
-   switch (mode) {
-      case RawRgbFrame1:
-         if(x_odd==y_odd) {
-            // green pixel
-            if(y_odd)
-               // blue line
-               return(GREEN2);
-            else
-               // red line
-               return(GREEN1);
-         } else {
-            if(y_odd)
-               // blue pixel
-               return(BLUE);
-            else
-               // red pixel
-               return(RED);
-         }
-         break;
-      case RawRgbFrame2:
-         if(x_odd!=y_odd) {
-            // green pixel
-            if(y_odd)
-               // blue line
-               return(GREEN2);
-            else
-               // red line
-               return(GREEN1);
-         } else {
-            if(y_odd)
-               // blue pixel
-               return(BLUE);
-            else
-            // red pixel
-               return(RED);
-         }
-         break;
-      case RawRgbFrame3:
-         if(x_odd!=y_odd) {
-            // green pixel
-            if(y_odd)
-               // red line
-               return(GREEN1);
-            else
-               // blue line
-               return(GREEN2);
-         } else {
-            if(y_odd)
-               // red pixel
-               return(RED);
-            else
-               // blue pixel
-               return(BLUE);
-         }
-         break;
-      case RawRgbFrame4:
-         if(x_odd==y_odd) {
-            // green pixel
-            if(y_odd)
-               // red line
-               return(GREEN1);
-            else
-               // blue line
-               return(GREEN2);
-         } else {
-            if(y_odd)
-               // red pixel
-               return(RED);
-            else
-               // blue pixel
-               return(BLUE);
-         }
-         break;
-   }
-   return(color);
-}
+// 1st and 6rd values : syncs with the bayer mode enum
+int bayerPatterns[6][2][2]={{{0,0},{0,0}},{{GREEN1,BLUE},{RED,GREEN2}},{{RED,GREEN2},{GREEN1,BLUE}},{{BLUE,GREEN1},{GREEN2,RED}},{{GREEN2,RED},{BLUE,GREEN1}},{{0,0},{0,0}}};
 
 // rgb raw to yuv 4:4:4 color conversion
 void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* data, const int w, const int h, int mode) {
    double red, green, blue;
-   int pixelOffset;
-   int rowOffset=1;
-   int lineOffset=w;
+   register int pixelOffset=0;
+   register int rowOffset=1;
+   register int lineOffset=w;
    for(int x=0;x<w;x++) {
       for(int y=0;y<h;y++) {
          pixelOffset=(y*w+x);
@@ -135,7 +50,7 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
             green=0.0;
             blue=0.0;
          } else {
-            switch(getPixelColor(x,y,mode)) {
+            switch(bayerPatterns[mode][x%2][y%2]) {
                case RED :
                   red=data[pixelOffset];
                   green=(data[pixelOffset-rowOffset]
