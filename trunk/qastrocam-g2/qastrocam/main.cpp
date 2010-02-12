@@ -21,6 +21,8 @@ MA  02110-1301, USA.
 
 #include "stdlib.h"
 
+#include "../config.h"
+
 #include "QCamSlider.hpp"
 #include "QCamV4L.hpp"
 #include "QCamVesta.hpp"
@@ -347,7 +349,9 @@ int main(int argc, char ** argv) {
    }
 
    // cout redirection
+#ifndef _DEBUG_
    FILE* logFile=freopen(logFileName.c_str(),"w",stdout);
+#endif
 
    // for log trace
    cout << qastrocamName << " " << qastroCamVersion
@@ -532,5 +536,9 @@ int main(int argc, char ** argv) {
    delete camAdd;
    delete camMax;
    delete cam;
+
+#ifndef _DEBUG_
+   fclose(logFile);
+#endif
    return(0);
 }

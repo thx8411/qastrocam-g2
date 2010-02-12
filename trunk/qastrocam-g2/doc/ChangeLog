@@ -1,4 +1,4 @@
-4.7beta20100211
+4.7beta20100212
 
   - jpeg palette support added
   - better frame size detection
@@ -17,6 +17,7 @@
   - source combobox added
   - palette combobox added
   - debian packaging modified for multi-platform
+  - demosaic optimisation (about 30% less time consuming)
 
 4.6
 
