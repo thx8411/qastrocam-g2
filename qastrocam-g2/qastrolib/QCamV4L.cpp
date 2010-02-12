@@ -465,7 +465,7 @@ void QCamV4L::allocBuffers() {
 // video device
 const QSize * QCamV4L::getAllowedSize() const {
    if (sizeTable_==NULL) {
-      int res;
+      int res=0;
       int currentIndex=0;
       int last_x=0;
       int last_y=0;
@@ -481,10 +481,18 @@ const QSize * QCamV4L::getAllowedSize() const {
 
       cout << "Frame size detection" << endl;
 
-      // get the first pixel fmt
+      // get the first supported pixel fmt
       v4l2_fmtdesc_temp.index=0;
       v4l2_fmtdesc_temp.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
-      ioctl(device_,VIDIOC_ENUM_FMT,&v4l2_fmtdesc_temp);
+      while((res!=-1)&&(getSupportedPaletteIndex(v4l2_fmtdesc_temp.pixelformat)==-1)) {
+         res=ioctl(device_,VIDIOC_ENUM_FMT,&v4l2_fmtdesc_temp);
+         v4l2_fmtdesc_temp.index++;
+      }
+      if(res==-1) {
+         QMessageBox::information(0,"Qastrocam-g2","No supported palette found\nLeaving...");
+         cout << "No supported palette found" << endl;
+         exit(1);
+      }
       // get the first frame size
       v4l2_sizeenum_temp.index=0;
       v4l2_sizeenum_temp.pixel_format=v4l2_fmtdesc_temp.pixelformat;
