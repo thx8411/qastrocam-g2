@@ -22,6 +22,8 @@ MA  02110-1301, USA.
 
 #include "QSetting.moc"
 
+#include "../config.h"
+
 #include "QCamUtilities.hpp"
 #include "SettingsBackup.hpp"
 
