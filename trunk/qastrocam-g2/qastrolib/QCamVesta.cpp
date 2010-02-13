@@ -91,11 +91,13 @@ QCamVesta::QCamVesta(const char * devpath):
    //getWhiteBalance();
    lastGain_=getGain();
 
-   // get window_ value
-   // V4L generic don't do it anymore
+   // read the window_ values
+   // generic V4L don't do it anymore
    if(ioctl(device_,VIDIOCGWIN, &window_))
       perror("ioctl (VIDIOCGWIN)");
 }
+
+
 
 bool QCamVesta::updateFrame() {
    static int tmp;
@@ -321,6 +323,9 @@ int QCamVesta::getGama() const {
 }
 
 void QCamVesta::setFrameRate(int value) {
+   // update the window_
+   if(ioctl(device_,VIDIOCGWIN, &window_))
+      perror("ioctl (VIDIOCGWIN)");
    window_.flags = (window_.flags & ~PWC_FPS_MASK)
                    | ((value << PWC_FPS_SHIFT) & PWC_FPS_FRMASK);
    if (ioctl(device_, VIDIOCSWIN, &window_)) {
