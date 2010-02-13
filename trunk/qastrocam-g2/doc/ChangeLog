@@ -1,5 +1,6 @@
-4.7beta20100212
+4.7beta20100213
 
+  - vesta framerate/size change bug fixed
   - jpeg palette support added
   - better frame size detection
   - much better lx frame detection
@@ -17,7 +18,7 @@
   - source combobox added
   - palette combobox added
   - debian packaging modified for multi-platform
-  - demosaic optimisation (about 30% less time consuming)
+  - demosaic optimisation (speed x2)
 
 4.6
 
