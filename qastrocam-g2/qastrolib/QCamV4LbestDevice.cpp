@@ -51,15 +51,15 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
    // read device cap to get device name
    struct v4l2_capability vcap;
    // if V4L2 api supported
-   if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
+   /*if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
       struct pwc_probe probe;
       int type;
       bool IsPhilips = false;
       if (sscanf((char*)vcap.card, "Philips %d webcam", &type) == 1) {
-         /* original phillips */
+         //original phillips
          IsPhilips = true;
       } else if (ioctl(cam_fd, VIDIOCPWCPROBE, &probe) == 0) {
-         /* an OEM clone ? */
+         // an OEM clone ?
          if (!strcmp((char*)vcap.card,probe.name)) {
             IsPhilips = true;
             type=probe.type;
@@ -90,9 +90,9 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
       close(cam_fd);
       camFound= new QCamV4L2(devpath);
       return(camFound);
-   }
+   }*/
    // else using V4L generic
-   cout << "Using generic V4L" << vcap.card << endl;
+   cout << "Using generic V4L" << endl;
    close(cam_fd);
    camFound = new QCamV4L(devpath);
    return(camFound);
