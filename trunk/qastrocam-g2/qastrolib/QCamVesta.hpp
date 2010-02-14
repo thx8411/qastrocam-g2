@@ -32,7 +32,7 @@ MA  02110-1301, USA.
 
 #include "pwc-ioctl.h"
 
-#include "QCamV4L.hpp"
+#include "QCamV4L2.hpp"
 
 class QCamSlider;
 class QHGroupBox;
@@ -44,10 +44,10 @@ class QLineEdit;
 class SCmod;
 class SCmodTucLed;
 
-/** enhance QCamV4L to access the specific features of the Philips
+/** enhance QCamV4L2 to access the specific features of the Philips
     Vesta and TOUCAM webcams.
     give acces to the mod 1 and mod 2 of the Steve Chambers hardware patch. */
-class QCamVesta : public QCamV4L {
+class QCamVesta : public QCamV4L2 {
    Q_OBJECT
 public:
    QCamVesta(const char * devpath="/dev/video0");

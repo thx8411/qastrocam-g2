@@ -20,8 +20,8 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#ifndef _QCamV4L_hpp_
-#define _QCamV4L_hpp_
+#ifndef _QCamV4L2_hpp_
+#define _QCamV4L2_hpp_
 
 #include <qobject.h>
 #include <qimage.h>
@@ -44,8 +44,50 @@ class QCamSlider;
 class QTimer;
 class QSocketNotifier;
 
+// buffer number
+#define BUFF_NUMBER	4
+
+// lx modes list
+#define	lxNone	0
+#define lxPar	1
+#define lxSer	2
+
+// video ctrl struct
+struct video_ctrl {
+   int brightness;
+   int brightness_min;
+   int brightness_max;
+   int hue;
+   int hue_min;
+   int hue_max;
+   int contrast;
+   int contrast_min;
+   int contrast_max;
+   int colour;
+   int colour_min;
+   int colour_max;
+   int whiteness;
+   int whiteness_min;
+   int whiteness_max;
+};
+
+// mmap buffer
+struct mmap_buffer {
+   void *start;
+   size_t length;
+};
+
+// palette informations
+struct palette_datas {
+   int index;			// v4l2 name/num
+   int memfactor_numerator;	// numerator for memory usage : buffer size = w*h*numeroator/denominator
+   int memfactor_denominator;	// denominator
+   char name[32];		// palette name
+   int mode;			// grey or color frames
+};
+
 /** QCam implementation to acces a basic Video4Linux device.*/
-class QCamV4L : public QCam {
+class QCamV4L2 : public QCam {
    Q_OBJECT
 public:
    // image controls
@@ -61,13 +103,11 @@ public:
       supportCropping=(1<<8)
    };
    static const int DefaultOptions;
-   // create the best camera instance, depending on the device
-   static QCam * openBestDevice(const char * devpath = "/dev/video0");
    // constructor
-   QCamV4L(const char * devpath="/dev/video0",
+   QCamV4L2(const char * devpath="/dev/video0",
            unsigned long options =  DefaultOptions /* cf QCamV4L::options */);
    // destructor
-   ~QCamV4L();
+   ~QCamV4L2();
    // image access
    QCamFrame yuvFrame() const { return outputBuffer_; }
    int yuvFrameMemSize;
@@ -81,11 +121,18 @@ public:
    // gui
    QWidget * buildGUI(QWidget * parent);
 protected:
+   // V4L2 vars
+   struct v4l2_cropcap v4l2_crop_;
+   struct v4l2_capability v4l2_cap_;
+   struct v4l2_format v4l2_fmt_;
    // V4L vars
    int device_;
    unsigned long options_;
-   //struct video_window window_
+   //struct video_window window_;
+   struct video_ctrl picture_;
    // mmap stuf
+   struct v4l2_requestbuffers mmap_reqbuf;
+   struct mmap_buffer* buffers;
    bool useMmap;
    // sizes table
    int maxWidth;
@@ -116,6 +163,7 @@ private:
    // get os time in seconds (usec accuracy)
    double getTime();
    // inputs
+   v4l2_input input;
    int sourceNumber;
    int sourceTable[8];
    const char* sourceLabel[8];

@@ -54,6 +54,8 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
             switch(bayerPatterns[mode][x%2][y%2]) {
                case RED :
                   red=data[pixelOffset];
+                  /*green=0.0;
+                  blue=0.0;*/
                   green=(data[pixelOffset-rowOffset]
                      +data[pixelOffset+rowOffset]
                      +data[pixelOffset-lineOffset]
@@ -64,16 +66,22 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
                      +data[pixelOffset-lineOffset-rowOffset])/4;
                   break;
                case GREEN1 :
+                  /*red=0.0;
+                  blue=0.0;*/
                   red=(data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2;
                   green=data[pixelOffset];
                   blue=(data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2;
                   break;
                case GREEN2 :
+                  /*red=0.0;
+                  blue=0.0;*/
                   red=(data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2;
                   green=data[pixelOffset];
                   blue=(data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2;
                   break;
                case BLUE :
+                  /*red=0.0;
+                  green=0.0;*/
                   red=(data[pixelOffset+lineOffset+rowOffset]
                      +data[pixelOffset+lineOffset-rowOffset]
                      +data[pixelOffset-lineOffset+rowOffset]

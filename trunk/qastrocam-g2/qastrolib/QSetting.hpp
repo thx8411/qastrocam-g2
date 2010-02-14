@@ -111,7 +111,7 @@ private :
    QCheckBox* optionsSdl;
    QCheckBox* optionsExpert;
    QCheckBox* optionsLog;
-   QCheckBox* optionsForceGeneric;
+//   QCheckBox* optionsForceGeneric;
    QHBox* libBox;
    QLabel* libpathLabel;
    QLineEdit* libpathEntry;

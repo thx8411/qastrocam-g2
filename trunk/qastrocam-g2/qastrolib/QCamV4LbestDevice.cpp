@@ -21,6 +21,7 @@ MA  02110-1301, USA.
 
 
 #include "QCamV4L.hpp"
+#include "QCamV4L2.hpp"
 #include "QCamOV511.hpp"
 #include "QCamVesta.hpp"
 
@@ -37,7 +38,7 @@ extern settingsBackup settings;
 
 // Creat the best QCamV4l object depending on the device.
 // Usage of default object can be done using "force"
-QCam * QCamV4L::openBestDevice(const char * devpath, bool force) {
+QCam * QCamV4L::openBestDevice(const char * devpath) {
    int cam_fd;
    int palette;
    QCam * camFound=NULL;
@@ -49,15 +50,8 @@ QCam * QCamV4L::openBestDevice(const char * devpath, bool force) {
    }
    // read device cap to get device name
    struct v4l2_capability vcap;
-   if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap ) < 0) {
-      perror(devpath);
-      camFound = NULL;
-      cout << "no camera detected." << endl;
-      return camFound;
-   }
-   // if V4L generic usage not forced
-   if(!force) {
-      // is the device a phillips cam ?
+   // if V4L2 api supported
+   if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
       struct pwc_probe probe;
       int type;
       bool IsPhilips = false;
@@ -75,30 +69,31 @@ QCam * QCamV4L::openBestDevice(const char * devpath, bool force) {
          cout << "Philips webcam type " << type << " detected." << endl;
          close(cam_fd);
          camFound = new QCamVesta(devpath);
-         return camFound;
+         return(camFound);
       }
       // looking for an OV511 device
       if (strncmp((char*)vcap.card,"OV511",5)==0) {
          cout << "webcam " << vcap.card << " detected." << endl;
          close(cam_fd);
          camFound = new QCamOV511(devpath);
-         return camFound;
+         return(camFound);
       }
       // looking for an OV519 device
       if (strncmp((char*)vcap.card,"OV519",5)==0) {
          cout << "webcam " << vcap.card << " detected (jpeg mode)." << endl;
          close(cam_fd);
          camFound = new QCamOV519(devpath);
-         return camFound;
+         return(camFound);
       }
-      cout << "unknow camera detected." << endl;
-   } else
-      cout << "V4L generic forced" << endl;
-   // using generic V4L
-   cout << "Using generic V4L driver : " << vcap.card << endl;
+      // V4L2 generic
+      cout << "using V4L2 generic" << endl;
+      close(cam_fd);
+      camFound= new QCamV4L2(devpath);
+      return(camFound);
+   }
+   // else using V4L generic
+   cout << "Using generic V4L" << vcap.card << endl;
    close(cam_fd);
-
    camFound = new QCamV4L(devpath);
-   return camFound;
+   return(camFound);
 }
-

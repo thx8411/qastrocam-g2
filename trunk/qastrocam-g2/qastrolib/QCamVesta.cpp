@@ -50,7 +50,7 @@ MA  02110-1301, USA.
 #include "QCamUtilities.hpp"
 
 QCamVesta::QCamVesta(const char * devpath):
-   QCamV4L(devpath,(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
+   QCamV4L2(devpath,(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
    SCmodCtrl_=NULL;
    exposureTimeLeft_=NULL;
    whiteBalanceMode_=-1;
@@ -105,14 +105,14 @@ bool QCamVesta::updateFrame() {
       if (skippedFrame_ >= multiplicateur_ -3) {
          stopAccumulation();
       }
-      if (QCamV4L::dropFrame()) {
+      if (QCamV4L2::dropFrame()) {
          skippedFrame_++;
          exposureTimeLeft_->setProgress(skippedFrame_);
          tmp=0;
       }
       return false;
    } else {
-      if (QCamV4L::updateFrame()) {
+      if (QCamV4L2::updateFrame()) {
          skippedFrame_=0;
          if (multiplicateur_ > 1) {
             startAccumulation();
@@ -153,8 +153,8 @@ bool QCamVesta::updateFrame() {
 }
 
 void QCamVesta::refreshPictureSettings() {
-   QCamV4L::refreshPictureSettings();
-   QCamV4L::refreshPictureSettings(); // second call needed. if not some value are not properly restored.
+   QCamV4L2::refreshPictureSettings();
+   QCamV4L2::refreshPictureSettings(); // second call needed. if not some value are not properly restored.
 
    int tmp;
    emit(sharpnessChange(getSharpness()));
@@ -556,7 +556,7 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
 }
 
 QWidget *  QCamVesta::buildGUI(QWidget * parent) {
-   QWidget * remoteCTRL=QCamV4L::buildGUI(parent);
+   QWidget * remoteCTRL=QCamV4L2::buildGUI(parent);
    remoteCTRLlx->hide();
 
    QHGroupBox* vestaCtrl=new QHGroupBox("Vesta controls",remoteCTRL);

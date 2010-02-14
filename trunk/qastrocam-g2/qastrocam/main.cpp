@@ -71,7 +71,7 @@ const string LibDirOptionString("--libdir");
 const string SDLon("--sdl");
 const string ExpertMode("--expert");
 const string LogMode("--log");
-const string ForceGeneric("--force-generic");
+//const string ForceGeneric("--force-generic");
 const string ForceSettings("-sf");
 
 // backup object, present everywhere
@@ -98,7 +98,7 @@ void usage(const char * progName) {
    cerr << "  "<<SDLon<<" <yes/no> use lib SDL to display frames (fast display).\n";
    cerr << "  "<<ExpertMode<<" <yes/no> enable some 'expert' options in the GUI\n";
    cerr << "  "<<LogMode<<" <yes/no> Logs qastrocam-g2 in a file for debug purpose\n";
-   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
+//   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
    cerr << endl;
 }
 
@@ -129,7 +129,7 @@ int main(int argc, char ** argv) {
    bool accum=false,max=false,mirror=false;
    bool autoAlign=false;
    bool kingOption=false;
-   bool V4Lforce=false;
+//   bool V4Lforce=false;
    string videoDeviceName("/dev/video0");
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
@@ -218,16 +218,16 @@ int main(int argc, char ** argv) {
             settings.setKey("KING_MODULE","yes");
          else
             settings.setKey("KING_MODULE","no");
-      } else if (ForceGeneric == argv[i]) {
-         i++;
-         if (i==argc) {
-            usage(argv[0]);
-            exit(1);
-         }
-         if(strcasecmp("yes",argv[i])==0)
-            settings.setKey("FORCE_V4LGENERIC","yes");
-         else
-            settings.setKey("FORCE_V4LGENERIC","no");
+//      } else if (ForceGeneric == argv[i]) {
+//         i++;
+//         if (i==argc) {
+//            usage(argv[0]);
+//            exit(1);
+//         }
+//         if(strcasecmp("yes",argv[i])==0)
+//            settings.setKey("FORCE_V4LGENERIC","yes");
+//         else
+//            settings.setKey("FORCE_V4LGENERIC","no");
       } else if ( TelescopeDeviceOptionString == argv[i]) {
          ++i;
           if (i==argc) {
@@ -414,14 +414,14 @@ int main(int argc, char ** argv) {
    }
 
    // is generic V4L forced in settings ?
-   if(settings.haveKey("FORCE_V4LGENERIC")) {
-      if(strcasecmp(settings.getKey("FORCE_V4LGENERIC"),"yes")==0)
-         V4Lforce=true;
-   }
+//   if(settings.haveKey("FORCE_V4LGENERIC")) {
+//      if(strcasecmp(settings.getKey("FORCE_V4LGENERIC"),"yes")==0)
+//         V4Lforce=true;
+//   }
 
    // capture module creation
    QCam* cam =NULL;
-   cam = QCamV4L::openBestDevice(videoDeviceName.c_str(),V4Lforce);
+   cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
    if (cam == NULL) {
       QMessageBox::information(0,"Qastrocam-g2","No camera detected\nSettings panel only");
       cout << "No camera detected" <<endl;
