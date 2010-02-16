@@ -1,4 +1,4 @@
-4.7beta20100215
+4.7beta20100216
 
   - V4L generic forcing option removed
   - vesta framerate/size change bug fixed
@@ -20,7 +20,8 @@
   - palette combobox added
   - debian packaging modified for multi-platform
   - demosaic optimisation (speed x2)
-  - basic v4l(1) support is back 
+  - basic v4l(1) support is back
+  - yuv420 to yuv444 bug fixed
 
 4.6
 
