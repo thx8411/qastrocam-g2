@@ -33,6 +33,8 @@ MA  02110-1301, USA.
 #include <linux/videodev.h>
 #include "SettingsBackup.hpp"
 
+#define CRITICAL_INTEGRATION_TIME	5.0
+
 // storing settings object.
 extern settingsBackup settings;
 
@@ -51,7 +53,7 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
    // read device cap to get device name
    struct v4l2_capability vcap;
    // if V4L2 api supported
-   /*if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
+   if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
       struct pwc_probe probe;
       int type;
       bool IsPhilips = false;
@@ -86,11 +88,94 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
          return(camFound);
       }
       // V4L2 generic
-      cout << "using V4L2 generic" << endl;
-      close(cam_fd);
-      camFound= new QCamV4L2(devpath);
-      return(camFound);
-   }*/
+      int res;
+      v4l2_fmtdesc v4l2_fmtdesc_temp;
+      v4l2_frmsizeenum v4l2_sizeenum_temp;
+      v4l2_format v4l2_fmt_temp;
+      v4l2_frmivalenum v4l2_frameinterval;
+      // gets the first pix fmt
+      memset(&v4l2_fmtdesc_temp,0,sizeof(v4l2_fmtdesc_temp));
+      v4l2_fmtdesc_temp.index=0;
+      v4l2_fmtdesc_temp.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+      ioctl(cam_fd,VIDIOC_ENUM_FMT,&v4l2_fmtdesc_temp);
+      // gets the first size
+      memset(&v4l2_sizeenum_temp,0,sizeof(v4l2_sizeenum_temp));
+      v4l2_sizeenum_temp.index=0;
+      v4l2_sizeenum_temp.pixel_format=v4l2_fmtdesc_temp.pixelformat;
+      res=ioctl(cam_fd,VIDIOC_ENUM_FRAMESIZES,&v4l2_sizeenum_temp);
+      if(res!=0) {
+         // size enum not supported, so frame interval certainly not supported
+         cout << "using V4L2 generic" << endl;
+         close(cam_fd);
+         camFound= new QCamV4L2(devpath);
+         return(camFound);
+      }
+      //
+      // probes for FRAMEINTERVALS support
+      //
+      memset(&v4l2_frameinterval,0,sizeof(v4l2_frameinterval));
+      v4l2_frameinterval.index=0;
+      v4l2_frameinterval.pixel_format=v4l2_fmtdesc_temp.pixelformat;
+      switch(v4l2_sizeenum_temp.type) {
+         case V4L2_FRMSIZE_TYPE_DISCRETE :
+            // use the first size we found
+            v4l2_frameinterval.width=v4l2_sizeenum_temp.discrete.width;
+            v4l2_frameinterval.height=v4l2_sizeenum_temp.discrete.height;
+            break;
+         case V4L2_FRMSIZE_TYPE_CONTINUOUS :
+         case V4L2_FRMSIZE_TYPE_STEPWISE :
+            // we use the biggest size
+            v4l2_frameinterval.width=v4l2_sizeenum_temp.stepwise.max_width;
+            v4l2_frameinterval.height=v4l2_sizeenum_temp.stepwise.max_height;
+            break;
+      }
+      if(ioctl(cam_fd,VIDIOC_ENUM_FRAMEINTERVALS,&v4l2_frameinterval)==0) {
+         v4l2_frameinterval.index++;
+         // frame interval supported
+         float max_integration_time=0.0;
+         cout << "frame intervals supported" << endl;
+         switch(v4l2_frameinterval.type) {
+            case V4L2_FRMIVAL_TYPE_DISCRETE :
+               cout << "discrete timing" << endl;
+               cout << v4l2_frameinterval.discrete.numerator << "/" << v4l2_frameinterval.discrete.denominator << endl;
+               max_integration_time=v4l2_frameinterval.discrete.numerator/v4l2_frameinterval.discrete.denominator;
+               while(ioctl(cam_fd,VIDIOC_ENUM_FRAMEINTERVALS,&v4l2_frameinterval)==0) {
+                  cout << v4l2_frameinterval.discrete.numerator << "/" << v4l2_frameinterval.discrete.denominator << endl;
+                  if((v4l2_frameinterval.discrete.numerator/v4l2_frameinterval.discrete.denominator)>max_integration_time)
+                     max_integration_time=v4l2_frameinterval.discrete.numerator/v4l2_frameinterval.discrete.denominator;
+                  v4l2_frameinterval.index++;
+               }
+               break;
+            case V4L2_FRMIVAL_TYPE_CONTINUOUS :
+               cout << "continuous timing" << endl;
+            case V4L2_FRMIVAL_TYPE_STEPWISE :
+               cout << "stepwise timing" << endl;
+               max_integration_time=v4l2_frameinterval.stepwise.max.numerator/v4l2_frameinterval.stepwise.max.denominator;
+               break;
+         }
+         cout << "max integration time : " << max_integration_time << " seconds" << endl;
+         if(CRITICAL_INTEGRATION_TIME<max_integration_time) {
+            // we use frame intervals for lx
+            cout << "Using frame intervals for lx mode" << endl;
+            // temp
+            close(cam_fd);
+            camFound= new QCamV4L2(devpath);
+            return(camFound);
+         } else {
+            // we use generic V4L2
+            cout << "using V4L2 generic" << endl;
+            close(cam_fd);
+            camFound= new QCamV4L2(devpath);
+            return(camFound);
+         }
+      } else {
+         // frame intervals not supported
+         cout << "using V4L2 generic" << endl;
+         close(cam_fd);
+         camFound= new QCamV4L2(devpath);
+         return(camFound);
+      }
+   }
    // else using V4L generic
    cout << "Using generic V4L" << endl;
    close(cam_fd);
