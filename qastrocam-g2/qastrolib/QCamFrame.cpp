@@ -408,7 +408,7 @@ void QCamFrameCommon::move(int srcX1,int srcY1,
 
 // frame binning
 void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFactor) {
-   int i,j,k,l,sum;
+   int i,j,k,l,Ysum,Usum,Vsum;
    int xOffset,yOffset;
 
    // luminance plan
@@ -417,37 +417,39 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
       xOffset=i*xFactor;
       for(j=0;j<size_.height();j++) {
          // we sum source pixels arround
-         sum=0;
+         Ysum=0;
+         Usum=0;
+         Vsum=0;
          yOffset=j*yFactor;
          // lines
          for(k=0;k<yFactor;k++) {
-            const unsigned char* line=src.YLine(yOffset+k);
-            // outside dynamic range, summing is useless
-            if(sum>=255)
-               break;
+            const unsigned char* Yline=src.YLine(yOffset+k);
+            const unsigned char* Uline=src.ULine(yOffset+k);
+            const unsigned char* Vline=src.VLine(yOffset+k);
             // rows
             for(l=0;l<xFactor;l++) {
-               sum+=line[xOffset+l];
-               // outside dynamic range, summing is useless
-               if(sum>=255)
-                  break;
+               Ysum+=Yline[xOffset+l];
+               Usum+=Uline[xOffset+l];
+               Vsum+=Vline[xOffset+l];
             }
          }
          // outside dynamic range
-         if(sum>255)
-            sum=255;
+         if(Ysum>255)
+            Ysum=255;
+         Usum-=(xFactor*yFactor-1)*128;
+         if(Usum>255)
+            Usum=255;
+         if(Usum<0)
+            Usum=0;
+         Vsum-=(xFactor*yFactor-1)*128;
+         if(Vsum>255)
+            Vsum=255;
+         if(Vsum<0)
+            Vsum=0;
          // update dest pixel
-         yFrame_[j*size_.width()+i]=(unsigned char)sum;
-      }
-   }
-
-   // binning u and v plans is a non sens;
-   if(getMode()==YuvFrame) {
-      for(i=0;i<size_.width();i++) {
-         for(j=0;j<size_.height();j++) {
-            uFrame_[j*size_.width()+i]=src.ULine(j*yFactor)[i*xFactor];
-            vFrame_[j*size_.width()+i]=src.VLine(j*yFactor)[i*xFactor];
-         }
+         yFrame_[j*size_.width()+i]=(unsigned char)Ysum;
+         uFrame_[j*size_.width()+i]=(unsigned char)Usum;
+         vFrame_[j*size_.width()+i]=(unsigned char)Vsum;
       }
    }
 }
