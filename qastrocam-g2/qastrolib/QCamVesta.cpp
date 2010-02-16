@@ -323,12 +323,23 @@ int QCamVesta::getGama() const {
 }
 
 void QCamVesta::setFrameRate(int value) {
+   int res;
    // update the window_
    if(ioctl(device_,VIDIOCGWIN, &window_))
       perror("ioctl (VIDIOCGWIN)");
    window_.flags = (window_.flags & ~PWC_FPS_MASK)
                    | ((value << PWC_FPS_SHIFT) & PWC_FPS_FRMASK);
-   if (ioctl(device_, VIDIOCSWIN, &window_)) {
+   res=ioctl(device_, VIDIOCSWIN, &window_);
+   if (res!=0) {
+      QMessageBox::information(0,"Qastrocam-g2","Frame rate is to high for low compression");
+      // looking for the nearest supported framerate
+      while((value!=0)&&(res!=0)) {
+         value--;
+         window_.flags = (window_.flags & ~PWC_FPS_MASK)
+                   | ((value << PWC_FPS_SHIFT) & PWC_FPS_FRMASK);
+         res=ioctl(device_, VIDIOCSWIN, &window_);
+      }
+      remoteCTRLframeRate2_->update(value);
       perror("setFrameRate");
    } else {
       ioctl(device_, VIDIOCGWIN, &window_);
