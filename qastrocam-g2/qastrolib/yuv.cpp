@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #include <string.h>
 #include "yuv.hpp"
 
-// yuv444 conversion tools
+// yuv444 conversion tool
 
 int clip(double v) {
    if(v<0) return(0);
