@@ -135,6 +135,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    }
    cout << "device name : " << v4l2_cap_.card << endl;
    useMmap=((v4l2_cap_.capabilities&V4L2_CAP_STREAMING)!=0);
+
    // ***********************
    // setting image controls
    // ***********************

@@ -67,8 +67,8 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
    memcpy(dstY,srcY,w*h);
    for(i=0;i<w;i++){
       for(j=0;j<h;j++){
-         dstU[j*w+i]=srcU[j*w/4+i/2];
-         dstV[j*w+i]=srcV[j*w/4+i/2];
+         dstU[j*w+i]=srcU[(j/2)*(w/2)+i/2];
+         dstV[j*w+i]=srcV[(j/2)*(w/2)+i/2];
       }
    }
 }

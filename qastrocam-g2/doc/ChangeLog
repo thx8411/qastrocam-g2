@@ -1,5 +1,6 @@
-4.7beta20100213
+4.7beta20100215
 
+  - V4L generic forcing option removed
   - vesta framerate/size change bug fixed
   - jpeg palette support added
   - better frame size detection
@@ -19,6 +20,7 @@
   - palette combobox added
   - debian packaging modified for multi-platform
   - demosaic optimisation (speed x2)
+  - basic v4l(1) support is back 
 
 4.6
 
