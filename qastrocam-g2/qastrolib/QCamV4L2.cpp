@@ -390,8 +390,14 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    // size detection
    // **************
    sizeTable=getAllowedSize();
-   maxWidth=sizeTable[0].width();
-   maxHeight=sizeTable[0].height();
+   int i=0;
+   maxWidth=0;
+   maxHeight=0;
+   while((sizeTable[i].width()!=0)&&(sizeTable[i].height()!=0)) {
+      if(sizeTable[i].width()>maxWidth) maxWidth=sizeTable[i].width();
+      if(sizeTable[i].height()>maxHeight) maxHeight=sizeTable[i].height();
+      i++;
+   }
    resize(sizeTable[0]);
 
    // some lx widgets init to avoid segfaults in updateFrame
