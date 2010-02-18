@@ -1,5 +1,6 @@
 4.7beta20100218
 
+  - release number added in main window caption
   - V4L generic forcing option removed
   - vesta framerate/size change bug fixed
   - jpeg palette support added
