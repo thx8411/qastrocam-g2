@@ -22,6 +22,7 @@
   - demosaic optimisation (speed x2)
   - basic v4l(1) support is back
   - yuv420 to yuv444 bug fixed
+  - better colors in binning mode
 
 4.6
 
