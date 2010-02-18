@@ -1,6 +1,4 @@
 /******************************************************************
-Qastrocam
-Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
 Copyright (C) 2009   Blaise-Florentin Collin
 
@@ -20,46 +18,33 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#ifndef _FrameMirror_hpp_
-#define _FrameMirror_hpp_
+#ifndef _FrameBias_hpp_
+#define _FrameBias_hpp_
 
 #include <qobject.h>
 #include <qstring.h>
 #include <qhbox.h>
 
 #include "FrameAlgo.hpp"
-class QPushButton;
 
-class FrameMirror :  public FrameAlgo {
+class FrameBias :  public FrameAlgo {
    Q_OBJECT;
 private:
-   class Widget : public QHBox {
+    class Widget : public QHBox {
    public:
       ~Widget();
-      Widget(QWidget * parent,const FrameMirror * algo);
+      Widget(QWidget * parent,const FrameBias * algo);
    private:
-      QPushButton * upDown_;
-      QPushButton * leftRight_;
    };
-
 public:
-   FrameMirror();
+   FrameBias();
    bool transform(const QCamFrame in, QCamFrame & out);
-   QString label() const {return "Mirror";}
+   QString label() const {return("Bias/Offset");}
    QWidget * allocGui(QWidget * parent) const {
       return new Widget(parent,this);
    }
 public slots:
-   void swapUpDown(bool);
-   void swapLeftRight(bool);
 signals:
-   void upDownSwapped(bool);
-   void leftRightSwapped(bool);
-private:
-   void memswap(unsigned char *dest,
-                const unsigned char *src, size_t n);
-   bool swapUpDown_;
-   bool swapLeftRight_;
 };
 
 #endif
