@@ -32,6 +32,7 @@ install:: all
 	iconsDir="$(DESTDIR)/share/qastrocam-g2/icons"; install -d "$$iconsDir"; install icons/*.png "$$iconsDir"
 	gnomeMenuDir="$(DESTDIR)/share/applications"; install -d "$$gnomeMenuDir"; install qastrocam-g2.desktop "$$gnomeMenuDir"
 	gnomeIconDir="$(DESTDIR)/share/icons"; install -d "$$gnomeIconDir"; install icons/qastrocam-g2-icon.png "$$gnomeIconDir"
+	dllDir="$(DESTDIR)/lib/win32"; install -d "$$dllDir"; install lib/huffyuv.dll "$$dllDir"
 
 release::
 	$(MAKE) all
