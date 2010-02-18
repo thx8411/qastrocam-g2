@@ -22,6 +22,7 @@ qastrocam-g2 (4.7beta20100216) jaunty; urgency=low
   * basic v4l(1) support is back
   * V4L generic forcing option removed
   * yuv420 to yuv444 bug fixed
+  * better colors in binning mode
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 21 Jan 2010 03:21:44 +0100
 
