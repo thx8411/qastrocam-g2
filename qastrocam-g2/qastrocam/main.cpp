@@ -378,8 +378,13 @@ int main(int argc, char ** argv) {
    QCamUtilities::setLocale(app);
 
    // main window setting
+   QString caption;
    QPixmap* tmpIcon;
    QVBox mainWindow;
+   caption=qastrocamName;
+   caption+=" ";
+   caption+=qastroCamVersion;
+   mainWindow.setCaption(caption);
    QPushButton quit(&mainWindow,"Quit");
    QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
    tmpIcon=QCamUtilities::getIcon("exit.png");
