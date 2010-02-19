@@ -35,8 +35,8 @@ using namespace std;
 // 1st and 6rd values : syncs with the bayer mode enum
 int bayerPatterns[6][2][2]={{{0,0},{0,0}},{{0,0},{0,0}},{{GREEN1,BLUE},{RED,GREEN2}},{{RED,GREEN2},{GREEN1,BLUE}},{{BLUE,GREEN1},{GREEN2,RED}},{{GREEN2,RED},{BLUE,GREEN1}}};
 
-// rgb raw to yuv 4:4:4 color conversion
-void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* data, const int w, const int h, int mode) {
+// rgb raw to yuv 4:4:4 color conversion (nearest)
+void raw2yuv444_nearest(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* data, const int w, const int h, int mode) {
    double red, green, blue;
    register int pixelOffset=0;
    register int rowOffset=1;
@@ -54,8 +54,53 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
             switch(bayerPatterns[mode][x%2][y%2]) {
                case RED :
                   red=data[pixelOffset];
-                  /*green=0.0;
-                  blue=0.0;*/
+                  green=data[pixelOffset-rowOffset];
+                  blue=data[pixelOffset+lineOffset+rowOffset];
+                  break;
+               case GREEN1 :
+                  red=data[pixelOffset+rowOffset];
+                  green=data[pixelOffset];
+                  blue=data[pixelOffset+lineOffset];
+                  break;
+               case GREEN2 :
+                  red=data[pixelOffset+lineOffset];
+                  green=data[pixelOffset];
+                  blue=data[pixelOffset+rowOffset];
+                  break;
+               case BLUE :
+                  red=data[pixelOffset+lineOffset+rowOffset];
+                  green=data[pixelOffset-rowOffset];
+                  blue=data[pixelOffset];
+                  break;
+            }
+         }
+         Y[pixelOffset]=clip(0.299*red+0.587*green+0.114*blue);
+         U[pixelOffset]=clip(-0.169*red-0.331*green+0.499*blue+128);
+         V[pixelOffset]=clip(0.499*red-0.418*green-0.0813*blue+128);
+         pixelOffset++;
+      }
+   }
+}
+
+// rgb raw to yuv 4:4:4 color conversion (bilinear)
+void raw2yuv444_bilinear(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* data, const int w, const int h, int mode) {
+   double red, green, blue;
+   register int pixelOffset=0;
+   register int rowOffset=1;
+   register int lineOffset=w;
+   register int maxW=w-1;
+   register int maxH=h-1;
+   for(int y=0;y<h;y++) {
+      for(int x=0;x<w;x++) {
+         // manage edges
+         if(!x||(x==maxW)||!y||(y==maxH)) {
+            red=0.0;
+            green=0.0;
+            blue=0.0;
+         } else {
+            switch(bayerPatterns[mode][x%2][y%2]) {
+               case RED :
+                  red=data[pixelOffset];
                   green=(data[pixelOffset-rowOffset]
                      +data[pixelOffset+rowOffset]
                      +data[pixelOffset-lineOffset]
@@ -66,22 +111,16 @@ void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned c
                      +data[pixelOffset-lineOffset-rowOffset])/4;
                   break;
                case GREEN1 :
-                  /*red=0.0;
-                  blue=0.0;*/
                   red=(data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2;
                   green=data[pixelOffset];
                   blue=(data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2;
                   break;
                case GREEN2 :
-                  /*red=0.0;
-                  blue=0.0;*/
                   red=(data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2;
                   green=data[pixelOffset];
                   blue=(data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2;
                   break;
                case BLUE :
-                  /*red=0.0;
-                  green=0.0;*/
                   red=(data[pixelOffset+lineOffset+rowOffset]
                      +data[pixelOffset+lineOffset-rowOffset]
                      +data[pixelOffset-lineOffset+rowOffset]

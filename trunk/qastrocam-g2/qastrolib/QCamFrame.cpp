@@ -459,7 +459,10 @@ void QCamFrameCommon::debayer(ImageMode mode, DebayerMethod method) {
    yTemp=(unsigned char*)malloc(ySize());
    memcpy(yTemp,yFrame_,ySize());
    setMode(YuvFrame);
-   raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),mode);
+   switch(method) {
+      case Nearest : raw2yuv444_nearest(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),mode); break;
+      case Bilinear : raw2yuv444_bilinear(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),mode); break;
+   }
    free(yTemp);
 }
 
