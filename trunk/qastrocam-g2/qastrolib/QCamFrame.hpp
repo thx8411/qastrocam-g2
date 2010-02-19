@@ -38,6 +38,7 @@ using namespace std;
 
 enum ImageMode {
    GreyFrame,
+   YuvFrame,
    /* GR
       BG */
    RawRgbFrame1,
@@ -49,8 +50,12 @@ enum ImageMode {
    RawRgbFrame3,
    /* GB
       RG */
-   RawRgbFrame4,
-   YuvFrame
+   RawRgbFrame4
+};
+
+enum DebayerMethod {
+   Nearest,
+   Bilinear
 };
 
 /*** to not be used */
@@ -121,7 +126,7 @@ protected:
    void setMode(ImageMode val) { mode_=val; allocBuff();}
    ImageMode getMode() const { return mode_;}
    // debayer the frame using the known mode
-   void debayer();
+   void debayer(ImageMode mode, DebayerMethod method);
 
    friend class QCamFrame;
    void rotate(int center_x, int center_y, double angle);
@@ -218,7 +223,7 @@ public:
    // binning the frame to the new given size
    void binning(const QCamFrame & src, int w, int h);
    // debayer the frame using the known mode
-   void debayer();
+   void debayer(ImageMode mode, DebayerMethod method);
 private:
    QCamFrameCommon* common_;
 };

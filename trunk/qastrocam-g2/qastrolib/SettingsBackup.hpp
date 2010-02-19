@@ -36,7 +36,7 @@ using namespace std;
 //
 // SOURCE_* <name>
 // PALETTE_* <rgb24/yuyv/yuv420/grey/BA81>
-// RAW_MODE_* <Grey/Raw color GR/Raw color RG (Vesta)/Raw color BG (TUC)/Raw color GB/RGB>
+// COLOR_MODE_* <Grey/Color>
 //
 // global :
 //
@@ -58,6 +58,7 @@ using namespace std;
 // MIRROR_MODULE <yes/no>
 // KING_MODULE <yes/no>
 // ALIGN_MODULE <yes/no>
+// RAW_MODE_ <none/ GR/BG / RG/GB / BG/GR / GB/RG >
 
 class settingsBackup {
    private :
