@@ -121,6 +121,9 @@ public:
    bool saveFrame(const string& file) const;
    /** put a small annotation on the frame */
    void annotate(const Vector2D & pos) const;
+   // hide gui
+   void hideButtons(bool v) { hideButtons_=v; }
+   void hideFile(bool v) { hideFile_=v; }
 public slots:
    void snapshot() const;
    void setCapture(bool doCapture) const;
@@ -146,6 +149,10 @@ protected:
    // allowed sizes table
    const QSize* sizeTable;
 private:
+   // hide bool
+   bool hideButtons_;
+   bool hideFile_;
+   //
    QWidget * remoteCTRL_;
    void resetCaptureDir() const;
    mutable string seqenceFileName_;

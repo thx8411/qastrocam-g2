@@ -31,7 +31,6 @@ MA  02110-1301, USA.
 #include <qcheckbox.h>
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qwidget.h>
 
 #include "QDirectoryChooser.hpp"
 #include "QFileChooser.hpp"
@@ -100,7 +99,7 @@ private :
    QHBox* lineFive;
    QHBox* lineSix;
    QHBox* lineSeven;
-   QCheckBox* modulesMirror;
+//   QCheckBox* modulesMirror;
    QCheckBox* modulesAdd;
    QCheckBox* modulesMax;
    QCheckBox* modulesKing;

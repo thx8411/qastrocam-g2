@@ -32,6 +32,7 @@ QCamTrans::QCamTrans():
    algo_(NULL),
    algoWidget_(NULL) {
    mode_=Off;
+   hideMode_=false;
 }
 
 void QCamTrans::connectCam(QCam & theCam) {
@@ -134,5 +135,9 @@ QWidget * QCamTrans::buildGUI(QWidget * parent) {
       algoWidget_=algo_->allocGui(gui());
       algoWidget_->show();
    }
+
+   if(hideMode_)
+      modeWidget->hide();
+
    return remoteCTRL;
 }

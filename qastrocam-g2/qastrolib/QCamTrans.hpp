@@ -60,6 +60,8 @@ public:
    }
    virtual const QSize * getAllowedSize() const { return QCam::getAllowedSize();}
    virtual QWidget* buildGUI(QWidget * parent);
+   // hide gui
+   void hideMode(bool v) { hideMode_=v; }
 public slots:
    /** set the mode. */
    void mode(int mode);
@@ -68,6 +70,9 @@ signals:
 private slots:
    void transNewFrame();
 private:
+   // hide gui
+   bool hideMode_;
+   //
    QCam * cam_;
    bool paused_;
    QCamFrame camFrame_;
