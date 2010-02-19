@@ -1,0 +1,328 @@
+qastrocam-g2 (4.7) jaunty; urgency=low
+
+  * debian packaging modified for multi-platform
+  * option '-p' not available anymore (now useless)
+  * chosen palette now saved in the settings file
+  * palette and mode now saved for each diffrent device
+  * palette combobox added
+  * source combobox added
+  * support added for BA81 palette
+  * option '-i' not available anymore (now useless)
+  * device source can now be changed in gui
+  * avi lossless recording added (huffyuv)
+  * cout is redirected to a log file
+  * some options removed/changed (can be accessed by gui)
+  * better color conversions
+  * settings can be changed in gui
+  * much better lx frame detection
+  * better frame size detection
+  * jpeg palette support added
+  * demosaic optimisation (speed x2)
+  * vesta framerate/size change bug fixed
+  * basic v4l(1) support is back
+  * V4L generic forcing option removed
+  * yuv420 to yuv444 bug fixed
+  * better colors in binning mode
+  * release number added in main window caption
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 21 Jan 2010 03:21:44 +0100
+
+qastrocam-g2 (4.6) jaunty; urgency=low
+
+  * frame size now only limited by INT_MAX
+  * now supports frame scaling (default) and hardware cropping (centered)
+  * build warning cleaned
+  * supports software cropping
+  * snapshot button disabled when using AVI
+  * supports binning
+  * all file formats now support raw color frames
+  * minor GUI modifications
+  * ccvt no more used     
+  * webcam RGB palette now fully supported
+  * native format is yuv444 instead yuv420 for better colors
+  * FITS-GZ output removed
+  * many memory bugs/leaks fixed
+  * now saving avi in raw rgb24 or 8 bits grey depending on frame type
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 14 Jan 2010 01:35:01 +0100
+
+qastrocam-g2 (4.5) jaunty; urgency=low
+
+  * v4l generic lx frame selection now use max instead of mean pixel value
+  * icons moved and changed to avoid conflicts with the qastrocam package
+  * yuv420i no more supported
+  * v4l1 no more supported (migrating to v4l2)
+  * frame size limit becomes 8192x8192 (should be enough...)
+  * usage of V4L generic can now be forced
+  * settings file name can now be forced
+  * use "select" to notifie new frames with V4L2 devices
+  * optimisation flags now applies on all the code
+  * capture file name size no more limited
+  * empty capture file name issue fixed
+  * everything migrated to v4l2
+  * partialy detects control options
+  * fixed a palette detection bug
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 06 Dec 2009 12:51:56 +0100
+
+qastrocam-g2 (4.4) jaunty; urgency=low
+
+  * levels (inverted/normal) can be set for APM telescope
+  * levels (inverted/normal) can be set for // port LX
+  * APM telescope and // port LX may now share the same port with ppdev and lp devices
+  * V4L generic palette can be forced using -p option
+  * removed obsolete parport LX control
+  * supports ppdev and standard lp ports with the "latch" mod (for "usb to //" devices)
+  * removed useless image format (keeping FITS, FITS-GZ, AVI, BMP, PNG)
+  * small yuyv to yuv420p speed improvement
+  * documentation about the "latch" // mod added
+  * active V4L input and palette displayed in gui
+  * LX mode for V4L generic added (serial and //)  
+  * user manual started
+  * binary compiled with -O3 (optimisation)
+  * binary target is now i686
+  * autoconf warning fixed
+  * minor cosmetic fix
+  * mmap yuyv palette bug fixed
+  * RGB24 palette support (luminance only)
+  * prefered grey palette bug fixed
+  * V4L generic "hot" resize supported for all devices
+  * stored frame size bug when changing device fixed
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sat, 17 Oct 2009 02:40:49 +0200
+
+qastrocam-g2 (4.3) jaunty; urgency=low
+
+  * file format, raw mode, resolution, telescope device, lx device, lx levels now saved
+  * supports level inversion for serial and led SCmod via cmd-line (feature #2856135)
+  * ccvt updated to 0.3 (no more asm)
+  * V4L generic devices sources choise and restoration
+  * gnome menu entry and icon added
+  * yuyv pallette support
+  * frame rate now depends on the video std for generic V4L
+  * fixed : #2862323
+  * generic V4L frame size detection, hot-resizing capability message (bug #2859701)
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Mon, 21 Sep 2009 18:38:03 +0200
+
+qastrocam-g2 (4.2rc2) jaunty; urgency=low
+
+  * My version naming system was stupid, 4.2.2rc2 becomes 4.2rc2
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 08 Sep 2009 14:22:11 +0200
+
+qastrocam-g2 (4.2.2rc2) jaunty; urgency=low
+
+  * now quit on button released
+  * bug #2853068 fixed
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sun, 06 Sep 2009 20:16:01 +0200
+
+qastrocam-g2 (4.2.2rc1) jaunty; urgency=low
+
+  * bug #2846342 fixed
+  * QTelescopeFile rewritten, fixing bugs #2847809, #2846660, #2846661, #2846437
+  * bugs #2847888, #2847886 fixed
+  * sources cleaned
+  * bug #2851998 fixed
+  * bug #2846340 fixed
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Sat, 05 Sep 2009 04:12:39 +0200
+
+qastrocam-g2 (4.2.2beta20090828) jaunty; urgency=low
+
+  * sources cleaned
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 28 Aug 2009 04:52:04 +0200
+
+qastrocam-g2 (4.2.2beta20090827) jaunty; urgency=low
+
+  * package name changed
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Thu, 27 Aug 2009 19:30:02 +0200
+
+qastrocam (4.2.2beta20090826_BFC_Fork) jaunty; urgency=low
+
+  * added file virtual telescope, to generate iris compatible tracking files
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Wed, 26 Aug 2009 21:48:43 +0200
+
+qastrocam (4.2.1beta20090825_BFC_Fork) jaunty; urgency=low
+
+  * added SCmod serial device choice
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Tue, 25 Aug 2009 19:03:46 +0200
+
+qastrocam (4.2.0beta20090821_BFC_Fork) jaunty; urgency=low
+
+  * added SCmod Serial support
+
+ -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 21 Aug 2009 22:14:11 +0200
+
+qastrocam (4.1pre20090718) unstable; urgency=low
+
+  * added ubuntu target
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Tue, 18 jul 2009 16:31:19 +0100
+
+qastrocam (4.1pre20071027-3) unstable; urgency=low
+
+  * fixed desktop entry (added GenericName).
+
+ -- Romuald Conty <romuald.conty@free.fr>  Sat, 19 Apr 2008 17:42:42 +0100
+
+qastrocam (4.1pre20071027-2) unstable; urgency=low
+
+  * added desktop entry.
+
+ -- Romuald Conty <romuald.conty@free.fr>  Sat, 19 Apr 2008 16:42:42 +0100
+
+qastrocam (4.1pre20071027-1) unstable; urgency=low
+
+  * 4.1 pre-release version.
+  * added build dependencies: 'libcfitsio-dev' and 'libdts-dev'.
+
+ -- Romuald Conty <romuald.conty@free.fr>  Sat, 19 Apr 2008 12:42:42 +0100
+
+qastrocam (4.0.1pre20051227) unstable; urgency=low
+
+  * fix build on non ia32 arch 
+  * beter QT detection
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Tue, 27 Dec 2005 08:31:19 +0100
+
+qastrocam (4.0pre20050623) unstable; urgency=low
+
+  * Release of 4.0 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Thu, 23 Jun 2005 13:37:28 +0200
+
+qastrocam (4.0pre20050523) unstable; urgency=low
+
+  * 4.0 beta 4 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Mon, 23 May 2005 19:02:37 +0200
+
+qastrocam (4.0pre20050215) unstable; urgency=low
+
+  * 4.0 beta 3 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Tue, 15 Feb 2005 10:47:56 +0100
+
+qastrocam (4.0pre20050203) unstable; urgency=low
+
+  * fixed ppdev 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Thu,  3 Feb 2005 23:06:11 +0100
+
+qastrocam (4.0pre20050128) unstable; urgency=low
+
+  * MCU telescope type support added
+  * use ppdev kernel module fort // port access
+    (root setuid bit no more mendatory)
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Fri, 28 Jan 2005 15:38:37 +0100
+
+qastrocam (4.0pre20050111) unstable; urgency=low
+
+  * first release of 4.0 beta 1 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Tue, 11 Jan 2005 14:07:12 +0100
+
+qastrocam (3.11pre20050110) unstable; urgency=low
+
+  * added '--expert' option. is needed to show some expert
+    settings of the vesta camera (noise, compression, sharpness, ...)
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Mon, 10 Jan 2005 23:35:19 +0100
+
+qastrocam (3.11pre20050105) unstable; urgency=low
+
+  * retucule for king methods is no more "glued" on the side on the frame 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Wed,  5 Jan 2005 17:54:35 +0100
+
+qastrocam (3.11pre20050103) unstable; urgency=low
+
+  * more french translations 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Mon,  3 Jan 2005 18:32:57 +0100
+
+qastrocam (3.11pre20041231) unstable; urgency=low
+
+  * added some french translations (very preliminary) 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Fri, 31 Dec 2004 12:20:15 +0100
+
+qastrocam (3.11pre20041229) unstable; urgency=low
+
+  * King aligment helper method seems OK 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Wed, 29 Dec 2004 00:28:05 +0100
+
+qastrocam (3.11pre20041228) unstable; urgency=low
+
+  * Preliminary work of help for telescope alignment with the king method 
+  * thank's to Anthony Wesley, removinf the camera should no more freeze
+    the system (better fix should follow)
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Tue, 28 Dec 2004 09:15:19 +0100
+
+qastrocam (3.11pre20041226) unstable; urgency=low
+
+  * Several display mode have been added (Greyscale, negated greyscale,
+    false colors)
+  * Faster bayer code (for raw images)
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Sun, 26 Dec 2004 00:45:12 +0100
+
+qastrocam (3.11pre20041209) unstable; urgency=low
+
+  * fix compilation on gcc 3.4
+  * camera can be connected after launch of qastrocam
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Thu,  9 Dec 2004 16:41:44 +0100
+
+qastrocam (3.11pre20041104) unstable; urgency=low
+
+  * fix build on x86_64 arch 
+
+ -- Franck Sicard <franck.sicard@3demi.net>  Thu,  4 Nov 2004 17:23:00 +0100
+
+qastrocam (3.11pre20041028) unstable; urgency=low
+
+  * fix build on x86_64 arch 
+
+ -- Franck Sicard <qastrocam@3demi.net>  Thu, 28 Oct 2004 16:05:30 +0200
+
+qastrocam (3.11beta-2) unstable; urgency=low
+
+  * fifo for shift info no more blocking when no process
+    is reading it's output.
+
+ -- Franck Sicard <qastrocam@3demi.net>  Tue, 28 Sep 2004 16:34:56 +0200
+
+qastrocam (3.11beta-1) unstable; urgency=low
+
+  * Preliminary work for writting shift info into a fifo (for temma
+    telescope protocol)
+  * CSV compatible format for output of properties of frames of a
+    sequence
+
+ -- Franck Sicard <qastrocam@3demi.net>  Tue, 28 Sep 2004 10:16:17 +0200
+
+qastrocam (3.10-2) unstable; urgency=low
+
+  * FITS filed DATE-OBS & UTC-OBS are generated
+  * AVI mode is just a new file format
+
+ -- Franck Sicard <qastrocam@3demi.net>  Thu, 19 Aug 2004 11:54:44 +0200
+
+qastrocam (3.10-1) unstable; urgency=low
+
+  * Initial Release.
+  * This is my first Debian package.
+  * Adjusted the Makefile to fix $DESTDIR problems.
+
+ -- Franck Sicard <qastrocam@3demi.net>  Tue, 17 Aug 2004 14:04:10 +0200
+

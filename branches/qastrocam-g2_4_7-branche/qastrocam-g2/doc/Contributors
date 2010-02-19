@@ -1,0 +1,67 @@
+
+====================================================================
+========================== QASTROCAM-G2 ============================
+====================================================================
+
+Main Code :
+==========
+
+- Blaise-Florentin Collin
+- Frank Sicard
+
+Bug Reports :
+============
+
+- djibb (JB) from SourceForge
+
+Features Suggestions :
+=====================
+
+- djibb (JB) from SourceForge
+
+Package AMD64 Generation :
+==========================
+
+- GÃ©rard Lecestre
+
+====================================================================
+================ QASTROCAM ORIGINAL (until 4.1.0pre) ===============
+====================================================================
+
+
+The following people have contibuted to qastrocam by some ways.
+
+Main Code:
+=========
+- Franck Sicard
+
+Feature enhancment
+==================
+- Francois Meyer (Fits code)
+- Hans Van Ingelgom <hansvi@onlinux.be> (AVI output format)
+- Gernot Stenz (MCU telecope support)
+- Simon <devel at auctionant.de> (ppdev kernel module for // port acces)
+- Vesa Kankare <vesku@kankare.net> (MTS telescope support http://www.boxdoerfer.de/)
+- Chris Monico <c.monico@ttu.edu> plain C version of ccvt_420p_bgr32()
+
+Bug fixes:
+=================
+- Anthony Wesley
+- Tuza László <tuzalaszlo.linux@freemail.hu> (makefile update for slackware)
+
+Bug reports:
+===========
+- Jean-Baptiste BUTET
+- Stéphane
+
+Feature suggestions:
+===================
+- Francois Meyer
+- Gernot Stenz
+- Jim Cadien
+- Jean-Baptiste BUTET
+- wolfgang beisker <beisker@gsf.de>
+
+Documentation improvement
+=========================
+- Rich Caldwell
