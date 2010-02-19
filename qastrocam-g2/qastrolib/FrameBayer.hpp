@@ -37,6 +37,9 @@ private:
       ~Widget();
       Widget(QWidget * parent,const FrameBayer * algo);
    private:
+      QWidget* padding1;
+      QWidget* padding2;
+      QWidget* padding3;
       QLabel* label1;
       QLabel* label2;
       QCamComboBox* pattern;
@@ -50,7 +53,11 @@ public:
       return new Widget(parent,this);
    }
 public slots:
-signals:
+   void patternChanged(int num);
+   void algorithmChanged(int num);
+private:
+   int patternId;
+   int methodId;
 };
 
 

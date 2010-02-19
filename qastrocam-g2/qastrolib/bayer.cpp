@@ -33,7 +33,7 @@ using namespace std;
 #define	BLUE	3
 
 // 1st and 6rd values : syncs with the bayer mode enum
-int bayerPatterns[6][2][2]={{{0,0},{0,0}},{{GREEN1,BLUE},{RED,GREEN2}},{{RED,GREEN2},{GREEN1,BLUE}},{{BLUE,GREEN1},{GREEN2,RED}},{{GREEN2,RED},{BLUE,GREEN1}},{{0,0},{0,0}}};
+int bayerPatterns[6][2][2]={{{0,0},{0,0}},{{0,0},{0,0}},{{GREEN1,BLUE},{RED,GREEN2}},{{RED,GREEN2},{GREEN1,BLUE}},{{BLUE,GREEN1},{GREEN2,RED}},{{GREEN2,RED},{BLUE,GREEN1}}};
 
 // rgb raw to yuv 4:4:4 color conversion
 void raw2yuv444(unsigned char* Y, unsigned char* U, unsigned char* V, unsigned char* data, const int w, const int h, int mode) {

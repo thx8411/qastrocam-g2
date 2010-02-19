@@ -727,6 +727,7 @@ bool QCamV4L2::updateFrame() {
    unsigned char* oldTmpBuffer_;
    bool res;
    double currentTime;
+   inputBuffer_.setMode(mode_);
 
    if(lxEnabled) {
       if(lxFramesToDrop>1) {
@@ -757,15 +758,10 @@ bool QCamV4L2::updateFrame() {
 
    nullBuf=(unsigned char*)malloc(v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
    unsigned char * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
-   inputBuffer_.setMode(mode_);
    YBuf=(unsigned char*)inputBuffer_.YforOverwrite();
    // compute raw modes (conversions)
    switch(mode_) {
       case GreyFrame:
-      case RawRgbFrame1:
-      case RawRgbFrame2:
-      case RawRgbFrame3:
-      case RawRgbFrame4:
          UBuf=VBuf=nullBuf;
          break;
       case YuvFrame:
@@ -839,9 +835,6 @@ bool QCamV4L2::updateFrame() {
             cout << "invalid palette " << endl;
             exit(1);
       }
-      // debayer the input frame if needed
-      if((mode_!=GreyFrame)&&(mode_!=YuvFrame))
-         inputBuffer_.debayer();
       // apply software resizing if needed
       switch(croppingMode) {
          case CROPPING_SOFT :
@@ -1055,17 +1048,17 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    // frame mode number
    int labelNumber;
    if(supported_palettes[palette].mode==GreyFrame)
-      labelNumber=5;
+      labelNumber=1;
    else
-      labelNumber=6;
+      labelNumber=2;
    // raw mode settings box
-   int frameModeTable[]={GreyFrame,RawRgbFrame1,RawRgbFrame2,RawRgbFrame3,RawRgbFrame4,YuvFrame};
-   const char* frameModeLabel[]={"Grey", "Raw color GR","Raw color RG (Vesta)","Raw color BG (TUC)","Raw color GB","RGB"};
+   int frameModeTable[]={GreyFrame,YuvFrame};
+   const char* frameModeLabel[]={"Grey","Color"};
    // adding frames mode
    frameModeB= new QCamComboBox("frame type",infoBox,labelNumber,frameModeTable,frameModeLabel);
    connect(frameModeB,SIGNAL(change(int)),this,SLOT(setMode(int)));
    // looking for a saved raw mode
-   string keyName("RAW_MODE_");
+   string keyName("COLOR_MODE_");
    keyName+=(char*)v4l2_cap_.card;
    if(settings.haveKey(keyName.c_str())) {
         int index=frameModeB->getPosition(settings.getKey(keyName.c_str()));
@@ -1205,7 +1198,7 @@ void QCamV4L2::setPalette(int val) {
 // changing raw mode
 void  QCamV4L2::setMode(int  val) {
    QString value=frameModeB->text(val);
-   string keyName("RAW_MODE_");
+   string keyName("COLOR_MODE_");
    keyName+=(char*)v4l2_cap_.card;
    settings.setKey(keyName.c_str(),value.data());
    setMode((ImageMode)val);
@@ -1221,10 +1214,6 @@ void  QCamV4L2::setMode(ImageMode val) {
       }
       break;
    case GreyFrame:
-   case RawRgbFrame1:
-   case RawRgbFrame2:
-   case RawRgbFrame3:
-   case RawRgbFrame4:
       mode_=val;
       break;
    }

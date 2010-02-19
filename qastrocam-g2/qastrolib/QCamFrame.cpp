@@ -454,13 +454,12 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
    }
 }
 
-void QCamFrameCommon::debayer() {
+void QCamFrameCommon::debayer(ImageMode mode, DebayerMethod method) {
    unsigned char* yTemp;
-   ImageMode modeTemp=getMode();
    yTemp=(unsigned char*)malloc(ySize());
    memcpy(yTemp,yFrame_,ySize());
    setMode(YuvFrame);
-   raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),modeTemp);
+   raw2yuv444(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),mode);
    free(yTemp);
 }
 
@@ -631,7 +630,7 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
 }
 
 // debayer the frame
-void QCamFrame::debayer() {
-   common_->debayer();
+void QCamFrame::debayer(ImageMode mode, DebayerMethod method) {
+   common_->debayer(mode,method);
 }
 

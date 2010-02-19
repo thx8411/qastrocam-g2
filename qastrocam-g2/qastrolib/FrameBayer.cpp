@@ -21,31 +21,82 @@ MA  02110-1301, USA.
 #include "FrameBayer.moc"
 #include <qhbox.h>
 
+#include "SettingsBackup.hpp"
+
+// settings object, needed everywhere
+extern settingsBackup settings;
+
+const char* patternsLabels[]={"none","GR/BG","RG/GB","BG/GR","GB/RG"};
+const char* algoLabels[]={"Nearest","Bilinear"};
+
 bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
+   ImageMode rawMode;
+   DebayerMethod rawMethod;
    if (in.empty()) {
       return false;
    }
-
-   // temp
    out=in;
-
+   switch(patternId) {
+      case 0 : rawMode=(ImageMode)0; break;
+      case 1 : rawMode=RawRgbFrame1; break;
+      case 2 : rawMode=RawRgbFrame2; break;
+      case 3 : rawMode=RawRgbFrame3; break;
+      case 4 : rawMode=RawRgbFrame4; break;
+   }
+   switch(methodId) {
+      case 0 : rawMethod=Nearest; break;
+      case 1 : rawMethod=Bilinear; break;
+   }
+   if(rawMode) {
+      out.debayer(rawMode,rawMethod);
+   }
    return true;
 }
 
 FrameBayer::FrameBayer(QCamTrans* cam) {
    cam_=cam;
+   patternId=0;
+   methodId=0;
 }
 
 FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(parent) {
-   label1=new QLabel("Bayer pattern :",parent);
+   padding1=new QWidget(this);
+   label1=new QLabel("Bayer pattern :",this);
    int patternsValues[]={0,1,2,3,4};
-   const char* patternsLabels[]={"none","GR/BG","RG/GB","BG/GR","GB/RG"};
-   pattern = new QCamComboBox("Pattern",parent,5,patternsValues,patternsLabels);
-   label2=new QLabel("Algorithm :",parent);
-   int algoValues[]={0};
-   const char* algoLabels[]={"Bilinear"};
-   algorithm=new QCamComboBox("Pattern",parent,1,algoValues,algoLabels);
+   pattern = new QCamComboBox("Pattern",this,5,patternsValues,patternsLabels);
+   padding2=new QWidget(this);
+   label2=new QLabel("Algorithm :",this);
+   int algoValues[]={0,1};
+   algorithm=new QCamComboBox("Pattern",this,2,algoValues,algoLabels);
+   padding3=new QWidget(this);
+   string keyName("RAW_MODE");
+   if(settings.haveKey(keyName.c_str())) {
+        int index=pattern->getPosition(settings.getKey(keyName.c_str()));
+        if (index!=-1) pattern->update(index);
+        pattern->setCurrentItem(index);
+   } else pattern->update(0);
+   keyName="RAW_METHOD";
+   if(settings.haveKey(keyName.c_str())) {
+        int index=algorithm->getPosition(settings.getKey(keyName.c_str()));
+        if (index!=-1) algorithm->update(index);
+        algorithm->setCurrentItem(index);
+   // else use default
+   } else algorithm->update(0);
+   connect(pattern,SIGNAL(change(int)),algo,SLOT(patternChanged(int)));
+   connect(algorithm,SIGNAL(change(int)),algo,SLOT(algorithmChanged(int)));
 }
 
 FrameBayer::Widget::~Widget() {
+}
+
+void FrameBayer::patternChanged(int num) {
+   patternId=num;
+   string keyName("RAW_MODE");
+   settings.setKey(keyName.c_str(),patternsLabels[num]);
+}
+
+void FrameBayer::algorithmChanged(int num) {
+   methodId=num;
+   string keyName("RAW_METHOD");
+   settings.setKey(keyName.c_str(),algoLabels[num]);
 }
