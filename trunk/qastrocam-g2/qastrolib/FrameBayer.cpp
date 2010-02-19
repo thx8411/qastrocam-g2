@@ -22,13 +22,29 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 
 bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
+   if (in.empty()) {
+      return false;
+   }
+
+   // temp
+   out=in;
+
    return true;
 }
 
-FrameBayer::FrameBayer() {
+FrameBayer::FrameBayer(QCamTrans* cam) {
+   cam_=cam;
 }
 
 FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(parent) {
+   label1=new QLabel("Bayer pattern :",parent);
+   int patternsValues[]={0,1,2,3,4};
+   const char* patternsLabels[]={"none","GR/BG","RG/GB","BG/GR","GB/RG"};
+   pattern = new QCamComboBox("Pattern",parent,5,patternsValues,patternsLabels);
+   label2=new QLabel("Algorithm :",parent);
+   int algoValues[]={0};
+   const char* algoLabels[]={"Bilinear"};
+   algorithm=new QCamComboBox("Pattern",parent,1,algoValues,algoLabels);
 }
 
 FrameBayer::Widget::~Widget() {

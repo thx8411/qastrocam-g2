@@ -37,7 +37,7 @@ private:
    private:
    };
 public:
-   FrameBias();
+   FrameBias(QCamTrans* cam);
    bool transform(const QCamFrame in, QCamFrame & out);
    QString label() const {return("Bias/Offset");}
    QWidget * allocGui(QWidget * parent) const {

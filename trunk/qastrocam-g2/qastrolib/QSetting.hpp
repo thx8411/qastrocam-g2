@@ -87,8 +87,6 @@ private :
    QWidget* padding7;
    QWidget* padding8;
    QWidget* padding9;
-   QWidget* padding10;
-   QWidget* padding11;
    QCheckBox* telescopeLevels;
    QHGroupBox* lxBox;
    QLabel* lxDeviceLabel;
@@ -98,8 +96,6 @@ private :
    QVGroupBox* modulesBox;
    QHBox* lineFive;
    QHBox* lineSix;
-   QHBox* lineSeven;
-//   QCheckBox* modulesMirror;
    QCheckBox* modulesAdd;
    QCheckBox* modulesMax;
    QCheckBox* modulesKing;
@@ -110,7 +106,6 @@ private :
    QCheckBox* optionsSdl;
    QCheckBox* optionsExpert;
    QCheckBox* optionsLog;
-//   QCheckBox* optionsForceGeneric;
    QHBox* libBox;
    QLabel* libpathLabel;
    QLineEdit* libpathEntry;

@@ -22,10 +22,19 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 
 bool FrameBias::transform(const QCamFrame in, QCamFrame & out) {
+   if (in.empty()) {
+      return false;
+   }
+
+   // temp
+   out=in;
+
    return true;
 }
 
-FrameBias::FrameBias() {
+FrameBias::FrameBias(QCamTrans* cam) {
+   cam_=cam;
+   cam_->mode(QCamTrans::Copy);
 }
 
 FrameBias::Widget::Widget(QWidget * parent,const FrameBias * algo): QHBox(parent) {

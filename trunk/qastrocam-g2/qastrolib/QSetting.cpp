@@ -90,17 +90,11 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    modulesBox=new QVGroupBox("Modules",remoteCTRL_);
    remoteCTRL_->setStretchFactor(modulesBox,0);
    lineFive=new QHBox(modulesBox);
-//   modulesMirror=new QCheckBox("Horizontal/Vertical swap",lineFive);
    modulesAdd=new QCheckBox("Frame stacking module",lineFive);
+   modulesAlign=new QCheckBox("Align frames",lineFive);
    lineSix=new QHBox(modulesBox);
    modulesMax=new QCheckBox("Frame 'ghost' module",lineSix);
    modulesKing=new QCheckBox("King method module",lineSix);
-   lineSeven=new QHBox(modulesBox);
-   padding10=new QWidget(lineSeven);
-   remoteCTRL_->setStretchFactor(padding10,5);
-   modulesAlign=new QCheckBox("Align frames for stacking and 'ghost' modules",lineSeven);
-   padding11=new QWidget(lineSeven);
-   remoteCTRL_->setStretchFactor(padding11,5);
 
    padding8=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding8,5);
@@ -114,7 +108,6 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    optionsExpert=new QCheckBox("Use expert mode",lineThree);
    lineFour=new QHBox(optionsBox);
    optionsLog=new QCheckBox("Write log file",lineFour);
-//   optionsForceGeneric=new QCheckBox("Force use of generic cam",lineFour);
    libBox=new QHBox(optionsBox);
    libpathLabel=new QLabel("Library path : ",libBox);
    libpathEntry=new QLineEdit(libBox);
@@ -161,8 +154,6 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 #endif
    connect(optionsExpert,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsLog,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
-//   connect(optionsForceGeneric,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
-//   connect(modulesMirror,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesAdd,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesMax,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesKing,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
@@ -238,10 +229,6 @@ void QSetting::fillFields() {
       optionsLog->setChecked(string(settings.getKey("LOG"))=="yes");
    else
       hasChanged();
-//   if(settings.haveKey("FORCE_V4LGENERIC"))
-//      optionsForceGeneric->setChecked(string(settings.getKey("FORCE_V4LGENERIC"))=="yes");
-//   else
-//      hasChanged();
    if(settings.haveKey("ADD_MODULE"))
       modulesAdd->setChecked(string(settings.getKey("ADD_MODULE"))=="yes");
    else
@@ -250,10 +237,6 @@ void QSetting::fillFields() {
       modulesMax->setChecked(string(settings.getKey("MAX_MODULE"))=="yes");
    else
       hasChanged();
-//   if(settings.haveKey("MIRROR_MODULE"))
-//      modulesMirror->setChecked(string(settings.getKey("MIRROR_MODULE"))=="yes");
-//   else
-//      hasChanged();
    if(settings.haveKey("KING_MODULE"))
       modulesKing->setChecked(string(settings.getKey("KING_MODULE"))=="yes");
    else
@@ -313,11 +296,6 @@ void QSetting::saveSettings() {
    else
       temp="no";
    settings.setKey("LOG",temp.latin1());
-//   if(optionsForceGeneric->isChecked())
-//      temp="yes";
-//   else
-//      temp="no";
-//   settings.setKey("FORCE_V4LGENERIC",temp.latin1());
    if(modulesAdd->isChecked())
       temp="yes";
    else
@@ -338,11 +316,6 @@ void QSetting::saveSettings() {
    else
       temp="no";
    settings.setKey("KING_MODULE",temp.latin1());
-//   if(modulesMirror->isChecked())
-//      temp="yes";
-//   else
-//      temp="no";
-//   settings.setKey("MIRROR_MODULE",temp.latin1());
 
    // message box
    QMessageBox::information(0,"Qastrocam-g2","Please restart Qastrocam-g2\nto get the new settings");

@@ -63,7 +63,6 @@ MA  02110-1301, USA.
 
 // options strings
 const string AccumOptionString("-a");
-//const string MirrorOptionString("-M");
 const string AutoAlignOptionString("-c");
 const string MaxOptionString("-m");
 const string KingOption("-K");
@@ -77,7 +76,6 @@ const string LibDirOptionString("--libdir");
 const string SDLon("--sdl");
 const string ExpertMode("--expert");
 const string LogMode("--log");
-//const string ForceGeneric("--force-generic");
 const string ForceSettings("-sf");
 
 // backup object, present everywhere
@@ -88,7 +86,6 @@ void usage(const char * progName) {
    cerr << "usage: "<< progName << " <options>"<< endl;
    cerr << "\nValid options are:"<< endl << endl;
    cerr << "  "<<ForceSettings<<" to set the settings file name to use\n\n";
-//   cerr << "  "<<MirrorOptionString<<" <yes/no> to swap left/right top/bottom of the image\n";
    cerr << "  "<<AccumOptionString<<" <yes/no> to stack the images\n";
    cerr << "  "<<MaxOptionString<<" <yes/no> to simulate very long exposure on fixed mount\n";
    cerr << "     It keeps the max of each pixel\n";
@@ -104,7 +101,6 @@ void usage(const char * progName) {
    cerr << "  "<<SDLon<<" <yes/no> use lib SDL to display frames (fast display).\n";
    cerr << "  "<<ExpertMode<<" <yes/no> enable some 'expert' options in the GUI\n";
    cerr << "  "<<LogMode<<" <yes/no> Logs qastrocam-g2 in a file for debug purpose\n";
-//   cerr << "  "<<ForceGeneric<<" <yes/no> to force usage of V4L generic module.\n";
    cerr << endl;
 }
 
@@ -180,16 +176,6 @@ int main(int argc, char ** argv) {
          // allready scanned
 
       // cam clients options
-//      } else if (MirrorOptionString == argv[i]) {
-//         i++;
-//         if (i==argc) {
-//            usage(argv[0]);
-//            exit(1);
-//         }
-//         if(strcasecmp("yes",argv[i])==0)
-//            settings.setKey("MIRROR_MODULE","yes");
-//         else
-//            settings.setKey("MIRROR_MODULE","no");
       } else if (AccumOptionString == argv[i]) {
          i++;
          if (i==argc) {
@@ -230,16 +216,6 @@ int main(int argc, char ** argv) {
             settings.setKey("KING_MODULE","yes");
          else
             settings.setKey("KING_MODULE","no");
-//      } else if (ForceGeneric == argv[i]) {
-//         i++;
-//         if (i==argc) {
-//            usage(argv[0]);
-//            exit(1);
-//         }
-//         if(strcasecmp("yes",argv[i])==0)
-//            settings.setKey("FORCE_V4LGENERIC","yes");
-//         else
-//            settings.setKey("FORCE_V4LGENERIC","no");
       } else if ( TelescopeDeviceOptionString == argv[i]) {
          ++i;
           if (i==argc) {
@@ -343,7 +319,6 @@ int main(int argc, char ** argv) {
    if(settings.haveKey("TELESCOPE")) telescopeType=settings.getKey("TELESCOPE");
    if(settings.haveKey("ADD_MODULE")&&string(settings.getKey("ADD_MODULE"))=="yes") accum=true;
    if(settings.haveKey("MAX_MODULE")&&string(settings.getKey("MAX_MODULE"))=="yes") max=true;
-//   if(settings.haveKey("MIRROR_MODULE")&&string(settings.getKey("MIRROR_MODULE"))=="yes") mirror=true;
    if(settings.haveKey("ALIGN_MODULE")&&string(settings.getKey("ALIGN_MODULE"))=="yes") autoAlign=true;
    if(settings.haveKey("KING_MODULE")&&string(settings.getKey("KING_MODULE"))=="yes") kingOption=true;
 
@@ -430,12 +405,6 @@ int main(int argc, char ** argv) {
       theTelescope->buildGUI();
    }
 
-   // is generic V4L forced in settings ?
-//   if(settings.haveKey("FORCE_V4LGENERIC")) {
-//      if(strcasecmp(settings.getKey("FORCE_V4LGENERIC"),"yes")==0)
-//         V4Lforce=true;
-//   }
-
    // capture module creation
    QCam* cam =NULL;
    cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
@@ -517,7 +486,8 @@ int main(int argc, char ** argv) {
       camBias = new QCamTrans();
       camBias->hideButtons(true);
       camBias->hideFile(true);
-      biasAlgo = new FrameBias();
+      camBias->hideMode(true);
+      biasAlgo = new FrameBias(camBias);
       camBias->connectCam(*camSrc);
       camBias->connectAlgo(*biasAlgo);
       camStack->addCam(camBias,"Bias");
@@ -528,7 +498,8 @@ int main(int argc, char ** argv) {
       camDark = new QCamTrans();
       camDark->hideButtons(true);
       camDark->hideFile(true);
-      darkAlgo = new FrameDark();
+      camDark->hideMode(true);
+      darkAlgo = new FrameDark(camDark);
       camDark->connectCam(*camSrc);
       camDark->connectAlgo(*darkAlgo);
       camStack->addCam(camDark,"Dark");
@@ -539,7 +510,8 @@ int main(int argc, char ** argv) {
       camFlat = new QCamTrans();
       camFlat->hideButtons(true);
       camFlat->hideFile(true);
-      flatAlgo = new FrameFlat();
+      camFlat->hideMode(true);
+      flatAlgo = new FrameFlat(camFlat);
       camFlat->connectCam(*camSrc);
       camFlat->connectAlgo(*flatAlgo);
       camStack->addCam(camFlat,"Flat");
@@ -550,7 +522,8 @@ int main(int argc, char ** argv) {
       camBayer = new QCamTrans();
       camBayer->hideButtons(true);
       camBayer->hideFile(true);
-      bayerAlgo = new FrameBayer();
+      camBayer->hideMode(true);
+      bayerAlgo = new FrameBayer(camBayer);
       camBayer->connectCam(*camSrc);
       camBayer->connectAlgo(*bayerAlgo);
       camStack->addCam(camBayer,"Bayer");
@@ -558,23 +531,21 @@ int main(int argc, char ** argv) {
       camSrc=camBayer;
 
       // mirror module
-//      if (mirror) {
-         camMirror = new QCamTrans();
-         camMirror->hideButtons(true);
-         camMirror->hideFile(true);
-         mirrorAlgo = new FrameMirror();
-         camMirror->connectCam(*camSrc);
-         camMirror->connectAlgo(*mirrorAlgo);
-         camStack->addCam(camMirror,"Mirror");
-         //addRemoteCTRL(camMirror);
-         camMirror->setCaptureFile("mirror");
-         camSrc=camMirror;
-//      }
+      camMirror = new QCamTrans();
+      camMirror->hideButtons(true);
+      camMirror->hideFile(true);
+      camMirror->hideMode(true);
+      mirrorAlgo = new FrameMirror(camMirror);
+      camMirror->connectCam(*camSrc);
+      camMirror->connectAlgo(*mirrorAlgo);
+      camStack->addCam(camMirror,"Mirror");
+      camMirror->setCaptureFile("mirror");
+      camSrc=camMirror;
 
-      // cam bayer
+      // cam id
       camId = new QCamTrans();
       camId->hideMode(true);
-      idAlgo = new FrameId();
+      idAlgo = new FrameId(camId);
       camId->connectCam(*camSrc);
       camId->connectAlgo(*idAlgo);
       camStack->addCam(camId,"Output");
