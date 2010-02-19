@@ -30,6 +30,11 @@ MA  02110-1301, USA.
 #include "QCamAdd.hpp"
 #include "QCamMax.hpp"
 #include "FrameMirror.hpp"
+#include "FrameBias.hpp"
+#include "FrameDark.hpp"
+#include "FrameFlat.hpp"
+#include "FrameBayer.hpp"
+#include "FrameId.hpp"
 #include "QCamTrans.hpp"
 #include "CamHistogram.hpp"
 #include <qapplication.h>
@@ -54,10 +59,11 @@ MA  02110-1301, USA.
 #include "QKingClient.hpp"
 #include "SettingsBackup.hpp"
 #include "QSetting.hpp"
+#include "QCamStack.hpp"
 
 // options strings
 const string AccumOptionString("-a");
-const string MirrorOptionString("-M");
+//const string MirrorOptionString("-M");
 const string AutoAlignOptionString("-c");
 const string MaxOptionString("-m");
 const string KingOption("-K");
@@ -82,7 +88,7 @@ void usage(const char * progName) {
    cerr << "usage: "<< progName << " <options>"<< endl;
    cerr << "\nValid options are:"<< endl << endl;
    cerr << "  "<<ForceSettings<<" to set the settings file name to use\n\n";
-   cerr << "  "<<MirrorOptionString<<" <yes/no> to swap left/right top/bottom of the image\n";
+//   cerr << "  "<<MirrorOptionString<<" <yes/no> to swap left/right top/bottom of the image\n";
    cerr << "  "<<AccumOptionString<<" <yes/no> to stack the images\n";
    cerr << "  "<<MaxOptionString<<" <yes/no> to simulate very long exposure on fixed mount\n";
    cerr << "     It keeps the max of each pixel\n";
@@ -113,6 +119,11 @@ void addRemoteCTRL(QCam* cam) {
    getAllRemoteCTRL()->addTab(cam->buildGUI(getAllRemoteCTRL()),cam->label());
 }
 
+// add tab for cam stack object
+void addRemoteCTRL(QCamStack* stack) {
+   getAllRemoteCTRL()->addTab(stack->buildGUI(getAllRemoteCTRL()),stack->label());
+}
+
 // add tab for client object
 void addRemoteCTRL(QCamClient* client) {
    getAllRemoteCTRL()->addTab(client->buildGUI(getAllRemoteCTRL()),client->label());
@@ -126,7 +137,8 @@ void addRemoteCTRL(QSetting* object) {
 int main(int argc, char ** argv) {
    int i;
    // default options values
-   bool accum=false,max=false,mirror=false;
+   bool accum=false,max=false;
+//   bool mirror=false;
    bool autoAlign=false;
    bool kingOption=false;
 //   bool V4Lforce=false;
@@ -168,16 +180,16 @@ int main(int argc, char ** argv) {
          // allready scanned
 
       // cam clients options
-      } else if (MirrorOptionString == argv[i]) {
-         i++;
-         if (i==argc) {
-            usage(argv[0]);
-            exit(1);
-         }
-         if(strcasecmp("yes",argv[i])==0)
-            settings.setKey("MIRROR_MODULE","yes");
-         else
-            settings.setKey("MIRROR_MODULE","no");
+//      } else if (MirrorOptionString == argv[i]) {
+//         i++;
+//         if (i==argc) {
+//            usage(argv[0]);
+//            exit(1);
+//         }
+//         if(strcasecmp("yes",argv[i])==0)
+//            settings.setKey("MIRROR_MODULE","yes");
+//         else
+//            settings.setKey("MIRROR_MODULE","no");
       } else if (AccumOptionString == argv[i]) {
          i++;
          if (i==argc) {
@@ -331,7 +343,7 @@ int main(int argc, char ** argv) {
    if(settings.haveKey("TELESCOPE")) telescopeType=settings.getKey("TELESCOPE");
    if(settings.haveKey("ADD_MODULE")&&string(settings.getKey("ADD_MODULE"))=="yes") accum=true;
    if(settings.haveKey("MAX_MODULE")&&string(settings.getKey("MAX_MODULE"))=="yes") max=true;
-   if(settings.haveKey("MIRROR_MODULE")&&string(settings.getKey("MIRROR_MODULE"))=="yes") mirror=true;
+//   if(settings.haveKey("MIRROR_MODULE")&&string(settings.getKey("MIRROR_MODULE"))=="yes") mirror=true;
    if(settings.haveKey("ALIGN_MODULE")&&string(settings.getKey("ALIGN_MODULE"))=="yes") autoAlign=true;
    if(settings.haveKey("KING_MODULE")&&string(settings.getKey("KING_MODULE"))=="yes") kingOption=true;
 
@@ -432,12 +444,23 @@ int main(int argc, char ** argv) {
       cout << "No camera detected" <<endl;
    }
 
-   QKingClient * kingClient=NULL;
-   QCamFindShift * findShift=NULL;
-   QCamAutoGuidage * tracker=NULL;
-   QCamAutoAlign * autoAlignCam=NULL;
-   QCamTrans  * camMirror=NULL;
-   FrameMirror * mirrorAlgo=NULL;
+   QKingClient* kingClient=NULL;
+   QCamFindShift* findShift=NULL;
+   QCamAutoGuidage* tracker=NULL;
+   QCamAutoAlign* autoAlignCam=NULL;
+   QCamTrans* camBias=NULL;
+   QCamTrans* camDark=NULL;
+   QCamTrans* camFlat=NULL;
+   QCamTrans* camBayer=NULL;
+   QCamTrans* camMirror=NULL;
+   QCamTrans* camId=NULL;
+   FrameMirror* mirrorAlgo=NULL;
+   FrameBias* biasAlgo=NULL;
+   FrameDark* darkAlgo=NULL;
+   FrameFlat* flatAlgo=NULL;
+   FrameBayer* bayerAlgo=NULL;
+   FrameId* idAlgo=NULL;
+   QCamStack* camStack=NULL;
    QCam* camAdd=NULL;
    QCam* camMax=NULL;
 
@@ -487,16 +510,78 @@ int main(int argc, char ** argv) {
          }
       }
 
+      // adding stack tab
+      camStack=new QCamStack();
+
+      // bias cam
+      camBias = new QCamTrans();
+      camBias->hideButtons(true);
+      camBias->hideFile(true);
+      biasAlgo = new FrameBias();
+      camBias->connectCam(*camSrc);
+      camBias->connectAlgo(*biasAlgo);
+      camStack->addCam(camBias,"Bias");
+      camBias->setCaptureFile("bias");
+      camSrc=camBias;
+
+      // cam dark
+      camDark = new QCamTrans();
+      camDark->hideButtons(true);
+      camDark->hideFile(true);
+      darkAlgo = new FrameDark();
+      camDark->connectCam(*camSrc);
+      camDark->connectAlgo(*darkAlgo);
+      camStack->addCam(camDark,"Dark");
+      camDark->setCaptureFile("dark");
+      camSrc=camDark;
+
+      // cam flat
+      camFlat = new QCamTrans();
+      camFlat->hideButtons(true);
+      camFlat->hideFile(true);
+      flatAlgo = new FrameFlat();
+      camFlat->connectCam(*camSrc);
+      camFlat->connectAlgo(*flatAlgo);
+      camStack->addCam(camFlat,"Flat");
+      camFlat->setCaptureFile("bias");
+      camSrc=camFlat;
+
+      // cam bayer
+      camBayer = new QCamTrans();
+      camBayer->hideButtons(true);
+      camBayer->hideFile(true);
+      bayerAlgo = new FrameBayer();
+      camBayer->connectCam(*camSrc);
+      camBayer->connectAlgo(*bayerAlgo);
+      camStack->addCam(camBayer,"Bayer");
+      camBayer->setCaptureFile("bayer");
+      camSrc=camBayer;
+
       // mirror module
-      if (mirror) {
+//      if (mirror) {
          camMirror = new QCamTrans();
+         camMirror->hideButtons(true);
+         camMirror->hideFile(true);
          mirrorAlgo = new FrameMirror();
          camMirror->connectCam(*camSrc);
          camMirror->connectAlgo(*mirrorAlgo);
-         addRemoteCTRL(camMirror);
+         camStack->addCam(camMirror,"Mirror");
+         //addRemoteCTRL(camMirror);
          camMirror->setCaptureFile("mirror");
          camSrc=camMirror;
-      }
+//      }
+
+      // cam bayer
+      camId = new QCamTrans();
+      camId->hideMode(true);
+      idAlgo = new FrameId();
+      camId->connectCam(*camSrc);
+      camId->connectAlgo(*idAlgo);
+      camStack->addCam(camId,"Output");
+      camId->setCaptureFile("calibrated");
+      camSrc=camId;
+
+      addRemoteCTRL(camStack);
 
       // accumulation module
       if (accum) {
@@ -536,10 +621,21 @@ int main(int argc, char ** argv) {
    delete findShift;
    delete tracker;
    delete autoAlignCam;
+   delete camBias;
+   delete camDark;
+   delete camFlat;
+   delete camBayer;
    delete camMirror;
+   delete camId;
+   delete biasAlgo;
+   delete darkAlgo;
+   delete flatAlgo;
+   delete bayerAlgo;
    delete mirrorAlgo;
+   delete idAlgo;
    delete camAdd;
    delete camMax;
+   delete camStack;
    delete cam;
 
 #ifndef _DEBUG_

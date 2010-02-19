@@ -90,7 +90,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    modulesBox=new QVGroupBox("Modules",remoteCTRL_);
    remoteCTRL_->setStretchFactor(modulesBox,0);
    lineFive=new QHBox(modulesBox);
-   modulesMirror=new QCheckBox("Horizontal/Vertical swap",lineFive);
+//   modulesMirror=new QCheckBox("Horizontal/Vertical swap",lineFive);
    modulesAdd=new QCheckBox("Frame stacking module",lineFive);
    lineSix=new QHBox(modulesBox);
    modulesMax=new QCheckBox("Frame 'ghost' module",lineSix);
@@ -162,7 +162,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    connect(optionsExpert,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsLog,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
 //   connect(optionsForceGeneric,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
-   connect(modulesMirror,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+//   connect(modulesMirror,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesAdd,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesMax,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesKing,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
@@ -250,10 +250,10 @@ void QSetting::fillFields() {
       modulesMax->setChecked(string(settings.getKey("MAX_MODULE"))=="yes");
    else
       hasChanged();
-   if(settings.haveKey("MIRROR_MODULE"))
-      modulesMirror->setChecked(string(settings.getKey("MIRROR_MODULE"))=="yes");
-   else
-      hasChanged();
+//   if(settings.haveKey("MIRROR_MODULE"))
+//      modulesMirror->setChecked(string(settings.getKey("MIRROR_MODULE"))=="yes");
+//   else
+//      hasChanged();
    if(settings.haveKey("KING_MODULE"))
       modulesKing->setChecked(string(settings.getKey("KING_MODULE"))=="yes");
    else
@@ -338,11 +338,11 @@ void QSetting::saveSettings() {
    else
       temp="no";
    settings.setKey("KING_MODULE",temp.latin1());
-   if(modulesMirror->isChecked())
-      temp="yes";
-   else
-      temp="no";
-   settings.setKey("MIRROR_MODULE",temp.latin1());
+//   if(modulesMirror->isChecked())
+//      temp="yes";
+//   else
+//      temp="no";
+//   settings.setKey("MIRROR_MODULE",temp.latin1());
 
    // message box
    QMessageBox::information(0,"Qastrocam-g2","Please restart Qastrocam-g2\nto get the new settings");

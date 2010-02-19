@@ -89,6 +89,10 @@ QCam::QCam() {
    movieWritterSeq_=new QCamMovieSeq();
    movieWritter_=NULL;
    annotationEnabled_=false;
+
+   // gui hide
+   hideButtons_=false;
+   hideFile_=false;
 }
 
 QCam::~QCam() {
@@ -294,6 +298,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    remoteCTRL_->setSizePolicy(sizePolicyMin);
 
    buttonBox_= new QGridBox(remoteCTRL_,Qt::Vertical,4);
+
    displayFramesButton_ = new QPushButton("display",buttonBox_);
    QToolTip::add(displayFramesButton_,"display frames");
    displayFramesButton_->setToggleButton(true);
@@ -318,6 +323,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       displayHistogramButton_->setOn(true);
    }
    connect(displayHistogramButton_,SIGNAL(toggled(bool)),this,SLOT(displayHistogram(bool)));
+
+   if(hideButtons_)
+      buttonBox_->hide();
 
    QStringList formatList =QImage::outputFormatList();
 
@@ -480,6 +488,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    periodicCaptureT_->start(timebetweenCapture_*1000);
 
    setCapture(false);
+
+   if(hideFile_)
+      saveGroup->hide();
 
    if (sizeTable && !sizeTable[0].isEmpty()) {
       QHGroupBox* sizeGroup= new QHGroupBox("Resizing",remoteCTRL_);
