@@ -1,4 +1,4 @@
-qastrocam-g2 (4.7beta20100218) jaunty; urgency=low
+qastrocam-g2 (4.7) jaunty; urgency=low
 
   * debian packaging modified for multi-platform
   * option '-p' not available anymore (now useless)
