@@ -22,10 +22,19 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 
 bool FrameDark::transform(const QCamFrame in, QCamFrame & out) {
+   if (in.empty()) {
+      return false;
+   }
+
+   // temp
+   out=in;
+
    return true;
 }
 
-FrameDark::FrameDark() {
+FrameDark::FrameDark(QCamTrans* cam) {
+   cam_=cam;
+   cam_->mode(QCamTrans::Copy);
 }
 
 FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QHBox(parent) {

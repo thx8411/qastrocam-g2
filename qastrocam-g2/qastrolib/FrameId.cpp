@@ -22,10 +22,23 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 
 bool FrameId::transform(const QCamFrame in, QCamFrame & out) {
+   if (in.empty())
+      return false;
+
+   out.setMode(in.getMode());
+      out.setSize(in.size());
+      out.copy(in,
+               0,0,
+               in.size().width()-1,in.size().height()-1,
+               0,0,
+               false,false);
+
    return true;
 }
 
-FrameId::FrameId() {
+FrameId::FrameId(QCamTrans* cam) {
+   cam_=cam;
+   cam_->mode(QCamTrans::Copy);
 }
 
 FrameId::Widget::Widget(QWidget * parent,const FrameId * algo): QHBox(parent) {

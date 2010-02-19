@@ -22,10 +22,19 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 
 bool FrameFlat::transform(const QCamFrame in, QCamFrame & out) {
+   if (in.empty()) {
+      return false;
+   }
+
+   // temp
+   out=in;
+
    return true;
 }
 
-FrameFlat::FrameFlat() {
+FrameFlat::FrameFlat(QCamTrans* cam) {
+   cam_=cam;
+   cam_->mode(QCamTrans::Copy);
 }
 
 FrameFlat::Widget::Widget(QWidget * parent,const FrameFlat * algo): QHBox(parent) {

@@ -1,3 +1,4 @@
+
 /******************************************************************
 Qastrocam-g2
 Copyright (C) 2009   Blaise-Florentin Collin
@@ -37,7 +38,7 @@ private:
    private:
    };
 public:
-   FrameDark();
+   FrameDark(QCamTrans* cam);
    bool transform(const QCamFrame in, QCamFrame & out);
    QString label() const {return("Dark");}
    QWidget * allocGui(QWidget * parent) const {

@@ -97,7 +97,7 @@ void QCamTrans::mode(int intMode) {
          mode_=Copy;
       }
       break;
-   };
+   }
    emit(modeChanged(mode_));
 }
 

@@ -37,7 +37,7 @@ private:
    private:
    };
 public:
-   FrameId();
+   FrameId(QCamTrans* cam);
    bool transform(const QCamFrame in, QCamFrame & out);
    QString label() const {return("Output");}
    QWidget * allocGui(QWidget * parent) const {

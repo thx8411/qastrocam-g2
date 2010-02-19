@@ -23,8 +23,10 @@ MA  02110-1301, USA.
 #ifndef _FrameAlgo_hpp_
 #define _FrameAlgo_hpp_
 
-#include "QCamFrame.hpp"
 #include <qobject.h>
+
+#include "QCamTrans.hpp"
+#include "QCamFrame.hpp"
 
 class QWidget;
 
@@ -44,6 +46,8 @@ public:
 public:
    /* Forgot any state from the previous frames. */
    virtual void reset() {}
+protected :
+   QCamTrans* cam_;
 };
 
 #endif

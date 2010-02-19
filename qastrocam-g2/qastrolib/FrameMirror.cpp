@@ -24,11 +24,13 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 #include <qpushbutton.h>
 
+#include "QCamTrans.hpp"
+
 bool FrameMirror::transform(const QCamFrame in, QCamFrame & out) {
    if (in.empty()) {
       return false;
    }
-   if (swapUpDown_ || swapLeftRight_ ||  true) {
+   if (swapUpDown_ || swapLeftRight_ ) {
       out.setMode(in.getMode());
       out.setSize(in.size());
       out.copy(in,
@@ -50,17 +52,20 @@ void FrameMirror::memswap(unsigned char *dest,
    }
 }
 
-FrameMirror::FrameMirror() {
+FrameMirror::FrameMirror(QCamTrans* cam) {
+   cam_=cam;
    swapUpDown_=swapLeftRight_=false;
 }
 
 void FrameMirror::swapLeftRight(bool val) {
    swapLeftRight_=val;
+
    emit(leftRightSwapped(val));
 }
 
 void FrameMirror::swapUpDown(bool val) {
    swapUpDown_=val;
+
    emit(upDownSwapped(val));
 }
 

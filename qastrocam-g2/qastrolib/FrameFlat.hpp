@@ -37,7 +37,7 @@ private:
    private:
    };
 public:
-   FrameFlat();
+   FrameFlat(QCamTrans* cam);
    bool transform(const QCamFrame in, QCamFrame & out);
    QString label() const {return("Flat");}
    QWidget * allocGui(QWidget * parent) const {

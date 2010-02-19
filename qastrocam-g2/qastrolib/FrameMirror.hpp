@@ -28,6 +28,7 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 
 #include "FrameAlgo.hpp"
+
 class QPushButton;
 
 class FrameMirror :  public FrameAlgo {
@@ -43,7 +44,7 @@ private:
    };
 
 public:
-   FrameMirror();
+   FrameMirror(QCamTrans* cam);
    bool transform(const QCamFrame in, QCamFrame & out);
    QString label() const {return "Mirror";}
    QWidget * allocGui(QWidget * parent) const {

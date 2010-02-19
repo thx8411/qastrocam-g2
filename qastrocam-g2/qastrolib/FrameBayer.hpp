@@ -24,8 +24,10 @@ MA  02110-1301, USA.
 #include <qobject.h>
 #include <qstring.h>
 #include <qhbox.h>
+#include <qlabel.h>
 
 #include "FrameAlgo.hpp"
+#include "QCamComboBox.hpp"
 
 class FrameBayer :  public FrameAlgo {
    Q_OBJECT;
@@ -35,9 +37,13 @@ private:
       ~Widget();
       Widget(QWidget * parent,const FrameBayer * algo);
    private:
+      QLabel* label1;
+      QLabel* label2;
+      QCamComboBox* pattern;
+      QCamComboBox* algorithm;
    };
 public:
-   FrameBayer();
+   FrameBayer(QCamTrans* cam);
    bool transform(const QCamFrame in, QCamFrame & out);
    QString label() const {return("Bayer");}
    QWidget * allocGui(QWidget * parent) const {
