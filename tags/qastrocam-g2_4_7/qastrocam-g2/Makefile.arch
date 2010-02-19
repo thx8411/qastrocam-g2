@@ -1,0 +1,98 @@
+# Qastrocam
+# Copyright (C) 2003-2009   Franck Sicard
+# Qastrocam-g2
+# Copyright (C) 2009-2010   Blaise-Florentin Collin
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License v2
+# as published by the Free Software Foundation.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA  02110-1301, USA.
+
+show-avaible-arch:
+	@echo "*******************************"
+	@echo "*******************************"
+	@echo "*******************************"
+	@echo
+	@echo "run '$(MAKE)' on one the following target to configure"
+	@echo "the build for you system (it should be done only once):"
+	@echo "  configure-debian"
+	@echo "  configure-debian-mt"
+	@echo "  configure-redhat"
+	@echo "  configure-redhat-mt"
+	@echo "  configure-redhat-fedoracore6"
+	@echo "  configure-redhat-fedoracore6-mt"
+	@echo "  configure-mandrake"
+	@echo "  configure-mandrake-mt"
+	@echo "  configure-mandriva"
+	@echo "  configure-mandriva-mt"
+	@echo "  configure-slackware"
+	@echo "  configure-slackware-mt"
+	@echo "  configure-gentoo"
+	@echo "  configure-gentoo-mt"
+	@echo
+	@echo "then run '$(MAKE) all'"
+	@echo
+	@echo "if your distribution is not show, you must edit Makefile.arch"
+	@echo "to add an entry for it."
+	@echo "to do so copy the entry 'configure-generic', rename it and "
+	@echo "in this new entry you will need to set the following variables:"
+	@echo "   MOC (full path to the moc binary)"
+	@echo "   QT_INC_DIR (full path to the directory that contains qwidget.h)"
+	@echo "   QT_LIB_DIR (full path to the directory that contains QT libraries)"
+	@echo "   QT_LIBS ( the libs needed to do the link (usualy -lqt or -lqt-mt))"
+	@echo ""
+	@echo "   CFITSIO_LINK (the link command needed to link cfitsio (path + lib))"
+	@echo "   CFITSIO_INC (full path to the directory that contains cfitsio.h)"
+	@echo "then please send by email the new entry"
+	@echo
+	@echo "*******************************"
+	@echo "*******************************"
+	@echo "*******************************"
+	@exit 1
+
+configure-generic: configure
+	MOC=$(QT_BASE)/bin/moc QT_INC_DIR=$(QT_BASE)/include QT_LIB_DIR=$(QT_BASE)/lib QT_LIBS=-lqt$(QT_MT) CFITSIO_INC="-I $(CFITSIO_BASE)/include" CFITSIO_LINK="-L $(CFITSIO_BASE)/lib -lcfitsio" ./configure --prefix=/opt/qastrocam-g2 
+	touch configure_done
+
+#debian
+configure-debian: configure
+	$(MAKE) configure-generic QT_BASE=/usr/share/qt3 -I/usr/include CFITSIO_BASE=/usr
+configure-debian-mt: configure
+	$(MAKE) configure-generic QT_MT=-mt QT_BASE=/usr/share/qt3 CFITSIO_BASE=/usr
+#ubuntu
+configure-ubuntu:
+	$(MAKE) configure-debian-mt
+	
+#redhat, mandrake and mandiva
+configure-redhat configure-mandrake configure-mandriva: configure
+	$(MAKE) configure-generic QT_BASE=/usr/lib/qt3 CFITSIO_BASE=/usr
+configure-redhat-mt configure-mandrake-mt configure-mandriva-mt: configure
+	$(MAKE) configure-generic QT_MT=-mt QT_BASE=/usr/lib/qt3 CFITSIO_BASE=/usr
+
+#redhat fedora core 6
+configure-redhat-fedoracore6: configure
+	QT_BASE=/usr/lib/qt3 CFITSIO_BASE=/usr
+	MOC=/usr/lib/qt3/bin/moc QT_INC_DIR=/usr/lib/qt3/include QT_LIB_DIR=/usr/lib/qt3/lib QT_LIBS=-lqt CFITSIO_INC="-I /usr/include/cfitsio" CFITSIO_LINK="-lcfitsio" ./configure 
+configure-redhat-fedoracore6-mt: configure
+	MOC=/usr/lib/qt3/bin/moc QT_INC_DIR=/usr/lib/qt3/include QT_LIB_DIR=/usr/lib/qt3/lib QT_LIBS=-lqt-mt CFITSIO_INC="-I /usr/include/cfitsio" CFITSIO_LINK="-lcfitsio" ./configure 
+
+#Slackware
+configure-slackware: configure
+	$(MAKE) configure-generic QT_BASE=/usr/lib/qt CFITSIO_BASE=/usr
+configure-slackware-mt: configure
+	$(MAKE) configure-generic QT_MT=-mt QT_BASE=/usr/lib/qt CFITSIO_BASE=/usr
+
+#gentoo
+configure-gentoo: configure
+	$(MAKE) configure-generic QT_BASE=/usr/qt/3 CFITSIO_BASE=/usr
+configure-gentoo-mt: configure
+	$(MAKE) configure-generic QT_MT=-mt QT_BASE=/usr/qt/3 CFITSIO_BASE=/usr
