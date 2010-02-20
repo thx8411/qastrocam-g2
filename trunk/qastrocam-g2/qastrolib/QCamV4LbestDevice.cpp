@@ -38,8 +38,7 @@ MA  02110-1301, USA.
 // storing settings object.
 extern settingsBackup settings;
 
-// Creat the best QCamV4l object depending on the device.
-// Usage of default object can be done using "force"
+// Creat the best QCamV4l object depending on the device
 QCam * QCamV4L::openBestDevice(const char * devpath) {
    int cam_fd;
    int palette;
