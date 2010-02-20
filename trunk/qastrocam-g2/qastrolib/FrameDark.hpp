@@ -25,8 +25,13 @@ MA  02110-1301, USA.
 #include <qobject.h>
 #include <qstring.h>
 #include <qhbox.h>
+#include <qcheckbox.h>
+#include <qwidget.h>
+#include <qlineedit.h>
+#include <qlabel.h>
 
 #include "FrameAlgo.hpp"
+#include "QFileChooser.hpp"
 
 class FrameDark :  public FrameAlgo {
    Q_OBJECT;
@@ -36,6 +41,13 @@ private:
       ~Widget();
       Widget(QWidget * parent,const FrameDark * algo);
    private:
+      QWidget* padding1;
+      QWidget* padding2;
+      QWidget* padding3;
+      QCheckBox* activate;
+      QLabel* label1;
+      QFileChooser* fileChooser;
+      QLineEdit* fileEntry;
    };
 public:
    FrameDark(QCamTrans* cam);
@@ -45,7 +57,13 @@ public:
       return new Widget(parent,this);
    }
 public slots:
+   void activatedChange(int s);
+   void fileChanged(const QString & name);
 signals:
+private :
+   bool activated;
+   QString fileName;
+   QCamFrame darkFrame;
 };
 
 

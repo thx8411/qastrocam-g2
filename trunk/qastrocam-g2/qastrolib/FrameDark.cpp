@@ -26,19 +26,48 @@ bool FrameDark::transform(const QCamFrame in, QCamFrame & out) {
       return false;
    }
 
-   // temp
-   out=in;
+   if(activated) {
+      // substract frame
+   } else
+      out=in;
 
    return true;
 }
 
 FrameDark::FrameDark(QCamTrans* cam) {
    cam_=cam;
-   cam_->mode(QCamTrans::Copy);
+   activated=false;
 }
 
 FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QHBox(parent) {
+   padding1=new QWidget(this);
+   activate=new QCheckBox("Activate",this);
+   padding2=new QWidget(this);
+   label1=new QLabel("File : ",this);
+   fileEntry=new QLineEdit(this);
+   fileEntry->setDisabled(true);
+   fileChooser=new QFileChooser(this,IMAGE_FILE);
+   padding3=new QWidget(this);
+   connect(activate,SIGNAL(stateChanged(int)),algo,SLOT(activatedChange(int)));
+   connect(fileChooser,SIGNAL(fileChanged(const QString &)),algo,SLOT(fileChanged(const QString &)));
+   connect(fileChooser,SIGNAL(fileChanged(const QString &)),fileEntry,SLOT(setText(const QString &)));
 }
 
 FrameDark::Widget::~Widget() {
+}
+
+void FrameDark::activatedChange(int s) {
+   if(s==QButton::On) {
+      activated=true;
+
+      // load file
+
+      // compare frames (size, mode)
+   } else
+      activated=false;
+
+}
+
+void FrameDark::fileChanged(const QString & name) {
+   fileName=name;
 }
