@@ -58,7 +58,8 @@ using namespace std;
 // MIRROR_MODULE <yes/no>
 // KING_MODULE <yes/no>
 // ALIGN_MODULE <yes/no>
-// RAW_MODE_ <none/ GR/BG / RG/GB / BG/GR / GB/RG >
+// RAW_MODE <none/ GR/BG / RG/GB / BG/GR / GB/RG >
+// RAW_METHOD <Nearest/Bilinear>
 
 class settingsBackup {
    private :

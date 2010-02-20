@@ -191,7 +191,7 @@ void QCamFrameCommon::copy(const QCamFrameCommon & src,
                            bool swapLeftRight,bool swapUpDown) {
 
    if (getMode() != src.getMode()) {
-      //cout << "not same mode for frame copy\n";
+      //cerr << "not same mode for frame copy\n";
       return;
    }
    bool colorMode=(getMode()==YuvFrame && src.getMode()==YuvFrame);
@@ -510,21 +510,21 @@ void QCamFrame::copy(const QCamFrame & src,
                      int srcX2,int srcY2,
                      int dstX,int dstY,
                      bool mirrorX,bool mirrorY) {
-   if (srcX1==0 && srcY1==0
-       && dstX==0 && dstY==0
-       && srcX2==src.size().width()-1
-       && srcY2==src.size().height()-1
-       && size()==src.size()
-       && !mirrorX
-       && !mirrorY) {
-      *this=src;
-   } else {
+//   if (srcX1==0 && srcY1==0
+//       && dstX==0 && dstY==0
+//       && srcX2==src.size().width()-1
+//       && srcY2==src.size().height()-1
+//       && size()==src.size()
+//       && !mirrorX
+//       && !mirrorY) {
+//      *this=src;
+//   } else {
       setCommon()->copy(*src.getCommon(),
                         srcX1, srcY1,
                         srcX2, srcY2,
                         dstX, dstY,
                         mirrorX, mirrorY);
-   }
+//   }
 }
 
 /** for modules that don't look if we have a b&w frame */

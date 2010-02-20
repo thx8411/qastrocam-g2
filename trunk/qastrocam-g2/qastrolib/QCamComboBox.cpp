@@ -56,6 +56,10 @@ int QCamComboBox::getPosition(const char* item) {
    return(-1);
 }
 
+void QCamComboBox::updateSignal(int value) {
+   emit(change(value));
+}
+
 void QCamComboBox::update(int value) {
    for (int i=0;i<numOfButton_;++i) {
       if (valueList_[i]==value) {
