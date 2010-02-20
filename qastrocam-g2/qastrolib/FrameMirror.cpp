@@ -44,13 +44,13 @@ bool FrameMirror::transform(const QCamFrame in, QCamFrame & out) {
    return true;
 }
 
-void FrameMirror::memswap(unsigned char *dest,
+/*void FrameMirror::memswap(unsigned char *dest,
                           const unsigned char *src, size_t n) {
    unsigned i=0,j=n-1;
    while (i<n) {
       dest[i++]=src[j--];
    }
-}
+}*/
 
 FrameMirror::FrameMirror(QCamTrans* cam) {
    cam_=cam;

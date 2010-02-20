@@ -39,6 +39,7 @@ public:
    ~QCamComboBox();
    int value() const { return currentValue_; }
    int getPosition(const char* item);
+   void updateSignal(int value);
 public slots:
 
   /** set the state of the radiobox.

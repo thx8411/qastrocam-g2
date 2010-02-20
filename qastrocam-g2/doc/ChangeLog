@@ -1,6 +1,9 @@
-4.8beta20100219
+4.8beta20100220
 
-  -
+  - pre-process tab added
+  - de-bayer moved to pre-process
+  - the old conf file isn't compatible with this new version anymore
+  - mirror module option removed
 
 4.7
 

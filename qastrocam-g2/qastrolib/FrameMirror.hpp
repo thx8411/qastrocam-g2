@@ -57,8 +57,7 @@ signals:
    void upDownSwapped(bool);
    void leftRightSwapped(bool);
 private:
-   void memswap(unsigned char *dest,
-                const unsigned char *src, size_t n);
+//   void memswap(unsigned char *dest,const unsigned char *src, size_t n);
    bool swapUpDown_;
    bool swapLeftRight_;
 };

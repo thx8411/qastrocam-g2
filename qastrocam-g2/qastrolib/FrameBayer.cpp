@@ -35,7 +35,6 @@ bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
    if (in.empty()) {
       return false;
    }
-   out=in;
    switch(patternId) {
       case 0 : rawMode=(ImageMode)0; break;
       case 1 : rawMode=RawRgbFrame1; break;
@@ -48,8 +47,16 @@ bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
       case 1 : rawMethod=Bilinear; break;
    }
    if(rawMode) {
+      out.setMode(in.getMode());
+      out.setSize(in.size());
+      out.copy(in,
+               0,0,
+               in.size().width()-1,in.size().height()-1,
+               0,0,
+               false,false);
       out.debayer(rawMode,rawMethod);
-   }
+   } else
+      out=in;
    return true;
 }
 
@@ -69,21 +76,25 @@ FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(pare
    int algoValues[]={0,1};
    algorithm=new QCamComboBox("Pattern",this,2,algoValues,algoLabels);
    padding3=new QWidget(this);
+   connect(pattern,SIGNAL(change(int)),algo,SLOT(patternChanged(int)));
+   connect(algorithm,SIGNAL(change(int)),algo,SLOT(algorithmChanged(int)));
    string keyName("RAW_MODE");
    if(settings.haveKey(keyName.c_str())) {
         int index=pattern->getPosition(settings.getKey(keyName.c_str()));
-        if (index!=-1) pattern->update(index);
-        pattern->setCurrentItem(index);
+        if (index!=-1) {
+           pattern->update(index);
+           pattern->updateSignal(index);
+        }
    } else pattern->update(0);
    keyName="RAW_METHOD";
    if(settings.haveKey(keyName.c_str())) {
         int index=algorithm->getPosition(settings.getKey(keyName.c_str()));
-        if (index!=-1) algorithm->update(index);
-        algorithm->setCurrentItem(index);
+        if (index!=-1) {
+           algorithm->update(index);
+           algorithm->updateSignal(index);
+        }
    // else use default
    } else algorithm->update(0);
-   connect(pattern,SIGNAL(change(int)),algo,SLOT(patternChanged(int)));
-   connect(algorithm,SIGNAL(change(int)),algo,SLOT(algorithmChanged(int)));
 }
 
 FrameBayer::Widget::~Widget() {
