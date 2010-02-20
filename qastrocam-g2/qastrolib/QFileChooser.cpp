@@ -61,10 +61,17 @@ void QFileChooser::selectFile() {
          "get device",
          "Choose a device");
    // file dialog box
-   } else {
+   } else if(fileType==REGULAR_FILE) {
       newFile  = QFileDialog::getSaveFileName(
          get_current_dir_name(),
          "Files (*)",
+         this,
+         "get a file name",
+         "Choose a file");
+   } else {
+      newFile  = QFileDialog::getOpenFileName(
+         get_current_dir_name(),
+         "Pictures (*.bmp *.BMP)",
          this,
          "get a file name",
          "Choose a file");

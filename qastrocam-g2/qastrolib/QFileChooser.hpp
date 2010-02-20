@@ -27,6 +27,7 @@ MA  02110-1301, USA.
 // files types :
 #define	DEVICE_FILE	0
 #define REGULAR_FILE	1
+#define IMAGE_FILE	2
 
 class QFileChooser : public QPushButton {
    Q_OBJECT;
