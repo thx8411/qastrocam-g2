@@ -90,6 +90,8 @@ QCamV4L::QCamV4L(const char * devpath,int preferedPalette,
       mmapCapture();
    }
    label(capability_.name);
+
+   sizeTable=getAllowedSize();
 }
 
 void QCamV4L::resize(const QSize & s) {
@@ -451,6 +453,9 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
      QCheckBox * greyModeB = new QCheckBox("B&W",hbox);
      connect(greyModeB,SIGNAL(toggled(bool)),this,SLOT(setGrey(bool)));
    */
+
+   cropCombo->hide();
+
    int frameModeTable[]={YuvFrame,GreyFrame};
    const char* frameModeLabel[]={"RGB","Grey"};
    QCamComboBox * frameModeB= new QCamComboBox("frame type",remoteCTRL,2,frameModeTable,frameModeLabel);
