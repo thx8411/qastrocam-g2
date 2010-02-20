@@ -32,9 +32,12 @@ const char* algoLabels[]={"Nearest","Bilinear"};
 bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
    ImageMode rawMode;
    DebayerMethod rawMethod;
+
    if (in.empty()) {
       return false;
    }
+
+   // select bayer pattern
    switch(patternId) {
       case 0 : rawMode=(ImageMode)0; break;
       case 1 : rawMode=RawRgbFrame1; break;
@@ -42,10 +45,12 @@ bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
       case 3 : rawMode=RawRgbFrame3; break;
       case 4 : rawMode=RawRgbFrame4; break;
    }
+   // select debayer method
    switch(methodId) {
       case 0 : rawMethod=Nearest; break;
       case 1 : rawMethod=Bilinear; break;
    }
+   // if debayer, copy the frame
    if(rawMode) {
       out.setMode(in.getMode());
       out.setSize(in.size());
@@ -56,6 +61,7 @@ bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
                false,false);
       out.debayer(rawMode,rawMethod);
    } else
+   // else, simple refence
       out=in;
    return true;
 }
