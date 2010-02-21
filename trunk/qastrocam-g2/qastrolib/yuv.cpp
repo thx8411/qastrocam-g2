@@ -25,15 +25,36 @@ MA  02110-1301, USA.
 
 // yuv444 conversion tool
 
-int clip(double v) {
+unsigned char clip(double v) {
    if(v<0) return(0);
    if(v>255) return(255);
-   return(v);
+   return((unsigned char)v);
+}
+
+unsigned char clip(int v) {
+   if(v<0) return(0);
+   if(v>255) return(255);
+   return((unsigned char)v);
 }
 
 //
 // TO YUV444
 //
+
+// bgr32 to yuv444 planar
+void bgr32_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV) {
+   int p,size;
+   double R,G,B;
+   size=h*w;
+   for(p=0;p<size;p++) {
+         R=src[p*4];
+         G=src[p*4+1];
+         B=src[p*4+2];
+         dstY[p]=clip(0.299*R+0.587*G+0.114*B);
+         dstU[p]=clip(-0.169*R-0.331*G+0.499*B+128);
+         dstV[p]=clip(0.499*R-0.418*G-0.0813*B+128);
+   }
+}
 
 // rgb24 to yuv444 planar
 void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
@@ -188,4 +209,11 @@ void rgb24_vertical_swap(int w, int h, unsigned char* data){
       memcpy(&data[i*w*3],&tmp[(h-i-1)*w*3],w*3);
    }
    free(tmp);
+}
+
+// 8 bits plan substraction A=A-B
+void plan_sub(int w, int h,unsigned char* A, const unsigned char* B) {
+   int size=w*h;
+   for(int i=0;i<size;i++)
+      A[i]=clip((int)A[i]-(int)B[i]);
 }

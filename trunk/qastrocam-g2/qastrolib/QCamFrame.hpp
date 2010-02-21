@@ -127,6 +127,10 @@ protected:
    ImageMode getMode() const { return mode_;}
    // debayer the frame using the known mode
    void debayer(ImageMode mode, DebayerMethod method);
+   // apply dark frame
+   void applyDark(const QCamFrameCommon* dark);
+   // apply flat frame
+   void applyFlat(const QCamFrameCommon* flat);
 
    friend class QCamFrame;
    void rotate(int center_x, int center_y, double angle);
@@ -224,6 +228,10 @@ public:
    void binning(const QCamFrame & src, int w, int h);
    // debayer the frame using the known mode
    void debayer(ImageMode mode, DebayerMethod method);
+   // apply dark frame
+   void applyDark(const QCamFrame & dark);
+   // apply flat frame
+   void applyFlat(const QCamFrame & flat);
 private:
    QCamFrameCommon* common_;
 };
