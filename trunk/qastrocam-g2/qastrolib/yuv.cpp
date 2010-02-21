@@ -211,9 +211,16 @@ void rgb24_vertical_swap(int w, int h, unsigned char* data){
    free(tmp);
 }
 
-// 8 bits plan substraction A=A-B
-void plan_sub(int w, int h,unsigned char* A, const unsigned char* B) {
+// 8 bits luminance plan substraction A=A-B
+void lum_plan_sub(int w, int h,unsigned char* A, const unsigned char* B) {
    int size=w*h;
    for(int i=0;i<size;i++)
       A[i]=clip((int)A[i]-(int)B[i]);
+}
+
+// 8 bits color (U or V) plan substraction A=A-B
+void color_plan_sub(int w, int h,unsigned char* A, const unsigned char* B) {
+   int size=w*h;
+   for(int i=0;i<size;i++)
+      A[i]=clip((int)A[i]-(int)B[i]+128);
 }
