@@ -130,7 +130,9 @@ protected:
    // apply dark frame
    void applyDark(const QCamFrameCommon* dark);
    // apply flat frame
-   void applyFlat(const QCamFrameCommon* flat);
+   void applyFlat(const QCamFrameCommon* flat, int max);
+   // get max value
+   unsigned char getMax();
 
    friend class QCamFrame;
    void rotate(int center_x, int center_y, double angle);
@@ -231,7 +233,9 @@ public:
    // apply dark frame
    void applyDark(const QCamFrame & dark);
    // apply flat frame
-   void applyFlat(const QCamFrame & flat);
+   void applyFlat(const QCamFrame & flat, int max);
+   // get max value
+   unsigned char getMax();
 private:
    QCamFrameCommon* common_;
 };

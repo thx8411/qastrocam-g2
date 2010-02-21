@@ -217,7 +217,7 @@ rasteropVipLow(unsigned int  *data,
    /* determine the direction of flow from the shift
     * If the shift >= 0, data flows downard from src
     * to dest, starting at the bottom and working up.
-    * If shift < 0, data flows upward from src to 
+    * If shift < 0, data flows upward from src to
     * dest, starting at the top and working down. */
    dirwpl = (shift >= 0) ? -wpl : wpl;
    absshift = ABS(shift);

@@ -46,7 +46,7 @@ bool FrameFlat::transform(const QCamFrame in, QCamFrame & out) {
                in.size().width()-1,in.size().height()-1,
                0,0,
                false,false);
-      out.applyFlat(flatFrame);
+      out.applyFlat(flatFrame,frameMax);
    } else
       out=in;
 
@@ -64,7 +64,7 @@ FrameFlat::Widget::Widget(QWidget * parent,const FrameFlat * algo): QHBox(parent
    padding2=new QWidget(this);
    label1=new QLabel("File : ",this);
    fileEntry=new QLineEdit(this);
-   fileEntry->setDisabled(true);
+   fileEntry->setReadOnly(true);
    fileChooser=new QFileChooser(this,IMAGE_FILE);
    padding3=new QWidget(this);
    connect(activate,SIGNAL(stateChanged(int)),algo,SLOT(activatedChange(int)));
@@ -119,6 +119,7 @@ void FrameFlat::activatedChange(int s) {
             return;
       }
 
+      frameMax=flatFrame.getMax();
       activated=true;
    } else
       activated=false;
