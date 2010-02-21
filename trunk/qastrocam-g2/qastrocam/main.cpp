@@ -548,7 +548,7 @@ int main(int argc, char ** argv) {
       idAlgo = new FrameId(camId);
       camId->connectCam(*camSrc);
       camId->connectAlgo(*idAlgo);
-      camStack->addCam(camId,"Output");
+      camStack->addCam(camId,"Calibrated");
       camId->setCaptureFile("calibrated");
       camSrc=camId;
 

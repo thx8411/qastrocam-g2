@@ -23,6 +23,7 @@ MA  02110-1301, USA.
 #include "FrameMirror.moc"
 #include <qhbox.h>
 #include <qpushbutton.h>
+#include <qtooltip.h>
 
 #include "QCamTrans.hpp"
 
@@ -80,6 +81,8 @@ FrameMirror::Widget::Widget(QWidget * parent,const FrameMirror * algo):
    leftRight_->setToggleButton(true);
    connect(leftRight_,SIGNAL(toggled(bool)),algo,SLOT(swapLeftRight(bool)));
    connect(algo,SIGNAL(leftRightSwapped(bool)),leftRight_,SLOT(setOn(bool)));
+   QToolTip::add(upDown_,tr("Swaps frame up/down"));
+   QToolTip::add(leftRight_,tr("Swaps frame left/right"));
 }
 
 FrameMirror::Widget::~Widget() {

@@ -20,6 +20,7 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 #include <qimage.h>
 #include <qmessagebox.h>
+#include <qtooltip.h>
 
 #include "yuv.hpp"
 
@@ -71,6 +72,9 @@ FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QHBox(parent
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),algo,SLOT(fileChanged(const QString &)));
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),fileEntry,SLOT(setText(const QString &)));
    connect(algo,SIGNAL(desactivated(bool)),activate,SLOT(setChecked(bool)));
+   QToolTip::add(activate,tr("Activate or not the 'dark substraction' filter"));
+   QToolTip::add(fileEntry,tr("Picture file to use as 'dark' frame"));
+   QToolTip::add(fileChooser,tr("Selects the file to use as 'dark' frame"));
 }
 
 FrameDark::Widget::~Widget() {
