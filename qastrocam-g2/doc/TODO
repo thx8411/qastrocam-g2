@@ -1,9 +1,9 @@
 Please look at sourceforge for an up-to-date version of this list
 
 - rewrite documentation
-Later - dark/flat support
-Later - viewport support for V4L module
+Later - logitech viewport support for V4L module
 Later - Multi language support
+DONE - 4.8   - dark/flat support
 DONE - 4.7   - modules GUI (on / off)
 DONE - 4.7   - global configuration GUI (port, protocol)
 DONE - 4.7   - log file added
