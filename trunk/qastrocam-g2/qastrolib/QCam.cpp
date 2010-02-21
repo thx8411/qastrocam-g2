@@ -496,7 +496,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       saveGroup->hide();
 
    if (sizeTable && !sizeTable[0].isEmpty()) {
-      QHGroupBox* sizeGroup= new QHGroupBox("Resizing",remoteCTRL_);
+      sourceGroup= new QVGroupBox("Source",remoteCTRL_);
+      QHBox* sizeGroup=new QHBox(sourceGroup);
 
       int size=0;
       while (!sizeTable[size].isEmpty())
@@ -514,7 +515,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
          }
       }
 
-      //QLabel* l1=new QLabel("Size :",sizeGroup);
+      QWidget* padding1=new QWidget(sizeGroup);
+      QLabel* label1=new QLabel("Size :",sizeGroup);
       sizeCombo=new QCamComboBox("Frame size",sizeGroup,size,valueList,(const char**)labelList);
       for(int i=0;i<size;i++)
          free(labelList[i]);
@@ -532,13 +534,16 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       sizeCombo->update(indexOfCurrentSize);
       setSizeFromAllowed(indexOfCurrentSize);
       connect(sizeCombo,SIGNAL(change(int)),this,SLOT(setSizeFromAllowed(int)));
+      QWidget* padding2=new QWidget(sizeGroup);
       QToolTip::add(sizeCombo,"Frame size");
 
       // resizing mode combo
+      cropLabel=new QLabel("Scaling :",sizeGroup);
       const char* labelList2[]={"Scaling","Cropping","Binning"};
       int valueList2[]={SCALING,CROPPING,BINNING};
       cropCombo=new QCamComboBox("Cropping mode",sizeGroup,3,valueList2,labelList2);
       connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
+      QWidget* padding3=new QWidget(sizeGroup);
       QToolTip::add(cropCombo,"Resizing mode");
    }
    return remoteCTRL_;
