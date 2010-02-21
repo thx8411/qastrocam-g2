@@ -1,5 +1,6 @@
 4.8beta20100221
 
+  - flat pre-processing added
   - dark pre-processing added
   - pre-process tab added
   - de-bayer moved to pre-process

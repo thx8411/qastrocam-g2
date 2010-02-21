@@ -17,9 +17,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qhbox.h>
+#include <qtooltip.h>
 
 #include "FrameBayer.moc"
-#include <qhbox.h>
 
 #include "SettingsBackup.hpp"
 
@@ -101,6 +102,9 @@ FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(pare
         }
    // else use default
    } else algorithm->update(0);
+   // tooltips
+   QToolTip::add(pattern,tr("Selects the sensor bayer pattern"));
+   QToolTip::add(algorithm,tr("Selects the algorithm to use for de-mosaic"));
 }
 
 FrameBayer::Widget::~Widget() {

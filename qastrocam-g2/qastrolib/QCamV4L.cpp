@@ -32,6 +32,7 @@ MA  02110-1301, USA.
 #include <qtabwidget.h>
 #include <qsocketnotifier.h>
 #include <qtimer.h>
+#include <qtooltip.h>
 
 #include "yuv.hpp"
 
@@ -459,6 +460,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    int frameModeTable[]={YuvFrame,GreyFrame};
    const char* frameModeLabel[]={"RGB","Grey"};
    QCamComboBox * frameModeB= new QCamComboBox("frame type",remoteCTRL,2,frameModeTable,frameModeLabel);
+   QToolTip::add(frameModeB,tr("Frame type"));
    connect(frameModeB,SIGNAL(change(int)),
            this,SLOT(setMode(int)));
    if (options_ & haveContrast) {

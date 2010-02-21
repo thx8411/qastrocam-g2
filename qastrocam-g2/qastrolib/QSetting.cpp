@@ -19,6 +19,7 @@ MA  02110-1301, USA.
 
 #include <qvbox.h>
 #include <qmessagebox.h>
+#include <qtooltip.h>
 
 #include "QSetting.moc"
 
@@ -48,7 +49,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(videoBox,0);
    videoDeviceLabel=new QLabel("Video device : ",videoBox);
    videoDeviceEntry=new QLineEdit(videoBox);
+   QToolTip::add(videoDeviceEntry,tr("Video device to use"));
    videoDeviceChooser=new QFileChooser(videoBox,DEVICE_FILE);
+   QToolTip::add(videoDeviceChooser,tr("Selects video device"));
 
    padding6=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding6,5);
@@ -63,14 +66,17 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    int telescopeTable[]={0,1,2,3,4,5,6};
    const char* telescopeLabel[]={"none","autostar","mcu","mts","apn","fifo","file"};
    telescopeList=new QCamComboBox("telescope type : ",lineOne,7,telescopeTable,telescopeLabel);
+   QToolTip::add(telescopeList,tr("Telescope protocol to use for guiding"));
    lineOne->setStretchFactor(telescopeList,10);
    padding1=new QWidget(lineOne);
    lineOne->setStretchFactor(padding1,5);
    telescopeLevels=new QCheckBox("Invert levels",lineOne);
+   QToolTip::add(telescopeLevels,tr("Shale we invert TTL levels ?"));
    padding2=new QWidget(lineOne);
    lineOne->setStretchFactor(padding2,5);
    lineTwo=new QHBox(telescopeBox);
    telescopeDeviceLabel=new QLabel("Telescope device/file : ",lineTwo);
+   QToolTip::add(telescopeDeviceLabel,tr("Device to use for telescope guiding"));
    telescopeDeviceEntry=new QLineEdit(lineTwo);
    telescopeDeviceChooser=new QFileChooser(lineTwo);
 
@@ -81,13 +87,17 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
+   QToolTip::add(lxDeviceEntry,tr("Device to use for long exposure control"));
    lxDeviceChooser=new QFileChooser(lxBox,DEVICE_FILE);
+   QToolTip::add(lxDeviceChooser,tr("Selects long exposure device"));
    lxLevels=new QCheckBox("Invert levels",lxBox);
+   QToolTip::add(lxLevels,tr("Shale we invert TTL levels ? (applies to 'toucam led' also)"));
 
    padding9=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding9,5);
    // modules box
    modulesBox=new QVGroupBox("Modules",remoteCTRL_);
+   QToolTip::add(modulesBox,tr("Modules to activate"));
    remoteCTRL_->setStretchFactor(modulesBox,0);
    lineFive=new QHBox(modulesBox);
    modulesAdd=new QCheckBox("Frame stacking module",lineFive);
@@ -100,6 +110,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(padding8,5);
    // options box
    optionsBox=new QVGroupBox("Options",remoteCTRL_);
+   QToolTip::add(optionsBox,tr("Options to activate"));
    remoteCTRL_->setStretchFactor(optionsBox,0);
    lineThree=new QHBox(optionsBox);
 #if HAVE_SDL_H

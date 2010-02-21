@@ -555,12 +555,14 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
    exposureTimeLeft_=new QProgressBar(remoteCTRLframeRateGroup);
    exposureTimeLeft_->hide();
    exposureTimeLeft_->setCenterIndicator(true);
+   QToolTip::add(exposureTimeLeft_,tr("Integration progress"));
    exposureTime_=new QLCDNumber(5,remoteCTRLframeRateGroup);
    connect(this,SIGNAL(exposureTime(double)),
            exposureTime_,SLOT(display(double)));
    exposureTime_->setSmallDecimalPoint(false);
    exposureTime_->setSegmentStyle(QLCDNumber::Flat);
    exposureTime_->show();
+   QToolTip::add(exposureTime_,tr("Integration time"));
    if (SCmodCtrl_) {
       SCmodCtrl_->buildGUI(remoteCTRL);
    }
@@ -625,6 +627,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    remoteCTRLframeRate_ =new QHGroupBox(tr("fps"),remoteCTRL);
    int frameRate[]={5,10,15,20,25,30};
    remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
+   QToolTip::add(remoteCTRLframeRate2_,tr("Camera frame rate"));
    connect(this,SIGNAL(frameRateChange(int)),
            remoteCTRLframeRate2_,SLOT(update(int)));
    connect(remoteCTRLframeRate2_,SIGNAL(change(int)),
@@ -634,6 +637,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    int scModeTable[]={SCmodNone,SCmodPPort2,SCmodLed,SCmodSerial};
    const char* scModeLabel[]={"SC mod : None","SC mod : // port","SC mod : TUC led","SC mod : serial"};
    SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,4,scModeTable,scModeLabel);
+   QToolTip::add(SCmodSelector_,tr("Long exposure device"));
    connect(SCmodSelector_,SIGNAL(change(int)),
            this,SLOT(setSCmod(int)));
    int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};

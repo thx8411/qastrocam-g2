@@ -407,6 +407,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    imgFormatBox_ = new QCamComboBox("Save Format",buttons_,
                                     size,tmpTab,
                                     fileFormatList_);
+   QToolTip::add(imgFormatBox_,tr("Output format"));
    connect(imgFormatBox_,SIGNAL(change(int)),
            this,SLOT(updateFileFormat(int)));
    imgFormatBox_->update(fileFormatCurrent_);
@@ -434,6 +435,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    capturedFrame_->setNumDigits(2);
    capturedFrame_->show();
    capturedFrame_->setDisabled(true);
+   QToolTip::add(capturedFrame_,tr("Number of frames allready captured"));
 
    maxCaptureInSequenceW_=new QLineEdit(buttons2);
    maxCaptureInSequenceW_->setMaxLength(4);
@@ -469,6 +471,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    periodicCaptureW_ =
       new QCamComboBox("Periodic capture",savePeriodicGroup,3,valueList,
                        labelList);
+   QToolTip::add(periodicCaptureW_,tr("Kind of periodic capture"));
    connect(periodicCaptureW_,SIGNAL(change(int)),
            this,SLOT(periodicCapture(int)));
 
