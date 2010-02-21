@@ -469,10 +469,10 @@ void QCamFrameCommon::debayer(ImageMode mode, DebayerMethod method) {
 
 // apply dark frame
 void QCamFrameCommon::applyDark(const QCamFrameCommon* dark) {
-   plan_sub(size().width(),size().height(),yFrame_,dark->Y());
+   lum_plan_sub(size().width(),size().height(),yFrame_,dark->Y());
    if(getMode()==YuvFrame) {
-      plan_sub(size().width(),size().height(),uFrame_,dark->U());
-      plan_sub(size().width(),size().height(),vFrame_,dark->V());
+      color_plan_sub(size().width(),size().height(),uFrame_,dark->U());
+      color_plan_sub(size().width(),size().height(),vFrame_,dark->V());
    }
 }
 
