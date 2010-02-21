@@ -478,7 +478,11 @@ void QCamFrameCommon::applyDark(const QCamFrameCommon* dark) {
 
 // apply flat frame
 void QCamFrameCommon::applyFlat(const QCamFrameCommon* flat) {
-   //
+   lum_plan_div(size().width(),size().height(),yFrame_,flat->Y());
+   if(getMode()==YuvFrame) {
+      color_plan_div(size().width(),size().height(),uFrame_,flat->U());
+      color_plan_div(size().width(),size().height(),vFrame_,flat->V());
+   }
 }
 
 QCamFrame::QCamFrame(ImageMode mode) {
