@@ -1,5 +1,9 @@
 Known Bugs :
 
+vers. 4.8beta20100221 :
+
+ - flat pre-process isn't accurate with color frames
+
 vers. 4.4beta20091006 :
 
  - V4L generic lx mode : some sync troubles, giving interlaced fields instead of full frames

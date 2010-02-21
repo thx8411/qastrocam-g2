@@ -90,9 +90,9 @@ void lum_plan_sub(int w, int h,unsigned char* A, const unsigned char* B);
 void color_plan_sub(int w, int h,unsigned char* A, const unsigned char* B);
 
 // 8 bits luminance plan division A=A/B
-void lum_plan_div(int w, int h,unsigned char* A, const unsigned char* B);
+void lum_plan_div(int w, int h, int max, unsigned char* A, const unsigned char* B);
 
 // 8 bits color (U or V) plan division A=A/B
-void color_plan_div(int w, int h,unsigned char* A, const unsigned char* B);
+void color_plan_div(int w, int h, int max, unsigned char* A, const unsigned char* B);
 
 #endif

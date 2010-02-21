@@ -63,6 +63,7 @@ signals:
    void desactivated(bool);
 private :
    bool activated;
+   int frameMax;
    QString fileName;
    QCamFrame flatFrame;
 };

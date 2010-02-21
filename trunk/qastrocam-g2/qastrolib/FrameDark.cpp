@@ -64,7 +64,7 @@ FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QHBox(parent
    padding2=new QWidget(this);
    label1=new QLabel("File : ",this);
    fileEntry=new QLineEdit(this);
-   fileEntry->setDisabled(true);
+   fileEntry->setReadOnly(true);
    fileChooser=new QFileChooser(this,IMAGE_FILE);
    padding3=new QWidget(this);
    connect(activate,SIGNAL(stateChanged(int)),algo,SLOT(activatedChange(int)));

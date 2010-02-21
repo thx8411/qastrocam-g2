@@ -477,12 +477,20 @@ void QCamFrameCommon::applyDark(const QCamFrameCommon* dark) {
 }
 
 // apply flat frame
-void QCamFrameCommon::applyFlat(const QCamFrameCommon* flat) {
-   lum_plan_div(size().width(),size().height(),yFrame_,flat->Y());
+void QCamFrameCommon::applyFlat(const QCamFrameCommon* flat, int max) {
+   lum_plan_div(size().width(),size().height(),max,yFrame_,flat->Y());
    if(getMode()==YuvFrame) {
-      color_plan_div(size().width(),size().height(),uFrame_,flat->U());
-      color_plan_div(size().width(),size().height(),vFrame_,flat->V());
+      color_plan_div(size().width(),size().height(),max,uFrame_,flat->U());
+      color_plan_div(size().width(),size().height(),max,vFrame_,flat->V());
    }
+}
+
+// get max value
+unsigned char QCamFrameCommon::getMax() {
+   unsigned char max=0;
+   int length=size().width()*size().height();
+   for(int i=0;i<length;i++) if(yFrame_[i]>max) max=yFrame_[i];
+   return(max);
 }
 
 QCamFrame::QCamFrame(ImageMode mode) {
@@ -662,6 +670,11 @@ void QCamFrame::applyDark(const QCamFrame & dark) {
 }
 
 // apply flat frame
-void QCamFrame::applyFlat(const QCamFrame & flat) {
-   common_->applyFlat(flat.getCommon());
+void QCamFrame::applyFlat(const QCamFrame & flat, int max) {
+   common_->applyFlat(flat.getCommon(),max);
+}
+
+// get max value
+unsigned char QCamFrame::getMax() {
+   common_->getMax();
 }
