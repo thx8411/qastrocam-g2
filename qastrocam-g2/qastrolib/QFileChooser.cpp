@@ -71,7 +71,7 @@ void QFileChooser::selectFile() {
    } else {
       newFile  = QFileDialog::getOpenFileName(
          get_current_dir_name(),
-         "Pictures (*.bmp *.BMP)",
+         "Pictures (*.bmp *.BMP *.png *.PNG)",
          this,
          "get a file name",
          "Choose a file");

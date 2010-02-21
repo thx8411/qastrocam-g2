@@ -60,6 +60,7 @@ public slots:
    void activatedChange(int s);
    void fileChanged(const QString & name);
 signals:
+   void desactivated(bool);
 private :
    bool activated;
    QString fileName;

@@ -23,11 +23,16 @@ MA  02110-1301, USA.
 // yuv444 conversion tools
 
 // clip value between 0 and 255
-int clip(double v);
+unsigned char clip(double v);
+
+unsigned char clip(int v);
 
 //
 // TO YUV444
 //
+
+// bgr32 to yuv444 planar
+void bgr32_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
 // rgb24 to yuv444 planar
 void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
@@ -77,5 +82,8 @@ void grey_vertical_swap(int w, int h, unsigned char* data);
 
 // swap rgb24 (upside down)
 void rgb24_vertical_swap(int w, int h, unsigned char* data);
+
+// 8 bits plan substraction A=A-B
+void plan_sub(int w, int h,unsigned char* A, const unsigned char* B);
 
 #endif

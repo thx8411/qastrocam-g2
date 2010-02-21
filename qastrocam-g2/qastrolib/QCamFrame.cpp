@@ -454,6 +454,7 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
    }
 }
 
+// debayer the frame
 void QCamFrameCommon::debayer(ImageMode mode, DebayerMethod method) {
    unsigned char* yTemp;
    yTemp=(unsigned char*)malloc(ySize());
@@ -464,6 +465,20 @@ void QCamFrameCommon::debayer(ImageMode mode, DebayerMethod method) {
       case Bilinear : raw2yuv444_bilinear(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),mode); break;
    }
    free(yTemp);
+}
+
+// apply dark frame
+void QCamFrameCommon::applyDark(const QCamFrameCommon* dark) {
+   plan_sub(size().width(),size().height(),yFrame_,dark->Y());
+   if(getMode()==YuvFrame) {
+      plan_sub(size().width(),size().height(),uFrame_,dark->U());
+      plan_sub(size().width(),size().height(),vFrame_,dark->V());
+   }
+}
+
+// apply flat frame
+void QCamFrameCommon::applyFlat(const QCamFrameCommon* flat) {
+   //
 }
 
 QCamFrame::QCamFrame(ImageMode mode) {
@@ -637,3 +652,12 @@ void QCamFrame::debayer(ImageMode mode, DebayerMethod method) {
    common_->debayer(mode,method);
 }
 
+// apply dark frame
+void QCamFrame::applyDark(const QCamFrame & dark) {
+   common_->applyDark(dark.getCommon());
+}
+
+// apply flat frame
+void QCamFrame::applyFlat(const QCamFrame & flat) {
+   common_->applyFlat(flat.getCommon());
+}

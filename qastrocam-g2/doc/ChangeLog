@@ -1,5 +1,6 @@
-4.8beta20100220
+4.8beta20100221
 
+  - dark pre-processing added
   - pre-process tab added
   - de-bayer moved to pre-process
   - the old conf file isn't compatible with this new version anymore
