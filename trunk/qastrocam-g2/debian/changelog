@@ -6,6 +6,7 @@ qastrocam-g2 (4.8beta20100221) jaunty; urgency=low
   * mirror module option removed
   * dark pre-processing added
   * flat pre-processing added
+  * gui re-draw to avoid space loose
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 
