@@ -224,3 +224,19 @@ void color_plan_sub(int w, int h,unsigned char* A, const unsigned char* B) {
    for(int i=0;i<size;i++)
       A[i]=clip((int)A[i]-(int)B[i]+128);
 }
+
+// 8 bits luminance plan division A=A/B
+void lum_plan_div(int w, int h,unsigned char* A, const unsigned char* B) {
+   int size=w*h;
+   for(int i=0;i<size;i++) {
+      //A[i]=clip((int)A[i]-(int)B[i]);
+   }
+}
+
+// 8 bits color (U or V) plan division A=A/B
+void color_plan_div(int w, int h,unsigned char* A, const unsigned char* B) {
+   int size=w*h;
+   for(int i=0;i<size;i++) {
+      //A[i]=clip((int)A[i]-(int)B[i]+128);
+   }
+}
