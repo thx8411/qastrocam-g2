@@ -30,6 +30,7 @@ MA  02110-1301, USA.
 #include <qprogressbar.h>
 #include <qpushbutton.h>
 #include <qwidget.h>
+#include <qvbox.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -157,7 +158,8 @@ protected:
    virtual uchar* mmapCapture();
 
    // gui
-   QHGroupBox * remoteCTRLlx;
+   QHGroupBox* remoteCTRLlx;
+   QVBox* VctrlBox;
 
 private:
    // get os time in seconds (usec accuracy)
@@ -211,7 +213,7 @@ private:
    QCamSlider * remoteCTRLwhiteness_;
 
    // input, palette and frame mode
-   QHGroupBox * infoBox;
+   QHBox * infoBox;
    QCamComboBox* sourceB;
    QCamComboBox* paletteB;
    QCamComboBox* frameModeB;

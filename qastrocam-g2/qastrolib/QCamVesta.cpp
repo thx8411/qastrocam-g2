@@ -537,10 +537,10 @@ void QCamVesta::setLongExposureTime(const QString& str) {
 }
 
 void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
-   QHGroupBox *  remoteCTRLframeRateGroup
-      = new QHGroupBox(tr("Long Exposure"),
-                       remoteCTRL);
-   longExposureTime_ = new  QLineEdit(remoteCTRLframeRateGroup);
+   //QHGroupBox *  remoteCTRLframeRateGroup
+   //   = new QHGroupBox(tr("Long Exposure"),
+   //                    remoteCTRL);
+   longExposureTime_ = new  QLineEdit(remoteCTRL);
    longExposureTime_->setMaxLength(4);
    longExposureTime_->setText("0");
    connect(longExposureTime_,SIGNAL(textChanged(const QString&)),
@@ -552,11 +552,11 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
      connect(this,SIGNAL(frameRateMultiplicateurChange(int)),
      remoteCTRLframeRateMultiplicateur_,SLOT(update(int)));
    */
-   exposureTimeLeft_=new QProgressBar(remoteCTRLframeRateGroup);
+   exposureTimeLeft_=new QProgressBar(remoteCTRL);
    exposureTimeLeft_->hide();
    exposureTimeLeft_->setCenterIndicator(true);
    QToolTip::add(exposureTimeLeft_,tr("Integration progress"));
-   exposureTime_=new QLCDNumber(5,remoteCTRLframeRateGroup);
+   exposureTime_=new QLCDNumber(5,remoteCTRL);
    connect(this,SIGNAL(exposureTime(double)),
            exposureTime_,SLOT(display(double)));
    exposureTime_->setSmallDecimalPoint(false);
@@ -572,8 +572,8 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCamV4L2::buildGUI(parent);
    remoteCTRLlx->hide();
 
-   QHGroupBox* vestaCtrl=new QHGroupBox("Vesta controls",remoteCTRL);
-   QGridBox * sliders= new QGridBox(vestaCtrl,Qt::Vertical,3);
+   //QHGroupBox* vestaCtrl=new QHGroupBox("Vesta controls",remoteCTRL);
+   QGridBox * sliders= new QGridBox(/*vestaCtrl*/VctrlBox,Qt::Vertical,3);
    /*
    QHBox * sliders=new QHBox(remoteCTRL);
    QVBox * left = new QVBox(sliders);
@@ -624,25 +624,10 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
               SLOT(setSharpness(int)));
       QToolTip::add(remoteCTRLsharpness_,tr("Shaprness enhancement (0=none, 65536=high) (low value blurs image)"));
    }
-   remoteCTRLframeRate_ =new QHGroupBox(tr("fps"),remoteCTRL);
-   int frameRate[]={5,10,15,20,25,30};
-   remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
-   QToolTip::add(remoteCTRLframeRate2_,tr("Camera frame rate"));
-   connect(this,SIGNAL(frameRateChange(int)),
-           remoteCTRLframeRate2_,SLOT(update(int)));
-   connect(remoteCTRLframeRate2_,SIGNAL(change(int)),
-           this,SLOT(setFrameRate(int)));
-   remoteCTRLframeRate2_->show();
 
-   int scModeTable[]={SCmodNone,SCmodPPort2,SCmodLed,SCmodSerial};
-   const char* scModeLabel[]={"SC mod : None","SC mod : // port","SC mod : TUC led","SC mod : serial"};
-   SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,4,scModeTable,scModeLabel);
-   QToolTip::add(SCmodSelector_,tr("Long exposure device"));
-   connect(SCmodSelector_,SIGNAL(change(int)),
-           this,SLOT(setSCmod(int)));
    int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
    const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
-   remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),remoteCTRL,5,wbValue,wbLabel,5);
+   remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),VctrlBox,5,wbValue,wbLabel,5);
    connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),
            this,SLOT(setWhiteBalanceMode(int)));
    connect(this,SIGNAL(whiteBalanceModeChange(int)),
@@ -680,7 +665,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
            this,SLOT(setExposure(int)));
    connect(this,SIGNAL(gamaChange(int)),remoteCTRLgama_,SLOT(setValue(int)));
    connect(remoteCTRLgama_,SIGNAL(valueChange(int)),this,SLOT(setGama(int)));
-   QHGroupBox * settings=new QHGroupBox(tr("Settings"),remoteCTRL);
+   QHBox * settings=new QHBox(VctrlBox);
    QToolTip::add(settings,tr("save/restore settings of gain,exposure & white balance"));
    QPushButton *saveSettingsB =new QPushButton(tr("save"),settings);
    QToolTip::add(saveSettingsB,tr("Save User settings (gain,exposure & white balance)"));
@@ -691,6 +676,23 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    QPushButton *restoreFactorySettingsB =new QPushButton(tr("factory"),settings);
    QToolTip::add(restoreFactorySettingsB,tr("Restore factory default settings"));
    connect(restoreFactorySettingsB,SIGNAL(released()),this,SLOT(restoreFactorySettings()));
+
+   remoteCTRLframeRate_ =new QHGroupBox(tr("fps / long exposure"),remoteCTRL);
+   int frameRate[]={5,10,15,20,25,30};
+   remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
+   QToolTip::add(remoteCTRLframeRate2_,tr("Camera frame rate"));
+   connect(this,SIGNAL(frameRateChange(int)),
+           remoteCTRLframeRate2_,SLOT(update(int)));
+   connect(remoteCTRLframeRate2_,SIGNAL(change(int)),
+           this,SLOT(setFrameRate(int)));
+   remoteCTRLframeRate2_->show();
+
+   int scModeTable[]={SCmodNone,SCmodPPort2,SCmodLed,SCmodSerial};
+   const char* scModeLabel[]={"SC mod : None","SC mod : // port","SC mod : TUC led","SC mod : serial"};
+   SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,4,scModeTable,scModeLabel);
+   QToolTip::add(SCmodSelector_,tr("Long exposure device"));
+   connect(SCmodSelector_,SIGNAL(change(int)),
+           this,SLOT(setSCmod(int)));
 
    initRemoteControlLongExposure(remoteCTRLframeRate_);
 

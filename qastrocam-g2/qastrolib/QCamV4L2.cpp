@@ -1026,23 +1026,29 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
    // source box
-   infoBox=new QHGroupBox(tr("Source"),remoteCTRL);
+   infoBox=new QHBox(sourceGroup);
 
    // palette and input display
+   QWidget* padding1=new QWidget(infoBox);
+   QLabel* label1=new QLabel("Input :",infoBox);
    sourceB=new QCamComboBox("source",infoBox,sourceNumber,sourceTable,sourceLabel);
    sourceB->setCurrentText(QString((char*)input.name));
    if(sourceNumber<2)
       sourceB->setEnabled(false);
    connect(sourceB,SIGNAL(change(int)),this,SLOT(setSource(int)));
+   QWidget* padding2=new QWidget(infoBox);
+   QLabel* label2=new QLabel("Palette :",infoBox);
    paletteB=new QCamComboBox("source",infoBox,paletteNumber,paletteTable,paletteLabel);
    paletteB->setCurrentText(QString(supported_palettes[palette].name));
    if(paletteNumber<2)
       paletteB->setEnabled(false);
    connect(paletteB,SIGNAL(change(int)),this,SLOT(setPalette(int)));
+   QWidget* padding3=new QWidget(infoBox);
    // tips
    QToolTip::add(sourceB,"V4L2 input used");
    QToolTip::add(paletteB,"V4L2 palette used");
 
+   QLabel* label3=new QLabel("Mode :",infoBox);
    // frame mode number
    int labelNumber;
    if(supported_palettes[palette].mode==GreyFrame)
@@ -1055,6 +1061,7 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    // adding frames mode
    frameModeB= new QCamComboBox("frame type",infoBox,labelNumber,frameModeTable,frameModeLabel);
    connect(frameModeB,SIGNAL(change(int)),this,SLOT(setMode(int)));
+   QWidget* padding4=new QWidget(infoBox);
    // looking for a saved raw mode
    string keyName("COLOR_MODE_");
    keyName+=(char*)v4l2_cap_.card;
@@ -1068,7 +1075,8 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
 
    // controls
    QHGroupBox* ctrlBox=new QHGroupBox(tr("Controls"),remoteCTRL);
-   QGridBox * hbox= new QGridBox(ctrlBox,Qt::Vertical,3);
+   VctrlBox=new QVBox(ctrlBox);
+   QGridBox * hbox= new QGridBox(VctrlBox,Qt::Vertical,3);
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
       remoteCTRLcontrast_->setMinValue(picture_.contrast_min);

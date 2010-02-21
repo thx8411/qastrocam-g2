@@ -455,6 +455,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
      connect(greyModeB,SIGNAL(toggled(bool)),this,SLOT(setGrey(bool)));
    */
 
+   cropLabel->hide();
    cropCombo->hide();
 
    int frameModeTable[]={YuvFrame,GreyFrame};

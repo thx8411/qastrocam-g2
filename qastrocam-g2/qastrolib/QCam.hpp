@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #define _QCam_hpp_
 
 #include <qobject.h>
+#include <qvgroupbox.h>
 
 #include <string>
 
@@ -136,6 +137,7 @@ public slots:
 protected:
    // resizing mode
    QCamComboBox * cropCombo;
+   QLabel* cropLabel;
    int croppingMode;
    /** Must be called when a new YUV frame is
        avaible. It is used by frame() to opimize conversion
@@ -148,6 +150,8 @@ protected:
    void setTime();
    // allowed sizes table
    const QSize* sizeTable;
+   // gui
+   QVGroupBox* sourceGroup;
 private:
    // hide bool
    bool hideButtons_;
@@ -210,4 +214,3 @@ private:
 };
 
 #endif
-
