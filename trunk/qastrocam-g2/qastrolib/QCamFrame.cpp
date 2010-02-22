@@ -676,5 +676,5 @@ void QCamFrame::applyFlat(const QCamFrame & flat, int max) {
 
 // get max value
 unsigned char QCamFrame::getMax() {
-   common_->getMax();
+   return(common_->getMax());
 }
