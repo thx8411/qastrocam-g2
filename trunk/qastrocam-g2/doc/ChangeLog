@@ -1,5 +1,6 @@
 4.8beta20100223
 
+  - B/W frames optimisation (speed x2)
   - gui re-draw to avoid space loose
   - flat pre-processing added
   - dark pre-processing added
