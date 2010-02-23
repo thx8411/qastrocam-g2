@@ -1,4 +1,4 @@
-4.8beta20100221
+4.8beta20100223
 
   - gui re-draw to avoid space loose
   - flat pre-processing added
@@ -7,6 +7,7 @@
   - de-bayer moved to pre-process
   - the old conf file isn't compatible with this new version anymore
   - mirror module option removed
+  - uyvy palette support added
 
 4.7
 
