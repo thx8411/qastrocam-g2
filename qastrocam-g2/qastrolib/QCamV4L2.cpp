@@ -49,6 +49,7 @@ MA  02110-1301, USA.
 // supported palettes
 struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_RGB24,3,1,"rgb24",YuvFrame},
+   {V4L2_PIX_FMT_UYVY,2,1,"uyvy",YuvFrame},
    {V4L2_PIX_FMT_YUYV,2,1,"yuyv",YuvFrame},
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
@@ -184,31 +185,41 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    // get values
    v4l2_control ctrl;
    memset(&ctrl,0,sizeof(v4l2_control));
-   // brightness
-   ctrl.id=V4L2_CID_BRIGHTNESS;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.brightness=ctrl.value;
-   // hue
-   ctrl.id=V4L2_CID_HUE;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.hue=ctrl.value;
-   // saturation
-   ctrl.id=V4L2_CID_SATURATION;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.colour=ctrl.value;
-   // contrast
-   ctrl.id=V4L2_CID_CONTRAST;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.contrast=ctrl.value;
-   // whiteness
-   ctrl.id=V4L2_CID_WHITENESS;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.whiteness=ctrl.value;
+   if (options_ & haveBrightness) {
+      // brightness
+      ctrl.id=V4L2_CID_BRIGHTNESS;
+      // v4l2
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.brightness=ctrl.value;
+   }
+   if (options_ & haveHue) {
+      // hue
+      ctrl.id=V4L2_CID_HUE;
+      // v4l2
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.hue=ctrl.value;
+   }
+   if (options_ & haveColor) {
+      // saturation
+      ctrl.id=V4L2_CID_SATURATION;
+      // v4l2
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.colour=ctrl.value;
+   }
+   if (options_ & haveContrast) {
+      // contrast
+      ctrl.id=V4L2_CID_CONTRAST;
+      // v4l2
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.contrast=ctrl.value;
+   }
+   if (options_ & haveWhiteness) {
+      // whiteness
+      ctrl.id=V4L2_CID_WHITENESS;
+      // v4l2
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.whiteness=ctrl.value;
+   }
    // **************************
    // enumerate available inputs
    // **************************
@@ -498,6 +509,7 @@ const QSize * QCamV4L2::getAllowedSize() const {
          cout << "No supported palette found" << endl;
          exit(1);
       }
+
       // get the first frame size
       v4l2_sizeenum_temp.index=0;
       v4l2_sizeenum_temp.pixel_format=v4l2_fmtdesc_temp.pixelformat;
@@ -796,8 +808,11 @@ bool QCamV4L2::updateFrame() {
          case V4L2_PIX_FMT_RGB24:
             rgb24_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
             break;
+         case V4L2_PIX_FMT_UYVY:
+            uyvy_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            break;
          case V4L2_PIX_FMT_YUYV:
-            yuv422_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            yuyv_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
             break;
          case V4L2_PIX_FMT_JPEG:
             // copy driver buffer to avoid buffer underun
@@ -931,89 +946,92 @@ void QCamV4L2::updatePictureSettings() {
    v4l2_control ctrl;
 
    // set properties
-   // brightness
-   ctrl.id=V4L2_CID_BRIGHTNESS;
-   ctrl.value=picture_.brightness;
-   // v4l2
-   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
-   // hue
-   ctrl.id=V4L2_CID_HUE;
-   ctrl.value=picture_.hue;
-   // v4l2
-   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
-   // saturation
-   ctrl.id=V4L2_CID_SATURATION;
-   ctrl.value=picture_.colour;
-   // v4l2
-   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
-   // contrast
-   ctrl.id=V4L2_CID_CONTRAST;
-   ctrl.value=picture_.contrast;
-   // v4l2
-   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
-   // whiteness
-   ctrl.id=V4L2_CID_WHITENESS;
-   ctrl.value=picture_.whiteness;
-   // v4l2
-   ioctl(device_,VIDIOC_S_CTRL,&ctrl);
-
-   // get properties
-   // brightness
-   ctrl.id=V4L2_CID_BRIGHTNESS;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.brightness=ctrl.value;
-   // hue
-   ctrl.id=V4L2_CID_HUE;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.hue=ctrl.value;
-   // saturation
-   ctrl.id=V4L2_CID_SATURATION;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+   if (options_ & haveBrightness) {
+      // brightness
+      ctrl.id=V4L2_CID_BRIGHTNESS;
+      ctrl.value=picture_.brightness;
+      // v4l2
+      ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.brightness=ctrl.value;
+   }
+   if (options_ & haveHue) {
+      // hue
+      ctrl.id=V4L2_CID_HUE;
+      ctrl.value=picture_.hue;
+      // v4l2
+      ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.hue=ctrl.value;
+   }
+   if (options_ & haveColor) {
+      // saturation
+      ctrl.id=V4L2_CID_SATURATION;
+      ctrl.value=picture_.colour;
+      // v4l2
+      ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
    picture_.colour=ctrl.value;
-   // contrast
-   ctrl.id=V4L2_CID_CONTRAST;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.contrast=ctrl.value;
-   // whiteness
-   ctrl.id=V4L2_CID_WHITENESS;
-   // v4l2
-   ioctl(device_,VIDIOC_G_CTRL,&ctrl);
-   picture_.whiteness=ctrl.value;
+   }
+   if (options_ & haveContrast) {
+      // contrast
+      ctrl.id=V4L2_CID_CONTRAST;
+      ctrl.value=picture_.contrast;
+      // v4l2
+      ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.contrast=ctrl.value;
+   }
+   if (options_ & haveWhiteness) {
+      // whiteness
+      ctrl.id=V4L2_CID_WHITENESS;
+      ctrl.value=picture_.whiteness;
+      // v4l2
+      ioctl(device_,VIDIOC_S_CTRL,&ctrl);
+      ioctl(device_,VIDIOC_G_CTRL,&ctrl);
+      picture_.whiteness=ctrl.value;
+   }
 }
 
 void QCamV4L2::refreshPictureSettings() {
    v4l2_control ctrl;
    memset(&ctrl,0,sizeof(v4l2_control));
    // get properties
+   if (options_ & haveBrightness) {
    // brightness
    ctrl.id=V4L2_CID_BRIGHTNESS;
    // v4l2
    ioctl(device_,VIDIOC_G_CTRL,&ctrl);
    picture_.brightness=ctrl.value;
+   }
+   if (options_ & haveHue) {
    // hue
    ctrl.id=V4L2_CID_HUE;
    // v4l2
    ioctl(device_,VIDIOC_G_CTRL,&ctrl);
    picture_.hue=ctrl.value;
+   }
+   if (options_ & haveColor) {
    // saturation
    ctrl.id=V4L2_CID_SATURATION;
    // v4l2
    ioctl(device_,VIDIOC_G_CTRL,&ctrl);
    picture_.colour=ctrl.value;
+   }
+   if (options_ & haveContrast) {
    // contrast
    ctrl.id=V4L2_CID_CONTRAST;
    // v4l2
    ioctl(device_,VIDIOC_G_CTRL,&ctrl);
    picture_.contrast=ctrl.value;
+   }
+   if (options_ & haveWhiteness) {
    // whiteness
    ctrl.id=V4L2_CID_WHITENESS;
    // v4l2
    ioctl(device_,VIDIOC_G_CTRL,&ctrl);
    picture_.whiteness=ctrl.value;
+   }
 
    if (options_ & haveBrightness) emit brightnessChange(getBrightness());
    if (options_ & haveContrast) emit contrastChange(getContrast());

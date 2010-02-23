@@ -49,7 +49,8 @@ void bgr32_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
    for(p=0;p<size;p++) {
          R=src[p*4];
          G=src[p*4+1];
-         B=src[p*4+2];
+// yuyv to yuv444 planar
+void yuyv_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);         B=src[p*4+2];
          dstY[p]=clip(0.299*R+0.587*G+0.114*B);
          dstU[p]=clip(-0.169*R-0.331*G+0.499*B+128);
          dstV[p]=clip(0.499*R-0.418*G-0.0813*B+128);
@@ -71,8 +72,19 @@ void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
    }
 }
 
-// yuv422 to yuv444 planar
-void yuv422_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
+// uyvy to yuv444 planar
+void uyvy_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
+   int i;
+   int size=w*h;
+   for(i=0;i<size;i++){
+      dstY[i]=src[i*2+1];
+      dstU[i]=src[(i/2)*4];
+      dstV[i]=src[(i/2)*4+2];
+   }
+}
+
+// yuyv to yuv444 planar
+void yuyv_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
    int i;
    int size=w*h;
    for(i=0;i<size;i++){
