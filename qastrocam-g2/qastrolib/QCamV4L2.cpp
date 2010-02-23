@@ -51,10 +51,12 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_RGB24,3,1,"rgb24",YuvFrame},
    {V4L2_PIX_FMT_UYVY,2,1,"uyvy",YuvFrame},
    {V4L2_PIX_FMT_YUYV,2,1,"yuyv",YuvFrame},
+   {V4L2_PIX_FMT_SPCA505,2,1,"s505",YuvFrame},
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
    {V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
+   //{V4L2_PIX_FMT_SPCA505,2,1,"s505",YuvFrame},
    //{V4L2_PIX_FMT_PWC1,3,1,"philips raw",YuvFrame},
    //{V4L2_PIX_FMT_PWC2,3,1,"philips raw",YuvFrame},
    {-1,0,0,"",0}
@@ -800,19 +802,31 @@ bool QCamV4L2::updateFrame() {
             memcpy(YBuf,tmpBuffer_,v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             break;
          case V4L2_PIX_FMT_YUV420:
-            yuv420_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
-               tmpBuffer_, tmpBuffer_+ v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height,
-               tmpBuffer_+v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height+(v4l2_fmt_.fmt.pix.width/2)*(v4l2_fmt_.fmt.pix.height/2),YBuf,UBuf,VBuf);
+            if(mode_==YuvFrame)
+               yuv420_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,
+                  tmpBuffer_, tmpBuffer_+ v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height,
+                  tmpBuffer_+v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height+(v4l2_fmt_.fmt.pix.width/2)*(v4l2_fmt_.fmt.pix.height/2),YBuf,UBuf,VBuf);
+            else
+               yuv420_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf);
             break;
          // and frame convertions
          case V4L2_PIX_FMT_RGB24:
-            rgb24_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            if(mode_==YuvFrame)
+               rgb24_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            else
+               rgb24_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf);
             break;
          case V4L2_PIX_FMT_UYVY:
-            uyvy_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            if(mode_==YuvFrame)
+               uyvy_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            else
+               uyvy_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf);
             break;
          case V4L2_PIX_FMT_YUYV:
-            yuyv_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            if(mode_==YuvFrame)
+               yuyv_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            else
+               yuyv_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf);
             break;
          case V4L2_PIX_FMT_JPEG:
             // copy driver buffer to avoid buffer underun
@@ -833,10 +847,15 @@ bool QCamV4L2::updateFrame() {
                row++;
             }
             // convert
-            ycbcr_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,jpegImageBuffer,YBuf,UBuf,VBuf);
+            if(mode_==YuvFrame)
+               ycbcr_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,jpegImageBuffer,YBuf,UBuf,VBuf);
+            else
+               ycbcr_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,jpegImageBuffer,YBuf);
             // destroy jpeg object
             jpeg_finish_decompress(&cinfo);
             jpeg_destroy_decompress(&cinfo);
+            break;
+         case V4L2_PIX_FMT_SPCA505:
             break;
          case V4L2_PIX_FMT_PWC1:
             //

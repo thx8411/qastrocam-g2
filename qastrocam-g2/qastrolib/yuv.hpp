@@ -50,6 +50,28 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
 void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
 //
+// TO Y only
+//
+
+// bgr32 to y planar
+void bgr32_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
+
+// rgb24 to y planar
+void rgb24_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
+
+// uyvy to y planar
+void uyvy_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
+
+// yuyv to y planar
+void yuyv_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
+
+// yuv420 planar to y planar
+void yuv420_to_y(int w, int h, const unsigned char* srcY, unsigned char* dstY);
+
+// YCbCr to y
+void ycbcr_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
+
+//
 // FROM YUV444
 //
 
@@ -59,25 +81,19 @@ void yuv444_to_rgb24(int w, int h, const unsigned char* srcY, const unsigned cha
 // yuv444 planar to bgr24
 void yuv444_to_bgr24(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
 
-// swap rgb24 (upside down)
-void rgb24_vertical_swap(int w, int h, unsigned char* data);
-
 // yuv444 planar to rgb32
 void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
 
-// 4:4:4 planar yuv to 4:2:0 planar yuv
-void yuv444_to_yuv420(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
-
-
 //
-// TO YUY2
+// FROM Y ONLY
 //
 
-// 8 bits grey to yuy2
-void grey_to_yuy2(int w, int h, const unsigned char* src, unsigned char* dst);
+
+// y to yuyv
+void y_to_yuyv(int w, int h, const unsigned char* src, unsigned char* dst);
 
 //
-// TRANSFORM
+// TRANSFORMS
 //
 
 // swap 8 bit grey (upside down)
@@ -92,10 +108,10 @@ void lum_plan_sub(int w, int h,unsigned char* A, const unsigned char* B);
 // 8 bits color (U or V) plan substraction A=A-B
 void color_plan_sub(int w, int h,unsigned char* A, const unsigned char* B);
 
-// 8 bits luminance plan division A=A/B
+// 8 bits luminance plan division A=A*max/B
 void lum_plan_div(int w, int h, int max, unsigned char* A, const unsigned char* B);
 
-// 8 bits color (U or V) plan division A=A/B
+// 8 bits color (U or V) plan division A=A*max/B
 void color_plan_div(int w, int h, int max, unsigned char* A, const unsigned char* B);
 
 #endif

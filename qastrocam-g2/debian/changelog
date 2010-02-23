@@ -8,6 +8,7 @@ qastrocam-g2 (4.8beta20100223) jaunty; urgency=low
   * flat pre-processing added
   * gui re-draw to avoid space loose
   * uyvy palette support added
+  * B/W frames optimisation (speed x2)
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 

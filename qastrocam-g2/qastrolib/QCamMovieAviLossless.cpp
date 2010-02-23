@@ -130,7 +130,7 @@ bool QCamMovieAviLossless::addImpl(const QCamFrame & newFrame, const QCam & cam)
 
    // convert the frame
    if(newFrame.getMode()==GreyFrame) {
-      grey_to_yuy2(bi.biWidth,bi.biHeight,newFrame.Y(),deinterlaceBuf_);
+      y_to_yuyv(bi.biWidth,bi.biHeight,newFrame.Y(),deinterlaceBuf_);
    } else {
       yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
       rgb24_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
