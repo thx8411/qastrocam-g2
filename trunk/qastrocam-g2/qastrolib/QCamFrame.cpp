@@ -411,6 +411,7 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
    int i,j,k,l,Ysum,Usum,Vsum;
    int xOffset,yOffset;
 
+   allocBuff();
    // luminance plan
    // for each dest. pixel
    for(i=0;i<size_.width();i++) {
@@ -429,27 +430,32 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
             // rows
             for(l=0;l<xFactor;l++) {
                Ysum+=Yline[xOffset+l];
-               Usum+=Uline[xOffset+l];
-               Vsum+=Vline[xOffset+l];
+               if(getMode()==YuvFrame) {
+                  Usum+=Uline[xOffset+l];
+                  Vsum+=Vline[xOffset+l];
+               }
             }
          }
          // outside dynamic range
          if(Ysum>255)
             Ysum=255;
-         Usum-=(xFactor*yFactor-1)*128;
-         if(Usum>255)
-            Usum=255;
-         if(Usum<0)
-            Usum=0;
-         Vsum-=(xFactor*yFactor-1)*128;
-         if(Vsum>255)
-            Vsum=255;
-         if(Vsum<0)
-            Vsum=0;
          // update dest pixel
          yFrame_[j*size_.width()+i]=(unsigned char)Ysum;
-         uFrame_[j*size_.width()+i]=(unsigned char)Usum;
-         vFrame_[j*size_.width()+i]=(unsigned char)Vsum;
+         if(getMode()==YuvFrame) {
+            // outside dynamic range
+            Usum-=(xFactor*yFactor-1)*128;
+            if(Usum>255)
+               Usum=255;
+            if(Usum<0)
+               Usum=0;
+            Vsum-=(xFactor*yFactor-1)*128;
+            if(Vsum>255)
+               Vsum=255;
+            if(Vsum<0)
+               Vsum=0;
+            uFrame_[j*size_.width()+i]=(unsigned char)Usum;
+            vFrame_[j*size_.width()+i]=(unsigned char)Vsum;
+         }
       }
    }
 }
@@ -653,7 +659,7 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
    xFactor=src.size().width()/w;
    yFactor=src.size().height()/h;
    // keep mode and set size
-   setSize(QSize(src.size().width()/xFactor,src.size().height()/yFactor));
+   setSize(QSize(w,h));
    setMode(src.getMode());
    // binning...
    setCommon()->binning(*src.getCommon(),xFactor,yFactor);
