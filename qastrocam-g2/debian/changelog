@@ -10,6 +10,7 @@ qastrocam-g2 (4.8beta20100224) jaunty; urgency=low
   * uyvy palette support added
   * B/W frames optimisation (speed x2)
   * jpeg palette resize bug fixed
+  * spca505 palette support added
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 

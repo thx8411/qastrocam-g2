@@ -1,5 +1,6 @@
 4.8beta20100224
 
+  - spca505 palette support added
   - jpeg palette resize bug fixed
   - B/W frames optimisation (speed x2)
   - gui re-draw to avoid space loose

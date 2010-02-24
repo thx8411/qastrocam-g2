@@ -119,8 +119,27 @@ void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
    }
 }
 
-// s505 (yyuv per line) to yuv444 planar
+// s505 to yuv444 planar
 void s505_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
+static int i,j,size,line;
+   size=h*w;
+   line=0;
+   for(i=0;i<h;i+=2) {
+      memcpy(dstY+i*w,src+line*w,2*w);
+      line+=2;
+      for(j=0;j<w;j++) {
+         dstU[i*w+j]=src[line*w+j/2];
+         dstV[i*w+j]=src[line*w+w/2+j/2];
+         dstU[(i+1)*w+j]=src[line*w+j/2];
+         dstV[(i+1)*w+j]=src[line*w+w/2+j/2];
+      }
+      line++;
+   }
+   for(i=0;i<h*w;i++) {
+      dstY[i]-=128;
+      dstU[i]-=128;
+      dstV[i]-=128;
+   }
 }
 
 //
@@ -182,15 +201,16 @@ void ycbcr_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
    for(i=0;i<size;i++) dstY[i]=src[i*3];
 }
 
-// s505 (yyuv per line) to y
+// s505 to y
 void s505_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
-   // temp
-   static int i,j;
+   static int i,size,line;
+   size=h*w;
+   line=0;
    for(i=0;i<h;i+=2) {
-      memcpy(dstY+i*w,src+i*3/2*w,w);
-      memcpy(dstY+(i+1)*w,src+(i+1)*3/2*w,w);
+      memcpy(dstY+i*w,src+line*w,2*w);
+      line+=3;
    }
-   for(i=0;i<h*w;i++)
+   for(i=0;i<size;i++)
       dstY[i]-=128;
 }
 
