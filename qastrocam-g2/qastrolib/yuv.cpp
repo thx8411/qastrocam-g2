@@ -119,6 +119,10 @@ void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
    }
 }
 
+// s505 (yyuv per line) to yuv444 planar
+void s505_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
+}
+
 //
 // TO Y only
 //
@@ -176,6 +180,18 @@ void ycbcr_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
    static int size;
    size=w*h;
    for(i=0;i<size;i++) dstY[i]=src[i*3];
+}
+
+// s505 (yyuv per line) to y
+void s505_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
+   // temp
+   static int i,j;
+   for(i=0;i<h;i+=2) {
+      memcpy(dstY+i*w,src+i*3/2*w,w);
+      memcpy(dstY+(i+1)*w,src+(i+1)*3/2*w,w);
+   }
+   for(i=0;i<h*w;i++)
+      dstY[i]-=128;
 }
 
 //
