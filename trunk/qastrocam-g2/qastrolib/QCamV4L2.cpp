@@ -55,7 +55,7 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
    {V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
-   //{V4L2_PIX_FMT_SPCA505,2,1,"s505",YuvFrame},
+   {V4L2_PIX_FMT_SPCA505,2,1,"s505",YuvFrame},
    //{V4L2_PIX_FMT_PWC1,3,1,"philips raw",YuvFrame},
    //{V4L2_PIX_FMT_PWC2,3,1,"philips raw",YuvFrame},
    {-1,0,0,"",0}
@@ -855,6 +855,10 @@ bool QCamV4L2::updateFrame() {
             jpeg_destroy_decompress(&cinfo);
             break;
          case V4L2_PIX_FMT_SPCA505:
+            if(mode_==YuvFrame)
+               s505_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);
+            else
+               s505_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf);
             break;
          case V4L2_PIX_FMT_PWC1:
             //

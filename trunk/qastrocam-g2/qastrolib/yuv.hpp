@@ -49,6 +49,9 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
 // YCbCr to yuv444
 void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
 
+// s505 (yyuv per lines) to yuv444
+void s505_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
+
 //
 // TO Y only
 //
@@ -70,6 +73,9 @@ void yuv420_to_y(int w, int h, const unsigned char* srcY, unsigned char* dstY);
 
 // YCbCr to y
 void ycbcr_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
+
+// s505 (yyuv per line) to y
+void s505_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
 
 //
 // FROM YUV444
