@@ -190,6 +190,7 @@ private:
    QCamFrame inputBuffer_;
    QCamFrame outputBuffer_;
    uchar * tmpBuffer_;
+   uchar * nullBuff;
    // jpeg decoding stuff
    // for jpeg frames
    int row;

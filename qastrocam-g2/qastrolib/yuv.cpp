@@ -74,7 +74,8 @@ void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
 // uyvy to yuv444 planar
 void uyvy_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
    static int i;
-   static int size=w*h;
+   static int size;
+   size==w*h;
    for(i=0;i<size;i++){
       dstY[i]=src[i*2+1];
       dstU[i]=src[(i/2)*4];
@@ -85,7 +86,8 @@ void uyvy_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY,
 // yuyv to yuv444 planar
 void yuyv_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
    static int i;
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(i=0;i<size;i++){
       dstY[i]=src[i*2];
       dstU[i]=src[(i/2)*4+1];
@@ -108,7 +110,8 @@ void yuv420_to_yuv444(int w, int h, const unsigned char* srcY, const unsigned ch
 // YCbCr to yuv444
 void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV) {
    static int i;
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(i=0;i<size;i++) {
       dstY[i]=src[i*3];
       dstU[i]=src[i*3+1];
@@ -122,7 +125,7 @@ void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
 
 // bgr32 to y planar
 void bgr32_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
-static int p,size;
+   static int p,size;
    static double R,G,B;
    size=h*w;
    for(p=0;p<size;p++) {
@@ -149,14 +152,16 @@ void rgb24_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
 // uyvy to y planar
 void uyvy_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
    static int i;
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(i=0;i<size;i++) dstY[i]=src[i*2+1];
 }
 
 // yuyv to y planar
 void yuyv_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
    static int i;
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(i=0;i<size;i++) dstY[i]=src[i*2];
 }
 
@@ -168,7 +173,8 @@ void yuv420_to_y(int w, int h, const unsigned char* srcY, unsigned char* dstY) {
 // YCbCr to y
 void ycbcr_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
    static int i;
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(i=0;i<size;i++) dstY[i]=src[i*3];
 }
 
@@ -229,7 +235,8 @@ void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned cha
 // y to yuyv
 void y_to_yuyv(int w, int h, const unsigned char* src, unsigned char* dst) {
    static int i;
-   static int size=w*h/2;
+   static int size;
+   size=w*h/2;
    for(i=0;i<size;i++) {
       dst[i*4]=src[i*2];
       dst[i*4+1]=128;
@@ -268,21 +275,24 @@ void rgb24_vertical_swap(int w, int h, unsigned char* data){
 
 // 8 bits luminance plan substraction A=A-B
 void lum_plan_sub(int w, int h,unsigned char* A, const unsigned char* B) {
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(int i=0;i<size;i++)
       A[i]=clip((int)A[i]-(int)B[i]);
 }
 
 // 8 bits color (U or V) plan substraction A=A-B
 void color_plan_sub(int w, int h,unsigned char* A, const unsigned char* B) {
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(int i=0;i<size;i++)
       A[i]=clip((int)A[i]-(int)B[i]+128);
 }
 
 // 8 bits luminance plan division A=A/B
 void lum_plan_div(int w, int h,int max, unsigned char* A, const unsigned char* B) {
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(int i=0;i<size;i++) {
       if(B[i]!=0)
          A[i]=clip((int)A[i]*max/(int)B[i]);
@@ -293,7 +303,8 @@ void lum_plan_div(int w, int h,int max, unsigned char* A, const unsigned char* B
 
 // 8 bits color (U or V) plan division A=A/B
 void color_plan_div(int w, int h, int max, unsigned char* A, const unsigned char* B) {
-   static int size=w*h;
+   static int size;
+   size=w*h;
    for(int i=0;i<size;i++) {
       if(B[i]!=0)
          A[i]=clip(((int)A[i]-128)*max/(int)B[i]+128);

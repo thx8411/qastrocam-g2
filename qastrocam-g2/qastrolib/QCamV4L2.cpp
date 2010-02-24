@@ -51,7 +51,6 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_RGB24,3,1,"rgb24",YuvFrame},
    {V4L2_PIX_FMT_UYVY,2,1,"uyvy",YuvFrame},
    {V4L2_PIX_FMT_YUYV,2,1,"yuyv",YuvFrame},
-   {V4L2_PIX_FMT_SPCA505,2,1,"s505",YuvFrame},
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
@@ -102,6 +101,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    // init defaults value
    palette=0;
    options_=options;
+   nullBuff=NULL;
    tmpBuffer_=NULL;
    remoteCTRLbrightness_=NULL;
    remoteCTRLcontrast_=NULL;
@@ -462,13 +462,16 @@ void QCamV4L2::updatePalette() {
 // allocate memory for buffers, depending on
 // frame size and palette
 void QCamV4L2::allocBuffers() {
+   free(nullBuff);
    free(tmpBuffer_);
    free(jpegImageBuffer);
    free(jpegCopyBuffer);
    free(jpegLineBuffer[0]);
    inputBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
    yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * supported_palettes[palette].memfactor_numerator / supported_palettes[palette].memfactor_denominator;
+
    tmpBuffer_=(unsigned char*)malloc(yuvFrameMemSize);
+   nullBuff=(unsigned char*)malloc(yuvFrameMemSize);
    // jpeg stuff
    // everything oversized...
    if(supported_palettes[palette].index==V4L2_PIX_FMT_JPEG) {
@@ -718,28 +721,23 @@ bool QCamV4L2::setSize(int x, int y) {
 // drop frames without treatment
 bool QCamV4L2::dropFrame() {
    ssize_t tmp;
-   uchar* nullBuff=NULL;
+   uchar* null=NULL;
    // mmap case
    if (useMmap) {
-      nullBuff=mmapCapture();
+      null=mmapCapture();
       return(true);
    }
-   // else, allocates memory
-   nullBuff=(uchar*)malloc(yuvFrameMemSize);
    // read the frame
    tmp=read(device_,(void*)nullBuff,yuvFrameMemSize);
-   // free memory
-      free(nullBuff);
    return(true);
 }
 
 // we should have a new frame
 bool QCamV4L2::updateFrame() {
-   unsigned char* nullBuf;
    unsigned char* oldTmpBuffer_;
    bool res;
    double currentTime;
-   inputBuffer_.setMode(mode_);
+   //inputBuffer_.setMode(mode_);
 
    if(lxEnabled) {
       if(lxFramesToDrop>1) {
@@ -767,14 +765,12 @@ bool QCamV4L2::updateFrame() {
          lxControler->startAccumulation();
       }
    }
-
-   nullBuf=(unsigned char*)malloc(v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
    unsigned char * YBuf=NULL,*UBuf=NULL,*VBuf=NULL;
    YBuf=(unsigned char*)inputBuffer_.YforOverwrite();
    // compute raw modes (conversions)
    switch(mode_) {
       case GreyFrame:
-         UBuf=VBuf=nullBuf;
+         UBuf=VBuf=nullBuff;
          break;
       case YuvFrame:
          UBuf=(unsigned char*)inputBuffer_.UforOverwrite();
@@ -830,7 +826,10 @@ bool QCamV4L2::updateFrame() {
             break;
          case V4L2_PIX_FMT_JPEG:
             // copy driver buffer to avoid buffer underun
-            memcpy(jpegCopyBuffer,tmpBuffer_,v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height*3);
+            if(useMmap)
+               memcpy(jpegCopyBuffer,tmpBuffer_,buffers[0].length);
+            else
+               memcpy(jpegCopyBuffer,tmpBuffer_,v4l2_fmt_.fmt.pix.width*v4l2_fmt_.fmt.pix.height*3);
             // create jpeg object
             cinfo.err = jpeg_std_error(&jerr);
             jpeg_create_decompress(&cinfo);
@@ -880,7 +879,6 @@ bool QCamV4L2::updateFrame() {
             break;
       }
    }
-   free(nullBuf);
    // if mmap, restoring tmpBuffer_
    if(useMmap)
       tmpBuffer_=oldTmpBuffer_;
