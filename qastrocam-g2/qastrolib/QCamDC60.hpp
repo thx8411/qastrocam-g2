@@ -1,8 +1,6 @@
 /******************************************************************
-Qastrocam
-Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -20,22 +18,17 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#ifndef _QCamOV511_hpp_
-#define _QCamOV511_hpp_
+#ifndef _QCamDC60_hpp_
+#define _QCamDC60_hpp_
 
 #include "QCamV4L2.hpp"
-/** enhance QCamV4L2 to handle specifities of OV511 webcams. */
+/* enhance QCamV4L2 to handle specifities of the AstroEasyCap device driver. */
 
-class QCamOV511 : public QCamV4L2 {
+class QCamDC60 : public QCamV4L2 {
    Q_OBJECT;
 public:
-   QCamOV511(const char * devpath="/dev/video0");
-};
-
-class QCamOV519 : public QCamV4L2 {
-   Q_OBJECT;
-public:
-   QCamOV519(const char * devpath="/dev/video0");
+   QCamDC60(const char * devpath="/dev/video0");
+   void setGPSW(bool b);
 };
 
 #endif

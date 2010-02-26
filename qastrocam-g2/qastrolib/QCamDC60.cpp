@@ -19,23 +19,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <sys/ioctl.h>
 
-#ifndef _QCamOV511_hpp_
-#define _QCamOV511_hpp_
+#include "QCamDC60.moc"
 
-#include "QCamV4L2.hpp"
-/** enhance QCamV4L2 to handle specifities of OV511 webcams. */
+#include "private_ioctl.h"
 
-class QCamOV511 : public QCamV4L2 {
-   Q_OBJECT;
-public:
-   QCamOV511(const char * devpath="/dev/video0");
-};
+QCamDC60::QCamDC60(const char * devpath):
+   QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
+   resize(QSize(176,144));
+}
 
-class QCamOV519 : public QCamV4L2 {
-   Q_OBJECT;
-public:
-   QCamOV519(const char * devpath="/dev/video0");
-};
+void QCamDC60::setGPSW(bool b) {
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_GPSW1;
+   ctrl.value=b;
 
-#endif
+   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+      cout << "Unable to change GPSW state" << endl;
+}
