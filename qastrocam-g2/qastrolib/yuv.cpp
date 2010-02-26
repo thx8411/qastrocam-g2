@@ -75,7 +75,7 @@ void rgb24_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
 void uyvy_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV){
    static int i;
    static int size;
-   size==w*h;
+   size=w*h;
    for(i=0;i<size;i++){
       dstY[i]=src[i*2+1];
       dstU[i]=src[(i/2)*4];
