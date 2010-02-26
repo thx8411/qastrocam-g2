@@ -22,6 +22,7 @@ MA  02110-1301, USA.
 
 #include "SCmod.hpp"
 #include "QCamVesta.hpp"
+#include "QCamDC60.hpp"
 #include "SettingsBackup.hpp"
 
 #include <unistd.h>
@@ -44,6 +45,8 @@ void SCmod::setLevels(bool polarity) {
    else settings.setKey("LX_LEVELS_INVERTED","no");
 }
 
+
+/* TOUCAM LED */
 
 SCmodTucLed::SCmodTucLed(QCamVesta & cam) : cam_(cam) {
    if(settings.haveKey("LX_LEVELS_INVERTED"))
@@ -75,6 +78,38 @@ void SCmodTucLed::startAccumulation() {
       cam_.setLed(25500,0); // switching led ON/OFF for TUC USB
 }
 
+/* DC60 GPSW */
+
+SCmodDC60::SCmodDC60(QCamDC60 & cam) : cam_(cam) {
+   if(settings.haveKey("LX_LEVELS_INVERTED"))
+      inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+   else
+      inverted_=false;
+   stopAccumulation();
+}
+
+void SCmodDC60::enterLongPoseMode() {
+}
+
+void SCmodDC60::leaveLongPoseMode() {
+   stopAccumulation();
+}
+
+void SCmodDC60::stopAccumulation() {
+   if (inverted_)
+      cam_.setGPSW(true);
+   else
+      cam_.setGPSW(false); // switching GPSW on/off
+}
+
+void SCmodDC60::startAccumulation() {
+   if (inverted_)
+      cam_.setGPSW(false);
+   else
+      cam_.setGPSW(true); // switching GPSW on/off
+}
+
+/* SERIAL PORT */
 
 SCmodSerialPort::SCmodSerialPort() {
    if(settings.haveKey("LX_LEVELS_INVERTED"))

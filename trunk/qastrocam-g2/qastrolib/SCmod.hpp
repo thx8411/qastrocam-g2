@@ -59,6 +59,18 @@ private:
    QCamVesta & cam_;
 };
 
+class QCamDC60;
+class SCmodDC60 : public SCmod {
+public:
+   SCmodDC60(QCamDC60 & cam);
+   void enterLongPoseMode();
+   void leaveLongPoseMode();
+   void stopAccumulation();
+   void startAccumulation();
+private:
+   QCamDC60 & cam_;
+};
+
 class SCmodSerialPort : public SCmod {
 public:
    SCmodSerialPort();

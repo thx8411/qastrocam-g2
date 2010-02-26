@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #include "QCamV4L2.hpp"
 #include "QCamOV511.hpp"
 #include "QCamVesta.hpp"
+#include "QCamDC60.hpp"
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -56,6 +57,14 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
       struct pwc_probe probe;
       int type;
       bool IsPhilips = false;
+
+      if (strcmp((char*)vcap.card, "AstroEasyCap") == 0) {
+         cout << "AstroEasyCap driver detected" << endl;
+         close(cam_fd);
+         camFound = new QCamDC60(devpath);
+         return(camFound);
+      }
+
       if (sscanf((char*)vcap.card, "Philips %d webcam", &type) == 1) {
          //original phillips
          IsPhilips = true;
