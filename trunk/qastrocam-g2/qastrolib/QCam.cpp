@@ -536,6 +536,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       connect(sizeCombo,SIGNAL(change(int)),this,SLOT(setSizeFromAllowed(int)));
       QWidget* padding2=new QWidget(sizeGroup);
       QToolTip::add(sizeCombo,"Frame size");
+      if(size==1) sizeCombo->setEnabled(false);
 
       // resizing mode combo
       cropLabel=new QLabel("Scaling :",sizeGroup);
@@ -545,6 +546,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       QWidget* padding3=new QWidget(sizeGroup);
       QToolTip::add(cropCombo,"Resizing mode");
+      if(size==1) cropCombo->setEnabled(false);
    }
    return remoteCTRL_;
 }
