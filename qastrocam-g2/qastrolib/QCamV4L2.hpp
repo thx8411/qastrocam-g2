@@ -52,8 +52,6 @@ class QSocketNotifier;
 #define	lxNone	0
 #define lxPar	1
 #define lxSer	2
-// temp
-#define lxDC60	3
 
 // video ctrl struct
 struct video_ctrl {
