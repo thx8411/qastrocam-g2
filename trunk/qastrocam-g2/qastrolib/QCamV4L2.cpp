@@ -737,7 +737,6 @@ bool QCamV4L2::updateFrame() {
    unsigned char* oldTmpBuffer_;
    bool res;
    double currentTime;
-   //inputBuffer_.setMode(mode_);
 
    if(lxEnabled) {
       if(lxFramesToDrop>1) {
@@ -1238,6 +1237,15 @@ void QCamV4L2::setPalette(int val) {
       useMmap=mmapInit();
    // setting controls back
    updatePictureSettings();
+   // gui update
+   if(supported_palettes[palette].mode==YuvFrame)
+      frameModeB->setEnabled(true);
+   else {
+      frameModeB->setEnabled(false);
+      frameModeB->setCurrentItem(0);
+      mode_=GreyFrame;
+      inputBuffer_.setMode(mode_);
+   }
 }
 
 // changing raw mode
