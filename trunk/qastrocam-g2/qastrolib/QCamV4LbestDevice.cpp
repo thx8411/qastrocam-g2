@@ -22,6 +22,8 @@ MA  02110-1301, USA.
 
 #include "QCamV4L.hpp"
 #include "QCamV4L2.hpp"
+#include "QCamV4L2lx.hpp"
+#include "QCamV4L2fi.hpp"
 #include "QCamOV511.hpp"
 #include "QCamVesta.hpp"
 #include "QCamDC60.hpp"
@@ -167,20 +169,20 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
             cout << "Using frame intervals for lx mode" << endl;
             // temp
             close(cam_fd);
-            camFound= new QCamV4L2(devpath);
+            camFound= new QCamV4L2fi(devpath);
             return(camFound);
          } else {
             // we use generic V4L2
             cout << "using V4L2 generic" << endl;
             close(cam_fd);
-            camFound= new QCamV4L2(devpath);
+            camFound= new QCamV4L2lx(devpath);
             return(camFound);
          }
       } else {
          // frame intervals not supported
          cout << "using V4L2 generic" << endl;
          close(cam_fd);
-         camFound= new QCamV4L2(devpath);
+         camFound= new QCamV4L2lx(devpath);
          return(camFound);
       }
    }
