@@ -78,6 +78,11 @@ void SCmodTucLed::startAccumulation() {
       cam_.setLed(25500,0); // switching led ON/OFF for TUC USB
 }
 
+SCmodTucLed::~SCmodTucLed() {
+   stopAccumulation();
+   leaveLongPoseMode();
+}
+
 /* DC60 GPSW */
 
 SCmodDC60::SCmodDC60(QCamDC60 & cam) : cam_(cam) {
@@ -109,6 +114,11 @@ void SCmodDC60::startAccumulation() {
       cam_.setGPSW(true); // switching GPSW on/off
 }
 
+SCmodDC60::~SCmodDC60() {
+   stopAccumulation();
+   leaveLongPoseMode();
+}
+
 /* SERIAL PORT */
 
 SCmodSerialPort::SCmodSerialPort() {
@@ -127,6 +137,12 @@ SCmodSerialPort::SCmodSerialPort() {
       perror(device.c_str());
    }
    stopAccumulation();
+}
+
+SCmodSerialPort::~SCmodSerialPort() {
+   stopAccumulation();
+   leaveLongPoseMode();
+   close(device_);
 }
 
 void SCmodSerialPort::enterLongPoseMode() {
