@@ -25,6 +25,8 @@ MA  02110-1301, USA.
 #include "QCamDC60.hpp"
 #include "SettingsBackup.hpp"
 
+#include "dc60_private_ioctls.h"
+
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
