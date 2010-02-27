@@ -45,12 +45,20 @@ private:
    QTimer* progressTimer;
    SCmod* lxControler;
    // gui
+   // lx
    QCheckBox* lxCheck;
    QLabel* lxLabel;
    QLineEdit* lxEntry;
    QPushButton* lxSet;
    QProgressBar* lxProgress;
+   // extras
+   QCheckBox* extraPreamp;
+   QCheckBox* extraAntialias;
 private slots :
+   // extras
+   void preampChanged(int b);
+   void antialiasChanged(int b);
+   // lx
    void lxActivated(int b);
    void lxSetPushed();
    void lxProgressStep();

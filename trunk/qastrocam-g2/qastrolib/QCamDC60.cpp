@@ -22,11 +22,13 @@ MA  02110-1301, USA.
 #include <sys/ioctl.h>
 #include <math.h>
 
+#include <linux/videodev2.h>
+
 #include <qtooltip.h>
 
 #include "QCamDC60.moc"
 
-#include "private_ioctl.h"
+#include "dc60_private_ioctls.h"
 
 QCamDC60::QCamDC60(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
@@ -43,10 +45,36 @@ void QCamDC60::setGPSW(bool b) {
 
 QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCamV4L2::buildGUI(parent);
+   struct v4l2_control ctrl;
+
    remoteCTRLlx->hide();
 
    // extra controls
    QVGroupBox* extraCtrl=new QVGroupBox("Extra controls",remoteCTRL);
+   QHBox* line1=new QHBox(extraCtrl);
+   QWidget* padding5=new QWidget(line1);
+   extraPreamp=new QCheckBox("Pre-amp",line1);
+   QWidget* padding6=new QWidget(line1);
+   extraAntialias=new QCheckBox("Anti-alias",line1);
+   QWidget* padding7=new QWidget(line1);
+
+   // read values
+   ctrl.id=V4L2_CID_PREAMP;
+   ctrl.value=0;
+   if(ioctl(device_,VIDIOC_G_CTRL,&ctrl)!=0)
+      extraPreamp->setEnabled(false);
+   extraPreamp->setChecked(ctrl.value!=0);
+   ctrl.id=V4L2_CID_ANTIALIAS;
+   ctrl.value=0;
+   if(ioctl(device_,VIDIOC_G_CTRL,&ctrl)!=0)
+      extraAntialias->setEnabled(false);
+   extraAntialias->setChecked(ctrl.value!=0);
+   if(!extraPreamp->isChecked())
+      extraAntialias->setEnabled(false);
+
+   // connects
+   connect(extraPreamp,SIGNAL(stateChanged(int)),this,SLOT(preampChanged(int)));
+   connect(extraAntialias,SIGNAL(stateChanged(int)),this,SLOT(antialiasChanged(int)));
 
    // long exposure
    QHGroupBox* lxCtrl=new QHGroupBox("Long exposure",remoteCTRL);
@@ -78,7 +106,37 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    return(remoteCTRL);
 }
 
+
 // gui slots
+
+// extras slots
+
+void QCamDC60::preampChanged(int b) {
+   struct v4l2_control ctrl;
+
+   ctrl.id=V4L2_CID_PREAMP;
+   ctrl.value=(b==QButton::On);
+   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+      extraPreamp->setEnabled(false);
+
+   if(b==QButton::On)
+      extraAntialias->setEnabled(true);
+   else {
+      extraAntialias->setEnabled(false);
+      antialiasChanged(false);
+   }
+}
+
+void QCamDC60::antialiasChanged(int b) {
+   struct v4l2_control ctrl;
+
+   ctrl.id=V4L2_CID_ANTIALIAS;
+   ctrl.value=(b==QButton::On);
+   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+      extraAntialias->setEnabled(false);
+}
+
+// lx slots
 
 void QCamDC60::lxActivated(int b) {
    if(b==QButton::On) {
