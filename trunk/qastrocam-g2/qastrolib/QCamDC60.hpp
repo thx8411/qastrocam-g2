@@ -35,6 +35,7 @@ class QCamDC60 : public QCamV4L2 {
 public:
    QCamDC60(const char * devpath="/dev/video0");
    void setGPSW(bool b);
+   void setIntegration(bool b);
 protected :
    QWidget *  buildGUI(QWidget * parent);
 private:

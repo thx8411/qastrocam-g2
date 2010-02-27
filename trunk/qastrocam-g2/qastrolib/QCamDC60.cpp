@@ -40,7 +40,16 @@ void QCamDC60::setGPSW(bool b) {
    ctrl.value=b;
 
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
-      cout << "Unable to change GPSW state" << endl;
+      cout << "Unable to change DC60 GPSW state" << endl;
+}
+
+void QCamDC60::setIntegration(bool b) {
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_INTEGRATES;
+   ctrl.value=b;
+
+   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+      cout << "Unable to change DC60 integration state" << endl;
 }
 
 QWidget *  QCamDC60::buildGUI(QWidget * parent) {
