@@ -1,5 +1,8 @@
-4.8beta20100224
+4.8beta20100227
 
+  - long exposure mode support added for astroeasycap
+  - better scmod handling
+  - gui palette bug fixed
   - spca505 palette support added
   - jpeg palette resize bug fixed
   - B/W frames optimisation (speed x2)
