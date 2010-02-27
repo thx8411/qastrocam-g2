@@ -14,6 +14,7 @@ qastrocam-g2 (4.8beta20100227) jaunty; urgency=low
   * long exposure mode support added for astroeasycap
   * better scmod handling
   * gui palette bug fixed
+  * DC60 extras controls added
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 

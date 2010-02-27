@@ -107,6 +107,7 @@ void SCmodDC60::stopAccumulation() {
       cam_.setGPSW(true);
    else
       cam_.setGPSW(false); // switching GPSW on/off
+   cam_.setIntegration(false);
 }
 
 void SCmodDC60::startAccumulation() {
@@ -114,6 +115,7 @@ void SCmodDC60::startAccumulation() {
       cam_.setGPSW(false);
    else
       cam_.setGPSW(true); // switching GPSW on/off
+   cam_.setIntegration(true);
 }
 
 SCmodDC60::~SCmodDC60() {
