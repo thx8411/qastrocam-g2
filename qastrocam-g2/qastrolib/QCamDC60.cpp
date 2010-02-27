@@ -1,6 +1,4 @@
 /******************************************************************
-Qastrocam
-Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
 Copyright (C) 2009   Blaise-Florentin Collin
 
