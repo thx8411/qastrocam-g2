@@ -51,6 +51,7 @@ class QCamVesta;
 class SCmodTucLed : public SCmod {
 public:
    SCmodTucLed(QCamVesta & cam);
+   ~SCmodTucLed();
    void enterLongPoseMode();
    void leaveLongPoseMode();
    void stopAccumulation();
@@ -63,6 +64,7 @@ class QCamDC60;
 class SCmodDC60 : public SCmod {
 public:
    SCmodDC60(QCamDC60 & cam);
+   ~SCmodDC60();
    void enterLongPoseMode();
    void leaveLongPoseMode();
    void stopAccumulation();
@@ -74,6 +76,7 @@ private:
 class SCmodSerialPort : public SCmod {
 public:
    SCmodSerialPort();
+   ~SCmodSerialPort();
    void enterLongPoseMode();
    void leaveLongPoseMode();
    void stopAccumulation();
