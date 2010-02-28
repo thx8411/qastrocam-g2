@@ -15,6 +15,7 @@ qastrocam-g2 (4.8beta20100227) jaunty; urgency=low
   * better scmod handling
   * gui palette bug fixed
   * DC60 extras controls added
+  * V4L2 objects re-organised
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 

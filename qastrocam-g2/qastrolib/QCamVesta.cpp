@@ -570,7 +570,6 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
 
 QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCamV4L2::buildGUI(parent);
-   remoteCTRLlx->hide();
 
    //QHGroupBox* vestaCtrl=new QHGroupBox("Vesta controls",remoteCTRL);
    QGridBox * sliders= new QGridBox(/*vestaCtrl*/VctrlBox,Qt::Vertical,3);

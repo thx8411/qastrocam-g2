@@ -1,5 +1,6 @@
 4.8beta20100227
 
+  - V4L2 objects re-organised
   - DC60 extras controls added
   - long exposure mode support added for astroeasycap
   - better scmod handling

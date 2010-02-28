@@ -54,8 +54,6 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCamV4L2::buildGUI(parent);
    struct v4l2_control ctrl;
 
-   remoteCTRLlx->hide();
-
    // extra controls
    QVGroupBox* extraCtrl=new QVGroupBox("Extra controls",remoteCTRL);
    QHBox* line1=new QHBox(extraCtrl);
