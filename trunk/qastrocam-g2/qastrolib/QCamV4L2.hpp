@@ -42,16 +42,10 @@ MA  02110-1301, USA.
 #include "SCmod.hpp"
 
 class QCamSlider;
-class QTimer;
 class QSocketNotifier;
 
 // buffer number
 #define BUFF_NUMBER	4
-
-// lx modes list
-#define	lxNone	0
-#define lxPar	1
-#define lxSer	2
 
 // video ctrl struct
 struct video_ctrl {
@@ -122,6 +116,7 @@ public:
    // gui
    QWidget * buildGUI(QWidget * parent);
 protected:
+    QVBox* VctrlBox;
    // V4L2 vars
    struct v4l2_cropcap v4l2_crop_;
    struct v4l2_capability v4l2_cap_;
@@ -154,16 +149,15 @@ protected:
        is used if the select() system call is not avaible,
        by the timer used to probe the camera for a new frame */
    virtual int getFrameRate() const { return(frameRate_);}
-
+   // mmap frame capture
    virtual uchar* mmapCapture();
 
-   // gui
-   QHGroupBox* remoteCTRLlx;
-   QVBox* VctrlBox;
-
-private:
    // get os time in seconds (usec accuracy)
    double getTime();
+   // framerate
+   int frameRate_;
+
+private:
    // inputs
    v4l2_input input;
    int sourceNumber;
@@ -201,8 +195,6 @@ private:
    unsigned char* jpegImageBuffer;
    unsigned char* jpegCopyBuffer;
 
-   // to probe the cam for new frame
-   //QTimer * timer_;
    // to probe the cam if it support select
    QSocketNotifier * notifier_;
    QSize size_;
@@ -212,38 +204,13 @@ private:
    QCamSlider * remoteCTRLhue_;
    QCamSlider * remoteCTRLcolor_;
    QCamSlider * remoteCTRLwhiteness_;
-
    // input, palette and frame mode
    QHBox * infoBox;
    QCamComboBox* sourceB;
    QCamComboBox* paletteB;
    QCamComboBox* frameModeB;
-
-   // lx mode widgets
-   //QCamSlider * lxSlider;   -> cf. protected
-   //QHGroupBox * remoteCTRLlx;   -> cf. protected
-   QLabel * lxLabel1;
-   QLabel * lxRate;
-   QCamComboBox * lxSelector;
-   QLabel * lxLabel2;
-   QLineEdit * lxTime;
-   QPushButton * lxSet;
-   QProgressBar * lxBar;
-   QWidget* padding;
-   QTimer * lxTimer;
    // video stream vars
    ImageMode mode_;
-   int frameRate_;
-   // lx mode vars
-   SCmod* lxControler;
-   double lxDelay; // integration time
-   //double lxFineDelay; // fine tuning for interlace sync
-   double lxBaseTime; // os time at integration beginning
-   bool lxEnabled; // is lx mode on ?
-   int lxFrameCounter; // dropped frames number
-   int lxLevel; // level used to decide if a frame should be dropped, based on mean frame luminance
-   int lxFramesToDrop;
-
 public slots:
    // controls
    void setContrast(int value);
@@ -255,10 +222,6 @@ public slots:
    void setPalette(int value);
    void setMode(ImageMode val);
    void setMode(int val); /* proxy to ' void setMode(ImageMode val)' */
-   // lx mode slots
-   void setLXmode(int val);
-   void setLXtime();
-   void LXframeReady();
 protected slots:
    // a new frame is up
    virtual bool updateFrame();
