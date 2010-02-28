@@ -62,6 +62,8 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    QWidget* padding6=new QWidget(line1);
    extraAntialias=new QCheckBox("Anti-alias",line1);
    QWidget* padding7=new QWidget(line1);
+   extraWhitepeak=new QCheckBox("White peak control",line1);
+   QWidget* padding8=new QWidget(line1);
 
    // read values
    ctrl.id=V4L2_CID_PREAMP;
@@ -69,6 +71,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    if(ioctl(device_,VIDIOC_G_CTRL,&ctrl)!=0)
       extraPreamp->setEnabled(false);
    extraPreamp->setChecked(ctrl.value!=0);
+
    ctrl.id=V4L2_CID_ANTIALIAS;
    ctrl.value=0;
    if(ioctl(device_,VIDIOC_G_CTRL,&ctrl)!=0)
@@ -77,9 +80,16 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    if(!extraPreamp->isChecked())
       extraAntialias->setEnabled(false);
 
+   ctrl.id=V4L2_CID_WHITEPEAK;
+   ctrl.value=0;
+   if(ioctl(device_,VIDIOC_G_CTRL,&ctrl)!=0)
+      extraWhitepeak->setEnabled(false);
+   extraPreamp->setChecked(ctrl.value!=0);
+
    // connects
    connect(extraPreamp,SIGNAL(stateChanged(int)),this,SLOT(preampChanged(int)));
    connect(extraAntialias,SIGNAL(stateChanged(int)),this,SLOT(antialiasChanged(int)));
+   connect(extraWhitepeak,SIGNAL(stateChanged(int)),this,SLOT(whitepeakChanged(int)));
 
    // long exposure
    QHGroupBox* lxCtrl=new QHGroupBox("Long exposure",remoteCTRL);
@@ -136,6 +146,15 @@ void QCamDC60::antialiasChanged(int b) {
    struct v4l2_control ctrl;
 
    ctrl.id=V4L2_CID_ANTIALIAS;
+   ctrl.value=(b==QButton::On);
+   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+      extraAntialias->setEnabled(false);
+}
+
+void QCamDC60::whitepeakChanged(int b) {
+   struct v4l2_control ctrl;
+
+   ctrl.id=V4L2_CID_WHITEPEAK;
    ctrl.value=(b==QButton::On);
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       extraAntialias->setEnabled(false);
