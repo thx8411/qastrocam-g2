@@ -34,18 +34,21 @@
 /* True or False : enable or disable pre-amp */
 #define V4L2_CID_PREAMP		V4L2_CID_PRIVATE_BASE+2
 
+/* True or False : enable or disable white peak control */
+#define V4L2_CID_WHITEPEAK	V4L2_CID_PRIVATE_BASE+3
+
 /* True or False : enable or disable anti-alias (pre-amp must be on for anti-alias on) */
-#define V4L2_CID_ANTIALIAS	V4L2_CID_PRIVATE_BASE+3
+#define V4L2_CID_ANTIALIAS	V4L2_CID_PRIVATE_BASE+4
 
 // to do...
 
 /* True or False : enable or disable chrominance prefilter */
-#define V4L2_CID_CPREFILTER	V4L2_CID_PRIVATE_BASE+4
+#define V4L2_CID_CPREFILTER	V4L2_CID_PRIVATE_BASE+5
 
 /* True of False : enable or disable chrominance filter */
-#define V4L2_CID_CFILTER	V4L2_CID_PRIVATE_BASE+5
+#define V4L2_CID_CFILTER	V4L2_CID_PRIVATE_BASE+6
 
 /* 0 (bypass) -> 3 (full) : set vertical noise reduction */
-#define V4L2_CID_VNOISE         V4L2_CID_PRIVATE_BASE+6
+#define V4L2_CID_VNOISE         V4L2_CID_PRIVATE_BASE+7
 
 #endif

@@ -55,10 +55,12 @@ private:
    // extras
    QCheckBox* extraPreamp;
    QCheckBox* extraAntialias;
+   QCheckBox* extraWhitepeak;
 private slots :
    // extras
    void preampChanged(int b);
    void antialiasChanged(int b);
+   void whitepeakChanged(int b);
    // lx
    void lxActivated(int b);
    void lxSetPushed();
