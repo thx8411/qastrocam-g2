@@ -20,35 +20,60 @@
 */
 
 /* private controls for AstroEasyCap */
-/* vers. 0.1beta20100228 */
+/* vers. 0.1beta20100302 */
 
 #ifndef _DC60_PRIVATE_IOCTLS_H_
 #define _DC60_PRIVATE_IOCTLS_H_
 
+/*----------------------------*/
+/* TTL pin control, low level */
+/*----------------------------*/
+
+/* CAUTION : could confilcts with the 'high level' integration commands */
+
 /* True or False : change level on the 27th saa7113 pin */
 #define	V4L2_CID_GPSW1		V4L2_CID_PRIVATE_BASE
 
-/* True or False : is the camera integrating ? */
-#define V4L2_CID_INTEGRATES	V4L2_CID_PRIVATE_BASE+1
+/*---------------------*/
+/* integration control */
+/*---------------------*/
+
+/* True : starts camera integration */
+#define V4L2_CID_INTEGRATION_START	V4L2_CID_PRIVATE_BASE+1
+
+/* True : stops camera integration */
+#define V4L2_CID_INTEGRATION_STOP	V4L2_CID_PRIVATE_BASE+2
+
+/* True or False : sets the integration pin level (normal/inverted) */
+#define V4L2_CID_INTEGRATION_INVERTED	V4L2_CID_PRIVATE_BASE+3
+
+/*--------------------------*/
+/* frame processing control */
+/*--------------------------*/
 
 /* True or False : enable or disable pre-amp */
-#define V4L2_CID_PREAMP		V4L2_CID_PRIVATE_BASE+2
+#define V4L2_CID_PREAMP		V4L2_CID_PRIVATE_BASE+4
 
 /* True or False : enable or disable white peak control */
-#define V4L2_CID_WHITEPEAK	V4L2_CID_PRIVATE_BASE+3
+#define V4L2_CID_WHITEPEAK	V4L2_CID_PRIVATE_BASE+5
 
 /* True or False : enable or disable anti-alias (pre-amp must be on for anti-alias on) */
-#define V4L2_CID_ANTIALIAS	V4L2_CID_PRIVATE_BASE+4
+#define V4L2_CID_ANTIALIAS	V4L2_CID_PRIVATE_BASE+6
+
+
+
+
+
 
 // to do...
 
 /* True or False : enable or disable chrominance prefilter */
-#define V4L2_CID_CPREFILTER	V4L2_CID_PRIVATE_BASE+5
+#define V4L2_CID_CPREFILTER	V4L2_CID_PRIVATE_BASE+7
 
 /* True of False : enable or disable chrominance filter */
-#define V4L2_CID_CFILTER	V4L2_CID_PRIVATE_BASE+6
+#define V4L2_CID_CFILTER	V4L2_CID_PRIVATE_BASE+8
 
 /* 0 (bypass) -> 3 (full) : set vertical noise reduction */
-#define V4L2_CID_VNOISE         V4L2_CID_PRIVATE_BASE+7
+#define V4L2_CID_VNOISE         V4L2_CID_PRIVATE_BASE+9
 
 #endif
