@@ -45,7 +45,7 @@ class QCamSlider;
 class QSocketNotifier;
 
 // buffer number
-#define BUFF_NUMBER	4
+#define BUFF_NUMBER	6
 
 // video ctrl struct
 struct video_ctrl {

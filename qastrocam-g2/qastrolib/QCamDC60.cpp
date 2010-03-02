@@ -32,22 +32,40 @@ QCamDC60::QCamDC60(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
 }
 
-void QCamDC60::setGPSW(bool b) {
-   struct v4l2_control ctrl;
-   ctrl.id=V4L2_CID_GPSW1;
-   ctrl.value=b;
+//void QCamDC60::setGPSW(bool b) {
+//   struct v4l2_control ctrl;
+//   ctrl.id=V4L2_CID_GPSW1;
+//   ctrl.value=b;
+//
+//   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+//      cout << "Unable to change DC60 GPSW state" << endl;
+//}
 
-   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
-      cout << "Unable to change DC60 GPSW state" << endl;
-}
-
-void QCamDC60::setIntegration(bool b) {
+void QCamDC60::startIntegration() {
    struct v4l2_control ctrl;
-   ctrl.id=V4L2_CID_INTEGRATES;
-   ctrl.value=b;
+   ctrl.id=V4L2_CID_INTEGRATION_START;
+   ctrl.value=true;
 
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       cout << "Unable to change DC60 integration state" << endl;
+}
+
+void QCamDC60::stopIntegration() {
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_INTEGRATION_STOP;
+   ctrl.value=true;
+
+   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+      cout << "Unable to change DC60 integration state" << endl;
+}
+
+void QCamDC60::setInverted(bool b) {
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_INTEGRATION_INVERTED;
+   ctrl.value=b;
+
+   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
+      cout << "Unable to change DC60 integration level state" << endl;
 }
 
 QWidget *  QCamDC60::buildGUI(QWidget * parent) {

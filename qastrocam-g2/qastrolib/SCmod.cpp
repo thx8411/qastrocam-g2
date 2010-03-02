@@ -88,10 +88,13 @@ SCmodTucLed::~SCmodTucLed() {
 /* DC60 GPSW */
 
 SCmodDC60::SCmodDC60(QCamDC60 & cam) : cam_(cam) {
-   if(settings.haveKey("LX_LEVELS_INVERTED"))
+   if(settings.haveKey("LX_LEVELS_INVERTED")) {
       inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
-   else
-      inverted_=false;
+      if(inverted_)
+         cam_.setInverted(true);
+      else
+         cam_.setInverted(false);
+   }
    stopAccumulation();
 }
 
@@ -103,19 +106,19 @@ void SCmodDC60::leaveLongPoseMode() {
 }
 
 void SCmodDC60::stopAccumulation() {
-   if (inverted_)
-      cam_.setGPSW(true);
-   else
-      cam_.setGPSW(false); // switching GPSW on/off
-   cam_.setIntegration(false);
+   //if (inverted_)
+      //cam_.setGPSW(true);
+   //else
+      //cam_.setGPSW(false); // switching GPSW on/off
+   cam_.stopIntegration();
 }
 
 void SCmodDC60::startAccumulation() {
-   if (inverted_)
-      cam_.setGPSW(false);
-   else
-      cam_.setGPSW(true); // switching GPSW on/off
-   cam_.setIntegration(true);
+   //if (inverted_)
+      //cam_.setGPSW(false);
+   //else
+      //cam_.setGPSW(true); // switching GPSW on/off
+   cam_.startIntegration();
 }
 
 SCmodDC60::~SCmodDC60() {
