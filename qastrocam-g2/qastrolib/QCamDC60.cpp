@@ -195,6 +195,7 @@ void QCamDC60::lxActivated(int b) {
       // connect
       connect(progressTimer,SIGNAL(timeout()),this,SLOT(lxProgressStep()));
       connect(lxTimer,SIGNAL(timeout()),this,SLOT(lxTimeout()));
+      lxSetPushed();
    } else {
       // stop lx
       // delete objects
@@ -247,7 +248,8 @@ void QCamDC60::lxProgressStep() {
 
 void QCamDC60::lxTimeout() {
    lxControler->stopAccumulation();
-   usleep(33000);
+   // we wait a full frame
+   usleep((int)(1.0/frameRate_*1000000/2));
    progress=0;
    lxControler->startAccumulation();
 }
