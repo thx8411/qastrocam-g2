@@ -102,7 +102,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    ctrl.value=0;
    if(ioctl(device_,VIDIOC_G_CTRL,&ctrl)!=0)
       extraWhitepeak->setEnabled(false);
-   extraPreamp->setChecked(ctrl.value!=0);
+   extraWhitepeak->setChecked(ctrl.value!=0);
 
    // connects
    connect(extraPreamp,SIGNAL(stateChanged(int)),this,SLOT(preampChanged(int)));
