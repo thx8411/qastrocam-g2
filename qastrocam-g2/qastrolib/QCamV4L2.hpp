@@ -150,6 +150,7 @@ protected:
        by the timer used to probe the camera for a new frame */
    virtual int getFrameRate() const { return(frameRate_);}
    // mmap frame capture
+   int buffNumber;
    virtual uchar* mmapCapture();
 
    // get os time in seconds (usec accuracy)
