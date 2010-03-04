@@ -319,7 +319,13 @@ void QCamVesta::setGama(int val) {
 }
 
 int QCamVesta::getGama() const {
-   return picture_.whiteness;
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_WHITENESS;
+   ctrl.value=0;
+   if (-1 == ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
+      perror("");
+   }
+   return ctrl.value;
 }
 
 void QCamVesta::setFrameRate(int value) {
