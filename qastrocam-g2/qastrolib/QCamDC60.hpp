@@ -40,12 +40,14 @@ public:
    void setInverted(bool b);
 protected :
    QWidget *  buildGUI(QWidget * parent);
+   bool updateFrame();
 private:
    // vars
-   int progress;
+   int toDrop;
+   int toDropBase;
+   int toDropBuffer;
+   bool lxActiv;
    float lxDelay;
-   QTimer* lxTimer;
-   QTimer* progressTimer;
    SCmod* lxControler;
    // gui
    // lx
@@ -66,8 +68,6 @@ private slots :
    // lx
    void lxActivated(int b);
    void lxSetPushed();
-   void lxProgressStep();
-   void lxTimeout();
 };
 
 #endif
