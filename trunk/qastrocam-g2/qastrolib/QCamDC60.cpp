@@ -28,18 +28,16 @@ MA  02110-1301, USA.
 
 #include "dc60_private_ioctls.h"
 
+#define FRAMES_TO_DROP	1
+
 QCamDC60::QCamDC60(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
+   lxActiv=false;
+   toDropBase=0;
+   toDrop=toDropBase;
+   toDropBuffer=FRAMES_TO_DROP;
+   buffNumber=2;
 }
-
-//void QCamDC60::setGPSW(bool b) {
-//   struct v4l2_control ctrl;
-//   ctrl.id=V4L2_CID_GPSW1;
-//   ctrl.value=b;
-//
-//   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
-//      cout << "Unable to change DC60 GPSW state" << endl;
-//}
 
 void QCamDC60::startIntegration() {
    struct v4l2_control ctrl;
@@ -66,6 +64,33 @@ void QCamDC60::setInverted(bool b) {
 
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       cout << "Unable to change DC60 integration level state" << endl;
+}
+
+bool QCamDC60::updateFrame() {
+   if(lxActiv) {
+      if(toDrop==toDropBase)
+         lxControler->startAccumulation();
+      if(toDrop==0) {
+         if(toDropBuffer==FRAMES_TO_DROP) {
+            lxControler->stopAccumulation();
+            lxProgress->reset();
+         }
+         if(toDropBuffer==0) {
+            toDrop=toDropBase;
+            toDropBuffer=FRAMES_TO_DROP;
+           return(QCamV4L2::updateFrame());
+         } else {
+            toDropBuffer--;
+            return(QCamV4L2::dropFrame());
+            //return(QCamV4L2::updateFrame());
+         }
+      }
+      toDrop--;
+      lxProgress->setProgress(toDropBase-toDrop);
+      return(QCamV4L2::dropFrame());
+      //return(QCamV4L2::updateFrame());
+   } else
+   return(QCamV4L2::updateFrame());
 }
 
 QWidget *  QCamDC60::buildGUI(QWidget * parent) {
@@ -119,7 +144,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    lxEntry=new QLineEdit(lxCtrl);
    lxEntry->setMaximumWidth(48);
    lxEntry->setEnabled(false);
-   lxEntry->setText("0.02");
+   lxEntry->setText("0.2");
    lxSet=new QPushButton("Set",lxCtrl);
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
@@ -182,31 +207,25 @@ void QCamDC60::whitepeakChanged(int b) {
 
 void QCamDC60::lxActivated(int b) {
    if(b==QButton::On) {
-      lxTimer= new QTimer();
-      progressTimer= new QTimer();
       lxLabel->setEnabled(true);
       lxEntry->setEnabled(true);
       lxSet->setEnabled(true);
       lxProgress->setEnabled(true);
       // create objects
-      lxTimer= new QTimer();
-      progressTimer= new QTimer();
       lxControler=new SCmodDC60(*this);
-      // connect
-      connect(progressTimer,SIGNAL(timeout()),this,SLOT(lxProgressStep()));
-      connect(lxTimer,SIGNAL(timeout()),this,SLOT(lxTimeout()));
       lxSetPushed();
+      lxActiv=true;
    } else {
       // stop lx
       // delete objects
       delete lxControler;
-      delete progressTimer;
-      delete lxTimer;
       lxLabel->setEnabled(false);
       lxEntry->setEnabled(false);
       lxSet->setEnabled(false);
       lxProgress->setEnabled(false);
       lxProgress->reset();
+      lxActiv=false;
+      toDropBase=0;
    }
 }
 
@@ -225,31 +244,13 @@ void QCamDC60::lxSetPushed() {
    // 0.2s steps
    val=round(val*5)/5;
    lxDelay=val;
+   // drop base
+   toDropBase=(int)(lxDelay*frameRate_);
+   toDrop=toDropBase;
    // progress bar update
-   lxProgress->setTotalSteps((int)(lxDelay/0.2));
-
+   lxProgress->setTotalSteps(toDropBase);
    lxProgress->reset();
-   // lx time update
-   lxTimer->stop();
-   lxTimer->start((int)(lxDelay*1000));
-   // progress timer
-   progressTimer->start(200);
-   progress=0;
    // text update
    lxEntry->setText(QString().sprintf("%4.2f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
-   lxControler->startAccumulation();
-}
-
-void QCamDC60::lxProgressStep() {
-   progress++;
-   lxProgress->setProgress(progress);
-}
-
-void QCamDC60::lxTimeout() {
-   lxControler->stopAccumulation();
-   // we wait a full frame
-   usleep((int)(1.0/frameRate_*1000000/2));
-   progress=0;
-   lxControler->startAccumulation();
 }
