@@ -99,6 +99,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    //
    paletteNumber=0;
    // init defaults value
+   buffNumber=BUFF_NUMBER;
    palette=0;
    options_=options;
    nullBuff=NULL;
@@ -409,7 +410,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
       if(sizeTable[i].height()>maxHeight) maxHeight=sizeTable[i].height();
       i++;
    }
-   resize(sizeTable[0]);
+   //resize(sizeTable[0]);
    // update video stream properties
    setProperty("CameraName",(char*)v4l2_cap_.card);
    setProperty("FrameRateSecond",frameRate_);
@@ -1185,7 +1186,7 @@ void  QCamV4L2::setMode(ImageMode val) {
 // mmap init
 bool QCamV4L2::mmapInit() {
    // setting struct
-   mmap_reqbuf.count=BUFF_NUMBER;
+   mmap_reqbuf.count=buffNumber;
 
    // request buffs
    if(ioctl(device_,VIDIOC_REQBUFS, &mmap_reqbuf)==-1) {
