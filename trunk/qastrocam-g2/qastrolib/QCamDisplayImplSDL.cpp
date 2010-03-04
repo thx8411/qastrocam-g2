@@ -48,7 +48,6 @@ inline int min(int a, int b) {
 QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent):
    QCamDisplayImpl(camClient,parent),
    screen_(NULL),
-   YUVImage_(NULL),
    RGBImage_(NULL),
    GreyImage_(NULL) {
    setWFlags(WRepaintNoErase);
@@ -60,7 +59,6 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
    putenv(variable);
    SDL_FreeSurface(GreyImage_);
    SDL_FreeSurface(RGBImage_);
-   //SDL_FreeSurface(YUVImage_);
    SDL_FreeSurface(screen_);
    SDL_QuitSubSystem(SDL_INIT_VIDEO);
    unsetenv("SDL_WINDOWID");
@@ -70,11 +68,6 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
 
 void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
    QCamDisplayImpl::resizeEvent(ev);
-   // We could get a resize event at any time, so clean previous mode
-   //if (YUVImage_) {
-   //   SDL_FreeSurface(YUVImage_);
-   //   YUVImage_=NULL;
-   //}
    if (RGBImage_) {
       SDL_FreeSurface(RGBImage_);
       RGBImage_=NULL;
@@ -98,7 +91,7 @@ void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
       fprintf(stdout, "Unable to init SDL: %s\n", SDL_GetError());
       exit(1);
    }
-   screen_ = SDL_SetVideoMode(width(), height(), 0 /*32*/, SDL_SWSURFACE);
+   screen_ = SDL_SetVideoMode(width(), height(), 0 /*32*/, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL);
    if ( ! screen_ ) {
       QMessageBox::information(0,"Qastrocam-g2","Unable to set SDL video mode\nLeaving...");
       fprintf(stdout, "Unable to set video mode: %s\n", SDL_GetError());
