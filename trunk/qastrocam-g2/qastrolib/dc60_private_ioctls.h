@@ -38,7 +38,7 @@
 /* integration control */
 /*---------------------*/
 
-/* True : starts camera integration */
+/* Sets camera integration time in seconds. Set to 0 for normal frame rate */
 #define V4L2_CID_INTEGRATION_TIME	V4L2_CID_PRIVATE_BASE+1
 
 /* True or False : sets the integration pin level (normal/inverted) */

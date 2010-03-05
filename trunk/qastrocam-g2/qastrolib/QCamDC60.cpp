@@ -193,6 +193,7 @@ void QCamDC60::lxActivated(int b) {
       lxSet->setEnabled(false);
       lxProgress->setEnabled(false);
       lxProgress->reset();
+      setIntegration(0);
    }
 }
 
