@@ -28,27 +28,19 @@ MA  02110-1301, USA.
 #include "QCamV4L2.hpp"
 /* enhance QCamV4L2 to handle specifities of the AstroEasyCap device driver. */
 
-#include "SCmod.hpp"
-
 class QCamDC60 : public QCamV4L2 {
    Q_OBJECT;
 public:
    QCamDC60(const char * devpath="/dev/video0");
-   //void setGPSW(bool b);
-   void startIntegration();
-   void stopIntegration();
+   void setIntegration(int val);
    void setInverted(bool b);
 protected :
    QWidget *  buildGUI(QWidget * parent);
-   bool updateFrame();
 private:
    // vars
-   int toDrop;
-   int toDropBase;
-   int toDropBuffer;
-   bool lxActiv;
+   int progress;
    float lxDelay;
-   SCmod* lxControler;
+   QTimer* progressTimer;
    // gui
    // lx
    QCheckBox* lxCheck;
@@ -68,6 +60,7 @@ private slots :
    // lx
    void lxActivated(int b);
    void lxSetPushed();
+   void lxProgressStep();
 };
 
 #endif

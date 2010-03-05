@@ -28,33 +28,28 @@ MA  02110-1301, USA.
 
 #include "dc60_private_ioctls.h"
 
-#define FRAMES_TO_DROP	1
+#include "SettingsBackup.hpp"
+
+extern settingsBackup settings;
 
 QCamDC60::QCamDC60(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
-   lxActiv=false;
-   toDropBase=0;
-   toDrop=toDropBase;
-   toDropBuffer=FRAMES_TO_DROP;
-   buffNumber=2;
+   if(settings.haveKey("LX_LEVELS_INVERTED")) {
+      bool inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+      if(inverted_)
+         setInverted(true);
+      else
+         setInverted(false);
+  }
 }
 
-void QCamDC60::startIntegration() {
+void QCamDC60::setIntegration(int val) {
    struct v4l2_control ctrl;
-   ctrl.id=V4L2_CID_INTEGRATION_START;
-   ctrl.value=true;
+   ctrl.id=V4L2_CID_INTEGRATION_TIME;
+   ctrl.value=val;
 
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
-      cout << "Unable to change DC60 integration state" << endl;
-}
-
-void QCamDC60::stopIntegration() {
-   struct v4l2_control ctrl;
-   ctrl.id=V4L2_CID_INTEGRATION_STOP;
-   ctrl.value=true;
-
-   if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
-      cout << "Unable to change DC60 integration state" << endl;
+      cout << "Unable to change DC60 integration time" << endl;
 }
 
 void QCamDC60::setInverted(bool b) {
@@ -64,33 +59,6 @@ void QCamDC60::setInverted(bool b) {
 
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       cout << "Unable to change DC60 integration level state" << endl;
-}
-
-bool QCamDC60::updateFrame() {
-   if(lxActiv) {
-      if(toDrop==toDropBase)
-         lxControler->startAccumulation();
-      if(toDrop==0) {
-         if(toDropBuffer==FRAMES_TO_DROP) {
-            lxControler->stopAccumulation();
-            lxProgress->reset();
-         }
-         if(toDropBuffer==0) {
-            toDrop=toDropBase;
-            toDropBuffer=FRAMES_TO_DROP;
-           return(QCamV4L2::updateFrame());
-         } else {
-            toDropBuffer--;
-            return(QCamV4L2::dropFrame());
-            //return(QCamV4L2::updateFrame());
-         }
-      }
-      toDrop--;
-      lxProgress->setProgress(toDropBase-toDrop);
-      return(QCamV4L2::dropFrame());
-      //return(QCamV4L2::updateFrame());
-   } else
-   return(QCamV4L2::updateFrame());
 }
 
 QWidget *  QCamDC60::buildGUI(QWidget * parent) {
@@ -144,7 +112,8 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    lxEntry=new QLineEdit(lxCtrl);
    lxEntry->setMaximumWidth(48);
    lxEntry->setEnabled(false);
-   lxEntry->setText("0.2");
+   lxEntry->setAlignment(Qt::AlignRight);
+   lxEntry->setText("1");
    lxSet=new QPushButton("Set",lxCtrl);
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
@@ -212,45 +181,55 @@ void QCamDC60::lxActivated(int b) {
       lxSet->setEnabled(true);
       lxProgress->setEnabled(true);
       // create objects
-      lxControler=new SCmodDC60(*this);
+      progressTimer= new QTimer();
+      // connect
+      connect(progressTimer,SIGNAL(timeout()),this,SLOT(lxProgressStep()));
       lxSetPushed();
-      lxActiv=true;
    } else {
-      // stop lx
       // delete objects
-      delete lxControler;
+      delete progressTimer;
       lxLabel->setEnabled(false);
       lxEntry->setEnabled(false);
       lxSet->setEnabled(false);
       lxProgress->setEnabled(false);
       lxProgress->reset();
-      lxActiv=false;
-      toDropBase=0;
    }
 }
 
 void QCamDC60::lxSetPushed() {
    float val;
-   lxControler->stopAccumulation();
    // reading edit line and converts
    QString str=lxEntry->text();
    if (sscanf(str.latin1(),"%f",&val)!=1) {
       // default delay
-      val=0.2;
+      val=1;
    }
    // main delay
-   if(val<0.2)
-      val=0.2;
-   // 0.2s steps
-   val=round(val*5)/5;
+   if(val<1)
+      val=1;
+   // 1s steps
+   val=round(val);
    lxDelay=val;
-   // drop base
-   toDropBase=(int)(lxDelay*frameRate_);
-   toDrop=toDropBase;
    // progress bar update
-   lxProgress->setTotalSteps(toDropBase);
+   lxProgress->setTotalSteps((int)(lxDelay));
+
    lxProgress->reset();
+   // progress timer
+   progressTimer->start(1000);
+   progress=0;
    // text update
-   lxEntry->setText(QString().sprintf("%4.2f",lxDelay));
+   lxEntry->setText(QString().sprintf("%4.0f",lxDelay));
    setProperty("FrameRateSecond",1.0/lxDelay);
+   setIntegration((int)lxDelay);
 }
+
+void QCamDC60::lxProgressStep() {
+   if(progress==lxProgress->totalSteps()) {
+      progress=0;
+      lxProgress->reset();
+   } else {
+      progress++;
+      lxProgress->setProgress(progress);
+   }
+}
+
