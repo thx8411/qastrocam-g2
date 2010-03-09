@@ -504,24 +504,33 @@ void QCamVesta::setSCmod(int value) {
       delete SCmodCtrl_;
       SCmodCtrl_=NULL;
    }
+
    switch(value) {
-   case SCmodNone:
-      // already cleared
-      break;
-   case SCmodLed:
-      setSCmodImpl(new SCmodTucLed(*this));
-      break;
-   case SCmodSerial:{
-      SCmodSerialPort * modSerial=new SCmodSerialPort();
-      setSCmodImpl(modSerial);
+     case SCmodNone:
+        // already cleared
+        longExposureTime_->setEnabled(false);
+        break;
+     case SCmodLed:
+        setSCmodImpl(new SCmodTucLed(*this));
+        longExposureTime_->setEnabled(true);
+        setLongExposureTime(longExposureTime_->text());
+        break;
+     case SCmodSerial:{
+        SCmodSerialPort * modSerial=new SCmodSerialPort();
+        setSCmodImpl(modSerial);
+        longExposureTime_->setEnabled(true);
+        setLongExposureTime(longExposureTime_->text());
+        }
+        break;
+     case SCmodPPort2:{
+        SCmodParPortPPdev * scMod=new SCmodParPortPPdev();
+        setSCmodImpl(scMod);
+        longExposureTime_->setEnabled(true);
+        setLongExposureTime(longExposureTime_->text());
+        }
+        break;
    }
-      break;
-   case SCmodPPort2:{
-      SCmodParPortPPdev * scMod=new SCmodParPortPPdev();
-      setSCmodImpl(scMod);
-   }
-      break;
-   }
+
    if (SCmodCtrl_ && guiBuild()) {
       SCmodCtrl_->buildGUI(remoteCTRLframeRate_);
    }
@@ -546,9 +555,12 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
    //QHGroupBox *  remoteCTRLframeRateGroup
    //   = new QHGroupBox(tr("Long Exposure"),
    //                    remoteCTRL);
+   char tmp[32];
    longExposureTime_ = new  QLineEdit(remoteCTRL);
    longExposureTime_->setMaxLength(4);
-   longExposureTime_->setText("0");
+   sprintf(tmp,"%4.2f",1.0/frameRate_);
+   longExposureTime_->setText(tmp);
+   longExposureTime_->setEnabled(false);
    connect(longExposureTime_,SIGNAL(textChanged(const QString&)),
            this,SLOT(setLongExposureTime(const QString&)));
    QToolTip::add(longExposureTime_,tr("exposure time in secondes (0 to disable)"));
@@ -686,18 +698,15 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    int frameRate[]={5,10,15,20,25,30};
    remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
    QToolTip::add(remoteCTRLframeRate2_,tr("Camera frame rate"));
-   connect(this,SIGNAL(frameRateChange(int)),
-           remoteCTRLframeRate2_,SLOT(update(int)));
-   connect(remoteCTRLframeRate2_,SIGNAL(change(int)),
-           this,SLOT(setFrameRate(int)));
+   connect(this,SIGNAL(frameRateChange(int)),remoteCTRLframeRate2_,SLOT(update(int)));
+   connect(remoteCTRLframeRate2_,SIGNAL(change(int)),this,SLOT(setFrameRate(int)));
    remoteCTRLframeRate2_->show();
 
    int scModeTable[]={SCmodNone,SCmodPPort2,SCmodLed,SCmodSerial};
    const char* scModeLabel[]={"SC mod : None","SC mod : // port","SC mod : TUC led","SC mod : serial"};
    SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,4,scModeTable,scModeLabel);
    QToolTip::add(SCmodSelector_,tr("Long exposure device"));
-   connect(SCmodSelector_,SIGNAL(change(int)),
-           this,SLOT(setSCmod(int)));
+   connect(SCmodSelector_,SIGNAL(change(int)),this,SLOT(setSCmod(int)));
 
    initRemoteControlLongExposure(remoteCTRLframeRate_);
 
