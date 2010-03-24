@@ -25,8 +25,8 @@ MA  02110-1301, USA.
 
 #if HAVE_SDL_H
 
-struct SDL_Surface;
-struct SDL_Overlay;
+#include <SDL.h>
+
 /** helper class for QCamDisplay.
     Use SDL to display images. */
 
@@ -40,6 +40,11 @@ protected:
    void resizeEvent(QResizeEvent*ev);
    void setPalette();
 private:
+   SDL_Color* colors;
+   SDL_Color  greyPalette[256];
+   SDL_Color  negatePalette[256];
+   SDL_Color  falsePalette[256];
+
    SDL_Surface *screen_;
    SDL_Surface * RGBImage_;
    SDL_Surface * GreyImage_;
