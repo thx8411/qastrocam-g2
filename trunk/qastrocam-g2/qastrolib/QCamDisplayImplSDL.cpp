@@ -35,8 +35,6 @@ MA  02110-1301, USA.
  * SDL
  */
 
-#include <SDL.h>
-
 #if defined(Q_WS_X11)
 #include <X11/Xlib.h>
 #endif
@@ -46,11 +44,39 @@ inline int min(int a, int b) {
 }
 
 QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent):
-   QCamDisplayImpl(camClient,parent),
-   screen_(NULL),
-   RGBImage_(NULL),
-   GreyImage_(NULL) {
+         QCamDisplayImpl(camClient,parent),
+         screen_(NULL),
+         RGBImage_(NULL),
+         GreyImage_(NULL) {
+
+   for(int i=0;i<256;i++) {
+      greyPalette[i].r=i;
+      greyPalette[i].g=i;
+      greyPalette[i].b=i;
+      negatePalette[255-i].r=i;
+      negatePalette[255-i].g=i;
+      negatePalette[255-i].b=i;
+   }
+   for (int i=0;i<256;i+=4) {
+      falsePalette[i/4].r=0;
+      falsePalette[i/4].g=i;
+      falsePalette[i/4].b=255;
+      falsePalette[i/4+64].r=0;
+      falsePalette[i/4+64].g=255;
+      falsePalette[i/4+64].b=255-i;
+      falsePalette[i/4+128].r=i;
+      falsePalette[i/4+128].g=255;
+      falsePalette[i/4+128].b=0;
+      falsePalette[i/4+192].r=255;
+      falsePalette[i/4+192].g=255-i;
+      falsePalette[i/4+192].b=0;
+   }
+
+   colors=greyPalette;
+
    setWFlags(WRepaintNoErase);
+
+   SDL_Init(SDL_INIT_VIDEO);
 }
 
 QCamDisplayImplSDL::~QCamDisplayImplSDL() {
@@ -108,45 +134,17 @@ void QCamDisplayImplSDL::setPalette() {
    if (!GreyImage_) {
       return;
    }
-   SDL_Color colors[256];
    switch (displayMode_) {
    case QCamDisplay::Color:
       //falling back in grey mode
    case QCamDisplay::Gray:
-      for(int i=0;i<256;i++) {
-         colors[i].r=i;
-         colors[i].g=i;
-         colors[i].b=i;
-      }
+      colors=greyPalette;
       break;
    case QCamDisplay::Negate:
-      for(int i=0;i<256;i++) {
-         colors[255-i].r=i;
-         colors[255-i].g=i;
-         colors[255-i].b=i;
-      }
+      colors=negatePalette;
       break;
    case QCamDisplay::FalseColor:
-      for (int i=0;i<256;i+=4) {
-         colors[i/4].r=0;
-         colors[i/4].g=i;
-         colors[i/4].b=255;
-      }
-      for (int i=0;i<256;i+=4) {
-         colors[i/4+64].r=0;
-         colors[i/4+64].g=255;
-         colors[i/4+64].b=255-i;
-      }
-      for (int i=0;i<256;i+=4) {
-         colors[i/4+128].r=i;
-         colors[i/4+128].g=255;
-         colors[i/4+128].b=0;
-      }
-      for (int i=0;i<256;i+=4) {
-         colors[i/4+192].r=255;
-         colors[i/4+192].g=255-i;
-         colors[i/4+192].b=0;
-      }
+      colors=falsePalette;
       break;
    }
    /* Set palette */
@@ -154,6 +152,8 @@ void QCamDisplayImplSDL::setPalette() {
 }
 
 void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
+   //SDL_Surface* tempSurface;
+
    QCamFrame frame=camClient_.yuvFrame();
    if (frame.empty() || screen_==NULL) {
       return;
@@ -181,12 +181,14 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          if (GreyImage_) {
             SDL_FreeSurface(GreyImage_);
          }
-         GreyImage_=SDL_CreateRGBSurfaceFrom((Uint8*)frame.Y(), frame.size().width(),
+         /*tempSurface*/GreyImage_=SDL_CreateRGBSurfaceFrom((Uint8*)frame.Y(), frame.size().width(),
                                              frame.size().height(), 8,
                                              frame.size().width(),
                                              0, 0, 0, 0);
+         /*GreyImage_=SDL_DisplayFormat(tempSurface);
+         SDL_FreeSurface(tempSurface);*/
          if ( ! GreyImage_ ) {
-            fprintf(stderr, "Unable to create grey overlay: %s\n", SDL_GetError());
+            fprintf(stderr, "Unable to create grey surface: %s\n", SDL_GetError());
             return;
          }
          setPalette();
@@ -203,9 +205,11 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          rmask = 0x00FF0000;
          gmask = 0x0000FF00;
          bmask = 0x000000FF;
-         RGBImage_ = SDL_CreateRGBSurface(SDL_SWSURFACE, frame.size().width(),
+         /*tempSurface*/ RGBImage_= SDL_CreateRGBSurface(SDL_SWSURFACE, frame.size().width(),
                                           frame.size().height(), 32,
                                           rmask, gmask, bmask, 0);
+         /*RGBImage_=SDL_DisplayFormat(tempSurface);
+         SDL_FreeSurface(tempSurface);*/
          if(RGBImage_ == NULL) {
             QMessageBox::information(0,"Qastrocam-g2","CreateRGBSurface failed\nLeaving...");
             fprintf(stdout, "CreateRGBSurface failed: %s\n", SDL_GetError());
@@ -213,7 +217,7 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          }
       }
       yuv444_to_bgr32(RGBImage_->w,RGBImage_->h,frame.Y(),frame.U(),frame.V(),(unsigned char*)RGBImage_->pixels);
-      SDL_BlitSurface(RGBImage_, NULL, screen_, &dst);
+      SDL_BlitSurface(SDL_DisplayFormat(RGBImage_), NULL, screen_, &dst);
    }
    //SDL_FillRect(screen_, NULL, 0);
    SDL_Flip(screen_);
