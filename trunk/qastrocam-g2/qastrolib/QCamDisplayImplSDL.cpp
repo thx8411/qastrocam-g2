@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -87,6 +87,7 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
    SDL_FreeSurface(RGBImage_);
    SDL_FreeSurface(screen_);
    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+   SDL_Quit();
    unsetenv("SDL_WINDOWID");
 
    QCamDisplay::SDL_on_=false;
@@ -117,7 +118,7 @@ void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
       fprintf(stdout, "Unable to init SDL: %s\n", SDL_GetError());
       exit(1);
    }
-   screen_ = SDL_SetVideoMode(width(), height(), 0 /*32*/, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL);
+   screen_ = SDL_SetVideoMode(0/*width()*/, 0/*height()*/, 0 /*32*/, SDL_HWPALETTE | SDL_SWSURFACE | SDL_RLEACCEL);
    if ( ! screen_ ) {
       QMessageBox::information(0,"Qastrocam-g2","Unable to set SDL video mode\nLeaving...");
       fprintf(stdout, "Unable to set video mode: %s\n", SDL_GetError());
@@ -152,7 +153,6 @@ void QCamDisplayImplSDL::setPalette() {
 }
 
 void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
-   //SDL_Surface* tempSurface;
 
    QCamFrame frame=camClient_.yuvFrame();
    if (frame.empty() || screen_==NULL) {
@@ -181,12 +181,10 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          if (GreyImage_) {
             SDL_FreeSurface(GreyImage_);
          }
-         /*tempSurface*/GreyImage_=SDL_CreateRGBSurfaceFrom((Uint8*)frame.Y(), frame.size().width(),
+         GreyImage_=SDL_CreateRGBSurfaceFrom((Uint8*)frame.Y(), frame.size().width(),
                                              frame.size().height(), 8,
                                              frame.size().width(),
                                              0, 0, 0, 0);
-         /*GreyImage_=SDL_DisplayFormat(tempSurface);
-         SDL_FreeSurface(tempSurface);*/
          if ( ! GreyImage_ ) {
             fprintf(stderr, "Unable to create grey surface: %s\n", SDL_GetError());
             return;
@@ -205,11 +203,9 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          rmask = 0x00FF0000;
          gmask = 0x0000FF00;
          bmask = 0x000000FF;
-         /*tempSurface*/ RGBImage_= SDL_CreateRGBSurface(SDL_SWSURFACE, frame.size().width(),
+         RGBImage_= SDL_CreateRGBSurface(SDL_SWSURFACE, frame.size().width(),
                                           frame.size().height(), 32,
                                           rmask, gmask, bmask, 0);
-         /*RGBImage_=SDL_DisplayFormat(tempSurface);
-         SDL_FreeSurface(tempSurface);*/
          if(RGBImage_ == NULL) {
             QMessageBox::information(0,"Qastrocam-g2","CreateRGBSurface failed\nLeaving...");
             fprintf(stdout, "CreateRGBSurface failed: %s\n", SDL_GetError());
@@ -219,7 +215,6 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
       yuv444_to_bgr32(RGBImage_->w,RGBImage_->h,frame.Y(),frame.U(),frame.V(),(unsigned char*)RGBImage_->pixels);
       SDL_BlitSurface(SDL_DisplayFormat(RGBImage_), NULL, screen_, &dst);
    }
-   //SDL_FillRect(screen_, NULL, 0);
    SDL_Flip(screen_);
 
    painter_->begin(this);
