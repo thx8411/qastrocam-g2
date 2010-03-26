@@ -51,6 +51,7 @@ private:
    QVGroupBox * mainWidget_;
    QGridLayout * arrowsLayout_;
    QWidget * arrows_;
+   // move buttons
    QPushButton * upButton_;
    QPushButton * downButton_;
    QPushButton * leftButton_;

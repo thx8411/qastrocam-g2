@@ -203,6 +203,9 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          rmask = 0x00FF0000;
          gmask = 0x0000FF00;
          bmask = 0x000000FF;
+         if (RGBImage_) {
+            SDL_FreeSurface(RGBImage_);
+         }
          RGBImage_= SDL_CreateRGBSurface(SDL_SWSURFACE, frame.size().width(),
                                           frame.size().height(), 32,
                                           rmask, gmask, bmask, 0);
@@ -213,7 +216,7 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          }
       }
       yuv444_to_bgr32(RGBImage_->w,RGBImage_->h,frame.Y(),frame.U(),frame.V(),(unsigned char*)RGBImage_->pixels);
-      SDL_BlitSurface(SDL_DisplayFormat(RGBImage_), NULL, screen_, &dst);
+      SDL_BlitSurface(RGBImage_, NULL, screen_, &dst);
    }
    SDL_Flip(screen_);
 
