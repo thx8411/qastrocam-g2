@@ -54,6 +54,7 @@ enum ImageMode {
 };
 
 enum DebayerMethod {
+   Grey,
    Nearest,
    Bilinear
 };

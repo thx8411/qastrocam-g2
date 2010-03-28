@@ -1,5 +1,6 @@
-4.8beta20100326
+4.8beta20100328
 
+  - grey de-mosaic added
   - a bit of SDL speed up
   - mmap buffer number change
   - V4L2 objects re-organised
