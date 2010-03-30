@@ -36,7 +36,8 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
          QCamDisplayImplSDL.o QTelescopeFifo.o QFileChooser.o \
 	 QKingClient.o QTelescopeMCU.o QTelescopeMTS.o QTelescopeFile.o \
 	 FrameBayer.o FrameDark.o FrameFlat.o FrameBias.o QCamStack.o \
-         FrameId.o QCamDC60.o QCamV4L2lx.o QCamV4L2fi.o QCamPhoto2.o
+         FrameId.o QCamDC60.o QCamV4L2lx.o QCamV4L2fi.o QCamPhoto2.o \
+         QCamFocus.o 
 
 OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o Vector2D.o ShiftInfo.o QCamFrame.o \
