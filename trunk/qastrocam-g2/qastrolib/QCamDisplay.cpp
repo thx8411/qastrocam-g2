@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -83,7 +83,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
 
    int displayValues[]={Color,Gray,Negate,FalseColor};
    const char * displayValuesLabel[]={"RGB","Gray","Negated", "False Color"};
-   displayModeButton_ = new QCamComboBox(tr("Cross type"),buttonsContainer_,4,
+   displayModeButton_ = new QCamComboBox(tr("Display type"),buttonsContainer_,4,
                                          displayValues,
                                          displayValuesLabel);
    connect(displayModeButton_,SIGNAL(change(int)),this,SLOT(setDisplayMode(int)));
