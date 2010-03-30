@@ -1,5 +1,7 @@
-4.8beta20100328
+4.8beta20100330
 
+  - better sources portability
+  - pdf manual building is now optional
   - grey de-mosaic added
   - a bit of SDL speed up
   - mmap buffer number change
