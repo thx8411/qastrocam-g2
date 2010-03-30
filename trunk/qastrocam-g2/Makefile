@@ -23,7 +23,6 @@ SUBDIRS=qastrolib qastrocam
 -include Makefile.vars
 
 all:: configure_done
-	$(MAKE) -C doc/sources
 	for i in $(SUBDIRS) ; do $(MAKE) $(FAST_FLAGS) -C $$i || exit 1; done
 full:: all
 
