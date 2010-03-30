@@ -83,7 +83,7 @@ FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(pare
    pattern = new QCamComboBox("Pattern",this,5,patternsValues,patternsLabels);
    padding2=new QWidget(this);
    label2=new QLabel("Algorithm :",this);
-   algorithm=new QCamComboBox("Pattern",this,2,algoValues,algoLabels);
+   algorithm=new QCamComboBox("Pattern",this,3,algoValues,algoLabels);
    padding3=new QWidget(this);
    connect(pattern,SIGNAL(change(int)),algo,SLOT(patternChanged(int)));
    connect(algorithm,SIGNAL(change(int)),algo,SLOT(algorithmChanged(int)));
