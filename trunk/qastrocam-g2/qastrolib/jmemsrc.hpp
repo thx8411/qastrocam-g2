@@ -3,7 +3,20 @@
 
 extern "C"
 {
+
+// jmorecfg.h INT32 definition conflicts with QT.
+// we use a trick to avoid this problem.
+// B-F. C. 2010
+
+#ifndef XMD_H                   /* X11/xmd.h correctly defines INT16 */
+typedef short INT16;
+#define XMD_H
 #include "jpeglib.h"
+#undef XMD_H
+#else
+#include "jpeglib.h"
+#endif
+
 #include "jerror.h"
 }
 
@@ -17,6 +30,9 @@ void jpeg_mem_src (j_decompress_ptr cinfo,
 /--------------------------------------------------------------------
 |
 |      $Log: not supported by cvs2svn $
+|      Revision 1.1  2010/02/11 04:09:09  thx8411
+|      jpeg palette support almost done
+|
 |      Revision 1.7  2004/06/06 12:56:38  uzadow
 |      Doxygenified documentation.
 |
