@@ -109,7 +109,7 @@ AC_CHECK_HEADERS(SDL.h)
 #AC_CHECK_LIB(pthread,pthread_create)
 #AC_CHECK_LIB(SDL,SDL_InitSubSystem)
 
-AC_CHECK_FILE(/usr/lib/win32/huffyuv.dll,,[AC_MSG_ERROR([cannot find huffyuv.dll needed for avi lossless recording])])
+#AC_CHECK_FILE(/usr/lib/win32/huffyuv.dll,,[AC_MSG_ERROR([cannot find huffyuv.dll needed for avi lossless recording])])
 	
 #AC_CONFIG_FILES([Makefile.common])
 AC_OUTPUT(Makefile.vars)
