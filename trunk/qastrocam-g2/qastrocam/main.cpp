@@ -60,6 +60,7 @@ MA  02110-1301, USA.
 #include "SettingsBackup.hpp"
 #include "QSetting.hpp"
 #include "QCamStack.hpp"
+#include "QCamFocus.hpp"
 
 // options strings
 const string AccumOptionString("-a");
@@ -129,6 +130,12 @@ void addRemoteCTRL(QCamClient* client) {
 void addRemoteCTRL(QSetting* object) {
    getAllRemoteCTRL()->addTab(object->buildGUI(getAllRemoteCTRL()),object->label());
 }
+
+// add tab for focus widget
+void addRemoteCTRL(QCamFocus* object) {
+   getAllRemoteCTRL()->addTab(object->buildGUI(getAllRemoteCTRL()),object->label());
+}
+
 
 int main(int argc, char ** argv) {
    int i;
@@ -417,6 +424,7 @@ int main(int argc, char ** argv) {
    QCamFindShift* findShift=NULL;
    QCamAutoGuidage* tracker=NULL;
    QCamAutoAlign* autoAlignCam=NULL;
+   QCamFocus* camFocus=NULL;
    QCamTrans* camBias=NULL;
    QCamTrans* camDark=NULL;
    QCamTrans* camFlat=NULL;
@@ -568,6 +576,10 @@ int main(int argc, char ** argv) {
          camMax->setCaptureFile("max");
          camSrc=camMax;
       }
+
+      //creation du module focus
+      camFocus = new QCamFocus(camSrc);
+      addRemoteCTRL(camFocus);
    }
 
    // settings tab
