@@ -28,6 +28,7 @@ MA  02110-1301, USA.
 #include <qhgroupbox.h>
 
 #include "QCam.hpp"
+#include "QCamSelection.hpp"
 
 class QCamFocus : public QObject {
    Q_OBJECT
@@ -38,8 +39,10 @@ public :
    const QString & label() const;
 private slots :
    void focusNewFrame();
+   void newSelection();
 private :
    QCam* cam_;
+   QCamSelection* sel_;
    QVBox* remoteCTRL_;
    QString label_;
 };

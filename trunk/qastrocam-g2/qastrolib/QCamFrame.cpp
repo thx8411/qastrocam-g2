@@ -503,9 +503,26 @@ void QCamFrameCommon::applyFlat(const QCamFrameCommon* flat, int max) {
 // get max value
 unsigned char QCamFrameCommon::getMax() {
    unsigned char max=0;
-   int length=size().width()*size().height();
-   for(int i=0;i<length;i++) if(yFrame_[i]>max) max=yFrame_[i];
+   for(int i=0;i<size().width();i++)
+      for(int j=0;j<size().height();j++)
+         if(yFrame_[j*size().width()+i]>max) {
+            max=yFrame_[j*size().width()+i];
+            maxX=i;
+            maxY=j;
+         }
    return(max);
+}
+
+int QCamFrameCommon::brightestX() {
+   if(maxX<0)
+      getMax();
+   return(maxX);
+}
+
+int QCamFrameCommon::brightestY() {
+   if(maxY<0)
+      getMax();
+   return(maxY);
 }
 
 QCamFrame::QCamFrame(ImageMode mode) {
@@ -692,4 +709,12 @@ void QCamFrame::applyFlat(const QCamFrame & flat, int max) {
 // get max value
 unsigned char QCamFrame::getMax() {
    return(common_->getMax());
+}
+
+int QCamFrame::brightestX() {
+   return(common_->brightestX());
+}
+
+int QCamFrame::brightestY() {
+   return(common_->brightestY());
 }

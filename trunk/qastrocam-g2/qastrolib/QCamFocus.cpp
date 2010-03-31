@@ -24,10 +24,19 @@ MA  02110-1301, USA.
 QCamFocus::QCamFocus(QCam* cam) {
    label_=QString("Focus");
    cam_=cam;
+   sel_=NULL;
    connect(cam_,SIGNAL(newFrame()),this,SLOT(focusNewFrame()));
+
+//
+   sel_=new QCamSelection();
+   sel_->connectCam(*cam_);
+   sel_->widget().show();
+   connect(sel_->impl(),SIGNAL(selectionChanged()),this,SLOT(newSelection()));
+//
 }
 
 QCamFocus::~QCamFocus() {
+   delete sel_;
 }
 
 QWidget *QCamFocus::buildGUI(QWidget * parent) {
@@ -40,4 +49,10 @@ const QString & QCamFocus::label() const {
 }
 
 void QCamFocus::focusNewFrame() {
+}
+
+void QCamFocus::newSelection() {
+   //
+   cout << sel_->getSelectionCenterX() << ":" << sel_->getSelectionCenterY() << endl;
+   //
 }

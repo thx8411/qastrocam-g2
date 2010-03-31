@@ -139,6 +139,9 @@ protected:
    void rotate(int center_x, int center_y, double angle);
    void rotatePI(int center_x,int center_y);
    const string & getProperty(const string & propName) const;
+
+   int brightestX();
+   int brightestY();
 private:
    void hShear(int liney, double radang);
    void vShear(int linex, double radang);
@@ -156,6 +159,8 @@ private:
       ySize_=uSize_=vSize_=0;
       colorImage_=grayImage_=NULL;
       colorImageBuff_=NULL;
+      maxX=-1;
+      maxY=-1;
    }
    void allocBuff();
    ImageMode mode_;
@@ -171,6 +176,9 @@ private:
    mutable uchar * colorImageBuff_;
    mutable QImage * grayImage_;
    mutable map<string,string> properties_;
+
+   int maxX;
+   int maxY;
 };
 
 class QCamFrame {
@@ -237,6 +245,8 @@ public:
    void applyFlat(const QCamFrame & flat, int max);
    // get max value
    unsigned char getMax();
+   int brightestX();
+   int brightestY();
 private:
    QCamFrameCommon* common_;
 };
