@@ -30,8 +30,8 @@ extern settingsBackup settings;
 int patternsValues[]={0,1,2,3,4};
 const char* patternsLabels[]={"none","GR/BG","RG/GB","BG/GR","GB/RG"};
 
-int algoValues[]={0,1,2};
-const char* algoLabels[]={"Grey","Nearest","Bilinear"};
+int algoValues[]={0,1,2,3,4,5,6};
+const char* algoLabels[]={"Green pixels binning", "Green pixels" ,"Red pixels", "Blue pixels", "Luminance","Nearest","Bilinear"};
 
 bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
    ImageMode rawMode;
@@ -51,9 +51,13 @@ bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
    }
    // select debayer method
    switch(methodId) {
-      case 0 : rawMethod=Grey; break;
-      case 1 : rawMethod=Nearest; break;
-      case 2 : rawMethod=Bilinear; break;
+      case 0 : rawMethod=GreenBinning; break;
+      case 1 : rawMethod=GreenOnly; break;
+      case 2 : rawMethod=RedOnly; break;
+      case 3 : rawMethod=BlueOnly; break;
+      case 4 : rawMethod=Grey; break;
+      case 5 : rawMethod=Nearest; break;
+      case 6 : rawMethod=Bilinear; break;
    }
    // if debayer, copy the frame
    if(rawMode) {
@@ -83,7 +87,7 @@ FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(pare
    pattern = new QCamComboBox("Pattern",this,5,patternsValues,patternsLabels);
    padding2=new QWidget(this);
    label2=new QLabel("Algorithm :",this);
-   algorithm=new QCamComboBox("Pattern",this,3,algoValues,algoLabels);
+   algorithm=new QCamComboBox("Pattern",this,7,algoValues,algoLabels);
    padding3=new QWidget(this);
    connect(pattern,SIGNAL(change(int)),algo,SLOT(patternChanged(int)));
    connect(algorithm,SIGNAL(change(int)),algo,SLOT(algorithmChanged(int)));

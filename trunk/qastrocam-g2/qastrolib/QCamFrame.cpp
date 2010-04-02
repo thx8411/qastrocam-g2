@@ -466,6 +466,26 @@ void QCamFrameCommon::debayer(ImageMode mode, DebayerMethod method) {
    yTemp=(unsigned char*)malloc(ySize());
    memcpy(yTemp,yFrame_,ySize());
    switch(method) {
+      case GreenBinning :
+         setMode(GreyFrame);
+         setSize(QSize(size().width()/2,size().height()/2));
+         raw2greenBinning(yFrame_,yTemp,size().width(),size().height(),mode);
+         break;
+      case GreenOnly :
+         setMode(GreyFrame);
+         setSize(QSize(size().width()/2,size().height()/2));
+         raw2green(yFrame_,yTemp,size().width(),size().height(),mode);
+         break;
+      case RedOnly :
+         setMode(GreyFrame);
+         setSize(QSize(size().width()/2,size().height()/2));
+         raw2red(yFrame_,yTemp,size().width(),size().height(),mode);
+         break;
+      case BlueOnly :
+         setMode(GreyFrame);
+         setSize(QSize(size().width()/2,size().height()/2));
+         raw2blue(yFrame_,yTemp,size().width(),size().height(),mode);
+         break;
       case Grey :
          setMode(GreyFrame);
          raw2grey(yFrame_,yTemp,size().width(),size().height(),mode);

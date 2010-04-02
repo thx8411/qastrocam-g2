@@ -1,5 +1,6 @@
 4.8beta20100402
 
+  - added bayer color separation
   - better sources portability
   - pdf manual building is now optional
   - grey de-mosaic added
