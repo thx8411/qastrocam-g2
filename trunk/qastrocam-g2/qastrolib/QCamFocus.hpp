@@ -27,8 +27,20 @@ MA  02110-1301, USA.
 #include <qvbox.h>
 #include <qhgroupbox.h>
 
+#include <qwtplot3d-qt3/qwt3d_surfaceplot.h>
+
 #include "QCam.hpp"
 #include "QCamSelection.hpp"
+
+//
+using namespace Qwt3D;
+
+class FocusPlot : public SurfacePlot
+{
+  public:
+    FocusPlot();
+};
+//
 
 class QCamFocus : public QObject {
    Q_OBJECT
