@@ -30,10 +30,10 @@ QCamFocus::QCamFocus(QCam* cam) {
    connect(cam_,SIGNAL(newFrame()),this,SLOT(focusNewFrame()));
 
 //
-   sel_=new QCamSelection();
-   sel_->connectCam(*cam_);
-   sel_->widget().show();
-   connect(sel_->impl(),SIGNAL(selectionChanged()),this,SLOT(newSelection()));
+   //sel_=new QCamSelection();
+   //sel_->connectCam(*cam_);
+   //sel_->widget().show();
+   //connect(sel_->impl(),SIGNAL(selectionChanged()),this,SLOT(newSelection()));
 //
 }
 
@@ -43,16 +43,16 @@ QCamFocus::~QCamFocus() {
 
 QWidget *QCamFocus::buildGUI(QWidget * parent) {
 //
-   FocusPlot* plot;
+   //FocusPlot* plot;
 //
 
    remoteCTRL_= new QVBox(parent);
 
 
 //
-   plot=new FocusPlot();
+   //plot=new FocusPlot();
 
-   remoteCTRL_->layout()->add(plot);
+   //remoteCTRL_->layout()->add(plot);
 
    //plot->show();
 //
@@ -69,7 +69,7 @@ void QCamFocus::focusNewFrame() {
 
 void QCamFocus::newSelection() {
    //
-   cout << sel_->getSelectionCenterX() << ":" << sel_->getSelectionCenterY() << endl;
+   //cout << sel_->getSelectionCenterX() << ":" << sel_->getSelectionCenterY() << endl;
    //
 }
 

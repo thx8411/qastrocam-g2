@@ -21,6 +21,7 @@ qastrocam-g2 (4.8beta20100402) jaunty; urgency=low
   * grey de-mosaic added
   * better sources portability
   * pdf manual building is now optional
+  * added bayer color separation
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 

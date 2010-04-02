@@ -54,6 +54,10 @@ enum ImageMode {
 };
 
 enum DebayerMethod {
+   GreenBinning,
+   GreenOnly,
+   RedOnly,
+   BlueOnly,
    Grey,
    Nearest,
    Bilinear
