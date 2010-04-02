@@ -17,6 +17,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include "qlayout.h"
+
 #include "QCamFocus.moc"
 
 #include "../config.h"
@@ -40,7 +42,21 @@ QCamFocus::~QCamFocus() {
 }
 
 QWidget *QCamFocus::buildGUI(QWidget * parent) {
+//
+   FocusPlot* plot;
+//
+
    remoteCTRL_= new QVBox(parent);
+
+
+//
+   plot=new FocusPlot();
+
+   remoteCTRL_->layout()->add(plot);
+
+   //plot->show();
+//
+
    return(remoteCTRL_);
 }
 
@@ -56,3 +72,31 @@ void QCamFocus::newSelection() {
    cout << sel_->getSelectionCenterX() << ":" << sel_->getSelectionCenterY() << endl;
    //
 }
+
+//
+FocusPlot::FocusPlot()
+{
+  setTitle("Focus zone");
+
+  setRotation(30,0,15);
+  setScale(1,1,1);
+  setShift(0.15,0,0);
+  setZoom(0.9);
+
+  for (unsigned i=0; i!=coordinates()->axes.size(); ++i)
+  {
+    coordinates()->axes[i].setMajors(7);
+    coordinates()->axes[i].setMinors(4);
+  }
+
+
+  coordinates()->axes[X1].setLabelString("x-axis");
+  coordinates()->axes[Y1].setLabelString("y-axis");
+  coordinates()->axes[Z1].setLabelString(QChar (0x38f)); // Omega - see http://www.unicode.org/charts/
+
+  setCoordinateStyle(BOX);
+
+  updateData();
+  updateGL();
+}
+//
