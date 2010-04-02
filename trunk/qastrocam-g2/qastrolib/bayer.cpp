@@ -117,29 +117,8 @@ void raw2blue(unsigned char* Y, unsigned char* data, const int w, const int h, i
    }
 }
 
-// vesta raw to 8 bits grey conversion
+// vesta raw to 8 bits grey conversion using green interpolation
 void raw2grey(unsigned char* Y, unsigned char* data, const int w, const int h, int mode) {
-   /*register int pixelOffset=0;
-   for(int y=0;y<h;y++) {
-      for(int x=0;x<w;x++) {
-         switch(bayerPatterns[mode][x%2][y%2]) {
-            case RED :
-               //
-               Y[pixelOffset]=clip(0.95*(double)data[pixelOffset]);
-               break;
-            case GREEN1 :
-            case GREEN2 :
-               Y[pixelOffset]=data[pixelOffset];
-               break;
-            case BLUE :
-               //
-               Y[pixelOffset]=clip(1.085*(double)data[pixelOffset]);
-               break;
-         }
-         pixelOffset++;
-      }
-   }*/
-   double red, green, blue;
    register int pixelOffset=0;
    register int rowOffset=1;
    register int lineOffset=w;
@@ -149,46 +128,22 @@ void raw2grey(unsigned char* Y, unsigned char* data, const int w, const int h, i
       for(int x=0;x<w;x++) {
          // manage edges
          if(!x||(x==maxW)||!y||(y==maxH)) {
-            red=0.0;
-            green=0.0;
-            blue=0.0;
+            Y[pixelOffset]=0;
          } else {
             switch(bayerPatterns[mode][x%2][y%2]) {
+               case BLUE :
                case RED :
-                  red=data[pixelOffset];
-                  green=(data[pixelOffset-rowOffset]
+                  Y[pixelOffset]=clip((data[pixelOffset-rowOffset]
                      +data[pixelOffset+rowOffset]
                      +data[pixelOffset-lineOffset]
-                     +data[pixelOffset+lineOffset])/4;
-                  blue=(data[pixelOffset+lineOffset+rowOffset]
-                     +data[pixelOffset+lineOffset-rowOffset]
-                     +data[pixelOffset-lineOffset+rowOffset]
-                     +data[pixelOffset-lineOffset-rowOffset])/4;
+                     +data[pixelOffset+lineOffset])/4);
                   break;
                case GREEN1 :
-                  red=(data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2;
-                  green=data[pixelOffset];
-                  blue=(data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2;
-                  break;
                case GREEN2 :
-                  red=(data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2;
-                  green=data[pixelOffset];
-                  blue=(data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2;
-                  break;
-               case BLUE :
-                  red=(data[pixelOffset+lineOffset+rowOffset]
-                     +data[pixelOffset+lineOffset-rowOffset]
-                     +data[pixelOffset-lineOffset+rowOffset]
-                     +data[pixelOffset-lineOffset-rowOffset])/4;
-                  green=(data[pixelOffset-rowOffset]
-                     +data[pixelOffset+rowOffset]
-                     +data[pixelOffset-lineOffset]
-                     +data[pixelOffset+lineOffset])/4;
-                  blue=data[pixelOffset];
+                  Y[pixelOffset]=clip(data[pixelOffset]);
                   break;
             }
          }
-         Y[pixelOffset]=clip(0.299*red+0.587*green+0.114*blue);
          pixelOffset++;
       }
    }

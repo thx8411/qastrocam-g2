@@ -29,13 +29,13 @@ MA  02110-1301, USA.
 #include "FrameAlgo.hpp"
 #include "QCamComboBox.hpp"
 
-class FrameBayer :  public FrameAlgo {
+class FrameBayer;
+
+class BayerWidget : public QHBox {
    Q_OBJECT;
-private:
-    class Widget : public QHBox {
    public:
-      ~Widget();
-      Widget(QWidget * parent,const FrameBayer * algo);
+      ~BayerWidget();
+      BayerWidget(QWidget * parent,const FrameBayer * algo);
    private:
       QWidget* padding1;
       QWidget* padding2;
@@ -44,20 +44,26 @@ private:
       QLabel* label2;
       QCamComboBox* pattern;
       QCamComboBox* algorithm;
-   };
-public:
-   FrameBayer(QCamTrans* cam);
-   bool transform(const QCamFrame in, QCamFrame & out);
-   QString label() const {return("Bayer");}
-   QWidget * allocGui(QWidget * parent) const {
-      return new Widget(parent,this);
-   }
-public slots:
-   void patternChanged(int num);
-   void algorithmChanged(int num);
-private:
-   int patternId;
-   int methodId;
+   private slots :
+      void patternChanged(int num);
+};
+
+
+class FrameBayer :  public FrameAlgo {
+   Q_OBJECT;
+   public:
+      FrameBayer(QCamTrans* cam);
+      bool transform(const QCamFrame in, QCamFrame & out);
+      QString label() const {return("Bayer");}
+      QWidget * allocGui(QWidget * parent) const {
+         return new BayerWidget(parent,this);
+      }
+   public slots:
+      void patternChanged(int num);
+      void algorithmChanged(int num);
+   private:
+      int patternId;
+      int methodId;
 };
 
 
