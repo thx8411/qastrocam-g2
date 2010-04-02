@@ -81,7 +81,7 @@ FrameBayer::FrameBayer(QCamTrans* cam) {
    methodId=0;
 }
 
-FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(parent) {
+BayerWidget::BayerWidget(QWidget * parent, const FrameBayer * algo): QHBox(parent) {
    padding1=new QWidget(this);
    label1=new QLabel("Bayer pattern :",this);
    pattern = new QCamComboBox("Pattern",this,5,patternsValues,patternsLabels);
@@ -89,8 +89,11 @@ FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(pare
    label2=new QLabel("Algorithm :",this);
    algorithm=new QCamComboBox("Pattern",this,7,algoValues,algoLabels);
    padding3=new QWidget(this);
+
    connect(pattern,SIGNAL(change(int)),algo,SLOT(patternChanged(int)));
    connect(algorithm,SIGNAL(change(int)),algo,SLOT(algorithmChanged(int)));
+   connect(pattern,SIGNAL(change(int)),this,SLOT(patternChanged(int)));
+
    string keyName("RAW_MODE");
    if(settings.haveKey(keyName.c_str())) {
         int index=pattern->getPosition(settings.getKey(keyName.c_str()));
@@ -113,7 +116,14 @@ FrameBayer::Widget::Widget(QWidget * parent,const FrameBayer * algo): QHBox(pare
    QToolTip::add(algorithm,tr("Selects the algorithm to use for de-mosaic"));
 }
 
-FrameBayer::Widget::~Widget() {
+BayerWidget::~BayerWidget() {
+}
+
+void BayerWidget::patternChanged(int num) {
+   if(num==0)
+      algorithm->setEnabled(false);
+   else
+      algorithm->setEnabled(true);
 }
 
 void FrameBayer::patternChanged(int num) {
