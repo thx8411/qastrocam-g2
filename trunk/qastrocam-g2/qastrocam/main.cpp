@@ -446,47 +446,6 @@ int main(int argc, char ** argv) {
       cam->setCaptureFile("raw");
       QCam * camSrc=cam;
 
-      // King client object creation
-      if (kingOption) {
-         cout << "King aligment enabled\n";
-         kingClient=new QKingClient();
-         sleep(1);
-         kingClient->connectCam(*camSrc);
-         //addRemoteCTRL(kingClient);
-         kingClient->buildGUI(NULL)->show();
-      }
-
-      // alignement object
-      if (theTelescope || autoAlign) {
-         //QCamFindShift * baryShift=new QCamFindShift_barycentre();
-         findShift=new QCamFindShift_hotSpot(theTelescope);
-         findShift->connectCam(*camSrc);
-      }
-      if (theTelescope) {
-         tracker = new QCamAutoGuidageSimple();
-         tracker->setCam(camSrc);
-         tracker->setTracker(findShift);
-         tracker->setScope(theTelescope);
-         //GUI build later
-         //tracker->buildGUI();
-      }
-      // autoaligne creation
-      if (autoAlign) {
-         assert(findShift);
-         autoAlignCam=new QCamAutoAlign();
-         autoAlignCam->setTracker(findShift);
-         addRemoteCTRL(autoAlignCam);
-         camSrc=autoAlignCam;
-      }
-
-      if (tracker) {
-         if (autoAlign) {
-            tracker->buildGUI(camSrc->gui());
-         } else {
-            tracker->buildGUI();
-         }
-      }
-
       // adding stack tab
       camStack=new QCamStack();
 
@@ -561,6 +520,47 @@ int main(int argc, char ** argv) {
       camSrc=camId;
 
       addRemoteCTRL(camStack);
+
+      // King client object creation
+      if (kingOption) {
+         cout << "King aligment enabled\n";
+         kingClient=new QKingClient();
+         sleep(1);
+         kingClient->connectCam(*camSrc);
+         //addRemoteCTRL(kingClient);
+         kingClient->buildGUI(NULL)->show();
+      }
+
+      // alignement object
+      if (theTelescope || autoAlign) {
+         //QCamFindShift * baryShift=new QCamFindShift_barycentre();
+         findShift=new QCamFindShift_hotSpot(theTelescope);
+         findShift->connectCam(*camSrc);
+      }
+      if (theTelescope) {
+         tracker = new QCamAutoGuidageSimple();
+         tracker->setCam(camSrc);
+         tracker->setTracker(findShift);
+         tracker->setScope(theTelescope);
+         //GUI build later
+         //tracker->buildGUI();
+      }
+      // autoaligne creation
+      if (autoAlign) {
+         assert(findShift);
+         autoAlignCam=new QCamAutoAlign();
+         autoAlignCam->setTracker(findShift);
+         addRemoteCTRL(autoAlignCam);
+         camSrc=autoAlignCam;
+      }
+
+      if (tracker) {
+         if (autoAlign) {
+            tracker->buildGUI(camSrc->gui());
+         } else {
+            tracker->buildGUI();
+         }
+      }
 
       // accumulation module
       if (accum) {
