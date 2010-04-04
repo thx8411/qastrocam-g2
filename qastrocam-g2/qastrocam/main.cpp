@@ -578,8 +578,8 @@ int main(int argc, char ** argv) {
       }
 
       //creation du module focus
-      camFocus = new QCamFocus(camSrc);
-      addRemoteCTRL(camFocus);
+      //camFocus = new QCamFocus(camSrc);
+      //addRemoteCTRL(camFocus);
    }
 
    // settings tab
