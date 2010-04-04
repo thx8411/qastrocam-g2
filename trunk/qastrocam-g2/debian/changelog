@@ -18,7 +18,6 @@ qastrocam-g2 (4.8beta20100402) jaunty; urgency=low
   * V4L2 objects re-organised
   * a bit of SDL speed up
   * mmap buffer number change
-  * grey de-mosaic added
   * better sources portability
   * pdf manual building is now optional
   * added bayer color separation

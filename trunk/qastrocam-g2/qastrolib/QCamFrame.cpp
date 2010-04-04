@@ -465,30 +465,20 @@ void QCamFrameCommon::debayer(const QCamFrameCommon & src, ImageMode mode, Debay
    int w=src.sizeXfree();
    int h=src.sizeYfree();
    switch(method) {
-      case GreenBinning :
-         setMode(GreyFrame);
-         setSize(QSize(w/2,h/2));
-         raw2greenBinning(yFrame_,yTemp,size().width(),size().height(),mode);
-         break;
       case GreenOnly :
          setMode(GreyFrame);
-         setSize(QSize(w/2,h/2));
+         setSize(QSize(w,h));
          raw2green(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case RedOnly :
          setMode(GreyFrame);
-         setSize(QSize(w/2,h/2));
+         setSize(QSize(w,h));
          raw2red(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case BlueOnly :
          setMode(GreyFrame);
-         setSize(QSize(w/2,h/2));
-         raw2blue(yFrame_,yTemp,size().width(),size().height(),mode);
-         break;
-      case Grey :
-         setMode(GreyFrame);
          setSize(QSize(w,h));
-         raw2grey(yFrame_,yTemp,size().width(),size().height(),mode);
+         raw2blue(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case Nearest :
          setMode(YuvFrame);
