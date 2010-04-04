@@ -31,7 +31,7 @@ int patternsValues[]={0,1,2,3,4};
 const char* patternsLabels[]={"none","GR/BG","RG/GB","BG/GR","GB/RG"};
 
 int algoValues[]={0,1,2,3,4,5,6};
-const char* algoLabels[]={"Green pixels binning", "Green pixels" ,"Red pixels", "Blue pixels", "Luminance","Nearest","Bilinear"};
+const char* algoLabels[]={"Green pixels binning", "Green pixels" ,"Red pixels", "Blue pixels", "Green bilinear","Nearest","Bilinear"};
 
 bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
    ImageMode rawMode;
