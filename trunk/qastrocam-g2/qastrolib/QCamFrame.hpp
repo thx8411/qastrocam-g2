@@ -87,6 +87,11 @@ protected:
    unsigned char * U() { return (mode_!=YuvFrame)?UVGreyBuff():uFrame_;}
    unsigned char * V() { return (mode_!=YuvFrame)?UVGreyBuff():vFrame_;}
 
+   // added to avid all these messy consts...
+   unsigned char * Yfree() const { return yFrame_; }
+   int sizeXfree() const { return size_.width(); }
+   int sizeYfree() const { return size_.height(); }
+
    int ySize() const { return ySize_;}
    int uSize() const { return uSize_;}
    int vSize() const { return vSize_;}
@@ -112,7 +117,7 @@ protected:
    void clear();
    bool empty() const;
    void setSize(QSize s);
-   const QSize & size() { return size_;}
+   const QSize & size() { return size_; }
    const QImage & colorImage() const;
    const QImage & grayImage() const;
    const QImage & grayImageNegated() const;
@@ -130,8 +135,13 @@ protected:
    void binning(const QCamFrameCommon & src,int xFactor, int yFactor);
    void setMode(ImageMode val) { mode_=val; allocBuff();}
    ImageMode getMode() const { return mode_;}
+
    // debayer the frame using the known mode
-   void debayer(ImageMode mode, DebayerMethod method);
+   //void debayer(ImageMode mode, DebayerMethod method);
+
+   // debayer the frame using the known mode
+   void debayer(const QCamFrameCommon & src, ImageMode mode, DebayerMethod method);
+
    // apply dark frame
    void applyDark(const QCamFrameCommon* dark);
    // apply flat frame
@@ -241,8 +251,13 @@ public:
    void cropping(const QCamFrame & src, int l, int t, int w, int h);
    // binning the frame to the new given size
    void binning(const QCamFrame & src, int w, int h);
+
    // debayer the frame using the known mode
-   void debayer(ImageMode mode, DebayerMethod method);
+   //void debayer(ImageMode mode, DebayerMethod method);
+
+   // debayer the frame using the known mode
+   void debayer(const QCamFrame & src, ImageMode mode, DebayerMethod method);
+
    // apply dark frame
    void applyDark(const QCamFrame & dark);
    // apply flat frame
