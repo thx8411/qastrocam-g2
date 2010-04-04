@@ -176,8 +176,7 @@ const QImage & QCamFrameCommon::falseColorImage() const {
    return *grayImage_;
 }
 
-static void memswap(unsigned char *dest,
-                    const unsigned char *src, size_t n) {
+static void memswap(unsigned char *dest,const unsigned char *src, size_t n) {
    unsigned i=0,j=n-1;
    while (i<n) {
       dest[i++]=src[j--];
@@ -461,45 +460,47 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
 }
 
 // debayer the frame
-void QCamFrameCommon::debayer(ImageMode mode, DebayerMethod method) {
-   unsigned char* yTemp;
-   yTemp=(unsigned char*)malloc(ySize());
-   memcpy(yTemp,yFrame_,ySize());
+void QCamFrameCommon::debayer(const QCamFrameCommon & src, ImageMode mode, DebayerMethod method) {
+   unsigned char* yTemp=src.Yfree();
+   int w=src.sizeXfree();
+   int h=src.sizeYfree();
    switch(method) {
       case GreenBinning :
          setMode(GreyFrame);
-         setSize(QSize(size().width()/2,size().height()/2));
+         setSize(QSize(w/2,h/2));
          raw2greenBinning(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case GreenOnly :
          setMode(GreyFrame);
-         setSize(QSize(size().width()/2,size().height()/2));
+         setSize(QSize(w/2,h/2));
          raw2green(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case RedOnly :
          setMode(GreyFrame);
-         setSize(QSize(size().width()/2,size().height()/2));
+         setSize(QSize(w/2,h/2));
          raw2red(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case BlueOnly :
          setMode(GreyFrame);
-         setSize(QSize(size().width()/2,size().height()/2));
+         setSize(QSize(w/2,h/2));
          raw2blue(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case Grey :
          setMode(GreyFrame);
+         setSize(QSize(w,h));
          raw2grey(yFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case Nearest :
          setMode(YuvFrame);
+         setSize(QSize(w,h));
          raw2yuv444_nearest(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),mode);
          break;
       case Bilinear :
          setMode(YuvFrame);
+         setSize(QSize(w,h));
          raw2yuv444_bilinear(yFrame_,uFrame_,vFrame_,yTemp,size().width(),size().height(),mode);
          break;
    }
-   free(yTemp);
 }
 
 // apply dark frame
@@ -712,8 +713,15 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
 }
 
 // debayer the frame
-void QCamFrame::debayer(ImageMode mode, DebayerMethod method) {
-   common_->debayer(mode,method);
+//void QCamFrame::debayer(ImageMode mode, DebayerMethod method) {
+//   common_->debayer(mode,method);
+//}
+
+// debayer the frame
+void QCamFrame::debayer(const QCamFrame & src, ImageMode mode, DebayerMethod method) {
+   setSize(QSize(0,0));
+   setMode((ImageMode)0);
+   common_->debayer(*src.getCommon(),mode,method);
 }
 
 // apply dark frame

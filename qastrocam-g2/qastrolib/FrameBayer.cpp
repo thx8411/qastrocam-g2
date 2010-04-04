@@ -59,16 +59,9 @@ bool FrameBayer::transform(const QCamFrame in, QCamFrame & out) {
       case 5 : rawMethod=Nearest; break;
       case 6 : rawMethod=Bilinear; break;
    }
-   // if debayer, copy the frame
+   // if debayer...
    if(rawMode) {
-      out.setMode(in.getMode());
-      out.setSize(in.size());
-      out.copy(in,
-               0,0,
-               in.size().width()-1,in.size().height()-1,
-               0,0,
-               false,false);
-      out.debayer(rawMode,rawMethod);
+      out.debayer(in,rawMode,rawMethod);
    } else
    // else, simple refence
       out=in;
