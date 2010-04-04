@@ -3,7 +3,6 @@
   - added bayer color separation
   - better sources portability
   - pdf manual building is now optional
-  - grey de-mosaic added
   - a bit of SDL speed up
   - mmap buffer number change
   - V4L2 objects re-organised

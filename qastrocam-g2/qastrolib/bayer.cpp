@@ -37,88 +37,80 @@ extern unsigned char clip(int v);
 // 1st and 6rd values : syncs with the bayer mode enum
 int bayerPatterns[6][2][2]={{{0,0},{0,0}},{{0,0},{0,0}},{{GREEN1,BLUE},{RED,GREEN2}},{{RED,GREEN2},{GREEN1,BLUE}},{{BLUE,GREEN1},{GREEN2,RED}},{{GREEN2,RED},{BLUE,GREEN1}}};
 
-// vesta raw to 8 bits green using green pixels binning only (source res must be w*2 x h*2)
-void raw2greenBinning(unsigned char* Y, unsigned char* data, const int w, const int h, int mode) {
-   for(int i=0; i<w; i++) {
-      for(int j=0; j<h; j++) {
-         switch(mode) {
-            case RawRgbFrame1 :
-            case RawRgbFrame4 :
-               Y[j*w+i]=clip(data[j*2*w*2+i*2]+data[(j*2+1)*w*2+i*2+1]);
-               break;
-            case RawRgbFrame2 :
-            case RawRgbFrame3 :
-               Y[j*w+i]=clip(data[(j*2+1)*w*2+i*2]+data[j*2*w*2+i*2+1]);
-               break;
-         }
-      }
-   }
-}
-
-// vesta raw to 8 bits green using green pixels only (source res must be w*2 x h*2)
-void raw2green(unsigned char* Y, unsigned char* data, const int w, const int h, int mode) {
-   for(int i=0; i<w; i++) {
-      for(int j=0; j<h; j++) {
-         switch(mode) {
-            case RawRgbFrame1 :
-            case RawRgbFrame4 :
-               Y[j*w+i]=clip(data[j*2*w*2+i*2]+data[(j*2+1)*w*2+i*2+1]/2);
-               break;
-            case RawRgbFrame2 :
-            case RawRgbFrame3 :
-               Y[j*w+i]=clip(data[(j*2+1)*w*2+i*2]+data[j*2*w*2+i*2+1]/2);
-               break;
-         }
-      }
-   }
-}
-
-// vesta raw to 8 bits red using red pixels only (source res must be w*2 x h*2)
+// vesta raw to 8 bits red using bilinear interpolation
 void raw2red(unsigned char* Y, unsigned char* data, const int w, const int h, int mode) {
-   for(int i=0; i<w; i++) {
-      for(int j=0; j<h; j++) {
-         switch(mode) {
-            case RawRgbFrame1 :
-               Y[j*w+i]=data[j*2*w*2+i*2+1];
-               break;
-            case RawRgbFrame2 :
-               Y[j*w+i]=data[j*2*w*2+i*2];
-               break;
-            case RawRgbFrame3 :
-               Y[j*w+i]=data[(j*2+1)*w*2+i*2+1];
-               break;
-            case RawRgbFrame4 :
-               Y[j*w+i]=data[(j*2+1)*w*2+i*2];
-               break;
+   register int pixelOffset=0;
+   register int rowOffset=1;
+   register int lineOffset=w;
+   register int maxW=w-1;
+   register int maxH=h-1;
+   for(int y=0;y<h;y++) {
+      for(int x=0;x<w;x++) {
+         // manage edges
+         if(!x||(x==maxW)||!y||(y==maxH)) {
+            Y[pixelOffset]=0;
+         } else {
+            switch(bayerPatterns[mode][x%2][y%2]) {
+               case RED :
+                  Y[pixelOffset]=data[pixelOffset];
+                  break;
+               case GREEN1 :
+                  Y[pixelOffset]=clip((data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2);
+                  break;
+               case GREEN2 :
+                  Y[pixelOffset]=clip((data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2);
+                  break;
+               case BLUE :
+                  Y[pixelOffset]=clip((data[pixelOffset+lineOffset+rowOffset]
+                     +data[pixelOffset+lineOffset-rowOffset]
+                     +data[pixelOffset-lineOffset+rowOffset]
+                     +data[pixelOffset-lineOffset-rowOffset])/4);
+                  break;
+            }
          }
+         pixelOffset++;
       }
    }
 }
 
-// vesta raw to 8 bits blue using blue pixels only (source res must be w*2 x h*2)
+// vesta raw to 8 bits blue using bilinear interpolation
 void raw2blue(unsigned char* Y, unsigned char* data, const int w, const int h, int mode) {
-   for(int i=0; i<w; i++) {
-      for(int j=0; j<h; j++) {
-         switch(mode) {
-            case RawRgbFrame1 :
-               Y[j*w+i]=data[(j*2+1)*w*2+i*2];
-               break;
-            case RawRgbFrame2 :
-               Y[j*w+i]=data[(j*2+1)*w*2+i*2+1];
-               break;
-            case RawRgbFrame3 :
-               Y[j*w+i]=data[j*2*w*2+i*2];
-               break;
-            case RawRgbFrame4 :
-               Y[j*w+i]=data[j*2*w*2+i*2+1];
-               break;
+   register int pixelOffset=0;
+   register int rowOffset=1;
+   register int lineOffset=w;
+   register int maxW=w-1;
+   register int maxH=h-1;
+   for(int y=0;y<h;y++) {
+      for(int x=0;x<w;x++) {
+         // manage edges
+         if(!x||(x==maxW)||!y||(y==maxH)) {
+            Y[pixelOffset]=0;
+         } else {
+            switch(bayerPatterns[mode][x%2][y%2]) {
+               case RED :
+                  Y[pixelOffset]=clip((data[pixelOffset+lineOffset+rowOffset]
+                     +data[pixelOffset+lineOffset-rowOffset]
+                     +data[pixelOffset-lineOffset+rowOffset]
+                     +data[pixelOffset-lineOffset-rowOffset])/4);
+                  break;
+               case GREEN1 :
+                  Y[pixelOffset]=clip((data[pixelOffset+lineOffset]+data[pixelOffset-lineOffset])/2);
+                  break;
+               case GREEN2 :
+                  Y[pixelOffset]=clip((data[pixelOffset+rowOffset]+data[pixelOffset-rowOffset])/2);
+                  break;
+               case BLUE :
+                  Y[pixelOffset]=data[pixelOffset];
+                  break;
+            }
          }
+         pixelOffset++;
       }
    }
 }
 
-// vesta raw to 8 bits grey conversion using green interpolation
-void raw2grey(unsigned char* Y, unsigned char* data, const int w, const int h, int mode) {
+// vesta raw to 8 bits green conversion using bilinear interpolation
+void raw2green(unsigned char* Y, unsigned char* data, const int w, const int h, int mode) {
    register int pixelOffset=0;
    register int rowOffset=1;
    register int lineOffset=w;
