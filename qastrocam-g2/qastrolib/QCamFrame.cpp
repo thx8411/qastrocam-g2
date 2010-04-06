@@ -465,6 +465,10 @@ void QCamFrameCommon::debayer(const QCamFrameCommon & src, ImageMode mode, Debay
    int w=src.sizeXfree();
    int h=src.sizeYfree();
    switch(method) {
+      case Luminance :
+         setMode(GreyFrame);
+         setSize(QSize(w,h));
+         raw2luminance(yFrame_,yTemp,size().width(),size().height(),mode);
       case GreenOnly :
          setMode(GreyFrame);
          setSize(QSize(w,h));

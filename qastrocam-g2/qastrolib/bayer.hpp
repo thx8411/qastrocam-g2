@@ -21,6 +21,9 @@ MA  02110-1301, USA.
 #ifndef _BAYER_HPP_
 #define _BAYER_HPP_
 
+// vesta raw to 8 bits lumiance using bilinear interpolation
+void raw2luminance(unsigned char* Y, unsigned char* data, const int w, const int h, int mode);
+
 // vesta raw to 8 bits green using bilinear interpolation
 void raw2green(unsigned char* Y, unsigned char* data, const int w, const int h, int mode);
 

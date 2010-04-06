@@ -54,6 +54,7 @@ enum ImageMode {
 };
 
 enum DebayerMethod {
+   Luminance,
    GreenOnly,
    RedOnly,
    BlueOnly,
