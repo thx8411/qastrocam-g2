@@ -44,10 +44,13 @@ private:
       QWidget* padding1;
       QWidget* padding2;
       QWidget* padding3;
+      QWidget* padding4;
       QCheckBox* activate;
       QLabel* label1;
+      QLabel* label2;
       QFileChooser* fileChooser;
       QLineEdit* fileEntry;
+      QLineEdit* timeEntry;
    };
 public:
    FrameDark(QCamTrans* cam);
@@ -59,12 +62,15 @@ public:
 public slots:
    void activatedChange(int s);
    void fileChanged(const QString & name);
+   void timeChanged(const QString & timeF);
 signals:
    void desactivated(bool);
 private :
    bool activated;
    QString fileName;
+   QString timeString;
    QCamFrame darkFrame;
+   double timeFactor;
 };
 
 

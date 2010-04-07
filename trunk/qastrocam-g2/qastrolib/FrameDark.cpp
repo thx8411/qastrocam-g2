@@ -47,7 +47,7 @@ bool FrameDark::transform(const QCamFrame in, QCamFrame & out) {
                in.size().width()-1,in.size().height()-1,
                0,0,
                false,false);
-      out.applyDark(darkFrame,1.0);
+      out.applyDark(darkFrame,timeFactor);
    } else
       out=in;
 
@@ -57,6 +57,8 @@ bool FrameDark::transform(const QCamFrame in, QCamFrame & out) {
 FrameDark::FrameDark(QCamTrans* cam) {
    cam_=cam;
    activated=false;
+   timeFactor=1.0;
+   timeString="1.0";
 }
 
 FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QHBox(parent) {
@@ -68,13 +70,20 @@ FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QHBox(parent
    fileEntry->setReadOnly(true);
    fileChooser=new QFileChooser(this,IMAGE_FILE);
    padding3=new QWidget(this);
+   label2=new QLabel("Time factor :",this);
+   timeEntry=new QLineEdit(this);
+   timeEntry->setMaximumWidth(40);
+   timeEntry->setText("1.0");
+   padding4=new QWidget(this);
    connect(activate,SIGNAL(stateChanged(int)),algo,SLOT(activatedChange(int)));
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),algo,SLOT(fileChanged(const QString &)));
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),fileEntry,SLOT(setText(const QString &)));
+   connect(timeEntry,SIGNAL(textChanged(const QString &)),algo,SLOT(timeChanged(const QString&)));
    connect(algo,SIGNAL(desactivated(bool)),activate,SLOT(setChecked(bool)));
    QToolTip::add(activate,tr("Activate or not the 'dark substraction' filter"));
    QToolTip::add(fileEntry,tr("Picture file to use as 'dark' frame"));
    QToolTip::add(fileChooser,tr("Selects the file to use as 'dark' frame"));
+   QToolTip::add(timeEntry,tr("Sets the time factor to apply to your 'dark' frame"));
 }
 
 FrameDark::Widget::~Widget() {
@@ -123,6 +132,13 @@ void FrameDark::activatedChange(int s) {
             return;
       }
 
+      // test time factor
+      if (sscanf(timeString.latin1(),"%lf",&timeFactor)!=1) {
+         QMessageBox::information(0,"Qastrocam-g2","Wrong time factor");
+         emit(desactivated(false));
+         return;
+      }
+
       activated=true;
    } else
       activated=false;
@@ -130,5 +146,10 @@ void FrameDark::activatedChange(int s) {
 
 void FrameDark::fileChanged(const QString & name) {
    fileName=name;
+   emit(desactivated(false));
+}
+
+void FrameDark::timeChanged(const QString & timeF) {
+   timeString=timeF;
    emit(desactivated(false));
 }
