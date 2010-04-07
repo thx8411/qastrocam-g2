@@ -1,5 +1,6 @@
 4.8beta20100406
 
+  - bias pre-processing added
   - added bayer color separation
   - better sources portability
   - pdf manual building is now optional

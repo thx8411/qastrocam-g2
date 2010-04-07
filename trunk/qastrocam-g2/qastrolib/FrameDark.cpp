@@ -47,7 +47,7 @@ bool FrameDark::transform(const QCamFrame in, QCamFrame & out) {
                in.size().width()-1,in.size().height()-1,
                0,0,
                false,false);
-      out.applyDark(darkFrame);
+      out.applyDark(darkFrame,1.0);
    } else
       out=in;
 

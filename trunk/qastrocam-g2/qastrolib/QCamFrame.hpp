@@ -142,7 +142,7 @@ protected:
    void debayer(const QCamFrameCommon & src, ImageMode mode, DebayerMethod method);
 
    // apply dark frame
-   void applyDark(const QCamFrameCommon* dark);
+   void applyDark(const QCamFrameCommon* dark, double timeFactor);
    // apply flat frame
    void applyFlat(const QCamFrameCommon* flat, int max);
    // get max value
@@ -257,8 +257,10 @@ public:
    // debayer the frame using the known mode
    void debayer(const QCamFrame & src, ImageMode mode, DebayerMethod method);
 
+   // apply bias frame
+   void applyBias(const QCamFrame & bias);
    // apply dark frame
-   void applyDark(const QCamFrame & dark);
+   void applyDark(const QCamFrame & dark, double timeFactor);
    // apply flat frame
    void applyFlat(const QCamFrame & flat, int max);
    // get max value
