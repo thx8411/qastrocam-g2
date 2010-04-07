@@ -206,7 +206,7 @@ void QCam::setCaptureFile(const QString & afile) {
                         + captureFile_ +"-<date>'").c_str());
 #endif
       }
-      if (guiBuild()) {
+      if (guiBuild()&&fileNameW_->text()=="qcam") {
          fileNameW_->setText(captureFile_.c_str());
       }
    } else
