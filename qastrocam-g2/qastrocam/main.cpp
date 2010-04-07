@@ -450,16 +450,16 @@ int main(int argc, char ** argv) {
       camStack=new QCamStack();
 
       // bias cam
-      //camBias = new QCamTrans();
-      //camBias->hideButtons(true);
-      //camBias->hideFile(true);
-      //camBias->hideMode(true);
-      //biasAlgo = new FrameBias(camBias);
-      //camBias->connectCam(*camSrc);
-      //camBias->connectAlgo(*biasAlgo);
-      //camStack->addCam(camBias,"Bias");
-      //camBias->setCaptureFile("bias");
-      //camSrc=camBias;
+      camBias = new QCamTrans();
+      camBias->hideButtons(true);
+      camBias->hideFile(true);
+      camBias->hideMode(true);
+      biasAlgo = new FrameBias(camBias);
+      camBias->connectCam(*camSrc);
+      camBias->connectAlgo(*biasAlgo);
+      camStack->addCam(camBias,"Bias");
+      camBias->setCaptureFile("bias");
+      camSrc=camBias;
 
       // cam dark
       camDark = new QCamTrans();

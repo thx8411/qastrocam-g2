@@ -108,11 +108,11 @@ void grey_vertical_swap(int w, int h, unsigned char* data);
 // swap rgb24 (upside down)
 void rgb24_vertical_swap(int w, int h, unsigned char* data);
 
-// 8 bits luminance plan substraction A=A-B
-void lum_plan_sub(int w, int h,unsigned char* A, const unsigned char* B);
+// 8 bits luminance plan substraction A=A-B*C
+void lum_plan_sub(int w, int h,unsigned char* A, const unsigned char* B, double C);
 
-// 8 bits color (U or V) plan substraction A=A-B
-void color_plan_sub(int w, int h,unsigned char* A, const unsigned char* B);
+// 8 bits color (U or V) plan substraction A=A-B*C
+void color_plan_sub(int w, int h,unsigned char* A, const unsigned char* B, double C);
 
 // 8 bits luminance plan division A=A*max/B
 void lum_plan_div(int w, int h, int max, unsigned char* A, const unsigned char* B);

@@ -498,11 +498,11 @@ void QCamFrameCommon::debayer(const QCamFrameCommon & src, ImageMode mode, Debay
 }
 
 // apply dark frame
-void QCamFrameCommon::applyDark(const QCamFrameCommon* dark) {
-   lum_plan_sub(size().width(),size().height(),yFrame_,dark->Y());
+void QCamFrameCommon::applyDark(const QCamFrameCommon* dark, double timeFactor=1.0) {
+   lum_plan_sub(size().width(),size().height(),yFrame_,dark->Y(), timeFactor);
    if(getMode()==YuvFrame) {
-      color_plan_sub(size().width(),size().height(),uFrame_,dark->U());
-      color_plan_sub(size().width(),size().height(),vFrame_,dark->V());
+      color_plan_sub(size().width(),size().height(),uFrame_,dark->U(), timeFactor);
+      color_plan_sub(size().width(),size().height(),vFrame_,dark->V(), timeFactor);
    }
 }
 
@@ -718,9 +718,14 @@ void QCamFrame::debayer(const QCamFrame & src, ImageMode mode, DebayerMethod met
    common_->debayer(*src.getCommon(),mode,method);
 }
 
+// apply bias frame
+void QCamFrame::applyBias(const QCamFrame & bias) {
+   common_->applyDark(bias.getCommon());
+}
+
 // apply dark frame
-void QCamFrame::applyDark(const QCamFrame & dark) {
-   common_->applyDark(dark.getCommon());
+void QCamFrame::applyDark(const QCamFrame & dark, double timeFactor=1.0) {
+   common_->applyDark(dark.getCommon(), timeFactor);
 }
 
 // apply flat frame
