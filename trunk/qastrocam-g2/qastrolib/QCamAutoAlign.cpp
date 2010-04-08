@@ -34,6 +34,8 @@ MA  02110-1301, USA.
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "QCamUtilities.hpp"
+
 #include "QHistogram.hpp"
 #include "QVectorMap.hpp"
 #include "QCamSlider.hpp"
@@ -83,6 +85,9 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    sizePolicyMin.setHorData(QSizePolicy::Minimum);
 
    QWidget * remoteCTRL= QCam::buildGUI(parent);
+
+   QCamUtilities::registerWidget(remoteCTRL);
+
    QPushButton * resetCenter = new QPushButton(tr("reset"),remoteCTRL);
    connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
    findShiftWidget_=new QHGroupBox(tr("Find Shift Ctrl"),remoteCTRL);

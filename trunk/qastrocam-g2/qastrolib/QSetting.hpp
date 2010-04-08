@@ -58,6 +58,8 @@ public slots:
    void changeTelescope(int index);
    // global
    void hasChanged();
+   // checkbox
+   void setNightVision(bool state);
 private :
    // functions
    void fillFields();
@@ -106,6 +108,7 @@ private :
    QCheckBox* optionsSdl;
    QCheckBox* optionsExpert;
    QCheckBox* optionsLog;
+   QCheckBox* optionsNightVision;
    QHBox* libBox;
    QLabel* libpathLabel;
    QLineEdit* libpathEntry;

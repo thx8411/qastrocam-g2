@@ -26,6 +26,8 @@ MA  02110-1301, USA.
 #include "QKingClient.moc"
 #include "QCam.hpp"
 
+#include "QCamUtilities.hpp"
+
 #include <math.h>
 #include <time.h>
 
@@ -82,6 +84,9 @@ bool QKingClient::findShift(ShiftInfo & shift) {
 
 QWidget * QKingClient::buildGUI(QWidget * parent) {
    QWidget *w=QCamFindShift_hotSpot::buildGUI(parent);
+
+   QCamUtilities::registerWidget(w);
+
    QPushButton * resetCenter = new QPushButton("reset",w);
    connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
 

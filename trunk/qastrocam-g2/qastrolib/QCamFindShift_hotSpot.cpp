@@ -209,6 +209,9 @@ bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
 
 QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    mainBox_= new QVGroupBox("Hot Spot",parent);
+
+   QCamUtilities::registerWidget(mainBox_);
+
    QCamUtilities::setQastrocamIcon(mainBox_);
    QHBox * hbox=new QHBox(mainBox_);
    dispImgCenter_ = new QFrameDisplay(hbox,tr("center"));

@@ -49,6 +49,7 @@ class CamHistogram : public QCamClient {
    Q_OBJECT
 public:
    CamHistogram(QCam &);
+   ~CamHistogram();
    QWidget & widget();
    const QWidget & widget() const;
 protected slots:

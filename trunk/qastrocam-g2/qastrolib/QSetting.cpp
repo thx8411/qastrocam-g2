@@ -119,6 +119,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    optionsExpert=new QCheckBox("Use expert mode",lineThree);
    lineFour=new QHBox(optionsBox);
    optionsLog=new QCheckBox("Write log file",lineFour);
+   optionsNightVision=new QCheckBox("Night vision mode",lineFour);
    libBox=new QHBox(optionsBox);
    libpathLabel=new QLabel("Library path : ",libBox);
    libpathEntry=new QLineEdit(libBox);
@@ -169,6 +170,8 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    connect(modulesMax,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesKing,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesAlign,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+
+   connect(optionsNightVision,SIGNAL(toggled(bool)),this,SLOT(setNightVision(bool)));
 
    // combobox connection
    connect(telescopeList,SIGNAL(activated(int)),this,SLOT(changeTelescope(int)));
@@ -256,6 +259,8 @@ void QSetting::fillFields() {
       modulesAlign->setChecked(string(settings.getKey("ALIGN_MODULE"))=="yes");
    else
       hasChanged();
+   if(settings.haveKey("NIGHT_VISION"))
+      optionsNightVision->setChecked(string(settings.getKey("NIGHT_VISION"))=="yes");
 }
 
 // slots
@@ -378,6 +383,23 @@ void QSetting::changeTelescope(int index) {
    }
    if(index!=-1)
       hasChanged();
+}
+
+void QSetting::setNightVision(bool state) {
+   QString temp;
+
+   if(state) {
+      QCamUtilities::setNightMode();
+      // conf file
+   } else {
+      QCamUtilities::setStdMode();
+      // conf file
+   }
+    if(optionsNightVision->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("NIGHT_VISION",temp.latin1());
 }
 
 // global slot

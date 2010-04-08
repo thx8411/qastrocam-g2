@@ -30,6 +30,8 @@ MA  02110-1301, USA.
 #include <stdlib.h>
 #include <math.h>
 
+#include "QCamUtilities.hpp"
+
 using namespace std;
 
 #define DOUBLE_MIN (-1e38)
@@ -160,7 +162,11 @@ void QHistogram::paintEvent(QPaintEvent * ev) {
    }
    QPixmap buffer(size());
    QPainter p;
-   buffer.fill();
+
+   if(QCamUtilities::nightVision)
+      buffer.fill(QColor(176,0,0));
+   else
+      buffer.fill();
    p.begin(&buffer,this);
    p.setPen(*normPen_);
    for(int i=0;i<dataSize_;++i) {
