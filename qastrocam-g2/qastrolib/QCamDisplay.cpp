@@ -50,6 +50,9 @@ QCamDisplay::QCamDisplay(QWidget * parent) :
 
 QCamDisplay::~QCamDisplay() {
    mainWidget_->hide();
+
+   QCamUtilities::removeWidget(mainWidget_);
+
    delete widget_;
 }
 
@@ -79,6 +82,9 @@ void QCamDisplay::setCaption() {
 
 void QCamDisplay::commonInit(QWidget * parent) {
    mainWidget_=new QVBox(parent);
+
+   QCamUtilities::registerWidget(mainWidget_);
+
    buttonsContainer_ = new QHBox(mainWidget_);
 
    int displayValues[]={Color,Gray,Negate,FalseColor};

@@ -38,9 +38,12 @@ MA  02110-1301, USA.
 #include <iostream>
 
 string QCamUtilities::basePath_="/usr/share/qastrocam-g2/";
-
 bool QCamUtilities::useSDL_=false;
 bool QCamUtilities::expertMode_=false;
+QPalette* QCamUtilities::stdPalette=NULL;
+QPalette* QCamUtilities::nightPalette=NULL;
+bool QCamUtilities::nightVision=false;
+struct widgetItem* QCamUtilities::widgetList=NULL;
 
 void QCamUtilities::computePathName(const char * path) {
    char* tmp;
@@ -96,4 +99,61 @@ void QCamUtilities::setLocale(QApplication & app) {
 	 static QTranslator translator( 0 );
 	 translator.load( QString("qastrocam-") + QTextCodec::locale(), (basePathName()+"/locales/.").c_str());
 	 app.installTranslator( &translator );
+}
+
+// night vision
+
+void QCamUtilities::registerWidget(QWidget* w) {
+   if(nightVision)
+      w->setPalette(*nightPalette);
+   else
+      w->setPalette(*stdPalette);
+   struct widgetItem* tmp;
+   tmp=(struct widgetItem*)malloc(sizeof(widgetItem));
+   tmp->item=w;
+   tmp->next=widgetList;
+   widgetList=tmp;
+   //cerr << "register" << endl;
+}
+
+void QCamUtilities::removeWidget(QWidget* w) {
+   struct widgetItem* tmp;
+   tmp=widgetList;
+
+   // messy stuff, just for tests, must be rewritten
+   while(tmp!=NULL) {
+      if(tmp->item==w)
+         tmp->item==NULL;
+      tmp=tmp->next;
+   }
+
+   //cerr << "remove" << endl;
+}
+
+void QCamUtilities::setStdMode() {
+   struct widgetItem* tmp;
+   tmp=widgetList;
+   while(tmp!=NULL) {
+      if(tmp->item!=NULL) {
+         tmp->item->setPalette(*stdPalette);
+         tmp=tmp->next;
+      }
+   }
+   nightVision=false;
+
+  //cerr << "std mode" << endl;
+}
+
+void QCamUtilities::setNightMode() {
+   struct widgetItem* tmp;
+   tmp=widgetList;
+   while(tmp!=NULL) {
+      if(tmp->item!=NULL) {
+         tmp->item->setPalette(*nightPalette);
+         tmp=tmp->next;
+      }
+   }
+   nightVision=true;
+
+   //cerr << "night mode" << endl;
 }

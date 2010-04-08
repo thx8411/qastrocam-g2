@@ -42,6 +42,7 @@ MA  02110-1301, USA.
 #include <qvbox.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
+#include <qpalette.h>
 
 #include "QCamUtilities.hpp"
 
@@ -77,7 +78,8 @@ const string LibDirOptionString("--libdir");
 const string SDLon("--sdl");
 const string ExpertMode("--expert");
 const string LogMode("--log");
-const string ForceSettings("-sf");
+const string ForceSettings("--sf");
+const string NightVision("--nv");
 
 // backup object, present everywhere
 settingsBackup settings;
@@ -102,6 +104,7 @@ void usage(const char * progName) {
    cerr << "  "<<SDLon<<" <yes/no> use lib SDL to display frames (fast display).\n";
    cerr << "  "<<ExpertMode<<" <yes/no> enable some 'expert' options in the GUI\n";
    cerr << "  "<<LogMode<<" <yes/no> Logs qastrocam-g2 in a file for debug purpose\n";
+   cerr << "  "<<NightVision<<" <yes/no> to enable or disable night vision mode\n";
    cerr << endl;
 }
 
@@ -281,11 +284,18 @@ int main(int argc, char ** argv) {
          settings.setKey("VIDEO_DEVICE",argv[i]);
       } else if (LogMode == argv[i]) {
          ++i;
-          if(i==argc) {
+         if(i==argc) {
             usage(argv[0]);
             exit(1);
          }
          settings.setKey("LOG",argv[i]);
+      } else if (NightVision == argv[i]) {
+         ++i;
+         if(i==argc) {
+            usage(argv[0]);
+            exit(1);
+         }
+         settings.setKey("NIGHT_VISION",argv[i]);
       } else if ( LibDirOptionString == argv[i]) {
          ++i;
          if (i==argc) {
@@ -322,6 +332,7 @@ int main(int argc, char ** argv) {
             t->tm_hour,t->tm_min,t->tm_sec);
          logFileName="qastrocam-g2-"+string(buff)+".log";
    }
+   if(settings.haveKey("NIGHT_VISION")&&string(settings.getKey("NIGHT_VISION"))=="yes") QCamUtilities::setNightMode();
    if(settings.haveKey("LIB_PATH")) libPath=settings.getKey("LIB_PATH");
    if(settings.haveKey("TELESCOPE")) telescopeType=settings.getKey("TELESCOPE");
    if(settings.haveKey("ADD_MODULE")&&string(settings.getKey("ADD_MODULE"))=="yes") accum=true;
@@ -386,6 +397,25 @@ int main(int argc, char ** argv) {
    delete tmpIcon;
    app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
+
+   // std palette
+   QPalette tmpPalette=mainWindow.palette();
+   QCamUtilities::stdPalette=&tmpPalette;
+   // night palette
+   QColorGroup nightActive;
+   QColorGroup nightDisabled;
+   QColorGroup nightInactive;
+
+   nightActive.setColor(QColorGroup::Background,Qt::darkRed);
+   nightActive.setColor(QColorGroup::Base,QColor(176,0,0));
+   nightActive.setColor(QColorGroup::Button,QColor(160,0,0));
+   nightActive.setColor(QColorGroup::HighlightedText,Qt::red);
+   nightInactive=nightActive;
+   nightDisabled=nightActive;
+   nightDisabled.setColor(QColorGroup::Text,QColor(160,0,0));
+   QCamUtilities::nightPalette=new QPalette(nightActive,nightDisabled,nightInactive);
+
+   QCamUtilities::registerWidget(&mainWindow);
 
    // creating telescope object
    if(telescopeType=="none") telescopeType="";
@@ -620,6 +650,8 @@ int main(int argc, char ** argv) {
    delete camMax;
    delete camStack;
    delete cam;
+
+   QCamUtilities::removeWidget(&mainWindow);
 
 #ifndef _DEBUG_
    fclose(logFile);

@@ -73,6 +73,9 @@ void QCamAutoGuidage::track(bool mode) {
 
 QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    QVBox * mainBox = new QVBox(parent);
+
+   QCamUtilities::registerWidget(mainBox);
+
    if (parent == 0) {
       QCamUtilities::setQastrocamIcon(mainBox);
    }

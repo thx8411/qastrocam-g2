@@ -1,5 +1,6 @@
-4.8beta20100406
+4.8beta20100408
 
+  - night vision mode added
   - bias pre-processing added
   - added bayer color separation
   - better sources portability

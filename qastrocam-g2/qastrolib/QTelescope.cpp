@@ -43,6 +43,9 @@ QTelescope::QTelescope() {
 void QTelescope::buildGUI(QWidget * parent) {
    QPixmap* tmpIcon;
    mainWidget_=new QVGroupBox("Telescope CTRL",parent);
+
+   QCamUtilities::registerWidget(mainWidget_);
+
    QCamUtilities::setQastrocamIcon(mainWidget_);
    arrows_ = new QWidget(mainWidget_);
    arrowsLayout_=new QGridLayout(arrows_,3,3);
@@ -80,6 +83,7 @@ void QTelescope::buildGUI(QWidget * parent) {
 }
 
 QTelescope::~QTelescope() {
+   QCamUtilities::removeWidget(mainWidget_);
 }
 
 QWidget * QTelescope::widget() {

@@ -25,12 +25,19 @@ MA  02110-1301, USA.
 
 #include <string>
 
+#include <qpalette.h>
+
 using namespace std;
 
 class QPixmap;
 class QLabel;
 class QWidget;
 class QApplication;
+
+struct widgetItem {
+   QWidget* item;
+   widgetItem* next;
+};
 
 class QCamUtilities {
 public:
@@ -45,7 +52,15 @@ public:
    static void setLocale(QApplication & app);
    static void expertMode(bool val) { expertMode_=val;}
    static bool expertMode() { return expertMode_; }
+   static void registerWidget(QWidget* w);
+   static void removeWidget(QWidget* w);
+   static void setStdMode();
+   static void setNightMode();
+   static bool nightVision;
+   static QPalette* stdPalette;
+   static QPalette* nightPalette;
 private:
+   static struct widgetItem* widgetList;
    static string basePath_;
    static bool useSDL_;
    // in expert mode, more controls are displayed in the GUI

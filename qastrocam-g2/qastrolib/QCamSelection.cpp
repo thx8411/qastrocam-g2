@@ -41,6 +41,9 @@ QCamSelection::QCamSelection(QWidget * parent) : QCamClient(), yuvFrame_() {
 
 QCamSelection::~QCamSelection() {
    mainWidget_->hide();
+
+   QCamUtilities::removeWidget(mainWidget_);
+
    delete widget_;
 }
 
@@ -62,6 +65,9 @@ void QCamSelection::setCaption() {
 
 void QCamSelection::commonInit(QWidget * parent) {
    mainWidget_=new QVBox(parent);
+
+   QCamUtilities::registerWidget(mainWidget_);
+
    buttonsContainer_ = new QHBox(mainWidget_);
 
    QWidget* padding1=new QWidget(buttonsContainer_);

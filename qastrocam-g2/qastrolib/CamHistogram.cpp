@@ -46,6 +46,9 @@ MA  02110-1301, USA.
 CamHistogram::CamHistogram(QCam & theCam) :
    QCamClient(theCam) {
    mainWindow_ = new QHGroupBox(tr("Analyse"));
+
+   QCamUtilities::registerWidget(mainWindow_);
+
    QCamUtilities::setQastrocamIcon(mainWindow_);
 
    for (int i=0;i<256;++i) {
@@ -97,6 +100,10 @@ CamHistogram::CamHistogram(QCam & theCam) :
    histogramArea_->show();
    focusArea_->show();
    mainWindow_->show();
+}
+
+CamHistogram::~CamHistogram() {
+   QCamUtilities::removeWidget(mainWindow_);
 }
 
 QWidget & CamHistogram::widget() {
