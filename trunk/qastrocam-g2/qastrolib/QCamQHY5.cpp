@@ -17,36 +17,31 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#ifndef _QCamPhoto2_hpp_
-#define _QCamPhoto2_hpp_
+#include "QCamQHY5.moc"
 
-#include <qobject.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "QCam.hpp"
+QCamQHY5::QCamQHY5() {
+}
 
-/** QCam implementation to access libgphoto2 cameras **/
-class QCamPhoto2 : public QCam {
-   Q_OBJECT
-public:
-   QCamPhoto2();
-   QCamFrame yuvFrame() const { return yuvBuffer_; }
-   const QSize & size() const;
-   void resize(const QSize & s);
-   ~QCamPhoto2();
-   QWidget * buildGUI(QWidget * parent);
-protected:
-   mutable QSize * sizeTable_;
-   virtual const QSize* getAllowedSize() const;
-private:
-   bool setSize(int x, int y);
-   QCamFrame yuvBuffer_;
-   uchar * tmpBuffer_;
-   QTimer * timer_;
-   QSize size_;
-public slots:
-protected slots:
-signals:
-};
+void QCamQHY5::resize(const QSize & s) {
+}
 
-#endif
+const QSize * QCamQHY5::getAllowedSize() const {
+   return sizeTable_;
+}
+
+bool QCamQHY5::setSize(int x, int y) {
+}
+
+
+const QSize & QCamQHY5::size() const {
+   return yuvBuffer_.size();
+}
+
+QCamQHY5::~QCamQHY5() {
+}
+
+QWidget * QCamQHY5::buildGUI(QWidget * parent) {
+   QWidget * remoteCTRL=QCam::buildGUI(parent);
+   return remoteCTRL;
+}
+

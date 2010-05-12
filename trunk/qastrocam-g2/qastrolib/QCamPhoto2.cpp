@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -31,7 +31,6 @@ const QSize * QCamPhoto2::getAllowedSize() const {
 
 bool QCamPhoto2::setSize(int x, int y) {
 }
-
 
 
 const QSize & QCamPhoto2::size() const {
