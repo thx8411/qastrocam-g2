@@ -17,23 +17,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#ifndef _QCamPhoto2_hpp_
-#define _QCamPhoto2_hpp_
+#ifndef _QCamQHY5_hpp_
+#define _QCamQHY5_hpp_
 
 #include <qobject.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "QCam.hpp"
 
-/** QCam implementation to access libgphoto2 cameras **/
-class QCamPhoto2 : public QCam {
+/** QCam implementation to support QHY5 and clones cameras **/
+class QCamQHY5 : public QCam {
    Q_OBJECT
 public:
-   QCamPhoto2();
+   QCamQHY5();
    QCamFrame yuvFrame() const { return yuvBuffer_; }
    const QSize & size() const;
    void resize(const QSize & s);
-   ~QCamPhoto2();
+   ~QCamQHY5();
    QWidget * buildGUI(QWidget * parent);
 protected:
    mutable QSize * sizeTable_;
