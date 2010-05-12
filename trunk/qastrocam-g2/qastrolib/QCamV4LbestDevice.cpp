@@ -60,12 +60,12 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
       int type;
       bool IsPhilips = false;
 
-      if (strcmp((char*)vcap.card, "AstroEasyCap") == 0) {
-         cout << "AstroEasyCap driver detected" << endl;
-         close(cam_fd);
-         camFound = new QCamDC60(devpath);
-         return(camFound);
-      }
+      //if (strcmp((char*)vcap.card, "AstroEasyCap") == 0) {
+      //   cout << "AstroEasyCap driver detected" << endl;
+      //   close(cam_fd);
+      //   camFound = new QCamDC60(devpath);
+      //   return(camFound);
+      //}
 
       if (sscanf((char*)vcap.card, "Philips %d webcam", &type) == 1) {
          //original phillips
