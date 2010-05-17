@@ -111,6 +111,10 @@ CXXFLAGS="$CXXFLAGS -L /usr/include/qwtplot3d-qt3 "
 CPPFLAGS="$CPPFLAGS -L /usr/include/qwtplot3d-qt3 "
 LDFLAGS="$LDFLAGS -lqwtplot3d-qt3 "
 
+# libusb
+AC_CHECK_HEADER(usb.h,,[AC_MSG_ERROR([cannot find libusb headers])])
+LDFLAGS="$LDFLAGS -lusb "
+
 AC_CHECK_HEADERS(SDL.h)
 #AC_CHECK_LIB(pthread,pthread_create)
 #AC_CHECK_LIB(SDL,SDL_InitSubSystem)
