@@ -23,6 +23,8 @@ MA  02110-1301, USA.
 #ifndef _QHY5CAM_HPP_
 #define _QHY5CAM_HPP_
 
+using namespace std;
+
 // guider directions
 #define QHY_NORTH	0x20
 #define QHY_SOUTH	0x40
@@ -36,12 +38,16 @@ MA  02110-1301, USA.
 class QHY5cam {
 public :
    // singleton stuff
+
    // get a new instance from the singleton (imager or guider)
    static QHY5cam* instance(int feature);
    // distroy the instance
    static void destroy(int feature);
 
    // class functions
+
+   // is the cam plugged ?
+   static bool plugged();
 
 private :
    // functions

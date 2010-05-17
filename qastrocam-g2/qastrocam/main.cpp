@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #include "../config.h"
 
 #include "QCamSlider.hpp"
+#include "QCamQHY5.hpp"
 #include "QCamV4L.hpp"
 #include "QCamVesta.hpp"
 #include "qastrocamVersion.hpp"
@@ -57,6 +58,7 @@ MA  02110-1301, USA.
 #include "QTelescopeFile.hpp"
 #include "QTelescopeMTS.cpp"
 #include "PPort.hpp"
+#include "QHY5cam.hpp"
 #include "QKingClient.hpp"
 #include "SettingsBackup.hpp"
 #include "QSetting.hpp"
@@ -443,11 +445,17 @@ int main(int argc, char ** argv) {
    }
 
    // capture module creation
-   QCam* cam =NULL;
-   cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
-   if (cam == NULL) {
-      QMessageBox::information(0,"Qastrocam-g2","No camera detected\nSettings panel only");
-      cout << "No camera detected" <<endl;
+   QCam* cam = NULL;
+   // test QHY5
+   if(QHY5cam::plugged()) {
+      cam = new QCamQHY5();
+   } else {
+      // find the best V4L device
+      cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
+      if (cam == NULL) {
+         QMessageBox::information(0,"Qastrocam-g2","No camera detected\nSettings panel only");
+         cout << "No camera detected" <<endl;
+      }
    }
 
    QKingClient* kingClient=NULL;
