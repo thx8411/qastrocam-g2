@@ -26,6 +26,7 @@ show-avaible-arch:
 	@echo "the build for you system (it should be done only once):"
 	@echo "  configure-debian"
 	@echo "  configure-debian-mt"
+	@echo "  configure-ubuntu"
 	@echo "  configure-redhat"
 	@echo "  configure-redhat-mt"
 	@echo "  configure-redhat-fedoracore6"
