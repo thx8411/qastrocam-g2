@@ -21,6 +21,8 @@ MA  02110-1301, USA.
 // singleton class
 
 #include <stdlib.h>
+#include <usb.h>
+#include <iostream>
 
 #include "QHY5cam.hpp"
 
@@ -56,6 +58,25 @@ void QHY5cam::destroy(int feature) {
 //
 // functions
 //
+
+// is the cam plugged ?
+bool QHY5cam::plugged() {
+   struct usb_bus* bus;
+   struct usb_device* device;
+
+   // update usb datas
+   usb_init();
+   usb_find_busses();
+   usb_find_devices();
+
+   for(bus = usb_busses; bus; bus = bus->next) {
+      for(device = bus->devices; device; device=device->next) {
+         if((device->descriptor.idVendor == 0x16c0)&&(device->descriptor.idProduct == 0x296d))
+            return(true);
+      }
+   }
+   return(false);
+}
 
 QHY5cam::QHY5cam() {
 }
