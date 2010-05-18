@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #include <stdio.h>
 #include <stdlib.h>
 #include "QCam.hpp"
+#include "QHY5cam.hpp"
 
 /** QCam implementation to support QHY5 and clones cameras **/
 class QCamQHY5 : public QCam {
@@ -39,11 +40,11 @@ protected:
    mutable QSize * sizeTable_;
    virtual const QSize* getAllowedSize() const;
 private:
+   // functions
    bool setSize(int x, int y);
+   // vars
+   QHY5cam* camera;
    QCamFrame yuvBuffer_;
-   uchar * tmpBuffer_;
-   QTimer * timer_;
-   QSize size_;
 public slots:
 protected slots:
 signals:

@@ -52,7 +52,7 @@ public:
       sendJpegFrames=(1<<7)
    };
    static const int DefaultOptions;
-   
+
    static QCam * openBestDevice(const char * devpath = "/dev/video0");
    QCamV4L(const char * devpath="/dev/video0",
            int preferedPalette = 0 /* auto palette*/,
@@ -79,7 +79,7 @@ protected:
    long mmap_last_sync_buff_;
    long mmap_last_capture_buff_;
    mutable QSize * sizeTable_;
-   
+
    void updatePictureSettings();
    virtual void refreshPictureSettings();
    bool dropFrame();
@@ -95,7 +95,7 @@ protected:
        is used if the select() system call is not avaible,
        by the timer used to probe the camera for a new frame */
    virtual int getFrameRate() const { return 10;}
-   
+
 private:
    bool setSize(int x, int y);
    void init(int preferedPalette);
@@ -118,10 +118,10 @@ private:
    QCamSlider * remoteCTRLhue_;
    QCamSlider * remoteCTRLcolor_;
    QCamSlider * remoteCTRLwhiteness_;
-   
+
    ImageMode mode_;
    int frameRate_;
-   
+
 public slots:
    void setContrast(int value);
    void setBrightness(int value);

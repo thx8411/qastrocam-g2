@@ -45,6 +45,10 @@ public :
    static void destroy(int feature);
 
    // class functions
+   int shoot(int duration);
+   int read(void* image);
+   int move(int direction, int duration);
+   int configure(int xpos, int ypos, int w, int h, int gain, int* rw, int* rh);
 
    // is the cam plugged ?
    static bool plugged();
@@ -53,9 +57,19 @@ private :
    // functions
    QHY5cam();
    ~QHY5cam();
+
    // vars
    static QHY5cam* instance_;
    static bool feature_used[2];
+   // usb device
+   struct usb_dev_handle* dev;
+   // configuration
+   int xpos_;
+   int ypos_;
+   int width_;
+   int height_;
+   int gain_;
+   int size_;
 };
 
 #endif
