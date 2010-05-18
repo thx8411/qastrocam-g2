@@ -17,9 +17,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qmessagebox.h>
+
 #include "QCamQHY5.moc"
 
 QCamQHY5::QCamQHY5() {
+   label(QString("QHY5"));
+   camera=QHY5cam::instance(QHY_IMAGER);
+   if(camera==NULL) {
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY5 imager\nLeaving...");
+      exit(1);
+   }
+}
+
+QCamQHY5::~QCamQHY5() {
+   QHY5cam::destroy(QHY_IMAGER);
 }
 
 void QCamQHY5::resize(const QSize & s) {
@@ -35,9 +47,6 @@ bool QCamQHY5::setSize(int x, int y) {
 
 const QSize & QCamQHY5::size() const {
    return yuvBuffer_.size();
-}
-
-QCamQHY5::~QCamQHY5() {
 }
 
 QWidget * QCamQHY5::buildGUI(QWidget * parent) {
