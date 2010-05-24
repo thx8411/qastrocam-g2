@@ -86,6 +86,9 @@ const string NightVision("--nv");
 // backup object, present everywhere
 settingsBackup settings;
 
+// app pointer, present everywhere
+QApplication* appPointer;
+
 // qastrocam-g2 usage
 void usage(const char * progName) {
    cerr << "usage: "<< progName << " <options>"<< endl;
@@ -383,6 +386,7 @@ int main(int argc, char ** argv) {
    // QT app settings
    QApplication app(argc,argv);
    QCamUtilities::setLocale(app);
+   appPointer=&app;
 
    // main window setting
    QString caption;

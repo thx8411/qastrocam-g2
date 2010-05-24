@@ -23,6 +23,10 @@ MA  02110-1301, USA.
 #include <qobject.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <qslider.h>
+#include <qlabel.h>
+#include <qprogressbar.h>
+#include "QCamSlider.hpp"
 #include "QCam.hpp"
 #include "QHY5cam.hpp"
 
@@ -42,13 +46,12 @@ protected:
 private:
    // functions
    void setSize(int x, int y);
-   void setExposure(int e);
-   void setGain(int g);
-   void setCam();
+   int getTime(int v);
    // vars
    QHY5cam* camera;
    QCamFrame yuvBuffer_;
    QTimer* timer_;
+   QTimer* progressTimer_;
    double frameRate_;
    int frameExposure_;
    int xstart_;
@@ -56,8 +59,19 @@ private:
    int width_;
    int height_;
    int gain_;
+   int progress_;
+   // gui stuff
+   QCamSlider* gainSlider;
+   QSlider* exposureSlider;
+   QLabel* exposureValue;
+   QProgressBar* progressBar;
 public slots:
 protected slots:
+   void changeExposure(int e);
+   void setExposure();
+   void changeGain(int g);
+   void setGain();
+   void progressUpdate();
    virtual bool updateFrame();
 signals:
 };
