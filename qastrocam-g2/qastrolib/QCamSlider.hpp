@@ -48,6 +48,7 @@ private:
    bool percent_;
    int lastEmit_;
 private slots:
+   void sliderRelease();
    void sliderMove(int val);
    void sliderMoveKey(int val);
    void buttonToggled(bool state);
@@ -55,6 +56,7 @@ private slots:
  public slots:
    void setValue(int val);
  signals:
+   void sliderReleased();
    void valueChange(int);
 };
 
