@@ -41,12 +41,24 @@ protected:
    virtual const QSize* getAllowedSize() const;
 private:
    // functions
-   bool setSize(int x, int y);
+   void setSize(int x, int y);
+   void setExposure(int e);
+   void setGain(int g);
+   void setCam();
    // vars
    QHY5cam* camera;
    QCamFrame yuvBuffer_;
+   QTimer* timer_;
+   double frameRate_;
+   int frameExposure_;
+   int xstart_;
+   int ystart_;
+   int width_;
+   int height_;
+   int gain_;
 public slots:
 protected slots:
+   virtual bool updateFrame();
 signals:
 };
 
