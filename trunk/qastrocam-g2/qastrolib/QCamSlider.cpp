@@ -92,6 +92,10 @@ void QCamSlider::sliderMoveKey(int val) {
    }
 }
 
+void QCamSlider::sliderRelease() {
+   emit sliderReleased();
+}
+
 void QCamSlider::sliderMove(int val) {
 
    if (!slider_) {
