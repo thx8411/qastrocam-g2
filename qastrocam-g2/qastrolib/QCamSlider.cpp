@@ -55,6 +55,7 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
 
    connect(slider_,SIGNAL(sliderMoved(int)),this,SLOT(sliderMove(int)));
    connect(slider_,SIGNAL(valueChanged(int)),this,SLOT(sliderMoveKey(int)));
+   connect(slider_,SIGNAL(sliderReleased()),this,SLOT(sliderRelease()));
    valueLabel_= new QLabel(this);
    valueLabel_->setFrameShadow(QFrame::Sunken);
    valueLabel_->show();

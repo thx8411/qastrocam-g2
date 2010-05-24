@@ -96,7 +96,7 @@ int QHY5cam::read(char* image) {
          }
       }
    }
-   return(res);
+   return(res==size_);
 }
 
 
