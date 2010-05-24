@@ -46,7 +46,7 @@ public :
 
    // class functions
    int shoot(int duration);
-   int read(void* image);
+   int read(char* image);
    int move(int direction, int duration);
    int configure(int xpos, int ypos, int w, int h, int gain, int* rw, int* rh);
 
@@ -64,6 +64,7 @@ private :
    // usb device
    struct usb_dev_handle* dev;
    // configuration
+   char* image_;
    int xpos_;
    int ypos_;
    int width_;
