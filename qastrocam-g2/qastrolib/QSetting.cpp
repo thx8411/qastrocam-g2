@@ -83,7 +83,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding7=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding7,5);
    // long exposure box
-   lxBox=new QHGroupBox("Longue exposure",remoteCTRL_);
+   lxBox=new QHGroupBox("Long exposure",remoteCTRL_);
    remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
