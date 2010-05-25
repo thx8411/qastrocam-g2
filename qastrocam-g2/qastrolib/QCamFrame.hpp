@@ -132,6 +132,9 @@ protected:
              int dstX,int dstY);
    // binning source frame using x and y factors
    void binning(const QCamFrameCommon & src,int xFactor, int yFactor);
+   // scaling source frame using x and y factors (bilinear)
+   void scaling(const QCamFrameCommon & src,int xFactor, int yFactor);
+
    void setMode(ImageMode val) { mode_=val; allocBuff();}
    ImageMode getMode() const { return mode_;}
 
@@ -250,6 +253,8 @@ public:
    void cropping(const QCamFrame & src, int l, int t, int w, int h);
    // binning the frame to the new given size
    void binning(const QCamFrame & src, int w, int h);
+   // bilinear scaling
+   void scaling(const QCamFrame & src, int w, int h);
 
    // debayer the frame using the known mode
    //void debayer(ImageMode mode, DebayerMethod method);

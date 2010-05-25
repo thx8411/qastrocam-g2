@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -459,6 +459,67 @@ void QCamFrameCommon::binning(const QCamFrameCommon & src, int xFactor, int yFac
    }
 }
 
+// bilinear frame scaling
+void QCamFrameCommon::scaling(const QCamFrameCommon & src, int xFactor, int yFactor) {
+int i,j,k,l,Ysum,Usum,Vsum;
+   int xOffset,yOffset;
+
+   allocBuff();
+   // luminance plan
+   // for each dest. pixel
+   for(i=0;i<size_.width();i++) {
+      xOffset=i*xFactor;
+      for(j=0;j<size_.height();j++) {
+         // we sum source pixels arround
+         Ysum=0;
+         Usum=0;
+         Vsum=0;
+         yOffset=j*yFactor;
+         // lines
+         for(k=0;k<yFactor;k++) {
+            const unsigned char* Yline=src.YLine(yOffset+k);
+            const unsigned char* Uline=src.ULine(yOffset+k);
+            const unsigned char* Vline=src.VLine(yOffset+k);
+            // rows
+            for(l=0;l<xFactor;l++) {
+               Ysum+=Yline[xOffset+l];
+               if(getMode()==YuvFrame) {
+                  Usum+=Uline[xOffset+l];
+                  Vsum+=Vline[xOffset+l];
+               }
+            }
+         }
+         // outside dynamic range
+         Ysum/=xFactor*yFactor;
+         if(Ysum>255)
+            Ysum=255;
+         // update dest pixel
+         yFrame_[j*size_.width()+i]=(unsigned char)Ysum;
+         // handle colors
+         if(getMode()==YuvFrame) {
+            // outside dynamic range
+            Usum-=(xFactor*yFactor)*128;
+            Usum/=xFactor*yFactor;
+            Usum+=128;
+            if(Usum>255)
+               Usum=255;
+            if(Usum<0)
+               Usum=0;
+            // outside dynamic range
+            Vsum-=(xFactor*yFactor)*128;
+            Vsum/=xFactor*yFactor;
+            Vsum+=128;
+            if(Vsum>255)
+               Vsum=255;
+            if(Vsum<0)
+               Vsum=0;
+            uFrame_[j*size_.width()+i]=(unsigned char)Usum;
+            vFrame_[j*size_.width()+i]=(unsigned char)Vsum;
+         }
+      }
+   }
+}
+
 // debayer the frame
 void QCamFrameCommon::debayer(const QCamFrameCommon & src, ImageMode mode, DebayerMethod method) {
    unsigned char* yTemp=src.Yfree();
@@ -706,10 +767,23 @@ void QCamFrame::binning(const QCamFrame & src, int w, int h) {
    setCommon()->binning(*src.getCommon(),xFactor,yFactor);
 }
 
-// debayer the frame
-//void QCamFrame::debayer(ImageMode mode, DebayerMethod method) {
-//   common_->debayer(mode,method);
-//}
+// bilinear frame scaling
+// w : new target width
+// h : new target height
+void QCamFrame::scaling(const QCamFrame & src, int w, int h) {
+   int xFactor, yFactor;
+
+   if((w==0)||(h==0))
+      return;
+   // compute scaling factors
+   xFactor=src.size().width()/w;
+   yFactor=src.size().height()/h;
+   // keep mode and set size
+   setSize(QSize(w,h));
+   setMode(src.getMode());
+   // scaling...
+   setCommon()->scaling(*src.getCommon(),xFactor,yFactor);
+}
 
 // debayer the frame
 void QCamFrame::debayer(const QCamFrame & src, ImageMode mode, DebayerMethod method) {
