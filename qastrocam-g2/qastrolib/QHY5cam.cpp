@@ -53,6 +53,7 @@ QHY5cam* QHY5cam::instance(int feature) {
    return(instance_);
 }
 
+// release the device part
 void QHY5cam::destroy(int feature) {
    feature_used[feature]=false;
    if(!(feature_used[QHY_IMAGER] || feature_used[QHY_GUIDER])) {
@@ -67,7 +68,7 @@ void QHY5cam::destroy(int feature) {
 
 // class functions
 
-// set exposure
+// start picture shoot
 int QHY5cam::shoot(int duration) {
    int val,index;
    char buffer[2]={0x00,0x00};
@@ -78,6 +79,7 @@ int QHY5cam::shoot(int duration) {
    return(usb_control_msg(dev,0xc2,0x12,val, index, buffer, 2, 5000));
 }
 
+// read the picture
 int QHY5cam::read(char* image) {
    int res,line,row,offset;
    offset=0;
@@ -204,7 +206,6 @@ QHY5cam::QHY5cam() {
          }
       }
    }
-
    // init config
    configure(0,0,1280,1024,10,&temp1,&temp2);
 }
