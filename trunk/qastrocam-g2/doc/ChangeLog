@@ -1,5 +1,8 @@
-4.8beta20100517
+4.8beta20100525
 
+  - LX200 protocole supported via autostar
+  - QHY5 imager support added
+  - software bilinear scaling added
   - night vision mode added
   - bias pre-processing added
   - added bayer color separation

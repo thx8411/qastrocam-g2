@@ -1,4 +1,4 @@
-qastrocam-g2 (4.8beta20100517) jaunty; urgency=low
+qastrocam-g2 (4.8beta20100525) jaunty; urgency=low
 
   * pre-process tab added
   * de-bayer moved to pre-process
@@ -23,6 +23,9 @@ qastrocam-g2 (4.8beta20100517) jaunty; urgency=low
   * added bayer color separation
   * bias pre-processing added
   * night vision mode added
+  * LX200 protocole supported via autostar
+  * QHY5 imager support added
+  * software bilinear scaling added
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 
