@@ -49,15 +49,19 @@ private:
    int getTime(int v);
    // vars
    QHY5cam* camera;
+   QCamFrame inputBuffer_;
    QCamFrame yuvBuffer_;
    QTimer* timer_;
    QTimer* progressTimer_;
-   double frameRate_;
+   QSize targetSize;
+   float frameRate_;
    int frameExposure_;
    int xstart_;
    int ystart_;
    int width_;
    int height_;
+   int targetWidth_;
+   int targetHeight_;
    int gain_;
    int progress_;
    // gui stuff

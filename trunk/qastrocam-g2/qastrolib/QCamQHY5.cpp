@@ -28,6 +28,8 @@ MA  02110-1301, USA.
 
 #define PROGRESS_TIME	200
 
+// the exposure slider use an exp scale
+// returns exposure time in ms
 int QCamQHY5::getTime(int v) {
    return((int)(exp((float)v/10.0-2.0)*1000.0));
 }
@@ -43,8 +45,12 @@ QCamQHY5::QCamQHY5() {
    ystart_=0;
    width_=640;
    height_=480;
+   targetWidth_=width_;
+   targetHeight_=height_;
+   targetSize.setWidth(targetWidth_);
+   targetSize.setHeight(targetHeight_);
    gain_=10;
-   //sizeTable=getAllowedSize();
+   sizeTable=getAllowedSize();
    // get the cam instance
    camera=QHY5cam::instance(QHY_IMAGER);
    if(camera==NULL) {
@@ -54,11 +60,11 @@ QCamQHY5::QCamQHY5() {
    // configure the cam
    camera->configure(xstart_,ystart_,width_,height_,gain_,&width_,&height_);
    // set frame
-   yuvBuffer_.setMode(GreyFrame);
-   yuvBuffer_.setSize(QSize(width_,height_));
+   inputBuffer_.setMode(GreyFrame);
+   inputBuffer_.setSize(QSize(width_,height_));
    // start the first frame
    camera->shoot(frameExposure_);
-   // set the timer
+   // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
    timer_->start(frameExposure_,true);
@@ -77,6 +83,7 @@ QCamQHY5::~QCamQHY5() {
    tmp=malloc(width_*height_);
    camera->read((char*)tmp);
    free(tmp);
+   // release the imager
    QHY5cam::destroy(QHY_IMAGER);
 }
 
@@ -85,6 +92,7 @@ void QCamQHY5::resize(const QSize & s) {
 }
 
 const QSize * QCamQHY5::getAllowedSize() const {
+   // lists sizes
    if (sizeTable_==NULL) {
       sizeTable_=new QSize[5];
       int currentIndex=0;
@@ -98,15 +106,38 @@ const QSize * QCamQHY5::getAllowedSize() const {
 }
 
 void QCamQHY5::setSize(int x, int y) {
-   width_=x;
-   height_=y;
-   xstart_=(1280-x)/2;
-   ystart_=(1024-y)/2;
    // drop the last frame
    void* YBuff=NULL;
-   YBuff=yuvBuffer_.YforOverwrite();
+   YBuff=inputBuffer_.YforOverwrite();
    camera->read((char*)YBuff);
-   yuvBuffer_.setSize(QSize(width_,height_));
+
+   // selects resizing mode
+   switch(croppingMode) {
+      case BINNING :
+      case SCALING :
+         // update vars
+         width_=1280;
+         height_=1024;
+         targetWidth_=x;
+         targetHeight_=y;
+         xstart_=0;
+         ystart_=0;
+         break;
+      case CROPPING :
+         // update vars
+         width_=x;
+         height_=y;
+         targetWidth_=width_;
+         targetHeight_=height_;
+         xstart_=(1280-x)/2;
+         ystart_=(1024-y)/2;
+         break;
+   }
+   // update size
+   targetSize.setWidth(targetWidth_);
+   targetSize.setHeight(targetHeight_);
+   // update frame mem
+   inputBuffer_.setSize(QSize(width_,height_));
    // start the new frame
    camera->configure(xstart_,ystart_,width_,height_,gain_,&width_,&height_);
    camera->shoot(frameExposure_);
@@ -117,9 +148,11 @@ void QCamQHY5::setSize(int x, int y) {
 }
 
 void QCamQHY5::setExposure() {
+   // update vars
    frameRate_=1000/frameExposure_;
    timer_->start(frameExposure_,true);
    setProperty("FrameRateSecond",frameRate_);
+   // disable progress bar for short time
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progressBar->setEnabled(true);
       progressBar->setTotalSteps((int)((float)(frameExposure_+30)/PROGRESS_TIME));
@@ -136,6 +169,7 @@ void QCamQHY5::setGain() {
 }
 
 void QCamQHY5::changeExposure(int e) {
+   // update exposure time
    frameExposure_=getTime(e);
    exposureValue->setText(QString().sprintf("%6.2f",(float)frameExposure_/1000));
 }
@@ -145,7 +179,7 @@ void QCamQHY5::changeGain(int g) {
 }
 
 const QSize & QCamQHY5::size() const {
-   return yuvBuffer_.size();
+   return(targetSize);
 }
 
 QWidget * QCamQHY5::buildGUI(QWidget * parent) {
@@ -190,6 +224,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
 }
 
 void QCamQHY5::progressUpdate() {
+   // update progress bar (only if needed)
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progress_++;
       progressBar->setProgress(progress_);
@@ -197,14 +232,32 @@ void QCamQHY5::progressUpdate() {
 }
 
 bool QCamQHY5::updateFrame() {
+   // get the frame buffer
    void* YBuff=NULL;
-   YBuff=yuvBuffer_.YforOverwrite();
+   YBuff=inputBuffer_.YforOverwrite();
+   // read picture datas
    if(camera->read((char*)YBuff)) {
       setTime();
       camera->configure(xstart_,ystart_,width_,height_,gain_,&width_,&height_);
       camera->shoot(frameExposure_);
+      // gives a new shot for the timer
       timer_->start(frameExposure_,true);
+      // set the output frame
+      switch(croppingMode) {
+         case SCALING :
+            yuvBuffer_.scaling(inputBuffer_,targetWidth_,targetHeight_);
+            break;
+         case CROPPING :
+            // cropping allready done by driver
+            yuvBuffer_=inputBuffer_;
+            break;
+         case BINNING :
+            yuvBuffer_.binning(inputBuffer_,targetWidth_,targetHeight_);
+            break;
+      }
+      // publish the frame
       newFrameAvaible();
+      // update progress bar if needed
       if(frameExposure_>(3*PROGRESS_TIME)) {
          progressBar->reset();
          progress_=0;
