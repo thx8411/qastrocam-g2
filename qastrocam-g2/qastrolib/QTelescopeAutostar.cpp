@@ -126,7 +126,10 @@ string QTelescopeAutostar::sendCommand(CommandType com,const string & param) {
 }
 
 bool QTelescopeAutostar::sendCmd(const string & cmd,const string & param) {
-   string fullCmd=string("#:")+cmd+param+"#";
+   // '#' removed at the biginning of the command
+   // not really needed for autostar, depsite the Meade docs
+   // now also supports the LX200 telescopes
+   string fullCmd=string(":")+cmd+param+"#";
    cout <<"sending command '"<<fullCmd<<"'"<<endl;
    if (fullCmd.length() != write(descriptor_,
                                  fullCmd.c_str(),
