@@ -26,14 +26,15 @@ MA  02110-1301, USA.
 using namespace std;
 
 // guider directions
-#define QHY_NORTH	0x20
-#define QHY_SOUTH	0x40
-#define QHY_EAST	0x10
-#define QHY_WEST	0x80
+#define QHY_NORTH	0
+#define QHY_SOUTH	1
+#define QHY_EAST	2
+#define QHY_WEST	3
+#define QHY_NONE	4
 
 // features
-#define QHY_IMAGER	0x00
-#define QHY_GUIDER	0x01
+#define QHY_IMAGER	0
+#define QHY_GUIDER	1
 
 class QHY5cam {
 public :
@@ -45,7 +46,7 @@ public :
    static void destroy(int feature);
 
    // class functions
-   int reset();
+   int stop();
    int shoot(int duration);
    int read(char* image);
    int move(int direction, int duration);

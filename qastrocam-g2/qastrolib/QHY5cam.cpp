@@ -69,8 +69,7 @@ void QHY5cam::destroy(int feature) {
 // class functions
 
 // resets the cam
-int QHY5cam::reset() {
-   // to be fixed...
+int QHY5cam::stop() {
    char data=0x00;
    return(usb_bulk_write(dev,0,&data,1,1000));
 }
@@ -110,9 +109,48 @@ int QHY5cam::read(char* image) {
 
 
 // set the autoguide port corrections
+// direction : QHY_NORTH to QHY_WEST
+// duration in ms, 0 to cancel
 int QHY5cam::move(int direction, int duration) {
-   //
-   return(0);
+   unsigned int ret;
+   int pulses[2]={-1,-1};
+
+   if((duration==0)||(direction==QHY_NONE)) {
+      switch(direction) {
+         case QHY_NORTH :
+         case QHY_SOUTH :
+            direction=0x21;
+            break;
+         case QHY_EAST :
+         case QHY_WEST :
+            direction=0x22;
+            break;
+         case QHY_NONE :
+         default :
+            direction=0x18;
+      }
+      return(usb_control_msg(dev,0xc2,direction,0,0,(char*)&ret,sizeof(ret),500));
+   }
+   // apply moves
+   switch(direction) {
+      case QHY_NORTH :
+         direction=0x20;
+         pulses[1]=duration;
+         break;
+      case QHY_SOUTH :
+         direction=0x40;
+         pulses[1]=duration;
+         break;
+      case QHY_EAST :
+         direction=0x10;
+         pulses[0]=duration;
+         break;
+      case QHY_WEST :
+         direction=0x80;
+         pulses[0]=duration;
+         break;
+   }
+   return(usb_control_msg(dev,0x42,direction,0,0,(char*)pulses,sizeof(pulses),500));
 }
 
 // configure the cam
