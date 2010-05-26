@@ -80,6 +80,7 @@ QCamQHY5::QCamQHY5() {
 QCamQHY5::~QCamQHY5() {
    void* tmp;
    // read the last frame
+   camera->reset();
    tmp=malloc(width_*height_);
    camera->read((char*)tmp);
    free(tmp);
@@ -108,6 +109,7 @@ const QSize * QCamQHY5::getAllowedSize() const {
 void QCamQHY5::setSize(int x, int y) {
    // drop the last frame
    void* YBuff=NULL;
+   camera->reset();
    YBuff=inputBuffer_.YforOverwrite();
    camera->read((char*)YBuff);
 
@@ -148,6 +150,8 @@ void QCamQHY5::setSize(int x, int y) {
 }
 
 void QCamQHY5::setExposure() {
+   // resets the cam
+   camera->reset();
    // update vars
    frameRate_=1000/frameExposure_;
    timer_->start(frameExposure_,true);

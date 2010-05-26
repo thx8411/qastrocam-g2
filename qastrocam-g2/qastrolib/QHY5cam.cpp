@@ -68,15 +68,22 @@ void QHY5cam::destroy(int feature) {
 
 // class functions
 
+// resets the cam
+int QHY5cam::reset() {
+   // to be fixed...
+   char data=0x00;
+   return(usb_bulk_write(dev,0,&data,1,1000));
+}
+
 // start picture shoot
 int QHY5cam::shoot(int duration) {
    int val,index;
-   char buffer[2]={0x00,0x00};
+   char buffer[10]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
    index= duration >> 16;
    val= duration & 0xffff;
 
-   return(usb_control_msg(dev,0xc2,0x12,val, index, buffer, 2, 5000));
+   return(usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 500));
 }
 
 // read the picture
@@ -86,7 +93,7 @@ int QHY5cam::read(char* image) {
 
    if(image==NULL) return(-1);
 
-   res=usb_bulk_read(dev,0x82,image_,size_,20000);
+   res=usb_bulk_read(dev,0x82,image_,size_,0);
    if(res==size_) {
       for(line=0;line<height_;line++) {
          for(row=0;row<width_;row++) {
@@ -146,9 +153,9 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL
    STORE_WORD_BE(registers+14,0x0521);
    STORE_WORD_BE(registers+16,height_+25);
    registers[18]=0xcc;
-   res=usb_control_msg(dev,0x42,0x13,value,index,registers,19,5000);
-   usb_control_msg(dev,0x42,0x14,0x31a5,0,registers,0,5000);
-   usb_control_msg(dev,0x42,0x16,0,0,registers,0,5000);
+   res=usb_control_msg(dev,0x42,0x13,value,index,registers,19,500);
+   usb_control_msg(dev,0x42,0x14,0x31a5,0,registers,0,500);
+   usb_control_msg(dev,0x42,0x16,0,0,registers,0,500);
    // alloc mem
    free(image_);
    image_=(char*)malloc(size_);

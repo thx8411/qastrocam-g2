@@ -45,6 +45,7 @@ public :
    static void destroy(int feature);
 
    // class functions
+   int reset();
    int shoot(int duration);
    int read(char* image);
    int move(int direction, int duration);
