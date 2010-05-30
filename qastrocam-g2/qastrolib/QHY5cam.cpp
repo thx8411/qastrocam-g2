@@ -19,6 +19,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 // QHY5 native driver access
+// Uses Tom's firmware
 // singleton class
 
 #include <stdlib.h>
@@ -76,13 +77,17 @@ int QHY5cam::stop() {
 
 // start picture shoot
 int QHY5cam::shoot(int duration) {
-   int val,index;
-   char buffer[10]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+   int val,index,ret;
+   char buffer[11]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
    index= duration >> 16;
    val= duration & 0xffff;
 
-   return(usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 500));
+   ret=usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 500);
+
+   int tmp=buffer[0];
+
+   return(ret);
 }
 
 // read the picture
@@ -92,18 +97,19 @@ int QHY5cam::read(char* image) {
 
    if(image==NULL) return(-1);
 
-   res=usb_bulk_read(dev,0x82,image_,size_,0);
+   res=usb_bulk_read(dev,0x82,image_,size_,/*100*/0);
    if(res==size_) {
       for(line=0;line<height_;line++) {
          for(row=0;row<width_;row++) {
             //
             // to be fixed
-            image[offset]=image_[1558*line+20+row+xpos_+1558+1558];
+            image[offset]=image_[1558*line+20+row+xpos_];
             //
             offset++;
          }
       }
-   }
+   } //else
+   //   stop();
    return(res==size_);
 }
 
@@ -164,7 +170,7 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL
    if(h>1024) h=1024;
    if(h<1) h=1;
    if(xpos<0) xpos=0;
-   if(ypos<0) ypos=0;
+   if(ypos<1) ypos=0;
    if((xpos+w)>1280) w=1280-xpos;
    if((ypos+h)>1024) h=1024-ypos;
    if(gain<0) gain=0;

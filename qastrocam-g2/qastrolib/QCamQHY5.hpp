@@ -54,7 +54,7 @@ private:
    QTimer* timer_;
    QTimer* progressTimer_;
    QSize targetSize;
-   float frameRate_;
+   int frameRate_;
    int frameExposure_;
    int xstart_;
    int ystart_;

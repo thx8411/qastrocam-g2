@@ -31,7 +31,7 @@ MA  02110-1301, USA.
 // the exposure slider use an exp scale
 // returns exposure time in ms
 int QCamQHY5::getTime(int v) {
-   return((int)(exp((float)v/10.0-2.0)*1000.0));
+   return((int)(exp((float)v/10.0-1.6)*1000.0));
 }
 
 QCamQHY5::QCamQHY5() {
@@ -40,7 +40,8 @@ QCamQHY5::QCamQHY5() {
    // vars init
    sizeTable_=NULL;
    frameExposure_=getTime(0);
-   frameRate_=1000/frameExposure_;
+   frameRate_=frameExposure_;
+   if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
    xstart_=0;
    ystart_=0;
    width_=640;
@@ -67,13 +68,13 @@ QCamQHY5::QCamQHY5() {
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->start(frameExposure_,true);
+   timer_->start(frameRate_,true);
    // set prop.
    static char buff[11];
    snprintf(buff,10,"%dx%d",width_,height_);
    setProperty("FrameSize",buff,true);
    setProperty("CameraName","QHY5");
-   setProperty("FrameRateSecond",frameRate_);
+   setProperty("FrameExposure",frameExposure_);
    setProperty("Gain",gain_,false);
 }
 
@@ -100,7 +101,6 @@ const QSize * QCamQHY5::getAllowedSize() const {
       sizeTable_[currentIndex++]=QSize(1280,1024);
       sizeTable_[currentIndex++]=QSize(640,480);
       sizeTable_[currentIndex++]=QSize(320,240);
-      sizeTable_[currentIndex++]=QSize(160,120);
       sizeTable_[currentIndex++]=QSize(0,0);
    }
    return sizeTable_;
@@ -153,9 +153,10 @@ void QCamQHY5::setExposure() {
    // resets the cam
    camera->stop();
    // update vars
-   frameRate_=1000/frameExposure_;
-   timer_->start(frameExposure_,true);
-   setProperty("FrameRateSecond",frameRate_);
+   frameRate_=frameExposure_;
+   if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
+   timer_->start(frameRate_,true);
+   setProperty("FrameExposure",frameExposure_);
    // disable progress bar for short time
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progressBar->setEnabled(true);
@@ -245,26 +246,31 @@ bool QCamQHY5::updateFrame() {
       camera->configure(xstart_,ystart_,width_,height_,gain_,&width_,&height_);
       camera->shoot(frameExposure_);
       // gives a new shot for the timer
-      timer_->start(frameExposure_,true);
-      // set the output frame
-      switch(croppingMode) {
-         case SCALING :
-            yuvBuffer_.scaling(inputBuffer_,targetWidth_,targetHeight_);
-            break;
-         case CROPPING :
-            // cropping allready done by driver
-            yuvBuffer_=inputBuffer_;
-            break;
-         case BINNING :
-            yuvBuffer_.binning(inputBuffer_,targetWidth_,targetHeight_);
-            break;
-      }
-      // publish the frame
-      newFrameAvaible();
-      // update progress bar if needed
-      if(frameExposure_>(3*PROGRESS_TIME)) {
-         progressBar->reset();
-         progress_=0;
-      }
+      timer_->start(frameRate_,true);
+         // set the output frame
+         if((targetWidth_==1280)&&(targetHeight_==1024)) {
+             // nothing to resize
+             yuvBuffer_=inputBuffer_;
+         } else {
+            switch(croppingMode) {
+               case SCALING :
+                  yuvBuffer_.scaling(inputBuffer_,targetWidth_,targetHeight_);
+                  break;
+               case CROPPING :
+                  // cropping allready done by driver
+                  yuvBuffer_=inputBuffer_;
+                  break;
+               case BINNING :
+                  yuvBuffer_.binning(inputBuffer_,targetWidth_,targetHeight_);
+                  break;
+            }
+         }
+         // publish the frame
+         newFrameAvaible();
+         // update progress bar if needed
+         if(frameExposure_>(3*PROGRESS_TIME)) {
+            progressBar->reset();
+            progress_=0;
+         }
    }
 }
