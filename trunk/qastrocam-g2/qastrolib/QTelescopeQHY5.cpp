@@ -17,9 +17,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qmessagebox.h>
 
 #include "QTelescopeQHY5.moc"
 
+#include <stdlib.h>
 #include <iostream>
 #include <string.h>
 
@@ -30,78 +32,91 @@ using namespace std;
 extern settingsBackup settings;
 
 QTelescopeQHY5::QTelescopeQHY5(const char * pport) : QTelescope() {
-
-   //
-
-   stopE();
-   stopW();
-   stopN();
-   stopS();
+   // get the cam instance
+   cam_=QHY5cam::instance(QHY_GUIDER);
+   if(cam_==NULL) {
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY5 guider\nThe mount won't move...");
+   } else {
+      stopE();
+      stopW();
+      stopN();
+      stopS();
+   }
 }
 
 QTelescopeQHY5::~QTelescopeQHY5() {
-
-   //
-
+   // release the guider
+   if(cam_) {
+      QHY5cam::destroy(QHY_GUIDER);
+   }
 }
 
 void QTelescopeQHY5::goE(float shift) {
-   stopW();
-
-   //
-
+   if(cam_) {
+      stopW();
+      cam_->move(QHY_EAST,2550);
+   }
 }
 
 void QTelescopeQHY5::goW(float shift) {
-   stopE();
-
-   //
-
+   if(cam_) {
+      stopE();
+      cam_->move(QHY_WEST,2550);
+   }
 }
 
 void QTelescopeQHY5::goS(float shift) {
-   stopN();
-
-   //
-
+   if(cam_) {
+      stopN();
+      cam_->move(QHY_SOUTH,2550);
+   }
 }
 
 void QTelescopeQHY5::goN(float shift) {
-   stopS();
-
-   //
-
+   if(cam_) {
+      stopS();
+      cam_->move(QHY_NORTH,2550);
+   }
 }
 
 void QTelescopeQHY5::stopE() {
-
-   //
-
+   if(cam_) {
+      cam_->move(QHY_EAST,0);
+   }
 }
 
 void QTelescopeQHY5::stopN() {
-
-   //
-
+   if(cam_) {
+      cam_->move(QHY_NORTH,0);
+   }
 }
 
 void QTelescopeQHY5::stopW() {
-
-   //
-
+   if(cam_) {
+      cam_->move(QHY_WEST,0);
+   }
 }
 
 void QTelescopeQHY5::stopS() {
-
-   //
-
+   if(cam_) {
+      cam_->move(QHY_SOUTH,0);
+   }
 }
 
 double QTelescopeQHY5::setSpeed(double speed) {
-   return(0.0);
+   if(cam_) {
+      // fixed value
+      return(0.6);
+   } else {
+      return(0);
+   }
 }
 
 bool QTelescopeQHY5::setTracking(bool activated) {
-   // always tracking ?
-   return activated;
+   if(cam_) {
+      // always tracking
+      return activated;
+   } else {
+      return(!activated);
+   }
 }

@@ -120,7 +120,7 @@ int QHY5cam::read(char* image) {
 int QHY5cam::move(int direction, int duration) {
    unsigned int ret;
    int pulses[2]={-1,-1};
-
+   duration/=10;
    if((duration==0)||(direction==QHY_NONE)) {
       switch(direction) {
          case QHY_NORTH :
