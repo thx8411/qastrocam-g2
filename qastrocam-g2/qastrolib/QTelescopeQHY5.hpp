@@ -29,7 +29,7 @@ MA  02110-1301, USA.
 class QTelescopeQHY5 : public QTelescope {
    Q_OBJECT;
 public:
-   QTelescopeQHY5(const char * pport);
+   QTelescopeQHY5();
    ~QTelescopeQHY5();
 public slots:
    virtual void goE(float shift);

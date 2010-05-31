@@ -56,7 +56,8 @@ MA  02110-1301, USA.
 #include "QTelescopeAPM.hpp"
 #include "QTelescopeFifo.hpp"
 #include "QTelescopeFile.hpp"
-#include "QTelescopeMTS.cpp"
+#include "QTelescopeMTS.hpp"
+#include "QTelescopeQHY5.hpp"
 #include "PPort.hpp"
 #include "QHY5cam.hpp"
 #include "QKingClient.hpp"
@@ -349,6 +350,7 @@ int main(int argc, char ** argv) {
    if (telescopeType == "help") {
       cerr << "supported scopes:\n"
            << "* none\n"
+           << "* qhy5\n"
            << "* apm\n"
            << "* autostar\n"
            << "* fifo\n"
@@ -423,6 +425,20 @@ int main(int argc, char ** argv) {
 
    QCamUtilities::registerWidget(&mainWindow);
 
+   // capture module creation
+   QCam* cam = NULL;
+   // test QHY5
+   if(QHY5cam::plugged()) {
+      cam = new QCamQHY5();
+   } else {
+      // find the best V4L device
+      cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
+      if (cam == NULL) {
+         QMessageBox::information(0,"Qastrocam-g2","No camera detected\nSettings panel only");
+         cout << "No camera detected" <<endl;
+      }
+   }
+
    // creating telescope object
    if(telescopeType=="none") telescopeType="";
    QTelescope * theTelescope=NULL;
@@ -439,6 +455,8 @@ int main(int argc, char ** argv) {
          theTelescope = new QTelescopeMTS(telescopeDeviceName.c_str());
       } else if (telescopeType=="file") {
 	 theTelescope = new QTelescopeFile(telescopeDeviceName.c_str());
+      } else if (telescopeType=="qhy5") {
+         theTelescope = new QTelescopeQHY5();
       } else {
          cerr << "unsupported telescope type "
               <<"'"<<telescopeType<<"'"<<endl;
@@ -446,20 +464,6 @@ int main(int argc, char ** argv) {
          exit(1);
       }
       theTelescope->buildGUI();
-   }
-
-   // capture module creation
-   QCam* cam = NULL;
-   // test QHY5
-   if(QHY5cam::plugged()) {
-      cam = new QCamQHY5();
-   } else {
-      // find the best V4L device
-      cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
-      if (cam == NULL) {
-         QMessageBox::information(0,"Qastrocam-g2","No camera detected\nSettings panel only");
-         cout << "No camera detected" <<endl;
-      }
    }
 
    QKingClient* kingClient=NULL;

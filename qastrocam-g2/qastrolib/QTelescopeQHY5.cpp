@@ -31,16 +31,22 @@ using namespace std;
 
 extern settingsBackup settings;
 
-QTelescopeQHY5::QTelescopeQHY5(const char * pport) : QTelescope() {
-   // get the cam instance
-   cam_=QHY5cam::instance(QHY_GUIDER);
-   if(cam_==NULL) {
+QTelescopeQHY5::QTelescopeQHY5() : QTelescope() {
+   // is there a cam ?
+   if(!QHY5cam::plugged()) {
+      cam_==NULL;
       QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY5 guider\nThe mount won't move...");
    } else {
-      stopE();
-      stopW();
-      stopN();
-      stopS();
+      // get the cam instance
+      cam_=QHY5cam::instance(QHY_GUIDER);
+      if(cam_==NULL) {
+         QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY5 guider\nThe mount won't move...");
+      } else {
+         stopE();
+         stopW();
+         stopN();
+         stopS();
+      }
    }
 }
 
