@@ -1,5 +1,6 @@
-4.8beta20100525
+4.8beta20100531
 
+  - Telescope configuration bug fixed
   - LX200 protocole supported via autostar
   - QHY5 imager support added
   - software bilinear scaling added
