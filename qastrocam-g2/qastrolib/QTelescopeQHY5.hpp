@@ -43,6 +43,7 @@ public slots:
    virtual double setSpeed(double speed);
    virtual bool setTracking(bool activated);
 private:
+   QHY5cam* cam_;
 };
 
 #endif

@@ -50,7 +50,7 @@ using namespace std;
 // SDL <yes/no>
 // EXPERT <yes/no>
 // LOG <yes/no>
-// TELESCOPE <none/apm/autostar/fifo/mcu/mts/file>
+// TELESCOPE <none/qhy5/apm/autostar/fifo/mcu/mts/file>
 // VIDEO_DEVICE <file>
 // LIB_PATH <directory>
 // ADD_MODULE <yes/no>
