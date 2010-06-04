@@ -56,7 +56,7 @@ QCamAutoAlign::QCamAutoAlign() {
    findShiftWidget_=NULL;
    center_=false;
    cropValue_=0.8;
-   fifoName_="/tmp/qastrocam_shift.fifo";
+   fifoName_="/tmp/qastrocam-g2_shift.fifo";
    cout << "trying fifo "<<fifoName_<<"..."<<flush;
    fifo_=NULL;
    int fifoDescriptor=open(fifoName_.c_str(),O_RDWR|O_NONBLOCK);

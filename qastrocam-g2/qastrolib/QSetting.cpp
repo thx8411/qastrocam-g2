@@ -377,10 +377,15 @@ void QSetting::changeTelescope(int index) {
       telescopeDeviceChooser->setEnabled(false);
       telescopeLevels->setEnabled(false);
    // files, no levels
-   } else if(telescopeList->currentText()==QString("file")||telescopeList->currentText()==QString("fifo")) {
+   } else if(telescopeList->currentText()==QString("file")) {
       telescopeDeviceEntry->setEnabled(true);
       telescopeDeviceChooser->setType(REGULAR_FILE);
       telescopeDeviceChooser->setEnabled(true);
+      telescopeLevels->setEnabled(false);
+   } else if(telescopeList->currentText()==QString("fifo")) {
+      telescopeDeviceEntry->setEnabled(false);
+      telescopeDeviceEntry->setText("/tmp/qastrocam-g2_shift.fifo");
+      telescopeDeviceChooser->setEnabled(false);
       telescopeLevels->setEnabled(false);
    // protoles, devices but no levels
    } else if(telescopeList->currentText()==QString("autostar")||telescopeList->currentText()==QString("mcu")||telescopeList->currentText()==QString("mts")) {

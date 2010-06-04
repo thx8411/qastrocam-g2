@@ -576,7 +576,7 @@ int main(int argc, char ** argv) {
       if (kingOption) {
          cout << "King aligment enabled\n";
          kingClient=new QKingClient();
-         sleep(1);
+         //sleep(1);
          kingClient->connectCam(*camSrc);
          //addRemoteCTRL(kingClient);
          kingClient->buildGUI(NULL)->show();
