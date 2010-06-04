@@ -1,4 +1,4 @@
-qastrocam-g2 (4.8beta20100531) jaunty; urgency=low
+qastrocam-g2 (4.8beta20100604) jaunty; urgency=low
 
   * pre-process tab added
   * de-bayer moved to pre-process
@@ -27,6 +27,7 @@ qastrocam-g2 (4.8beta20100531) jaunty; urgency=low
   * QHY5 imager support added
   * software bilinear scaling added
   * Telescope configuration bug fixed
+  * QHY5 guiding port supported
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 

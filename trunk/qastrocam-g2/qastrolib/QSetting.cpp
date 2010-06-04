@@ -49,7 +49,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(videoBox,0);
    videoDeviceLabel=new QLabel("Video device : ",videoBox);
    videoDeviceEntry=new QLineEdit(videoBox);
-   QToolTip::add(videoDeviceEntry,tr("Video device to use"));
+   QToolTip::add(videoDeviceEntry,tr("Video device to use, just type 'qhy5' for the QHY5 camera"));
    videoDeviceChooser=new QFileChooser(videoBox,DEVICE_FILE);
    QToolTip::add(videoDeviceChooser,tr("Selects video device"));
 
