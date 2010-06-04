@@ -428,8 +428,13 @@ int main(int argc, char ** argv) {
    // capture module creation
    QCam* cam = NULL;
    // test QHY5
-   if(QHY5cam::plugged()) {
-      cam = new QCamQHY5();
+   if(videoDeviceName=="qhy5") {
+      if(QHY5cam::plugged())
+         cam = new QCamQHY5();
+      else {
+          QMessageBox::information(0,"Qastrocam-g2","QHY5 camera detected\nSettings panel only");
+         cout << "QHY4 camera not detected" <<endl;
+      }
    } else {
       // find the best V4L device
       cam = QCamV4L::openBestDevice(videoDeviceName.c_str());

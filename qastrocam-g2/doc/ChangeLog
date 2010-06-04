@@ -1,5 +1,6 @@
-4.8beta20100531
+4.8beta20100604
 
+  - QHY5 guiding port supported
   - Telescope configuration bug fixed
   - LX200 protocole supported via autostar
   - QHY5 imager support added
