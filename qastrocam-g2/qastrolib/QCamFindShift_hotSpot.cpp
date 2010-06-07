@@ -137,12 +137,12 @@ bool QCamFindShift_hotSpot::findHotSpot(Vector2D & center) {
       }
    }
    if (hotSpotBrightness>0) {
-      //cout << "hotspot = " << center <<endl;
+      //cerr << "hotspot = " << center <<endl;
       lastCenter_=center;
       lastBrightness_=hotSpotBrightness;
       return true;
    } else {
-      //cout << " hotspot not found"<<endl;
+      //cerr << " hotspot not found"<<endl;
       return false;
    }
 }
