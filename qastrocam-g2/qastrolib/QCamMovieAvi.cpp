@@ -31,6 +31,7 @@ MA  02110-1301, USA.
 #include "QCamMovieAvi.hpp"
 #include "QCamFrame.hpp"
 #include "QCam.hpp"
+#include "SettingsBackup.hpp"
 
 #include <videoencoder.h>
 #include <image.h>
@@ -39,6 +40,9 @@ MA  02110-1301, USA.
 #include <utils.h>
 #include <avm_creators.h>
 #include <avm_except.h>
+
+// settings object, needed everywhere
+extern settingsBackup settings;
 
 QCamMovieAvi::QCamMovieAvi() {
    // init
