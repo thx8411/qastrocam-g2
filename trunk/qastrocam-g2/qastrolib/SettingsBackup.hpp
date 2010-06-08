@@ -50,6 +50,8 @@ using namespace std;
 // SDL <yes/no>
 // EXPERT <yes/no>
 // LOG <yes/no>
+// REGISTAX_AVI <yes/no>
+// NIGHT_VISION <yes/no>
 // TELESCOPE <none/qhy5/apm/autostar/fifo/mcu/mts/file>
 // VIDEO_DEVICE <file>
 // LIB_PATH <directory>

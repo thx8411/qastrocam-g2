@@ -120,6 +120,8 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    lineFour=new QHBox(optionsBox);
    optionsLog=new QCheckBox("Write log file",lineFour);
    optionsNightVision=new QCheckBox("Night vision mode",lineFour);
+   lineSeven=new QHBox(optionsBox);
+   optionsRegistax=new QCheckBox("Registax AVI compatibility",lineSeven);
    libBox=new QHBox(optionsBox);
    libpathLabel=new QLabel("Library path : ",libBox);
    libpathEntry=new QLineEdit(libBox);
@@ -166,6 +168,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 #endif
    connect(optionsExpert,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsLog,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+   connect(optionsRegistax,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesAdd,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesMax,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesKing,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
@@ -243,6 +246,10 @@ void QSetting::fillFields() {
       optionsLog->setChecked(string(settings.getKey("LOG"))=="yes");
    else
       hasChanged();
+   if(settings.haveKey("REGISTAX_AVI"))
+      optionsRegistax->setChecked(string(settings.getKey("REGISTAX_AVI"))=="yes");
+   else
+      hasChanged();
    if(settings.haveKey("ADD_MODULE"))
       modulesAdd->setChecked(string(settings.getKey("ADD_MODULE"))=="yes");
    else
@@ -312,6 +319,11 @@ void QSetting::saveSettings() {
    else
       temp="no";
    settings.setKey("LOG",temp.latin1());
+   if(optionsRegistax->isChecked())
+      temp="yes";
+   else
+      temp="no";
+   settings.setKey("REGISTAX_AVI",temp.latin1());
    if(modulesAdd->isChecked())
       temp="yes";
    else

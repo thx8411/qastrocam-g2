@@ -281,6 +281,17 @@ void y_to_yuyv(int w, int h, const unsigned char* src, unsigned char* dst) {
    }
 }
 
+// y to bgr24
+void y_to_bgr24(int w, int h, const unsigned char* src, unsigned char* dst) {
+   static int p,size;
+   size=h*w;
+   for(p=0;p<size;p++) {
+      dst[p*3+2]=src[p];
+      dst[p*3+1]=src[p];
+      dst[p*3]=src[p];
+   }
+}
+
 //
 // TRANSFORMS
 //

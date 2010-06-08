@@ -105,10 +105,12 @@ private :
    QVGroupBox* optionsBox;
    QHBox* lineThree;
    QHBox* lineFour;
+   QHBox* lineSeven;
    QCheckBox* optionsSdl;
    QCheckBox* optionsExpert;
    QCheckBox* optionsLog;
    QCheckBox* optionsNightVision;
+   QCheckBox* optionsRegistax;
    QHBox* libBox;
    QLabel* libpathLabel;
    QLineEdit* libpathEntry;

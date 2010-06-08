@@ -1,5 +1,6 @@
-4.8beta20100607
+4.8beta20100608
 
+  - Registax compatible avi output added
   - QHY5 guiding port supported
   - Telescope configuration bug fixed
   - LX200 protocole supported via autostar
