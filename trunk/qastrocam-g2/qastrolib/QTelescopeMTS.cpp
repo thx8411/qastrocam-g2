@@ -38,12 +38,14 @@ using namespace std;
 QTelescopeMTS::QTelescopeMTS(const char * deviceName) :
    QTelescope() {
    struct termios termios_p;
+   currentSpeed=0;
 
    cout << "PowerFlex MTS telescope control\n";
 
    descriptor_ = open( deviceName, O_RDWR | O_NOCTTY );
    if ( descriptor_== -1 ) {
       perror(deviceName);
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the telescope device\nThe mount won't move...");
    }
 
    memset( &termios_p, 0, sizeof(termios_p) );
@@ -159,13 +161,20 @@ int QTelescopeMTS::recvRD1Cmd() {
 /* Sets the slew speed. Powerflex MTS has two selectable
    speed, SLOW for guiding and FAST for targeting */
 double QTelescopeMTS::setSpeed(double speed) {
-   if ( speed <= 0.9 ) {
-     sendCommand( fastoff ); // SLOW
-     return 0.1;
+   if ( speed <= 0.5 ) {
+     speed=0.5;
+     if(speed!=currentSpeed) {
+        sendCommand( fastoff ); // SLOW
+        currentSpeed=speed;
+     }
    } else {
-     sendCommand( faston );  // FAST
-      return 1.0;
+     speed=1.0;
+     if(speed!=currentSpeed) {
+        sendCommand( faston );  // FAST
+        currentSpeed=speed;
+     }
    }
+   return(currentSpeed);
 }
 
 /* Sets the tracking of the mount on/off

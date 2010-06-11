@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,6 +24,9 @@ MA  02110-1301, USA.
 #define _QTelescope_hpp_
 
 #include <qobject.h>
+#include <qslider.h>
+#include <qlabel.h>
+
 class QVGroupBox;
 class QPushButton;
 class QGridLayout;
@@ -47,10 +50,14 @@ public:
    virtual ~QTelescope();
 protected:
    QWidget * widget();
+   double currentSpeed;
 private:
    QVGroupBox * mainWidget_;
    QGridLayout * arrowsLayout_;
    QWidget * arrows_;
+   // speed stuff
+   QSlider* speedSlider_;
+   QLabel* speedValue_;
    // move buttons
    QPushButton * upButton_;
    QPushButton * downButton_;
@@ -58,6 +65,8 @@ private:
    QPushButton * rightButton_;
    /** copy constructor not implemented. */
    QTelescope(const QTelescope&);
+private slots:
+   void speedChanged(int speed);
 public slots:
    /// move East
    virtual void goE(float shift)=0;
@@ -86,7 +95,7 @@ public slots:
    /**set Telescope move speed.
       0=> slowest speed, 1.0=> max speed.
       the speed entered is an hint. The function
-      must return the real speed.
+      must return the real speed. 0 means 'not supported'
    */
    virtual double setSpeed(double speed)=0;
    /** set auto tracking mode.

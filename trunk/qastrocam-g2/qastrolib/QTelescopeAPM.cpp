@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qmessagebox.h>
 
 #include "QTelescopeAPM.moc"
 
@@ -39,6 +40,7 @@ QTelescopeAPM::QTelescopeAPM(const char * pport) : QTelescope() {
    portEntry=paralPort->getAccess(portName);
    if(portEntry==-1) {
       cerr << "unable to get access to " << portName << endl;
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the telescope device\nThe mount won't move...");
    }
    // are levels inverted in settings file ?
    if(settings.haveKey("TS_LEVELS_INVERTED")&&(strcasecmp(settings.getKey("TS_LEVELS_INVERTED"),"yes")==0)) {
@@ -96,7 +98,7 @@ void QTelescopeAPM::stopS() {
 }
 
 double QTelescopeAPM::setSpeed(double speed) {
-   return 2.0/3;
+   return(0);
 }
 
 bool QTelescopeAPM::setTracking(bool activated) {

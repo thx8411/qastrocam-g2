@@ -40,7 +40,7 @@ public:
    virtual void stopE() {}
    virtual void stopN() {}
    virtual void stopS() {}
-   virtual double setSpeed(double speed) {return speed; }
+   virtual double setSpeed(double speed) {return(0); }
    virtual bool setTracking(bool activated) {return true; }
   private:
    int descriptor_;

@@ -110,12 +110,7 @@ void QTelescopeQHY5::stopS() {
 }
 
 double QTelescopeQHY5::setSpeed(double speed) {
-   if(cam_) {
-      // fixed value
-      return(0.6);
-   } else {
-      return(0);
-   }
+   return(0);
 }
 
 bool QTelescopeQHY5::setTracking(bool activated) {

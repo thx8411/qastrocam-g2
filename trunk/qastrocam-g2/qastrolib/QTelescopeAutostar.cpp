@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qmessagebox.h>
 
 #include "QTelescopeAutostar.moc"
 
@@ -35,9 +36,12 @@ using namespace std;
 QTelescopeAutostar::QTelescopeAutostar(const char * deviceName) :
    QTelescope() {
    struct termios termios_p;
+   currentSpeed=0.0;
+
    descriptor_=open(deviceName,O_RDWR|O_NOCTTY);
    if (descriptor_==-1) {
       perror(deviceName);
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the telescope device\nThe mount won't move...");
    }
 
    memset(&termios_p,0,sizeof(termios_p));
@@ -126,7 +130,7 @@ string QTelescopeAutostar::sendCommand(CommandType com,const string & param) {
 }
 
 bool QTelescopeAutostar::sendCmd(const string & cmd,const string & param) {
-   // '#' removed at the biginning of the command
+   // '#' removed at the beginning of the command
    // not really needed for autostar, depsite the Meade docs
    // now also supports the LX200 telescopes
    string fullCmd=string(":")+cmd+param+"#";
@@ -149,21 +153,21 @@ string QTelescopeAutostar::recvCmd(ReturnType t) {
    case booleans:
       lu=read(descriptor_,buf,1);
       if (lu!=1) {
-         cerr << "expecting a 1 char when reading from autostar\n";
+         cout << "expecting a 1 char when reading from autostar\n";
       }
       buf[1]=0;
       break;
    case numerics:
       lu=read(descriptor_,buf,4);
       if (lu!=4) {
-         cerr <<"expecting a 4 digit number when reading from autostar\n";
+         cout <<"expecting a 4 digit number when reading from autostar\n";
       }
       buf[lu]=0;
    case strings:
       do {
          int cur=read(descriptor_,buf+lu,1);
          if (cur!=1) {
-            cerr << "expecting a 1 char when reading a string from autostar\n";
+            cout << "expecting a 1 char when reading a string from autostar\n";
          }
          lu+=cur;
       } while (buf[lu-1]!='#');
@@ -177,15 +181,25 @@ string QTelescopeAutostar::recvCmd(ReturnType t) {
 
 double QTelescopeAutostar::setSpeed(double speed) {
    if (speed <=1.0/3) {
-      sendCommand(setMoveSpeed,"2");
-      return 1.0/3;
+      speed=1.0/3;
+      if(speed!=currentSpeed) {
+         sendCommand(setMoveSpeed,"2");
+         currentSpeed=speed;
+      }
    } else if (speed <=2.0/3) {
-      sendCommand(setMoveSpeed,"3");
-      return 2.0/3;
+      speed=2.0/3;
+      if(speed!=currentSpeed) {
+         sendCommand(setMoveSpeed,"3");
+         currentSpeed=speed;
+      }
    } else /*if (speed <=3/3)*/ {
-      sendCommand(setMoveSpeed,"4");
-      return 3.0/3;
+      speed=3.0/3;
+      if(speed!=currentSpeed) {
+         sendCommand(setMoveSpeed,"4");
+         currentSpeed=speed;
+      }
    }
+   return(currentSpeed);
 }
 
 bool QTelescopeAutostar::setTracking(bool activated) {
