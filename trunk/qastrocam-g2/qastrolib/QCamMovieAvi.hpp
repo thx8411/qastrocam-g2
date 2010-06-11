@@ -44,6 +44,7 @@ public:
    // add a frame
    bool addImpl(const QCamFrame & newFrame, const QCam & cam);
 private:
+   bool registaxCompatibility;
    // file
    mutable avm::IWriteFile* aviFile_;
    // stream

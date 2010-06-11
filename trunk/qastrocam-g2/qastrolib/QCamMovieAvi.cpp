@@ -49,6 +49,12 @@ QCamMovieAvi::QCamMovieAvi() {
    aviFile_ = 0;
    aviStream_ = 0;
    deinterlaceBuf_ =NULL;
+
+   // should the movie be registax compatible ?
+   if(settings.haveKey("REGISTAX_AVI"))
+      registaxCompatibility=(string(settings.getKey("REGISTAX_AVI"))=="yes");
+   else
+      registaxCompatibility=false;
 }
 
 QCamMovieAvi::~QCamMovieAvi() {
@@ -66,7 +72,7 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    aviFile_ = avm::CreateWriteFile((seqName+".avi").c_str());
 
    // build header for grey frames (we must add a palette)
-   if(cam.yuvFrame().getMode()==GreyFrame) {
+   if((cam.yuvFrame().getMode()==GreyFrame)&&!(registaxCompatibility)) {
       BITMAPINFO* bi;
       bi=(BITMAPINFO*)malloc(sizeof(BITMAPINFOHEADER)+256*4);
       memset(bi, 0, sizeof(BITMAPINFOHEADER)+256*4);
@@ -134,7 +140,7 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    bi.biWidth = newFrame.size().width();
    bi.biHeight = newFrame.size().height();
    // grey frame
-   if(newFrame.getMode()==GreyFrame) {
+   if((newFrame.getMode()==GreyFrame)&&(!registaxCompatibility)) {
       bi.biSizeImage =bi.biWidth*bi.biHeight;
       bi.biPlanes = 1;
       bi.biBitCount = 8;
@@ -148,11 +154,17 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    }
 
    // transform frames
-   if(newFrame.getMode()==GreyFrame) {
+   if((newFrame.getMode()==GreyFrame)&&(!registaxCompatibility)) {
       memcpy(deinterlaceBuf_,newFrame.Y(),bi.biSizeImage);
       grey_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
    } else {
-      yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
+      // if registax compatible, grey frame stored as raw rgb
+      if(registaxCompatibility) {
+         y_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),deinterlaceBuf_);
+      } else {
+      // else yuv to raw rgb
+         yuv444_to_bgr24(bi.biWidth,bi.biHeight,newFrame.Y(),newFrame.U(),newFrame.V(),deinterlaceBuf_);
+      }
       rgb24_vertical_swap(bi.biWidth,bi.biHeight,deinterlaceBuf_);
    }
    // add the frame
