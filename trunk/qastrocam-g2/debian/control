@@ -9,7 +9,7 @@ Package: qastrocam-g2
 Architecture: any
 Section: graphics
 Priority: optional
-Depends: libavifile-0.7c2 (>= 1:0.7.47.20070718), libc6 (>= 2.7), libcfitsio3, libgcc1 (>= 1:4.1.1), libjpeg62, libqt3-mt (>= 3:3.3.8-b), libsdl1.2debian (>= 1.2.10-1), libstdc++6  (>= 4.2.1), libx11-6, avifile-win32-plugin (>= 1:0.7.47), libqwtplot3d-qt3 (>= 0:0.2.7), libusb-0.1-4 (>= 2:0.1.12)
+Depends: libavifile-0.7c2 (>= 1:0.7.47.20070718), libc6 (>= 2.7), libcfitsio3, libgcc1 (>= 1:4.1.1), libjpeg62, libqt3-mt (>= 3:3.3.8-b), libsdl1.2debian (>= 1.2.10-1), libstdc++6  (>= 4.2.1), libx11-6, avifile-win32-plugin (>= 1:0.7.47), libqwtplot3d-qt3, libusb-0.1-4 (>= 2:0.1.12)
 Replaces: astroavibrowser
 Description: Webcam capture software for astronomy
  qastrocam-g2 is a capture program for linux that can handle any V4L device.
