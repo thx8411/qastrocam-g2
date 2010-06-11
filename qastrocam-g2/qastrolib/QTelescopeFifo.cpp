@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qmessagebox.h>
 
 #include "QTelescopeFifo.moc"
 
@@ -37,5 +38,6 @@ QTelescopeFifo::QTelescopeFifo(const char * deviceName) :
    descriptor_=open(deviceName,O_RDWR|O_NOCTTY);
    if (descriptor_==-1) {
       perror(deviceName);
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the telescope device\nThe mount won't move...");
    }
 }

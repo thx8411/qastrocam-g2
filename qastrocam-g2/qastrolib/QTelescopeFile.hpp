@@ -51,7 +51,7 @@ public slots:
    virtual void stopN() {}
    virtual void stopS() {}
    // speed and track
-   virtual double setSpeed(double speed) {return speed; }
+   virtual double setSpeed(double speed) {return(0); }
    virtual bool setTracking(bool activated) {return true; }
   private:
    // timing

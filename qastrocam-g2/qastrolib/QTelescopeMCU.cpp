@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <qmessagebox.h>
 
 #include "QTelescopeMCU.moc"
 
@@ -35,9 +36,12 @@ using namespace std;
 QTelescopeMCU::QTelescopeMCU(const char * deviceName) :
    QTelescope() {
    struct termios termios_p;
+   currentSpeed=0;
+
    descriptor_=open(deviceName,O_RDWR|O_NOCTTY);
    if (descriptor_==-1) {
       perror(deviceName);
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the telescope device\nThe mount won't move...");
    }
    memset(&termios_p,0,sizeof(termios_p));
    termios_p.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
@@ -205,15 +209,25 @@ void QTelescopeMCU::setSpeed(char speed) {
 
 double QTelescopeMCU::setSpeed(double speed) {
    if (speed <=1.0/3) {
-      sendCommand(setMoveSpeed,"G");
-      return 1.0/3;
+      speed=1.0/3;
+      if(speed!=currentSpeed) {
+         sendCommand(setMoveSpeed,"G");
+         currentSpeed=speed;
+      }
    } else if (speed <=2.0/3) {
-      sendCommand(setMoveSpeed,"C");
-      return 2.0/3;
+      speed=2.0/3;
+      if(speed!=currentSpeed) {
+         sendCommand(setMoveSpeed,"C");
+         currentSpeed=speed;
+      }
    } else /*if (speed <=3/3)*/ {
-      sendCommand(setMoveSpeed,"M");
-      return 3.0/3;
+      speed=3.0/3;
+      if(speed!=currentSpeed) {
+         sendCommand(setMoveSpeed,"M");
+         currentSpeed=speed;
+      }
    }
+   return(currentSpeed);
 }
 
 bool QTelescopeMCU::setTracking(bool activated) {

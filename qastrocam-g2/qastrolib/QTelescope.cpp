@@ -27,6 +27,7 @@ MA  02110-1301, USA.
 #include <qlabel.h>
 #include <qpixmap.h>
 #include <qpushbutton.h>
+#include <qhgroupbox.h>
 
 #include "QCamUtilities.hpp"
 
@@ -80,6 +81,21 @@ void QTelescope::buildGUI(QWidget * parent) {
    connect(rightButton_,SIGNAL(pressed()),this,SLOT(goW()));
    connect(rightButton_,SIGNAL(released()),this,SLOT(stopW()));
    mainWidget_->show();
+
+   // speed slider
+   double speed;
+   QHGroupBox* speedBox;
+   speedBox=new QHGroupBox(QString("Speed"),mainWidget_);
+   speedSlider_=new QSlider(1,100,1,100,Qt::Horizontal,speedBox);
+   speedValue_=new QLabel(speedBox);
+   speed=setSpeed(100/100);
+   speedValue_->setText(QString().sprintf("%3i%%",(int)(speed*100)));
+   if(speed==0) {
+      speedSlider_->setEnabled(false);
+      speedValue_->setEnabled(false);
+   }
+   connect(speedSlider_,SIGNAL(valueChanged(int)),this,SLOT(speedChanged(int)));
+   speedBox->show();
 }
 
 QTelescope::~QTelescope() {
@@ -88,4 +104,10 @@ QTelescope::~QTelescope() {
 
 QWidget * QTelescope::widget() {
    return mainWidget_;
+}
+
+void QTelescope::speedChanged(int speed) {
+   double newSpeed;
+   newSpeed=setSpeed((double)speed/100.0);
+   speedValue_->setText(QString().sprintf("%3i%%",(int)(newSpeed*100)));
 }
