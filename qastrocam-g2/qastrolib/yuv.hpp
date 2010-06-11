@@ -94,7 +94,6 @@ void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned cha
 // FROM Y ONLY
 //
 
-
 // y to yuyv
 void y_to_yuyv(int w, int h, const unsigned char* src, unsigned char* dst);
 
