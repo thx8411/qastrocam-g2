@@ -29,6 +29,7 @@ MA  02110-1301, USA.
 #include <qcheckbox.h>
 #include <qvgroupbox.h>
 #include <qhgroupbox.h>
+#include <qradiobutton.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -36,7 +37,7 @@ MA  02110-1301, USA.
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
 
-const int QCamAdd::numOfBuffers_=512;
+const int QCamAdd::numOfBuffers_=128;
 
 void QCamAdd::removeFrame(const QCamFrame & frame) {
    int dummyMin,dummyMax,dummyCr;
@@ -382,12 +383,17 @@ void QCamAdd::setMinYvalue(int val) {
 QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
+   // method gui
+   methodWidget_ = new QButtonGroup(3,Qt::Horizontal,tr("Method"), remoteCTRL);
+   QRadioButton* frameSum= new QRadioButton(tr("Sum"),methodWidget_);
+   QRadioButton* frameAverage= new QRadioButton(tr("Average"),methodWidget_);
+   QRadioButton* frameMedian= new QRadioButton(tr("Median"),methodWidget_);
+   methodWidget_->setButton(0);
+   connect(methodWidget_,SIGNAL(clicked(int)),this,SLOT(methodChanged(int)));
+
    accumulationWidget_ = new QHGroupBox(tr("Num of Buffers"),remoteCTRL);
-   int ActiveBufferList[]={1,2,4,8,16,32,64,128,256,512};
-   remoteCTRLnumOfActiveBuffer_=
-      new QCamComboBox(tr("Num of Buffers"),
-                       accumulationWidget_,
-                       10,ActiveBufferList,NULL);
+   int ActiveBufferList[]={1,2,4,8,16,32,64,128};
+   remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,8,ActiveBufferList,NULL);
    connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
    connect(remoteCTRLnumOfActiveBuffer_,SIGNAL(change(int)),this,SLOT(setNumOfBuffer(int)));
 
@@ -493,4 +499,10 @@ void QCamAdd::modeDisplay(int val) {
       newFrameAvaible();
       //emit (newFrame());
    }
+}
+
+void QCamAdd::methodChanged(int b) {
+   //
+   //
+   //
 }

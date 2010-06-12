@@ -31,6 +31,8 @@ MA  02110-1301, USA.
 #include <stdlib.h>
 #include <math.h>
 
+#include <qbuttongroup.h>
+
 #define QCAM_ADD_COLOR
 
 class QCamSlider;
@@ -95,6 +97,7 @@ class QCamAdd : public QCam {
                   int & maxCrValue,
                   const bool adding);
    /* for remote control */
+   QButtonGroup* methodWidget_;
    QHGroupBox * accumulationWidget_;
    QCamComboBox *remoteCTRLnumOfActiveBuffer_;
    QProgressBar * bufferFill_;
@@ -135,6 +138,7 @@ public slots:
    void minYValueChange(int);
  private slots:
    void addNewFrame();
+   void methodChanged(int b);
 };
 
 #endif
