@@ -1,5 +1,6 @@
-4.8beta20100612
+4.8beta20100615
 
+  - Autoguiding slew speed can now be changed on some devices
   - Registax compatible avi output added
   - QHY5 guiding port supported
   - Telescope configuration bug fixed
