@@ -60,28 +60,28 @@ QTelescopeQHY5::~QTelescopeQHY5() {
 void QTelescopeQHY5::goE(float shift) {
    if(cam_) {
       stopW();
-      cam_->move(QHY_EAST,4096);
+      cam_->move(QHY_EAST,8192);
    }
 }
 
 void QTelescopeQHY5::goW(float shift) {
    if(cam_) {
       stopE();
-      cam_->move(QHY_WEST,4096);
+      cam_->move(QHY_WEST,8192);
    }
 }
 
 void QTelescopeQHY5::goS(float shift) {
    if(cam_) {
       stopN();
-      cam_->move(QHY_SOUTH,4096);
+      cam_->move(QHY_SOUTH,8192);
    }
 }
 
 void QTelescopeQHY5::goN(float shift) {
    if(cam_) {
       stopS();
-      cam_->move(QHY_NORTH,4096);
+      cam_->move(QHY_NORTH,8192);
    }
 }
 

@@ -92,6 +92,8 @@ BayerWidget::BayerWidget(QWidget * parent, const FrameBayer * algo): QHBox(paren
         if (index!=-1) {
            pattern->update(index);
            pattern->updateSignal(index);
+           if(index==0)
+              algorithm->setEnabled(false);
         }
    } else pattern->update(0);
    keyName="RAW_METHOD";
