@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
 #include "QCamAdd.moc"
 
 #include "QCamSlider.hpp"
@@ -44,24 +43,18 @@ void QCamAdd::removeFrame(const QCamFrame & frame) {
    moveFrame(frame,dummyMin,dummyMax,dummyCr,false);
 }
 
-void QCamAdd::addFrame(const QCamFrame & frame,
-                       int & maxYValue,
-                       int & minYValue,
-                       int & maxCrValue) {
+void QCamAdd::addFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue) {
    moveFrame(frame,maxYValue,minYValue,maxCrValue,true);
 }
 
-void QCamAdd::moveFrame(const QCamFrame & frame,
-                        int & maxYValue,
-                        int & minYValue,
-                        int & maxCrValue,
-                        const bool adding) {
+void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue,const bool adding) {
    int size;
    int tmpValue;
-   maxYValue=minYValue=integrationBuff_[0];
    int * dest=integrationBuff_;
-
    const uchar * src=frame.Y();
+   maxYValue=minYValue=integrationBuff_[0];
+
+   // Luminance
    size=frame.ySize();
    for (int i=0;i<size;++i) {
       if (adding) {
@@ -78,6 +71,7 @@ void QCamAdd::moveFrame(const QCamFrame & frame,
       ++src;
    }
 
+   // color
    if (mode_==YuvFrame) {
       maxCrValue=0;
       src=frame.U();
@@ -126,7 +120,7 @@ void QCamAdd::moveFrame(const QCamFrame & frame,
          break;
       default:
          // invalid case
-         cerr << "invalid value "<< maxCrValueAutoSaturated_ << "for maxCrValueAutoSaturated_\n";
+         cout << "invalid value "<< maxCrValueAutoSaturated_ << "for maxCrValueAutoSaturated_\n";
       }
    } else {
       maxCrValue=maxYValue>>1;
@@ -159,6 +153,8 @@ QCamAdd::QCamAdd(QCam* cam) :
    setGray(true);
 #endif
    label(tr("Stacking"));
+
+   method_=QCAM_ADD_ADD;
 }
 
 QCamAdd::~QCamAdd() {
@@ -298,15 +294,14 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    }
    switch (frame.getMode()) {
    case GreyFrame:
-/*   case RawRgbFrame1:
-   case RawRgbFrame2:
-   case RawRgbFrame3:
-   case RawRgbFrame4:
-      mode_=frame.getMode();*/
       mode_=GreyFrame;
+      if(maxCrSaturatedButton_)
+         maxCrSaturatedButton_->hide();
       break;
    case YuvFrame:
       mode_=(maxCrValueAutoSaturated_==0)?GreyFrame:YuvFrame;
+      if(maxCrSaturatedButton_)
+         maxCrSaturatedButton_->show();
    }
 
    //frameHistory_[curBuff_]->removeFrame(integrationBuff_);
@@ -502,7 +497,10 @@ void QCamAdd::modeDisplay(int val) {
 }
 
 void QCamAdd::methodChanged(int b) {
-   //
-   //
-   //
+   method_=b;
+   resetBufferFill();
+   if(method_!=0)
+      displayOptions_->setEnabled(false);
+   else
+      displayOptions_->setEnabled(true);
 }

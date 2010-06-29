@@ -160,6 +160,12 @@ int QHY5cam::move(int direction, int duration) {
    return(usb_control_msg(dev,0x42,0x10,0,direction,(char*)pulses,sizeof(pulses),500));
 }
 
+int QHY5cam::move(int direction) {
+   //
+   return(0);
+   //
+}
+
 // configure the cam
 int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL, int* rh=NULL) {
    char registers[19];

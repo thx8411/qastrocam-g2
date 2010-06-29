@@ -31,6 +31,8 @@ using namespace std;
 #define QHY_EAST	2
 #define QHY_WEST	3
 #define QHY_NONE	4
+#define	QHY_STOP_NS	5
+#define QHY_STOP_EW	6
 
 // features
 #define QHY_IMAGER	0
@@ -50,6 +52,7 @@ public :
    int shoot(int duration);
    int read(char* image);
    int move(int direction, int duration);
+   int move(int direction);
    int configure(int xpos, int ypos, int w, int h, int gain, int* rw, int* rh);
 
    // is the cam plugged ?

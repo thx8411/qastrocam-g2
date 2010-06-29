@@ -1,4 +1,4 @@
-qastrocam-g2 (4.8beta201006015) jaunty; urgency=low
+qastrocam-g2 (4.8beta201006029) jaunty; urgency=low
 
   * pre-process tab added
   * de-bayer moved to pre-process

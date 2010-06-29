@@ -30,6 +30,9 @@ void jpeg_mem_src (j_decompress_ptr cinfo,
 /--------------------------------------------------------------------
 |
 |      $Log: not supported by cvs2svn $
+|      Revision 1.2  2010/03/30 02:19:06  thx8411
+|      trick to avoid INT32 def conflit
+|
 |      Revision 1.1  2010/02/11 04:09:09  thx8411
 |      jpeg palette support almost done
 |

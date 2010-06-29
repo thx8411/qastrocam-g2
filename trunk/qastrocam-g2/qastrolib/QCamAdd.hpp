@@ -35,6 +35,11 @@ MA  02110-1301, USA.
 
 #define QCAM_ADD_COLOR
 
+// modes
+#define QCAM_ADD_ADD		0
+#define QCAM_ADD_AVERAGE	1
+#define QCAM_ADD_MEDIAN		2
+
 class QCamSlider;
 class QImage;
 class QHBox;
@@ -74,6 +79,8 @@ class QCamAdd : public QCam {
 #endif
    bool maxYValueAuto_;
    bool minYValueAuto_;
+
+   int method_;
 
    static const int numOfBuffers_;
 
