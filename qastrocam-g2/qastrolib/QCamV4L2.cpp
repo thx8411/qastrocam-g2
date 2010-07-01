@@ -46,6 +46,8 @@ MA  02110-1301, USA.
 
 #include "SCmodParPortPPdev.hpp"
 
+#define SIZE_TABLE_SLOTS	32
+
 // supported palettes
 struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_RGB24,3,1,"rgb24",YuvFrame},
@@ -412,7 +414,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    }
    //resize(sizeTable[0]);
    // update video stream properties
-   setProperty("CameraName",(char*)v4l2_cap_.card);
+   setProperty("CameraName",string((char*)v4l2_cap_.card));
    setProperty("FrameRateSecond",frameRate_);
    label((char*)v4l2_cap_.card);
 }
@@ -472,7 +474,7 @@ const QSize * QCamV4L2::getAllowedSize() const {
       int last_y=0;
       int min_x;
       int min_y;
-      sizeTable_=new QSize[16];
+      sizeTable_=new QSize[SIZE_TABLE_SLOTS];
       v4l2_fmtdesc v4l2_fmtdesc_temp;
       v4l2_frmsizeenum v4l2_sizeenum_temp;
       v4l2_format v4l2_fmt_temp;
@@ -503,7 +505,7 @@ const QSize * QCamV4L2::getAllowedSize() const {
       if((res==0)&&(v4l2_sizeenum_temp.type==V4L2_FRMSIZE_TYPE_DISCRETE)) {
          cout << "V4L2 discrete frame enum supported" << endl;
          currentIndex=0;
-         while(res==0) {
+         while((res==0)&&(currentIndex<SIZE_TABLE_SLOTS-1)) {
             sizeTable_[currentIndex]=QSize(v4l2_sizeenum_temp.discrete.width,v4l2_sizeenum_temp.discrete.height);
             currentIndex++;
             sizeTable_[currentIndex]=QSize(0,0);
@@ -542,7 +544,7 @@ const QSize * QCamV4L2::getAllowedSize() const {
          // most of time, v4l generic supports continous 4 or 8 multiple pixel sizes
          // it gives to much diffrent sizes. We test from max size to min size half by
          // half.
-         while((currentIndex<15)&&(v4l2_fmt_temp.fmt.pix.width>=min_x)&&(v4l2_fmt_temp.fmt.pix.height>=min_y)) {
+         while((currentIndex<SIZE_TABLE_SLOTS-1)&&(v4l2_fmt_temp.fmt.pix.width>=min_x)&&(v4l2_fmt_temp.fmt.pix.height>=min_y)) {
             // try the new size...
             // v4l2
             if (ioctl(device_, VIDIOC_TRY_FMT, &v4l2_fmt_temp)!=-1) {
