@@ -1,4 +1,4 @@
-4.8beta20100629
+4.8beta20100701
 
   - Autoguiding slew speed can now be changed on some devices
   - Registax compatible avi output added
@@ -30,6 +30,7 @@
   - the old conf file isn't compatible with this new version anymore
   - mirror module option removed
   - uyvy palette support added
+  - to many available frame sizes bug fixed
 
 4.7
 
