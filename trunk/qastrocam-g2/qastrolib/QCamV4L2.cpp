@@ -58,6 +58,7 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
    {V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
    {V4L2_PIX_FMT_SPCA505,2,1,"s505",YuvFrame},
+   //{V4L2_PIX_FMT_MJPEG,3,1,"mjpeg",YuvFrame},
    //{V4L2_PIX_FMT_PWC1,3,1,"philips raw",YuvFrame},
    //{V4L2_PIX_FMT_PWC2,3,1,"philips raw",YuvFrame},
    {-1,0,0,"",0}
@@ -303,7 +304,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    }
    if(paletteNumber==0) {
       QMessageBox::information(0,"Qastrocam-g2","No supported palette found\nLeaving...");
-      cout << "No supported palette found, living " << endl;
+      cout << "No supported palette found, leaving " << endl;
       exit(1);
    }
    // *************************
@@ -456,7 +457,7 @@ void QCamV4L2::allocBuffers() {
    nullBuff=(unsigned char*)malloc(yuvFrameMemSize);
    // jpeg stuff
    // everything oversized...
-   if(supported_palettes[palette].index==V4L2_PIX_FMT_JPEG) {
+   if((supported_palettes[palette].index==V4L2_PIX_FMT_JPEG)||(supported_palettes[palette].index==V4L2_PIX_FMT_MJPEG)) {
       row_size=v4l2_fmt_.fmt.pix.width*3;
       jpegImageBuffer=(unsigned char*)malloc(yuvFrameMemSize);
       jpegCopyBuffer=(unsigned char*)malloc(yuvFrameMemSize);
@@ -780,6 +781,7 @@ bool QCamV4L2::updateFrame() {
                yuyv_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf);
             break;
          case V4L2_PIX_FMT_JPEG:
+         case V4L2_PIX_FMT_MJPEG:
             // copy driver buffer to avoid buffer underun
             if(useMmap)
                memcpy(jpegCopyBuffer,tmpBuffer_,buffers[0].length);
