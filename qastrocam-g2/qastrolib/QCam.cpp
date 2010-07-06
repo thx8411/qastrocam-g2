@@ -297,7 +297,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    remoteCTRL_->setSizePolicy(sizePolicyMin);
 
-   buttonBox_= new QGridBox(remoteCTRL_,Qt::Vertical,4);
+   buttonBox_= new QGridBox(remoteCTRL_,Qt::Vertical,2);
+   buttonBox_->setMaximumHeight(32);
 
    displayFramesButton_ = new QPushButton("display",buttonBox_);
    QToolTip::add(displayFramesButton_,"display frames");
@@ -391,6 +392,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    }
 
    QVGroupBox * saveGroup = new QVGroupBox("Save Images",remoteCTRL_);
+   saveGroup->setMaximumHeight(158);
    buttons_=new QHBox(saveGroup);
 
    new QLabel("Prefix:",buttons_);
