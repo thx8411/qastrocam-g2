@@ -43,8 +43,67 @@ void QCamAdd::removeFrame(const QCamFrame & frame) {
    moveFrame(frame,dummyMin,dummyMax,dummyCr,false);
 }
 
+void QCamAdd::removeAverageFrame(const QCamFrame & frame) {
+   int i,ysize,usize;
+   int* dst;
+   const unsigned char* src=frame.Y();
+   const unsigned char* usrc=frame.U();
+   const unsigned char* vsrc=frame.V();
+
+   // luminance
+   dst=integrationBuff_;
+   ysize=frame.ySize();
+   for(i=0;i<ysize;i++) {
+      dst[i]-=src[i];
+   }
+   // colors
+   if(mode_==YuvFrame) {
+      ysize=frame.uSize();
+      for(i=0;i<ysize;i++) {
+         dst[i+ysize]-=usrc[i];
+         dst[i+ysize]+=128;
+         dst[i+ysize+usize]-=vsrc[i];
+         dst[i+ysize+usize]+=128;
+      }
+   }
+}
+
+
+void QCamAdd::removeMedianFrame(const QCamFrame & frame) {
+   //
+   //
+}
+
 void QCamAdd::addFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue) {
    moveFrame(frame,maxYValue,minYValue,maxCrValue,true);
+}
+
+void QCamAdd::averageFrame(const QCamFrame & frame) {
+   int i,ysize,usize;
+   int* dst;
+   const unsigned char* src=frame.Y();
+   const unsigned char* usrc=frame.U();
+   const unsigned char* vsrc=frame.V();
+
+   // luminance
+   dst=integrationBuff_;
+   ysize=frame.ySize();
+   for(i=0;i<ysize;i++) {
+      dst[i]+=src[i];
+   }
+   // colors
+   if(mode_==YuvFrame) {
+      ysize=frame.uSize();
+      for(i=0;i<ysize;i++) {
+         dst[i+ysize]+=usrc[i]-128;
+         dst[i+ysize+usize]+=vsrc[i]-128;
+      }
+   }
+}
+
+void QCamAdd::medianFrame(const QCamFrame & frame) {
+   //
+   //
 }
 
 void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue,const bool adding) {
@@ -244,9 +303,71 @@ void QCamAdd::integration2yuv(const int * integration,
    }
 }
 
+void QCamAdd::average2yuv(const int * integration,QCamFrame & yuv) const {
+   unsigned char* Ybuf;
+   unsigned char* Ubuf;
+   unsigned char* Vbuf;
+   int i,ysize,usize,tmp;
+
+   yuv.setMode(mode_);
+   // luminance
+   Ybuf=yuv.YforUpdate();
+   ysize=yuv.ySize();
+   for(i=0;i<ysize;i++) {
+      if(numOfActiveBuffers_==0)
+         tmp=255;
+      else
+         tmp=integration[i]/numOfActiveBuffers_;
+      if(tmp<0)
+         tmp=0;
+      if(tmp>255)
+         tmp=255;
+      Ybuf[i]=tmp;
+   }
+   // colors
+   if(mode_==YuvFrame) {
+      usize=yuv.uSize();
+      Ubuf=yuv.UforUpdate();
+      Vbuf=yuv.VforUpdate();
+      for(i=0;i<usize;i++) {
+         if(numOfActiveBuffers_==0)
+            tmp=255;
+         else
+            tmp=(integration[i+ysize]/numOfActiveBuffers_)+128;
+         if(tmp<0)
+            tmp=0;
+         if(tmp>255)
+            tmp=255;
+         Vbuf[i]=tmp;
+         if(numOfActiveBuffers_==0)
+            tmp=255;
+         else
+            tmp=(integration[i+ysize+usize]/numOfActiveBuffers_)+128;
+         if(tmp<0)
+            tmp=0;
+         if(tmp>255)
+            tmp=255;
+         Ubuf[i]=tmp;
+      }
+   }
+}
+
+void QCamAdd::median2yuv(const int * integration,QCamFrame & yuv) const {
+}
+
 QCamFrame QCamAdd::yuvFrame() const {
    if (newIntegrationBuff_) {
-      integration2yuv(integrationBuff_,computedFrame_);
+      switch(method_) {
+         case QCAM_ADD_ADD :
+            integration2yuv(integrationBuff_,computedFrame_);
+            break;
+         case QCAM_ADD_AVERAGE :
+            average2yuv(integrationBuff_,computedFrame_);
+            break;
+         case QCAM_ADD_MEDIAN :
+            median2yuv(integrationBuff_,computedFrame_);
+            break;
+      }
       newIntegrationBuff_=false;
    }
 
@@ -290,38 +411,58 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
       curSize_= cam_->size();
       resetBufferFill();
    }
-   switch (frame.getMode()) {
-   case GreyFrame:
-      mode_=GreyFrame;
-      if(maxCrSaturatedButton_)
-         maxCrSaturatedButton_->hide();
-      break;
-   case YuvFrame:
-      mode_=(maxCrValueAutoSaturated_==0)?GreyFrame:YuvFrame;
-      if(maxCrSaturatedButton_)
-         maxCrSaturatedButton_->show();
-   }
 
-   //frameHistory_[curBuff_]->removeFrame(integrationBuff_);
-   removeFrame(frameHistory_[curBuff_]);
+   switch(method_) {
+      // add a frame
+      case QCAM_ADD_ADD :
+         int tmpMax,tmpMin;
+         switch (frame.getMode()) {
+            case GreyFrame:
+               mode_=GreyFrame;
+               if(maxCrSaturatedButton_)
+                  maxCrSaturatedButton_->hide();
+               break;
+            case YuvFrame:
+               mode_=(maxCrValueAutoSaturated_==0)?GreyFrame:YuvFrame;
+               if(maxCrSaturatedButton_)
+                  maxCrSaturatedButton_->show();
+               break;
+         }
+         removeFrame(frameHistory_[curBuff_]);
+         frameHistory_[curBuff_]=frame;
 
-   if (maxYValueAuto_) {
-      maxYValue_=-256*256;
-   }
-   if (minYValueAuto_) {
-      minYValue_=256*256;
-   }
-
-   frameHistory_[curBuff_]=frame;
-
-   int tmpMax,tmpMin;
-   addFrame(frameHistory_[curBuff_],tmpMax,tmpMin,maxCrValue_);
-
-   if (maxYValueAuto_) {
-      maxYValue_=tmpMax;
-   }
-   if (minYValueAuto_) {
-      minYValue_=tmpMin;
+         if (maxYValueAuto_) {
+            maxYValue_=-256*256;
+         }
+         if (minYValueAuto_) {
+            minYValue_=256*256;
+         }
+         addFrame(frameHistory_[curBuff_],tmpMax,tmpMin,maxCrValue_);
+         if (maxYValueAuto_) {
+            maxYValue_=tmpMax;
+         }
+         if (minYValueAuto_) {
+            minYValue_=tmpMin;
+         }
+            emit(numOfBufferChange(numOfActivatedBuffers_));
+            emit(maxYValueChange(maxYValue_));
+            emit(minYValueChange(minYValue_));
+         break;
+      // average frame
+      case QCAM_ADD_AVERAGE :
+         //
+         removeAverageFrame(frameHistory_[curBuff_]);
+         frameHistory_[curBuff_]=frame;
+         averageFrame(frameHistory_[curBuff_]);
+         //
+         break;
+      case QCAM_ADD_MEDIAN :
+         //
+         removeMedianFrame(frameHistory_[curBuff_]);
+         frameHistory_[curBuff_]=frame;
+         medianFrame(frameHistory_[curBuff_]);
+         //
+         break;
    }
 
    curBuff_=(curBuff_+1)%numOfActivatedBuffers_;
@@ -331,9 +472,6 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    }
    newIntegrationBuff_=true;
    newFrameAvaible();
-   emit(numOfBufferChange(numOfActivatedBuffers_));
-   emit(maxYValueChange(maxYValue_));
-   emit(minYValueChange(minYValue_));
 }
 
 void QCamAdd::setNumOfBuffer(int nbuf) {
