@@ -641,9 +641,9 @@ int main(int argc, char ** argv) {
    // main window display
    QCamUtilities::setQastrocamIcon(&mainWindow);
    mainWindow.show();
-   mainWindow.adjustSize();
-   getAllRemoteCTRL()->show();
-   getAllRemoteCTRL()->adjustSize();
+   //mainWindow.adjustSize();
+   //getAllRemoteCTRL()->show();
+   //getAllRemoteCTRL()->adjustSize();
 
    // QT event loop
    app.exec();

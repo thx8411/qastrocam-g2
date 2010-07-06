@@ -50,11 +50,10 @@ void QCamAdd::addFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,i
 void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue,const bool adding) {
    int size;
    int tmpValue;
-   int * dest=integrationBuff_;
+   int* dest=integrationBuff_;
    const uchar * src=frame.Y();
    maxYValue=minYValue=integrationBuff_[0];
 
-   // Luminance
    size=frame.ySize();
    for (int i=0;i<size;++i) {
       if (adding) {
@@ -70,7 +69,6 @@ void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,
       ++dest;
       ++src;
    }
-
    // color
    if (mode_==YuvFrame) {
       maxCrValue=0;
@@ -103,24 +101,24 @@ void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,
          ++src;
       }
       switch (maxCrValueAutoSaturated_) {
-      case 0:
-         maxCrValue=100000;
-         break;
-      case 1:
-         maxCrValue=maxYValue;
-         break;
-      case 2:
-         maxCrValue=maxYValue>>1;
-         break;
-      case 3:
-         maxCrValue=((maxYValue>>1)+maxCrValue)>>1;
-         break;
-      case 4:
-         //maxCrValue=maxCrValue;
-         break;
-      default:
-         // invalid case
-         cout << "invalid value "<< maxCrValueAutoSaturated_ << "for maxCrValueAutoSaturated_\n";
+         case 0:
+            maxCrValue=100000;
+            break;
+         case 1:
+            maxCrValue=maxYValue;
+            break;
+         case 2:
+            maxCrValue=maxYValue>>1;
+            break;
+         case 3:
+            maxCrValue=((maxYValue>>1)+maxCrValue)>>1;
+            break;
+         case 4:
+            //maxCrValue=maxCrValue;
+            break;
+         default:
+            // invalid case
+            cout << "invalid value "<< maxCrValueAutoSaturated_ << "for maxCrValueAutoSaturated_\n";
       }
    } else {
       maxCrValue=maxYValue>>1;
@@ -384,9 +382,11 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QRadioButton* frameAverage= new QRadioButton(tr("Average"),methodWidget_);
    QRadioButton* frameMedian= new QRadioButton(tr("Median"),methodWidget_);
    methodWidget_->setButton(0);
+   methodWidget_->setMaximumHeight(52);
    connect(methodWidget_,SIGNAL(clicked(int)),this,SLOT(methodChanged(int)));
 
    accumulationWidget_ = new QHGroupBox(tr("Num of Buffers"),remoteCTRL);
+   accumulationWidget_->setMaximumHeight(56);
    int ActiveBufferList[]={1,2,4,8,16,32,64,128};
    remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,8,ActiveBufferList,NULL);
    connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
@@ -398,6 +398,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(resetBufferFill()));
 
    displayOptions_=new QVGroupBox(tr("Display Options"),remoteCTRL);
+   displayOptions_->setMaximumHeight(192);
    remoteCTRLmaxYvalue_=new QCamSlider(tr("max Lum."),true,displayOptions_,
                                        2,numOfBuffers_*255);
    remoteCTRLminYvalue_=new QCamSlider(tr("min Lum."),true,displayOptions_,
@@ -445,10 +446,12 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    remoteCTRLnumOfActiveBuffer_->show();
    bufferFill_->show();
    accumulationWidget_->show();
+   accumulationWidget_->resize(accumulationWidget_->minimumSizeHint());
    remoteCTRLmaxYvalue_->show();
    remoteCTRLminYvalue_->show();
 
    //remoteCTRL->setCaption("accumulation");
+
    return remoteCTRL;
 }
 
