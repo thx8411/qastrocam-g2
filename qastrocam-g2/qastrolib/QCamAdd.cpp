@@ -29,6 +29,8 @@ MA  02110-1301, USA.
 #include <qvgroupbox.h>
 #include <qhgroupbox.h>
 #include <qradiobutton.h>
+#include <qmessagebox.h>
+#include <qtooltip.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -187,6 +189,7 @@ void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,
 QCamAdd::QCamAdd(QCam* cam) :
    curSize_(0,0) {
    int nbuf=numOfBuffers_;
+   method_=QCAM_ADD_ADD;
    curBuff_=0;
    numOfActiveBuffers_=1;
    numOfActivatedBuffers_=16;
@@ -210,8 +213,6 @@ QCamAdd::QCamAdd(QCam* cam) :
    setGray(true);
 #endif
    label(tr("Stacking"));
-
-   method_=QCAM_ADD_ADD;
 }
 
 QCamAdd::~QCamAdd() {
@@ -387,7 +388,11 @@ void QCamAdd::addNewFrame() {
 
 
 void QCamAdd::zeroBuff(const QSize & size) {
-   memset(integrationBuff_,0,sizeof(int) * size.height()*size.width()*3);
+   if(method_==QCAM_ADD_MEDIAN) {
+      memset(integrationBuff_,0,size.height()*size.width()*256*3);
+   } else {
+      memset(integrationBuff_,0,sizeof(int) * size.height()*size.width()*3);
+   }
    for (int i=0;i<numOfActivatedBuffers_;++i) {
       frameHistory_[i].clear();
    }
@@ -395,7 +400,15 @@ void QCamAdd::zeroBuff(const QSize & size) {
 
 void QCamAdd::allocBuff(const QSize & size) {
    free(integrationBuff_);
-   integrationBuff_=(int*)malloc(size.height()*size.width()*3*sizeof(int));
+   if(method_==QCAM_ADD_MEDIAN) {
+      integrationBuff_=(int*)malloc(size.height()*size.width()*256*3);
+   } else {
+      integrationBuff_=(int*)malloc(size.height()*size.width()*3*sizeof(int));
+   }
+   if(integrationBuff_==NULL) {
+      QMessageBox::information(0,"Qastrocam-g2","Unable allocate the filter memory, leaving...");
+      exit(1);
+   }
    computedFrame_.setSize(size);
 
    for (int i=0;i<numOfBuffers_;++i) {
@@ -523,6 +536,10 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    methodWidget_->setMaximumHeight(52);
    connect(methodWidget_,SIGNAL(clicked(int)),this,SLOT(methodChanged(int)));
 
+   QToolTip::add(frameSum,tr("Adds the frames in live"));
+   QToolTip::add(frameAverage,tr("Produce a 'mean' frame for calibration"));
+   QToolTip::add(frameMedian,tr("Produce a 'median' frame for calibration\n(use a huge amount of memory)"));
+
    accumulationWidget_ = new QHGroupBox(tr("Num of Buffers"),remoteCTRL);
    accumulationWidget_->setMaximumHeight(56);
    int ActiveBufferList[]={1,2,4,8,16,32,64,128};
@@ -530,10 +547,15 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
    connect(remoteCTRLnumOfActiveBuffer_,SIGNAL(change(int)),this,SLOT(setNumOfBuffer(int)));
 
+   QToolTip::add(remoteCTRLnumOfActiveBuffer_,tr("Number of frames to stack"));
+
    bufferFill_= new QProgressBar(accumulationWidget_);
    bufferFill_->setCenterIndicator(true);
    resetBufferFill_= new QPushButton(tr("reset"),accumulationWidget_);
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(resetBufferFill()));
+
+   QToolTip::add(bufferFill_,tr("Frame stack progress"));
+   QToolTip::add(resetBufferFill_,tr("Resets the frame stack"));
 
    displayOptions_=new QVGroupBox(tr("Display Options"),remoteCTRL);
    displayOptions_->setMaximumHeight(192);
@@ -548,6 +570,8 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    connect(modeDisplayButton_,SIGNAL(change(int)),this,SLOT(modeDisplay(int)));
    modeDisplay(0);
    modeDisplayButton_->update(0);
+
+   QToolTip::add(displayOptions_,tr("Resulting frame tuning"));
 
    invDisplayButton_ = new QCheckBox(tr("negate"),modeDisplayButton_);
    connect(invDisplayButton_,SIGNAL(toggled(bool)),this,SLOT(negateDisplay(bool)));
@@ -639,6 +663,7 @@ void QCamAdd::modeDisplay(int val) {
 
 void QCamAdd::methodChanged(int b) {
    method_=b;
+   allocBuff(cam_->size());
    resetBufferFill();
    if(method_!=0)
       displayOptions_->setEnabled(false);
