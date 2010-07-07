@@ -31,6 +31,7 @@ class QTelescopeFifo : public QTelescope {
    Q_OBJECT;
 public:
    QTelescopeFifo(const char * fifoPath);
+   ~QTelescopeFifo();
    public slots:
    virtual void goE(float shift) {}
    virtual void goW(float shift) {}

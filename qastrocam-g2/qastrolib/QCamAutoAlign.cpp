@@ -71,7 +71,11 @@ QCamAutoAlign::QCamAutoAlign() {
          close(fifoDescriptor);
       }
    } else {
-      perror(fifoName_.c_str());
+      mkfifo(fifoName_.c_str(),S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
+      fifoDescriptor=open(fifoName_.c_str(),O_RDWR|O_NONBLOCK);
+      if(fifoDescriptor==-1) {
+         perror(fifoName_.c_str());
+      }
    }
 }
 
