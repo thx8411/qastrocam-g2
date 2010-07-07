@@ -63,9 +63,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    lineOne->setStretchFactor(padding0,5);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
    lineOne->setStretchFactor(telescopeListLabel,0);
-   int telescopeTable[]={0,1,2,3,4,5,6,7};
-   const char* telescopeLabel[]={"none","qhy5","autostar","mcu","mts","apm","fifo","file"};
-   telescopeList=new QCamComboBox("telescope type : ",lineOne,8,telescopeTable,telescopeLabel);
+   int telescopeTable[]={0,1,2,3,4,5,6/*,7*/};
+   const char* telescopeLabel[]={"none","qhy5","autostar","mcu","mts","apm"/*,"fifo"*/,"file"};
+   telescopeList=new QCamComboBox("telescope type : ",lineOne,/*8*/7,telescopeTable,telescopeLabel);
    QToolTip::add(telescopeList,tr("Telescope protocol to use for guiding"));
    lineOne->setStretchFactor(telescopeList,10);
    padding1=new QWidget(lineOne);

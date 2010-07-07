@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -37,7 +37,16 @@ QTelescopeFifo::QTelescopeFifo(const char * deviceName) :
    QTelescope() {
    descriptor_=open(deviceName,O_RDWR|O_NOCTTY);
    if (descriptor_==-1) {
-      perror(deviceName);
-      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the telescope device\nThe mount won't move...");
+      // try to create the fifo
+      mkfifo(deviceName,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
+      descriptor_=open(deviceName,O_RDWR|O_NOCTTY);
+      if(descriptor_==-1) {
+         perror(deviceName);
+         QMessageBox::information(0,"Qastrocam-g2","Unable to reach the telescope device\nThe mount won't move...");
+      }
    }
+}
+
+QTelescopeFifo::~QTelescopeFifo() {
+   close(descriptor_);
 }

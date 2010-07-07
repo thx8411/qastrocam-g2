@@ -32,6 +32,7 @@ qastrocam-g2 (4.8beta20100707) jaunty; urgency=low
   * Autoguiding slew speed can now be changed on some devices
   * To many available frame sizes bug fixed
   * dark frames generation added (average frames)
+  * fifo self created if needed
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
 
