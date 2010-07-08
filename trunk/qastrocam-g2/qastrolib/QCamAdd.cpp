@@ -60,8 +60,8 @@ void QCamAdd::removeAverageFrame(const QCamFrame & frame) {
    }
    // colors
    if(mode_==YuvFrame) {
-      ysize=frame.uSize();
-      for(i=0;i<ysize;i++) {
+      usize=frame.uSize();
+      for(i=0;i<usize;i++) {
          dst[i+ysize]-=usrc[i];
          dst[i+ysize]+=128;
          dst[i+ysize+usize]-=vsrc[i];
@@ -72,8 +72,27 @@ void QCamAdd::removeAverageFrame(const QCamFrame & frame) {
 
 
 void QCamAdd::removeMedianFrame(const QCamFrame & frame) {
-   //
-   //
+   int i,ysize,usize;
+   unsigned char* dst;
+   const unsigned char* src=frame.Y();
+   const unsigned char* usrc=frame.U();
+   const unsigned char* vsrc=frame.V();
+
+   dst=(unsigned char*)integrationBuff_;
+   ysize=frame.ySize();
+
+   // luminance
+   for(i=0;i<ysize;i++) {
+      dst[i*256+src[i]]--;
+   }
+   // colors
+   if(mode_==YuvFrame) {
+      usize=frame.uSize();
+      for(i=0;i<usize;i++) {
+         dst[(i+ysize)*256+usrc[i]]--;
+         dst[(i+ysize+usize)*256+vsrc[i]]--;
+      }
+   }
 }
 
 void QCamAdd::addFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue) {
@@ -95,8 +114,8 @@ void QCamAdd::averageFrame(const QCamFrame & frame) {
    }
    // colors
    if(mode_==YuvFrame) {
-      ysize=frame.uSize();
-      for(i=0;i<ysize;i++) {
+      usize=frame.uSize();
+      for(i=0;i<usize;i++) {
          dst[i+ysize]+=usrc[i]-128;
          dst[i+ysize+usize]+=vsrc[i]-128;
       }
@@ -104,8 +123,27 @@ void QCamAdd::averageFrame(const QCamFrame & frame) {
 }
 
 void QCamAdd::medianFrame(const QCamFrame & frame) {
-   //
-   //
+   int i,ysize,usize;
+   unsigned char* dst;
+   const unsigned char* src=frame.Y();
+   const unsigned char* usrc=frame.U();
+   const unsigned char* vsrc=frame.V();
+
+   dst=(unsigned char*)integrationBuff_;
+   ysize=frame.ySize();
+
+   // luminance
+   for(i=0;i<ysize;i++) {
+      dst[i*256+src[i]]++;
+   }
+   // colors
+   if(mode_==YuvFrame) {
+      usize=frame.uSize();
+      for(i=0;i<usize;i++) {
+         dst[(i+ysize)*256+usrc[i]]++;
+         dst[(i+ysize+usize)*256+vsrc[i]]++;
+      }
+   }
 }
 
 void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue,const bool adding) {
@@ -339,7 +377,7 @@ void QCamAdd::average2yuv(const int * integration,QCamFrame & yuv) const {
             tmp=0;
          if(tmp>255)
             tmp=255;
-         Vbuf[i]=tmp;
+         Ubuf[i]=tmp;
          if(numOfActiveBuffers_==0)
             tmp=255;
          else
@@ -348,12 +386,55 @@ void QCamAdd::average2yuv(const int * integration,QCamFrame & yuv) const {
             tmp=0;
          if(tmp>255)
             tmp=255;
-         Ubuf[i]=tmp;
+         Vbuf[i]=tmp;
       }
    }
 }
 
 void QCamAdd::median2yuv(const int * integration,QCamFrame & yuv) const {
+   unsigned char* Ybuf;
+   unsigned char* Ubuf;
+   unsigned char* Vbuf;
+   int i,ysize,usize,index;
+   unsigned char value;
+   unsigned char* src;
+
+   src=(unsigned char*)integration;
+   yuv.setMode(mode_);
+   // luminance
+   Ybuf=yuv.YforUpdate();
+   ysize=yuv.ySize();
+   for(i=0;i<ysize;i++) {
+      value=0;
+      index=0;
+      while((value<(numOfActiveBuffers_/2))&&(index<256)) {
+         value+=src[i*256+index];
+         index++;
+      }
+      Ybuf[i]=index;
+   }
+   // colors
+   if(mode_==YuvFrame) {
+      Ubuf=yuv.YforUpdate();
+      Vbuf=yuv.YforUpdate();
+      usize=yuv.uSize();
+      for(i=0;i<usize;i++) {
+         value=0;
+         index=0;
+         while((value<(numOfActiveBuffers_/2))&&(index<256)) {
+            value+=src[(i+ysize)*256+index];
+            index++;
+         }
+         Ubuf[i]=index;
+         value=0;
+         index=0;
+         while((value<(numOfActiveBuffers_/2))&&(index<256)) {
+            value+=src[(i+ysize+usize)*256+index];
+            index++;
+         }
+         Vbuf[i]=index;
+      }
+   }
 }
 
 QCamFrame QCamAdd::yuvFrame() const {
@@ -538,7 +619,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
 
    QToolTip::add(frameSum,tr("Adds the frames in live"));
    QToolTip::add(frameAverage,tr("Produce a 'mean' frame for calibration"));
-   QToolTip::add(frameMedian,tr("Produce a 'median' frame for calibration\n(use a huge amount of memory)"));
+   QToolTip::add(frameMedian,tr("Produce a 'median' frame for calibration\n(uses a huge amount of memory)"));
 
    accumulationWidget_ = new QHGroupBox(tr("Num of Buffers"),remoteCTRL);
    accumulationWidget_->setMaximumHeight(56);
