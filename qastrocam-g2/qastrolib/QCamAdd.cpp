@@ -500,9 +500,10 @@ void QCamAdd::allocBuff(const QSize & size) {
 }
 
 void QCamAdd::addFrame(const QCamFrame & frame) {
-   if (curSize_ != cam_->size()) {
+   if ((curSize_ != cam_->size())||(mode_!= frame.getMode())) {
       allocBuff( cam_->size());
       curSize_= cam_->size();
+      mode_=frame.getMode();
       resetBufferFill();
    }
 
