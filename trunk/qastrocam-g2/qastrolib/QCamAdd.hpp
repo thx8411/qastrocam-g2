@@ -64,7 +64,7 @@ class QCamAdd : public QCam {
    /** num total of buffer currently in use */
    int numOfActiveBuffers_;
    int curBuff_;
-   int * integrationBuff_;
+   void* integrationBuff_;
 
    QCamFrame * frameHistory_;
    mutable QCamFrame computedFrame_;
@@ -91,9 +91,9 @@ class QCamAdd : public QCam {
    void allocBuff(const QSize &);
    void zeroBuff(const QSize & size);
    void addFrame(const QCamFrame &);
-   void integration2yuv(const int * integration,QCamFrame & yuv) const ;
-   void average2yuv(const int * integration,QCamFrame & yuv) const ;
-   void median2yuv(const int * integration,QCamFrame & yuv) const ;
+   void integration2yuv(const void* integration,QCamFrame & yuv) const ;
+   void average2yuv(const void* integration,QCamFrame & yuv) const ;
+   void median2yuv(const void* integration,QCamFrame & yuv) const ;
 
    void removeFrame(const QCamFrame & frame);
    void removeAverageFrame(const QCamFrame & frame);
