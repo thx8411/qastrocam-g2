@@ -1,7 +1,7 @@
-4.8beta20100709
+4.8beta20100710
 
   - fifo self created if needed
-  - dark frames generation added (average frames)
+  - dark frames generation added (average and median methods)
   - Autoguiding slew speed can now be changed on some devices
   - Registax compatible avi output added
   - QHY5 guiding port supported

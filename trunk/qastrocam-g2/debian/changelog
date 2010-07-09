@@ -1,4 +1,4 @@
-qastrocam-g2 (4.8beta20100709) jaunty; urgency=low
+qastrocam-g2 (4.8beta20100710) jaunty; urgency=low
 
   * pre-process tab added
   * de-bayer moved to pre-process
@@ -31,7 +31,7 @@ qastrocam-g2 (4.8beta20100709) jaunty; urgency=low
   * Registax compatible avi output added
   * Autoguiding slew speed can now be changed on some devices
   * To many available frame sizes bug fixed
-  * dark frames generation added (average frames)
+  * dark frames generation added (average and median methods)
   * fifo self created if needed
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 19 Feb 2010 03:18:49 +0100
