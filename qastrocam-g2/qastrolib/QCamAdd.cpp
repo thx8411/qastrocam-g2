@@ -250,6 +250,7 @@ QCamAdd::QCamAdd(QCam* cam) :
       QMessageBox::information(0,"Qastrocam-g2","Unable allocate the frame buffer, leaving...");
       exit(1);
    }
+   mode_=GreyFrame;
    allocBuff(cam_->size());
    connect(cam_,SIGNAL(newFrame()),this,SLOT(addNewFrame()));
 #ifndef QCAM_ADD_COLOR
@@ -425,8 +426,8 @@ void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
    }
    // colors
    if(mode_==YuvFrame) {
-      Ubuf=yuv.YforUpdate();
-      Vbuf=yuv.YforUpdate();
+      Ubuf=yuv.UforUpdate();
+      Vbuf=yuv.VforUpdate();
       usize=yuv.uSize();
       for(i=0;i<usize;i++) {
          value=0;
@@ -478,23 +479,30 @@ void QCamAdd::addNewFrame() {
 
 void QCamAdd::zeroBuff(const QSize & size) {
    if(method_==QCAM_ADD_MEDIAN) {
-      memset(integrationBuff_,0,size.height()*size.width()*256*3);
+      if(mode_==GreyFrame) {
+         memset(integrationBuff_,0,size.height()*size.width()*256);
+      } else {
+         memset(integrationBuff_,0,size.height()*size.width()*256*3);
+      }
    } else {
       memset(integrationBuff_,0,sizeof(int) * size.height()*size.width()*3);
    }
    for (int i=0;i<numOfActivatedBuffers_;++i) {
       frameHistory_[i].clear();
    }
-
    bufferFull=false;
 }
 
 void QCamAdd::allocBuff(const QSize & size) {
    free(integrationBuff_);
    if(method_==QCAM_ADD_MEDIAN) {
-      integrationBuff_=(int*)malloc(size.height()*size.width()*256*3);
+      if(mode_==GreyFrame) {
+         integrationBuff_=malloc(size.height()*size.width()*256);
+      } else {
+         integrationBuff_=malloc(size.height()*size.width()*256*3);
+      }
    } else {
-      integrationBuff_=(int*)malloc(size.height()*size.width()*3*sizeof(int));
+      integrationBuff_=malloc(size.height()*size.width()*3*sizeof(int));
    }
    if(integrationBuff_==NULL) {
       QMessageBox::information(0,"Qastrocam-g2","Unable allocate the filter memory, leaving...");
@@ -510,10 +518,11 @@ void QCamAdd::allocBuff(const QSize & size) {
 
 void QCamAdd::addFrame(const QCamFrame & frame) {
    if ((curSize_ != cam_->size())||(mode_!= frame.getMode())) {
-      allocBuff( cam_->size());
       curSize_= cam_->size();
       mode_=frame.getMode();
+      allocBuff( cam_->size());
       resetBufferFill();
+      return;
    }
 
    switch(method_) {
