@@ -38,7 +38,7 @@ MA  02110-1301, USA.
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
 
-const int QCamAdd::numOfBuffers_=128;
+const int QCamAdd::numOfBuffers_=256;
 
 void QCamAdd::removeFrame(const QCamFrame & frame) {
    int dummyMin,dummyMax,dummyCr;
@@ -230,7 +230,7 @@ QCamAdd::QCamAdd(QCam* cam) :
    method_=QCAM_ADD_ADD;
    curBuff_=0;
    numOfActiveBuffers_=1;
-   numOfActivatedBuffers_=1;
+   numOfActivatedBuffers_=4;
    bufferFull=false;
    cam_=cam;
    integrationBuff_=NULL;
@@ -246,6 +246,10 @@ QCamAdd::QCamAdd(QCam* cam) :
    funcDisplay_=NULL;
    negateDisplay_=false;
    frameHistory_=new QCamFrame[nbuf];
+   if(frameHistory_==NULL) {
+      QMessageBox::information(0,"Qastrocam-g2","Unable allocate the frame buffer, leaving...");
+      exit(1);
+   }
    allocBuff(cam_->size());
    connect(cam_,SIGNAL(newFrame()),this,SLOT(addNewFrame()));
 #ifndef QCAM_ADD_COLOR
@@ -398,7 +402,7 @@ void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
    unsigned char* Ybuf;
    unsigned char* Ubuf;
    unsigned char* Vbuf;
-   int i,ysize,usize,value;
+   int i,ysize,usize,value,limit;
    unsigned char index;
    unsigned char* src;
 
@@ -407,10 +411,13 @@ void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
    // luminance
    Ybuf=yuv.YforUpdate();
    ysize=yuv.ySize();
+   if(numOfActiveBuffers_<=2)
+      return;
+   limit=numOfActiveBuffers_/2;
    for(i=0;i<ysize;i++) {
       value=0;
       index=0;
-      while((value<=(numOfActiveBuffers_/2))&&(index<255)) {
+      while((value<=limit)&&(index<255)) {
          value+=src[i*256+index];
          index++;
       }
@@ -424,14 +431,14 @@ void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
       for(i=0;i<usize;i++) {
          value=0;
          index=0;
-         while((value<=(numOfActiveBuffers_/2))&&(index<255)) {
+         while((value<=limit)&&(index<255)) {
             value+=src[(i+ysize)*256+index];
             index++;
          }
          Ubuf[i]=index;
          value=0;
          index=0;
-         while((value<=(numOfActiveBuffers_/2))&&(index<255)) {
+         while((value<=limit)&&(index<255)) {
             value+=src[(i+ysize+usize)*256+index];
             index++;
          }
@@ -455,9 +462,7 @@ QCamFrame QCamAdd::yuvFrame() const {
       }
       newIntegrationBuff_=false;
    }
-
    //computedFrame_=cam_->yuvFrame();
-
    return computedFrame_;
 }
 
@@ -584,16 +589,16 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
 }
 
 void QCamAdd::setNumOfBuffer(int nbuf) {
-
    if (nbuf<=0) {
       numOfActivatedBuffers_=numOfBuffers_/2;
    } else {
       numOfActivatedBuffers_=nbuf;
    }
-
    resetBufferFill();
-   remoteCTRLmaxYvalue_->setMaxValue(numOfActivatedBuffers_*255);
-   remoteCTRLminYvalue_->setMaxValue(numOfActivatedBuffers_*255);
+   if(mode_==QCAM_ADD_ADD) {
+      remoteCTRLmaxYvalue_->setMaxValue(numOfActivatedBuffers_*255);
+      remoteCTRLminYvalue_->setMaxValue(numOfActivatedBuffers_*255);
+   }
 }
 
 void QCamAdd::setMaxYvalue(int val) {
@@ -638,8 +643,8 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
 
    accumulationWidget_ = new QHGroupBox(tr("Num of Buffers"),remoteCTRL);
    accumulationWidget_->setMaximumHeight(56);
-   int ActiveBufferList[]={1,2,4,8,16,32,64,128};
-   remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,8,ActiveBufferList,NULL);
+   int ActiveBufferList[]={4,8,16,32,64,128,256};
+   remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,7,ActiveBufferList,NULL);
    connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
    connect(remoteCTRLnumOfActiveBuffer_,SIGNAL(change(int)),this,SLOT(setNumOfBuffer(int)));
 
