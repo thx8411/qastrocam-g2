@@ -1,4 +1,4 @@
-4.8beta20100707
+4.8beta20100709
 
   - fifo self created if needed
   - dark frames generation added (average frames)

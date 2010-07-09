@@ -63,6 +63,7 @@ class QCamAdd : public QCam {
    int numOfActivatedBuffers_;
    /** num total of buffer currently in use */
    int numOfActiveBuffers_;
+   bool bufferFull;
    int curBuff_;
    void* integrationBuff_;
 

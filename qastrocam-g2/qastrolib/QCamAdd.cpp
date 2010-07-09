@@ -231,6 +231,7 @@ QCamAdd::QCamAdd(QCam* cam) :
    curBuff_=0;
    numOfActiveBuffers_=1;
    numOfActivatedBuffers_=1;
+   bufferFull=false;
    cam_=cam;
    integrationBuff_=NULL;
    newIntegrationBuff_=false;
@@ -479,6 +480,8 @@ void QCamAdd::zeroBuff(const QSize & size) {
    for (int i=0;i<numOfActivatedBuffers_;++i) {
       frameHistory_[i].clear();
    }
+
+   bufferFull=false;
 }
 
 void QCamAdd::allocBuff(const QSize & size) {
@@ -524,7 +527,7 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
                   maxCrSaturatedButton_->show();
                break;
          }
-         if(numOfActiveBuffers_==numOfActivatedBuffers_) {
+         if(bufferFull) {
             removeFrame(frameHistory_[curBuff_]);
          }
          frameHistory_[curBuff_]=frame;
@@ -548,7 +551,7 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
          break;
       // average frame
       case QCAM_ADD_AVERAGE :
-         if(numOfActiveBuffers_==numOfActivatedBuffers_) {
+         if(bufferFull) {
             removeAverageFrame(frameHistory_[curBuff_]);
          }
          frameHistory_[curBuff_]=frame;
@@ -557,7 +560,7 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
          break;
       case QCAM_ADD_MEDIAN :
          //
-         if(numOfActiveBuffers_==numOfActivatedBuffers_) {
+         if(bufferFull) {
             removeMedianFrame(frameHistory_[curBuff_]);
          }
          frameHistory_[curBuff_]=frame;
@@ -567,7 +570,11 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
          break;
    }
 
-   curBuff_=(curBuff_+1)%numOfActivatedBuffers_;
+   curBuff_++;
+   if(curBuff_>=numOfActivatedBuffers_) {
+      bufferFull=true;
+      curBuff_=curBuff_%numOfActivatedBuffers_;
+   }
    if (curBuff_ >= numOfActiveBuffers_) {
       numOfActiveBuffers_=curBuff_+1;
       bufferFill_->setProgress(numOfActiveBuffers_);
