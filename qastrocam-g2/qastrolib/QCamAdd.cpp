@@ -38,13 +38,16 @@ MA  02110-1301, USA.
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
 
+// max buffer frames
 const int QCamAdd::numOfBuffers_=256;
 
+// remove frame (sum method)
 void QCamAdd::removeFrame(const QCamFrame & frame) {
    int dummyMin,dummyMax,dummyCr;
    moveFrame(frame,dummyMin,dummyMax,dummyCr,false);
 }
 
+// remove a frame
 void QCamAdd::removeAverageFrame(const QCamFrame & frame) {
    int i,ysize,usize;
    int* dst;
@@ -71,6 +74,7 @@ void QCamAdd::removeAverageFrame(const QCamFrame & frame) {
 }
 
 
+// remove a frame
 void QCamAdd::removeMedianFrame(const QCamFrame & frame) {
    int i,ysize,usize;
    unsigned char* dst;
@@ -95,10 +99,12 @@ void QCamAdd::removeMedianFrame(const QCamFrame & frame) {
    }
 }
 
+// add a frame (sum method)
 void QCamAdd::addFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue) {
    moveFrame(frame,maxYValue,minYValue,maxCrValue,true);
 }
 
+// add a frame
 void QCamAdd::averageFrame(const QCamFrame & frame) {
    int i,ysize,usize;
    int* dst;
@@ -122,6 +128,7 @@ void QCamAdd::averageFrame(const QCamFrame & frame) {
    }
 }
 
+// add a frame
 void QCamAdd::medianFrame(const QCamFrame & frame) {
    int i,ysize,usize;
    unsigned char* dst;
@@ -146,6 +153,7 @@ void QCamAdd::medianFrame(const QCamFrame & frame) {
    }
 }
 
+// add and remove frame (sum method)
 void QCamAdd::moveFrame(const QCamFrame & frame,int & maxYValue,int & minYValue,int & maxCrValue,const bool adding) {
    int size;
    int tmpValue;
@@ -260,11 +268,13 @@ QCamAdd::QCamAdd(QCam* cam) :
 }
 
 QCamAdd::~QCamAdd() {
+   // release buffers
    //clear();
    free(integrationBuff_);
    delete [] frameHistory_;
 }
 
+// integration buffer to yuv frame (sum method)
 void QCamAdd::integration2yuv(const void * integration,
                               QCamFrame & yuv) const {
    int i;
@@ -349,6 +359,7 @@ void QCamAdd::integration2yuv(const void * integration,
    }
 }
 
+// integration buffer to yuv frame
 void QCamAdd::average2yuv(const void * integration,QCamFrame & yuv) const {
    unsigned char* Ybuf;
    unsigned char* Ubuf;
@@ -399,11 +410,12 @@ void QCamAdd::average2yuv(const void * integration,QCamFrame & yuv) const {
    }
 }
 
+// integration buffer to yuv frame
 void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
    unsigned char* Ybuf;
    unsigned char* Ubuf;
    unsigned char* Vbuf;
-   int i,ysize,usize,value,limit;
+   int i,ysize,usize,value,limit,offset,offset2;
    unsigned char index;
    unsigned char* src;
 
@@ -416,10 +428,12 @@ void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
       return;
    limit=numOfActiveBuffers_/2;
    for(i=0;i<ysize;i++) {
+      offset=i*256;
       value=0;
       index=0;
       while((value<=limit)&&(index<255)) {
-         value+=src[i*256+index];
+         value+=src[offset];
+         offset++;
          index++;
       }
       Ybuf[i]=index;
@@ -430,17 +444,21 @@ void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
       Vbuf=yuv.VforUpdate();
       usize=yuv.uSize();
       for(i=0;i<usize;i++) {
+         offset=(i+ysize)*256;
          value=0;
          index=0;
          while((value<=limit)&&(index<255)) {
-            value+=src[(i+ysize)*256+index];
+            value+=src[offset];
+            offset++;
             index++;
          }
          Ubuf[i]=index;
+         offset2=(i+ysize+usize)*256;
          value=0;
          index=0;
          while((value<=limit)&&(index<255)) {
-            value+=src[(i+ysize+usize)*256+index];
+            value+=src[offset2];
+            offset2++;
             index++;
          }
          Vbuf[i]=index;
@@ -448,6 +466,7 @@ void QCamAdd::median2yuv(const void * integration,QCamFrame & yuv) const {
    }
 }
 
+// returns the last computed frame
 QCamFrame QCamAdd::yuvFrame() const {
    if (newIntegrationBuff_) {
       switch(method_) {
@@ -467,6 +486,7 @@ QCamFrame QCamAdd::yuvFrame() const {
    return computedFrame_;
 }
 
+// process a new frame
 void QCamAdd::addNewFrame() {
    addFrame(cam_->yuvFrame());
    /*
@@ -476,7 +496,7 @@ void QCamAdd::addNewFrame() {
    */
 }
 
-
+// clears buffer
 void QCamAdd::zeroBuff(const QSize & size) {
    if(method_==QCAM_ADD_MEDIAN) {
       if(mode_==GreyFrame) {
@@ -493,6 +513,7 @@ void QCamAdd::zeroBuff(const QSize & size) {
    bufferFull=false;
 }
 
+// allocate buffer
 void QCamAdd::allocBuff(const QSize & size) {
    free(integrationBuff_);
    if(method_==QCAM_ADD_MEDIAN) {
@@ -516,6 +537,7 @@ void QCamAdd::allocBuff(const QSize & size) {
    zeroBuff(size);
 }
 
+// process the new frame
 void QCamAdd::addFrame(const QCamFrame & frame) {
    if ((curSize_ != cam_->size())||(mode_!= frame.getMode())) {
       curSize_= cam_->size();
@@ -597,6 +619,7 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    newFrameAvaible();
 }
 
+// change buffer size
 void QCamAdd::setNumOfBuffer(int nbuf) {
    if (nbuf<=0) {
       numOfActivatedBuffers_=numOfBuffers_/2;
@@ -634,6 +657,7 @@ void QCamAdd::setMinYvalue(int val) {
    }
 }
 
+// gui
 QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
@@ -645,7 +669,6 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    methodWidget_->setButton(0);
    methodWidget_->setMaximumHeight(52);
    connect(methodWidget_,SIGNAL(clicked(int)),this,SLOT(methodChanged(int)));
-
    QToolTip::add(frameSum,tr("Adds the frames in live"));
    QToolTip::add(frameAverage,tr("Produce a 'mean' frame for calibration"));
    QToolTip::add(frameMedian,tr("Produce a 'median' frame for calibration\n(uses a huge amount of memory)"));
@@ -727,6 +750,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    return remoteCTRL;
 }
 
+// reset buffer
 void QCamAdd::resetBufferFill() {
    curBuff_=0;
    numOfActiveBuffers_=1;
@@ -771,6 +795,7 @@ void QCamAdd::modeDisplay(int val) {
    }
 }
 
+// method change slot
 void QCamAdd::methodChanged(int b) {
    method_=b;
    allocBuff(cam_->size());
