@@ -1,5 +1,6 @@
-4.8beta20100710
+4.8 rc2
 
+  - avifile-win32-plugin package bug on amd64 fixed
   - fifo self created if needed
   - dark frames generation added (average and median methods)
   - Autoguiding slew speed can now be changed on some devices

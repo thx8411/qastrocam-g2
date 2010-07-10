@@ -287,6 +287,7 @@ void QCam::displayHistogram(bool val) {
 }
 
 QWidget * QCam::buildGUI(QWidget * parent) {
+   struct stat fileInfos;
    QPixmap* tmpIcon;
 
    QSizePolicy sizePolicyMin;
@@ -348,9 +349,12 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    tmpTab[size]=size;
    ++size;
    // adds avi huff format
-   fileFormatList_[size]="AVI huff";
-   tmpTab[size]=size;
-   ++size;
+   // if usable
+   if(stat("/usr/lib/avifile-0.7/win32.so",&fileInfos)==0) {
+      fileFormatList_[size]="AVI huff";
+      tmpTab[size]=size;
+      ++size;
+   }
 #endif
    // adds bmp format
    if(formatList.findIndex("BMP")!=-1) {
