@@ -1,4 +1,4 @@
-4.8 rc2
+4.8
 
   - avifile-win32-plugin package bug on amd64 fixed
   - fifo self created if needed
