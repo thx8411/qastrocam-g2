@@ -49,9 +49,9 @@ QCamDisplay::QCamDisplay(QWidget * parent) :
 }
 
 QCamDisplay::~QCamDisplay() {
-   mainWidget_->hide();
+   view_->hide();
 
-   QCamUtilities::removeWidget(mainWidget_);
+   QCamUtilities::removeWidget(view_);
 
    delete widget_;
 }
@@ -75,15 +75,13 @@ void QCamDisplay::setCaption() {
       labelPrefix="QT ";
    }
 
-   if (isConnected() && mainWidget_) {
-      mainWidget_->setCaption(labelPrefix+cam().label());
+   if (isConnected() && view_) {
+      view_->setCaption(labelPrefix+cam().label());
    }
 }
 
 void QCamDisplay::commonInit(QWidget * parent) {
    mainWidget_=new QVBox(parent);
-
-   QCamUtilities::registerWidget(mainWidget_);
 
    buttonsContainer_ = new QHBox(mainWidget_);
 
@@ -128,7 +126,12 @@ void QCamDisplay::commonInit(QWidget * parent) {
    widget_->setSizePolicy(policy);
 
    QCamUtilities::setQastrocamIcon(mainWidget_);
-   //mainWidget_->show();
+
+   view_ = new QScrollView(parent);
+   QCamUtilities::registerWidget(view_);
+   view_->setResizePolicy(QScrollView::AutoOne);
+   view_->addChild(mainWidget_);
+   view_->show();
 }
 
 void QCamDisplay::newFrame() {
@@ -140,8 +143,9 @@ void QCamDisplay::newFrame() {
       widget_->resize(yuvFrame_.size());
       widget_->updateGeometry();
       crossButton_->updateGeometry();
-      mainWidget_->adjustSize();
-      //mainWidget_->updateGeometry();
+      mainWidget_->updateGeometry();
+      view_->adjustSize();
+      //view_->updateGeometry();
    } else {
       widget_->firtsFrameReceived_=true;
    }
@@ -154,12 +158,12 @@ void QCamDisplay::camConnected() {
    widget_->resize(cam().size());
    widget_->updateGeometry();
    //crossButton_->updateGeometry();
-   mainWidget_->adjustSize();
+   view_->adjustSize();
    setCaption();
 }
 
 QWidget & QCamDisplay::widget() {
-   return *mainWidget_;
+   return *view_;
 }
 
 void QCamDisplay::setDisplayMode(DisplayMode mode) {

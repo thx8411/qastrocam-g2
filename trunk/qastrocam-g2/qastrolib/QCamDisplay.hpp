@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include "QCamClient.hpp"
 #include "QCamFrame.hpp"
 #include <qwidget.h>
+#include <qscrollview.h>
 #include "../config.h"
 
 class QCam;
@@ -73,6 +74,7 @@ protected slots:
 private:
    void setCaption();
    QVBox * mainWidget_;
+   QScrollView * view_;
    QCamDisplayImpl * widget_;
    QHBox * buttonsContainer_;
    QLabel * crossLabel_;
