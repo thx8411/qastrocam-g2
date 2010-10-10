@@ -59,7 +59,7 @@ QCamQHY5::QCamQHY5() {
       exit(1);
    }
    // configure the cam
-   camera->configure(xstart_,ystart_,width_,height_,gain_,&width_,&height_);
+   camera->configure(xstart_,ystart_,width_,height_,gain_,gain_,gain_,gain_,&width_,&height_);
    // set frame
    inputBuffer_.setMode(GreyFrame);
    inputBuffer_.setSize(QSize(width_,height_));
@@ -141,7 +141,7 @@ void QCamQHY5::setSize(int x, int y) {
    // update frame mem
    inputBuffer_.setSize(QSize(width_,height_));
    // start the new frame
-   camera->configure(xstart_,ystart_,width_,height_,gain_,&width_,&height_);
+   camera->configure(xstart_,ystart_,width_,height_,gain_,gain_,gain_,gain_,&width_,&height_);
    camera->shoot(frameExposure_);
    // update datas
    static char buff[11];
@@ -243,7 +243,7 @@ bool QCamQHY5::updateFrame() {
    // read picture datas
    if(camera->read((char*)YBuff)) {
       setTime();
-      camera->configure(xstart_,ystart_,width_,height_,gain_,&width_,&height_);
+      camera->configure(xstart_,ystart_,width_,height_,gain_,gain_,gain_,gain_,&width_,&height_);
       camera->shoot(frameExposure_);
       // gives a new shot for the timer
       timer_->start(frameRate_,true);
