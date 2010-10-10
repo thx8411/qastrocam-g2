@@ -192,8 +192,8 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
    // gain
    gainSlider=new QCamSlider("Gain",false,settingsBox);
-   gainSlider->setMinValue(0);
-   gainSlider->setMaxValue(100);
+   gainSlider->setMinValue(1);
+   gainSlider->setMaxValue(73);
    gainSlider->setValue(gain_);
    // exposure
    QHBox* exposureBox=new QHBox(settingsBox);

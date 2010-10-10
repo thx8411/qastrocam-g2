@@ -1,7 +1,7 @@
 /******************************************************************
 Qastrocam-g2
 Copyright (C) 2010 Blaise-Florentin Collin
-Thanks to Geoffrey Hauser
+Thanks to Geoffrey Hauser and Clive
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -171,6 +171,15 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL
    char registers[19];
    int offset,index,value,res;
 
+   int setgain[74]={0x000,0x004,0x005,0x006,0x007,0x008,0x009,0x00A,0x00B,
+                   0x00C,0x00D,0x00E,0x00F,0x010,0x011,0x012,0x013,0x014,
+                   0x015,0x016,0x017,0x018,0x019,0x01A,0x01B,0x01C,0x01D,
+                   0x01E,0x01F,0x051,0x052,0x053,0x054,0x055,0x056,0x057,
+                   0x058,0x059,0x05A,0x05B,0x05C,0x05D,0x05E,0x05F,0x6CE,
+                   0x6CF,0x6D0,0x6D1,0x6D2,0x6D3,0x6D4,0x6D5,0x6D6,0x6D7,
+                   0x6D8,0x6D9,0x6DA,0x6DB,0x6DC,0x6DD,0x6DE,0x6DF,0x6E0,
+                   0x6E1,0x6E2,0x6E3,0x6E4,0x6E5,0x6E6,0x6E7,0x6FC,0x6FD,0x6FE,0x6FF};
+
    // test values
    if(w>1280) w=1280;
    if(w<1) w=1;
@@ -181,7 +190,7 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL
    if((xpos+w)>1280) w=1280-xpos;
    if((ypos+h)>1024) h=1024-ypos;
    if(gain<0) gain=0;
-   if(gain>100) gain=100;
+   if(gain>73) gain=73;
    // setting registers
    xpos_=xpos;
    ypos_=ypos;
@@ -189,7 +198,7 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL
    height_=h-(h%4);
    if(rw) *rw=width_;
    if(rh) *rh=height_;
-   gain_=gain*0x6ff/100;
+   gain_=setgain[gain];
    size_=1558*(height_+26);
    offset=(1048-height_)/2;
    index=(1558*(height_+26))>>16;
