@@ -167,7 +167,7 @@ int QHY5cam::move(int direction) {
 }
 
 // configure the cam
-int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL, int* rh=NULL) {
+int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gg1, int bg, int rg, int gg2, int* rw=NULL, int* rh=NULL) {
    char registers[19];
    int offset,index,value,res;
    const int setgain[74]={0x000,0x004,0x005,0x006,0x007,0x008,0x009,0x00A,0x00B,
@@ -179,33 +179,48 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gain, int* rw=NULL
                    0x6D8,0x6D9,0x6DA,0x6DB,0x6DC,0x6DD,0x6DE,0x6DF,0x6E0,
                    0x6E1,0x6E2,0x6E3,0x6E4,0x6E5,0x6E6,0x6E7,0x6FC,0x6FD,0x6FE,0x6FF};
 
-   // test values
-   if(w>1280) w=1280;
-   if(w<1) w=1;
-   if(h>1024) h=1024;
-   if(h<1) h=1;
-   if(xpos<0) xpos=0;
-   if(ypos<1) ypos=0;
-   if((xpos+w)>1280) w=1280-xpos;
-   if((ypos+h)>1024) h=1024-ypos;
-   if(gain<0) gain=0;
-   if(gain>73) gain=73;
    // setting registers
-   xpos_=xpos;
-   ypos_=ypos;
    width_=w;
    height_=h-(h%4);
+   if(width_>1280) width_=1280;
+   if(width_<1) width_=1;
+   if(height_>1024) height_=1024;
+   if(height_<1) height_=1;
    if(rw) *rw=width_;
    if(rh) *rh=height_;
-   gain_=setgain[gain];
+
+   xpos_=xpos;
+   ypos_=ypos;
+   if(xpos_<0) xpos_=0;
+   if(ypos_<1) ypos_=0;
+   if((xpos_+width_)>1280) width_=1280-xpos_;
+   if((ypos_+height_)>1024) height_=1024-ypos_;
+
+   gg1_=gg1;
+   bg_=bg;
+   rg_=rg;
+   gg2_=gg2;
+   if(gg1_<0) gg1_=0;
+   if(gg1_>73) gg1_=73;
+   if(bg_<0) bg_=0;
+   if(bg_>73) bg_=73;
+   if(rg_<0) rg_=0;
+   if(rg_>73) rg_=73;
+   if(gg2_<0) gg2_=0;
+   if(gg2_>73) gg2_=73;
+   gg1_=setgain[gg1_];
+   bg_=setgain[bg_];
+   rg_=setgain[rg_];
+   gg2_=setgain[gg2_];
+
    size_=1558*(height_+26);
    offset=(1048-height_)/2;
    index=(1558*(height_+26))>>16;
    value=(1558*(height_+26))&0xffff;
-   STORE_WORD_BE(registers+0,gain_);
-   STORE_WORD_BE(registers+2,gain_);
-   STORE_WORD_BE(registers+4,gain_);
-   STORE_WORD_BE(registers+6,gain_);
+   STORE_WORD_BE(registers+0,gg1_);
+   STORE_WORD_BE(registers+2,bg_);
+   STORE_WORD_BE(registers+4,rg_);
+   STORE_WORD_BE(registers+6,gg2_);
    STORE_WORD_BE(registers+8,offset);
    STORE_WORD_BE(registers+10,0);
    STORE_WORD_BE(registers+12,height_-1);
@@ -273,7 +288,7 @@ QHY5cam::QHY5cam() {
       }
    }
    // init config
-   configure(0,0,1280,1024,10,&temp1,&temp2);
+   configure(0,0,1280,1024,1,1,1,1,&temp1,&temp2);
 }
 
 QHY5cam::~QHY5cam() {

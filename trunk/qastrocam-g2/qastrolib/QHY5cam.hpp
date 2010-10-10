@@ -53,7 +53,7 @@ public :
    int read(char* image);
    int move(int direction, int duration);
    int move(int direction);
-   int configure(int xpos, int ypos, int w, int h, int gain, int* rw, int* rh);
+   int configure(int xpos, int ypos, int w, int h, int gg1, int b, int r, int gg2, int* rw, int* rh);
 
    // is the cam plugged ?
    static bool plugged();
@@ -74,7 +74,7 @@ private :
    int ypos_;
    int width_;
    int height_;
-   int gain_;
+   int gg1_, bg_, rg_, gg2_;
    int size_;
 };
 
