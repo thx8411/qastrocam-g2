@@ -129,6 +129,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
 
    view_ = new QScrollView(parent);
    QCamUtilities::registerWidget(view_);
+   //view_->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    view_->setResizePolicy(QScrollView::AutoOne);
    view_->addChild(mainWidget_);
    view_->show();
@@ -137,15 +138,18 @@ void QCamDisplay::commonInit(QWidget * parent) {
 void QCamDisplay::newFrame() {
    yuvFrame_=cam().yuvFrame();
    if (yuvFrame_.size() != widget_->size()) {
+      QSize viewSize;
       widget_->setMinimumSize(yuvFrame_.size());
       widget_->setMaximumSize(yuvFrame_.size());
       //cout << "newFrame resize()\n";
       widget_->resize(yuvFrame_.size());
       widget_->updateGeometry();
       crossButton_->updateGeometry();
-      mainWidget_->updateGeometry();
+      mainWidget_->adjustSize();
       view_->adjustSize();
-      //view_->updateGeometry();
+      viewSize=mainWidget_->sizeHint();
+      viewSize=QSize(viewSize.width()+view_->horizontalScrollBar()->sizeHint().width(),viewSize.height()+view_->verticalScrollBar()->sizeHint().height());
+      view_->setMaximumSize(viewSize);
    } else {
       widget_->firtsFrameReceived_=true;
    }
@@ -153,12 +157,16 @@ void QCamDisplay::newFrame() {
 }
 
 void QCamDisplay::camConnected() {
+   QSize viewSize;
    //cout << "connected cam : "<< cam().size().width() <<"x"<<cam().size().height()<<"\n";
    widget_->firtsFrameReceived_=false;
    widget_->resize(cam().size());
    widget_->updateGeometry();
-   //crossButton_->updateGeometry();
+   crossButton_->updateGeometry();
    view_->adjustSize();
+   viewSize=mainWidget_->sizeHint();
+   viewSize=QSize(viewSize.width()+view_->horizontalScrollBar()->sizeHint().width(),viewSize.height()+view_->verticalScrollBar()->sizeHint().height());
+   view_->setMaximumSize(viewSize);
    setCaption();
 }
 
