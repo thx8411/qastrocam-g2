@@ -52,6 +52,7 @@ MA  02110-1301, USA.
 #include "QCamAutoGuidageSimple.hpp"
 #include "QCamAutoAlign.hpp"
 #include "QTelescopeAutostar.hpp"
+#include "QTelescopeNexstar.hpp"
 #include "QTelescopeMCU.hpp"
 #include "QTelescopeAPM.hpp"
 #include "QTelescopeFifo.hpp"
@@ -353,7 +354,8 @@ int main(int argc, char ** argv) {
            << "* qhy5\n"
            << "* apm\n"
            << "* autostar\n"
-           << "* fifo\n"
+           << "* nexstar\n"
+           //<< "* fifo\n"
            << "* mcu\n"
            << "* mts\n"
 	   << "* file\n";
@@ -450,6 +452,8 @@ int main(int argc, char ** argv) {
    if (telescopeType.length() != 0) {
       if (telescopeType=="autostar") {
          theTelescope = new QTelescopeAutostar(telescopeDeviceName.c_str());
+      } else if (telescopeType=="nexstar") {
+         theTelescope = new QTelescopeNexstar(telescopeDeviceName.c_str());
       } else if (telescopeType=="mcu") {
          theTelescope = new QTelescopeMCU(telescopeDeviceName.c_str());
       } else if (telescopeType=="apm") {
