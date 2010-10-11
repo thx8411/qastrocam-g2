@@ -52,7 +52,7 @@ using namespace std;
 // LOG <yes/no>
 // REGISTAX_AVI <yes/no>
 // NIGHT_VISION <yes/no>
-// TELESCOPE <none/qhy5/apm/autostar/fifo/mcu/mts/file>
+// TELESCOPE <none/qhy5/apm/autostar/nexstar/fifo/mcu/mts/file>
 // VIDEO_DEVICE <file>
 // LIB_PATH <directory>
 // ADD_MODULE <yes/no>
