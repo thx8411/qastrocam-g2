@@ -34,7 +34,7 @@ extern settingsBackup settings;
 QTelescopeQHY5::QTelescopeQHY5() : QTelescope() {
    // is there a cam ?
    if(!QHY5cam::plugged()) {
-      cam_==NULL;
+      cam_=NULL;
       QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY5 guider\nThe mount won't move...");
    } else {
       // get the cam instance
