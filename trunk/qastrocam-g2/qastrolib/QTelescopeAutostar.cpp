@@ -143,6 +143,8 @@ bool QTelescopeAutostar::sendCmd(const string & cmd,const string & param) {
                                  fullCmd.c_str(),
                                  fullCmd.length())) {
       perror(fullCmd.c_str());
+      close(descriptor_);
+      descriptor_=-1;
       return false;
    }
    return true;
