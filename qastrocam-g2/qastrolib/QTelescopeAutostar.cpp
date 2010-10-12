@@ -77,6 +77,10 @@ QTelescopeAutostar::QTelescopeAutostar(const char * deviceName) :
    setSpeed(0.1);
 }
 
+QTelescopeAutostar::~QTelescopeAutostar() {
+   close(descriptor_);
+}
+
 void QTelescopeAutostar::buildGUI(QWidget * parent) {
    QTelescope::buildGUI(parent);
    widget()->setCaption(version(versionFull).c_str());

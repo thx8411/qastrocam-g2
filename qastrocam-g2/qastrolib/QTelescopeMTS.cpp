@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -70,6 +70,10 @@ QTelescopeMTS::QTelescopeMTS(const char * deviceName) :
    cout << "\nSetting speed to 0.1\n";
    setSpeed( 0.1 );
 
+}
+
+QTelescopeMTS::~QTelescopeMTS() {
+   close(descriptor_);
 }
 
 void QTelescopeMTS::buildGUI(QWidget * parent) {

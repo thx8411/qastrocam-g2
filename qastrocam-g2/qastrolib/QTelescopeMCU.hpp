@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -38,6 +38,7 @@ class QTelescopeMCU : public QTelescope {
    Q_OBJECT;
 public:
    QTelescopeMCU(const char * deviceName);
+   ~QTelescopeMCU();
    void buildGUI(QWidget * parent);
 public slots:
    virtual void goE(float s=0) {sendCommand(moveEast);};
