@@ -56,20 +56,24 @@ QTelescopeNexstar::QTelescopeNexstar(const char * deviceName) : QTelescope() {
    tcflush(descriptor_, TCIFLUSH);             /* clear the channel */
    tcsetattr(descriptor_,TCSANOW,&termios_p);
 
+   // fill the message fields
    message[0]='P';
    message[1]=2;
    message[5]=0;
    message[6]=0;
    message[7]=0;
 
+   //  set initial speed
    setSpeed(0.1);
 }
 
 QTelescopeNexstar::~QTelescopeNexstar() {
+   // close serial port
    close(descriptor_);
 }
 
 void QTelescopeNexstar::buildGUI(QWidget * parent) {
+   // build the window
    QTelescope::buildGUI(parent);
    widget()->setCaption("Nexstar");
 }
@@ -107,11 +111,13 @@ void QTelescopeNexstar::stopS() {
 }
 
 double QTelescopeNexstar::setSpeed(double speed) {
+   // set nexstar fixed slew rate (0-9)
    currentSpeed=floor(speed*10)/10;
    return(currentSpeed);
 }
 
 bool QTelescopeNexstar::setTracking(bool activated) {
+   // not implemented yet
    return activated;
 }
 
@@ -119,9 +125,13 @@ bool QTelescopeNexstar::setTracking(bool activated) {
 // private
 //
 
+// send slew order
 void QTelescopeNexstar::move(int direction, int sens, int rate) {
+   int size;
+
    message[2]=direction;
    message[3]=sens;
    message[4]=rate;
-   write(descriptor_,message,8);
+
+   size=write(descriptor_,message,8);
 }
