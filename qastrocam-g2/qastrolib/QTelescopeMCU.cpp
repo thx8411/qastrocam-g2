@@ -141,6 +141,8 @@ bool QTelescopeMCU::sendCmd(const string & cmd,const string & param) {
                                  fullCmd.c_str(),
                                  fullCmd.length())) {
       perror(fullCmd.c_str());
+      close(descriptor_);
+      descriptor_=-1;
       return false;
    }
    return true;
@@ -154,40 +156,42 @@ string QTelescopeMCU::recvCmd(ReturnType t) {
    char buf[100];
    int lu=0;
    buf[0]=0;
-   switch (t) {
-   case singleChar:
-   case booleans:
-      lu=read(descriptor_,buf,1);
-      if (lu!=1) {
-         cerr << "expecting a single char when reading from MCU\n";
+   if(descriptor_!=-1) {
+      switch (t) {
+         case singleChar:
+         case booleans:
+            lu=read(descriptor_,buf,1);
+            if (lu!=1) {
+               cerr << "expecting a single char when reading from MCU\n";
+            }
+         buf[1]=0;
+         break;
+         case numerics:
+            lu=read(descriptor_,buf,4);
+            if (lu!=4) {
+               cerr <<"expecting a 4 digit number when reading from MCU\n";
+            }
+            buf[lu]=0;
+         case strings:
+            do {
+               int cur=read(descriptor_,buf+lu,1);
+               if (cur!=1) {
+                  cerr << "expecting single chars when reading a string from MCU\n";
+               }
+               lu+=cur;
+            } while (buf[lu-1]!='#');
+            buf[lu-1]=0;
+            break;
+         case revision:
+            do {
+               int cur=read(descriptor_,buf+lu,10);
+               lu+=cur;
+            } while ( lu < 10);
+            buf[lu]=0;
+            break;
+         case none:
+            break;
       }
-      buf[1]=0;
-      break;
-   case numerics:
-      lu=read(descriptor_,buf,4);
-      if (lu!=4) {
-         cerr <<"expecting a 4 digit number when reading from MCU\n";
-      }
-      buf[lu]=0;
-   case strings:
-      do {
-         int cur=read(descriptor_,buf+lu,1);
-         if (cur!=1) {
-            cerr << "expecting single chars when reading a string from MCU\n";
-         }
-         lu+=cur;
-      } while (buf[lu-1]!='#');
-      buf[lu-1]=0;
-      break;
-   case revision:
-      do {
-         int cur=read(descriptor_,buf+lu,10);
-         lu+=cur;
-      } while ( lu < 10);
-      buf[lu]=0;
-      break;
-   case none:
-      break;
    }
    return buf;
 }
