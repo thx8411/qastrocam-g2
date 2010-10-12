@@ -28,6 +28,7 @@ MA  02110-1301, USA.
 #include <unistd.h>
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 
@@ -55,7 +56,17 @@ QTelescopeNexstar::QTelescopeNexstar(const char * deviceName) : QTelescope() {
    tcflush(descriptor_, TCIFLUSH);             /* clear the channel */
    tcsetattr(descriptor_,TCSANOW,&termios_p);
 
+   message[0]='P';
+   message[1]=2;
+   message[5]=0;
+   message[6]=0;
+   message[7]=0;
+
    setSpeed(0.1);
+}
+
+QTelescopeNexstar::~QTelescopeNexstar() {
+   close(descriptor_);
 }
 
 void QTelescopeNexstar::buildGUI(QWidget * parent) {
@@ -64,44 +75,53 @@ void QTelescopeNexstar::buildGUI(QWidget * parent) {
 }
 
 void QTelescopeNexstar::goE(float shift) {
-   //
+   move(NEXSTAR_RA,NEXSTAR_DOWN,(int)(currentSpeed*10));
 }
 
 void QTelescopeNexstar::goW(float shift) {
-   //
+   move(NEXSTAR_RA,NEXSTAR_UP,(int)(currentSpeed*10));
 }
 
 void QTelescopeNexstar::goS(float shift) {
-   //
+   move(NEXSTAR_DEC,NEXSTAR_DOWN,(int)(currentSpeed*10));
 }
 
 void QTelescopeNexstar::goN(float shift) {
-   //
+   move(NEXSTAR_DEC,NEXSTAR_UP,(int)(currentSpeed*10));
 }
 
 void QTelescopeNexstar::stopE() {
-   //
+   move(NEXSTAR_RA,NEXSTAR_DOWN,0);
 }
 
 void QTelescopeNexstar::stopN() {
-   //
+   move(NEXSTAR_DEC,NEXSTAR_UP,0);
 }
 
 void QTelescopeNexstar::stopW() {
-   //
+   move(NEXSTAR_RA,NEXSTAR_UP,0);
 }
 
 void QTelescopeNexstar::stopS() {
-   //
+   move(NEXSTAR_DEC,NEXSTAR_DOWN,0);
 }
 
 double QTelescopeNexstar::setSpeed(double speed) {
-   //
+   currentSpeed=floor(speed*10)/10;
    return(currentSpeed);
 }
 
 bool QTelescopeNexstar::setTracking(bool activated) {
-   //
    return activated;
 }
 
+//
+// private
+//
+
+void QTelescopeNexstar::move(int direction, int sens, int rate) {
+   message[2]=direction;
+   message[3]=sens;
+   message[4]=rate;
+   write(descriptor_,message,8);
+}
