@@ -24,6 +24,11 @@ MA  02110-1301, USA.
 #include "QTelescope.hpp"
 #include <string>
 
+#define NEXSTAR_RA	16
+#define NEXSTAR_DEC	17
+#define NEXSTAR_UP	36
+#define NEXSTAR_DOWN	37
+
 using namespace std;
 
 /** controle a Nexstar telescope via the serial port of
@@ -33,6 +38,7 @@ class QTelescopeNexstar : public QTelescope {
    Q_OBJECT;
 public:
    QTelescopeNexstar(const char * deviceName);
+   ~QTelescopeNexstar();
    void buildGUI(QWidget * parent);
 public slots:
    virtual void goE(float shift);
@@ -47,6 +53,8 @@ public slots:
    virtual bool setTracking(bool activated);
 protected:
 private:
+   char message[8];
+   void move(int direction, int sens, int rate);
    // the file descriptor of the serial port.
    int descriptor_;
 };
