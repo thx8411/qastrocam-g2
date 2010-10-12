@@ -40,6 +40,7 @@ public:
    QTelescopeNexstar(const char * deviceName);
    ~QTelescopeNexstar();
    void buildGUI(QWidget * parent);
+   virtual int telescopeType() { return(TELESCOPE_NEXSTAR); }
 public slots:
    virtual void goE(float shift);
    virtual void goW(float shift);

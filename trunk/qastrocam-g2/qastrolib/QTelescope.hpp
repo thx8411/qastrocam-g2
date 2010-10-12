@@ -27,6 +27,17 @@ MA  02110-1301, USA.
 #include <qslider.h>
 #include <qlabel.h>
 
+// telescope types
+#define TELESCOPE_VIRTUAL	0
+#define TELESCOPE_APM		1
+#define TELESCOPE_AUTOSTAR	2
+#define TELESCOPE_FIFO		3
+#define TELESCOPE_FILE		4
+#define TELESCOPE_MCU		5
+#define TELESCOPE_MTS		6
+#define TELESCOPE_NEXSTAR	7
+#define TELESCOPE_QHY5		8
+
 class QVGroupBox;
 class QPushButton;
 class QGridLayout;
@@ -48,6 +59,7 @@ public:
    virtual void Reset() {};
    virtual void setTrack(bool) {};
    virtual ~QTelescope();
+   virtual int telescopeType() { return(TELESCOPE_VIRTUAL); }
 protected:
    QWidget * widget();
    double currentSpeed;

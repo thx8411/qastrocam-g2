@@ -84,6 +84,14 @@ void QTelescope::buildGUI(QWidget * parent) {
    connect(rightButton_,SIGNAL(released()),this,SLOT(stopW()));
    mainWidget_->show();
 
+   // disable buttons if fifo
+   if(telescopeType()==TELESCOPE_FIFO||telescopeType()==TELESCOPE_FILE) {
+      upButton_->setEnabled(false);
+      downButton_->setEnabled(false);
+      leftButton_->setEnabled(false);
+      rightButton_->setEnabled(false);
+   }
+
    // speed slider
    double speed;
    QHGroupBox* speedBox;

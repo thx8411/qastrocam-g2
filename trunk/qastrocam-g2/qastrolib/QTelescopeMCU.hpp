@@ -40,6 +40,7 @@ public:
    QTelescopeMCU(const char * deviceName);
    ~QTelescopeMCU();
    void buildGUI(QWidget * parent);
+   virtual int telescopeType() { return(TELESCOPE_MCU); }
 public slots:
    virtual void goE(float s=0) {sendCommand(moveEast);};
    virtual void goW(float s=0) {sendCommand(moveWest);};

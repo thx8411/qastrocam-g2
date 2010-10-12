@@ -33,6 +33,7 @@ class QTelescopeAPM : public QTelescope {
 public:
    QTelescopeAPM(const char * pport);
    ~QTelescopeAPM();
+   virtual int telescopeType() { return(TELESCOPE_APM); }
 public slots:
    virtual void goE(float shift);
    virtual void goW(float shift);

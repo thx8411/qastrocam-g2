@@ -39,6 +39,7 @@ public:
    virtual void Reset();
    // parent class compatibility
    virtual void setTrack(bool tracking);
+   virtual int telescopeType() { return(TELESCOPE_FILE); }
 public slots:
    // moves
    virtual void goE(float shift){};
