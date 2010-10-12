@@ -128,10 +128,22 @@ bool QTelescopeNexstar::setTracking(bool activated) {
 // send slew order
 void QTelescopeNexstar::move(int direction, int sens, int rate) {
    int size;
+   char res;
 
    message[2]=direction;
    message[3]=sens;
    message[4]=rate;
 
    size=write(descriptor_,message,8);
+   if(size!=8) {
+      perror("Nexstar command not sent");
+      return;
+   }
+   size=read(descriptor_,&res,1);
+   if(size!=1) {
+      perror("Nexstar ACK missing");
+      return;
+   }
+   if(res!='#')
+      perror("wrong Nexstar ACK");
 }
