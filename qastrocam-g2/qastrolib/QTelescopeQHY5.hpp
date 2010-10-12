@@ -31,6 +31,8 @@ class QTelescopeQHY5 : public QTelescope {
 public:
    QTelescopeQHY5();
    ~QTelescopeQHY5();
+   void buildGUI(QWidget * parent);
+   virtual int telescopeType() { return(TELESCOPE_QHY5); };
 public slots:
    virtual void goE(float shift);
    virtual void goW(float shift);

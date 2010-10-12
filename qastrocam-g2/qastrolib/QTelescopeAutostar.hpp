@@ -37,6 +37,7 @@ class QTelescopeAutostar : public QTelescope {
 public:
    QTelescopeAutostar(const char * deviceName);
    ~QTelescopeAutostar();
+   virtual int telescopeType() { return(TELESCOPE_AUTOSTAR); }
    void buildGUI(QWidget * parent);
 public slots:
    virtual void goE(float shift) {sendCommand(moveEast);};

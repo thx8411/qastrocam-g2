@@ -44,6 +44,7 @@ public:
    QTelescopeMTS(const char * deviceName);
    ~QTelescopeMTS();
    void buildGUI(QWidget * parent);
+   virtual int telescopeType() { return(TELESCOPE_MTS); };
 public slots:
    virtual void goE(float s=0) { sendCommand( righton ); };
    virtual void goW(float s=0) { sendCommand( lefton ); };

@@ -32,7 +32,8 @@ class QTelescopeFifo : public QTelescope {
 public:
    QTelescopeFifo(const char * fifoPath);
    ~QTelescopeFifo();
-   public slots:
+   virtual int telescopeType() { return(TELESCOPE_FIFO); }
+public slots:
    virtual void goE(float shift) {}
    virtual void goW(float shift) {}
    virtual void goS(float shift) {}
@@ -43,7 +44,7 @@ public:
    virtual void stopS() {}
    virtual double setSpeed(double speed) {return(0); }
    virtual bool setTracking(bool activated) {return true; }
-  private:
+private:
    int descriptor_;
 };
 

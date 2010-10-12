@@ -57,6 +57,11 @@ QTelescopeQHY5::~QTelescopeQHY5() {
    }
 }
 
+void QTelescopeQHY5::buildGUI(QWidget * parent) {
+   QTelescope::buildGUI(parent);
+   widget()->setCaption("QHY5 Autoguide");
+}
+
 void QTelescopeQHY5::goE(float shift) {
    if(cam_) {
       stopW();
