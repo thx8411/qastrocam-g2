@@ -62,7 +62,7 @@ QTelescopeMTS::QTelescopeMTS(const char * deviceName) :
    if ( sendCommand( ready ) != 0 ) {
      QMessageBox::information(0,"Qastrocam-g2","Error: MTS controller busy");
      cout << "Error: MTS controller busy\n\n";
-     exit(0);
+     //exit(0);
    }
    /* Display redirection must be disabled during PC operation */
    sendCommand ( displayoff );
