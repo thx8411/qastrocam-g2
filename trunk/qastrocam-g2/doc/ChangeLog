@@ -1,5 +1,6 @@
-4.9beta20101010
+4.9beta20101013
 
+  - small telescope's bugs fixed
   - Nexstar protocol support added (1.6+)
   - The camera display can now be resized/scrolled
   - QHY5 gain value fixed
