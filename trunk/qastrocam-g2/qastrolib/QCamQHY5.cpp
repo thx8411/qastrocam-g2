@@ -50,7 +50,10 @@ QCamQHY5::QCamQHY5() {
    targetHeight_=height_;
    targetSize.setWidth(targetWidth_);
    targetSize.setHeight(targetHeight_);
-   gain_=10;
+   gainG1_=37;
+   gainG2_=37;
+   gainR_=37;
+   gainB_=37;
    sizeTable=getAllowedSize();
    // get the cam instance
    camera=QHY5cam::instance(QHY_IMAGER);
@@ -59,7 +62,7 @@ QCamQHY5::QCamQHY5() {
       exit(1);
    }
    // configure the cam
-   camera->configure(xstart_,ystart_,width_,height_,gain_,gain_,gain_,gain_,&width_,&height_);
+   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    // set frame
    inputBuffer_.setMode(GreyFrame);
    inputBuffer_.setSize(QSize(width_,height_));
@@ -75,7 +78,10 @@ QCamQHY5::QCamQHY5() {
    setProperty("FrameSize",buff,true);
    setProperty("CameraName","QHY5");
    setProperty("FrameExposure",frameExposure_);
-   setProperty("Gain",gain_,false);
+   setProperty("Gain Green1",gainG1_,false);
+   setProperty("Gain Green2",gainG1_,false);
+   setProperty("Gain Red",gainR_,false);
+   setProperty("Gain Blue",gainB_,false);
 }
 
 QCamQHY5::~QCamQHY5() {
@@ -141,7 +147,7 @@ void QCamQHY5::setSize(int x, int y) {
    // update frame mem
    inputBuffer_.setSize(QSize(width_,height_));
    // start the new frame
-   camera->configure(xstart_,ystart_,width_,height_,gain_,gain_,gain_,gain_,&width_,&height_);
+   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    camera->shoot(frameExposure_);
    // update datas
    static char buff[11];
@@ -170,7 +176,10 @@ void QCamQHY5::setExposure() {
 }
 
 void QCamQHY5::setGain() {
-   setProperty("Gain",gain_,false);
+   setProperty("Gain Green1",gainG1_,false);
+   setProperty("Gain Green2",gainG1_,false);
+   setProperty("Gain Red",gainR_,false);
+   setProperty("Gain Blue",gainB_,false);
 }
 
 void QCamQHY5::changeExposure(int e) {
@@ -180,7 +189,26 @@ void QCamQHY5::changeExposure(int e) {
 }
 
 void QCamQHY5::changeGain(int g) {
-   gain_=g;
+   gainG1_=g;
+   gainG2_=g;
+   gainR_=g;
+   gainB_=g;
+}
+
+void QCamQHY5::changeGainG1(int g) {
+   gainG1_=g;
+}
+
+void QCamQHY5::changeGainG2(int g) {
+   gainG2_=g;
+}
+
+void QCamQHY5::changeGainR(int g) {
+   gainR_=g;
+}
+
+void QCamQHY5::changeGainB(int g) {
+   gainB_=g;
 }
 
 const QSize & QCamQHY5::size() const {
@@ -190,11 +218,39 @@ const QSize & QCamQHY5::size() const {
 QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
    QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
+
    // gain
    gainSlider=new QCamSlider("Gain",false,settingsBox);
    gainSlider->setMinValue(1);
    gainSlider->setMaxValue(73);
-   gainSlider->setValue(gain_);
+   gainSlider->setValue(gainG1_);
+
+   gainSliderG1=new QCamSlider("Gain Green 1",false,settingsBox);
+   gainSliderG1->setMinValue(1);
+   gainSliderG1->setMaxValue(73);
+   gainSliderG1->setValue(gainG1_);
+
+   gainSliderG2=new QCamSlider("Gain Green 2",false,settingsBox);
+   gainSliderG2->setMinValue(1);
+   gainSliderG2->setMaxValue(73);
+   gainSliderG2->setValue(gainG2_);
+
+   gainSliderR=new QCamSlider("Gain Red",false,settingsBox);
+   gainSliderR->setMinValue(1);
+   gainSliderR->setMaxValue(73);
+   gainSliderR->setValue(gainR_);
+
+   gainSliderB=new QCamSlider("Gain Blue",false,settingsBox);
+   gainSliderB->setMinValue(1);
+   gainSliderB->setMaxValue(73);
+   gainSliderB->setValue(gainB_);
+
+   // no finished at this time, so hidden
+   gainSliderG1->hide();
+   gainSliderG2->hide();
+   gainSliderR->hide();
+   gainSliderB->hide();
+
    // exposure
    QHBox* exposureBox=new QHBox(settingsBox);
    QLabel* label1=new QLabel(QString("Exposure"),exposureBox);
@@ -215,9 +271,19 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    } else {
       progressBar->setEnabled(false);
    }
+
    // connections
    connect(gainSlider,SIGNAL(valueChange(int)),this,SLOT(changeGain(int)));
    connect(gainSlider,SIGNAL(sliderReleased()),this,SLOT(setGain()));
+   connect(gainSliderG1,SIGNAL(valueChange(int)),this,SLOT(changeGainG1(int)));
+   connect(gainSliderG1,SIGNAL(sliderReleased()),this,SLOT(setGain()));
+   connect(gainSliderG2,SIGNAL(valueChange(int)),this,SLOT(changeGainG2(int)));
+   connect(gainSliderG2,SIGNAL(sliderReleased()),this,SLOT(setGain()));
+   connect(gainSliderR,SIGNAL(valueChange(int)),this,SLOT(changeGainR(int)));
+   connect(gainSliderR,SIGNAL(sliderReleased()),this,SLOT(setGain()));
+   connect(gainSliderB,SIGNAL(valueChange(int)),this,SLOT(changeGainB(int)));
+   connect(gainSliderB,SIGNAL(sliderReleased()),this,SLOT(setGain()));
+
    connect(exposureSlider,SIGNAL(valueChanged(int)),this,SLOT(changeExposure(int)));
    connect(exposureSlider,SIGNAL(sliderReleased()),this,SLOT(setExposure()));
    // progress timer
@@ -243,7 +309,7 @@ bool QCamQHY5::updateFrame() {
    // read picture datas
    if(camera->read((char*)YBuff)) {
       setTime();
-      camera->configure(xstart_,ystart_,width_,height_,gain_,gain_,gain_,gain_,&width_,&height_);
+      camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
       camera->shoot(frameExposure_);
       // gives a new shot for the timer
       timer_->start(frameRate_,true);

@@ -62,10 +62,17 @@ private:
    int height_;
    int targetWidth_;
    int targetHeight_;
-   int gain_;
+   int gainG1_;
+   int gainG2_;
+   int gainR_;
+   int gainB_;
    int progress_;
    // gui stuff
    QCamSlider* gainSlider;
+   QCamSlider* gainSliderG1;
+   QCamSlider* gainSliderB;
+   QCamSlider* gainSliderR;
+   QCamSlider* gainSliderG2;
    QSlider* exposureSlider;
    QLabel* exposureValue;
    QProgressBar* progressBar;
@@ -74,6 +81,10 @@ protected slots:
    void changeExposure(int e);
    void setExposure();
    void changeGain(int g);
+   void changeGainG1(int g);
+   void changeGainG2(int g);
+   void changeGainR(int g);
+   void changeGainB(int g);
    void setGain();
    void progressUpdate();
    virtual bool updateFrame();
