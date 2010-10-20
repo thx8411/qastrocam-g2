@@ -125,13 +125,13 @@ void QCamDisplay::commonInit(QWidget * parent) {
    //policy.setVerStretch(100);
    widget_->setSizePolicy(policy);
 
-   QCamUtilities::setQastrocamIcon(mainWidget_);
-
    view_ = new QScrollView(parent);
-   QCamUtilities::registerWidget(view_);
-   //view_->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    view_->setResizePolicy(QScrollView::AutoOne);
    view_->addChild(mainWidget_);
+
+   QCamUtilities::setQastrocamIcon(view_);
+   QCamUtilities::registerWidget(view_);
+
    view_->show();
 }
 
@@ -139,8 +139,8 @@ void QCamDisplay::newFrame() {
    yuvFrame_=cam().yuvFrame();
    if (yuvFrame_.size() != widget_->size()) {
       QSize viewSize;
-      widget_->setMinimumSize(yuvFrame_.size());
-      widget_->setMaximumSize(yuvFrame_.size());
+      //widget_->setMinimumSize(yuvFrame_.size());
+      //widget_->setMaximumSize(yuvFrame_.size());
       //cout << "newFrame resize()\n";
       widget_->resize(yuvFrame_.size());
       widget_->updateGeometry();
@@ -149,6 +149,7 @@ void QCamDisplay::newFrame() {
       view_->adjustSize();
       viewSize=mainWidget_->sizeHint();
       viewSize=QSize(viewSize.width()+view_->horizontalScrollBar()->sizeHint().width(),viewSize.height()+view_->verticalScrollBar()->sizeHint().height());
+      //view_->setGeometry(0,0,viewSize.width(),viewSize.height());
       view_->setMaximumSize(viewSize);
    } else {
       widget_->firtsFrameReceived_=true;
@@ -163,9 +164,11 @@ void QCamDisplay::camConnected() {
    widget_->resize(cam().size());
    widget_->updateGeometry();
    crossButton_->updateGeometry();
+   mainWidget_->adjustSize();
    view_->adjustSize();
    viewSize=mainWidget_->sizeHint();
    viewSize=QSize(viewSize.width()+view_->horizontalScrollBar()->sizeHint().width(),viewSize.height()+view_->verticalScrollBar()->sizeHint().height());
+   //view_->setGeometry(0,0,viewSize.width(),viewSize.height());
    view_->setMaximumSize(viewSize);
    setCaption();
 }
