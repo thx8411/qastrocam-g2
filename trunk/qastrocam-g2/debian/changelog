@@ -1,4 +1,4 @@
-qastrocam-g2 (4.9beta20101013) jaunty; urgency=low
+qastrocam-g2 (4.9beta20101022) jaunty; urgency=low
 
   * Nexstar protocol support added (1.6+)
   * QHY5 gain value fixed
