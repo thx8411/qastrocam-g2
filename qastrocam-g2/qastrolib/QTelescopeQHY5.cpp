@@ -65,52 +65,52 @@ void QTelescopeQHY5::buildGUI(QWidget * parent) {
 void QTelescopeQHY5::goE(float shift) {
    if(cam_) {
       stopW();
-      cam_->move(QHY_EAST,8192);
+      cam_->move(QHY_EAST);
    }
 }
 
 void QTelescopeQHY5::goW(float shift) {
    if(cam_) {
       stopE();
-      cam_->move(QHY_WEST,8192);
+      cam_->move(QHY_WEST);
    }
 }
 
 void QTelescopeQHY5::goS(float shift) {
    if(cam_) {
       stopN();
-      cam_->move(QHY_SOUTH,8192);
+      cam_->move(QHY_SOUTH);
    }
 }
 
 void QTelescopeQHY5::goN(float shift) {
    if(cam_) {
       stopS();
-      cam_->move(QHY_NORTH,8192);
+      cam_->move(QHY_NORTH);
    }
 }
 
 void QTelescopeQHY5::stopE() {
    if(cam_) {
-      cam_->move(QHY_EAST,0);
+      cam_->move(QHY_STOP_EW);
    }
 }
 
 void QTelescopeQHY5::stopN() {
    if(cam_) {
-      cam_->move(QHY_NORTH,0);
+      cam_->move(QHY_STOP_NS);
    }
 }
 
 void QTelescopeQHY5::stopW() {
    if(cam_) {
-      cam_->move(QHY_WEST,0);
+      cam_->move(QHY_STOP_EW);
    }
 }
 
 void QTelescopeQHY5::stopS() {
    if(cam_) {
-      cam_->move(QHY_SOUTH,0);
+      cam_->move(QHY_STOP_NS);
    }
 }
 

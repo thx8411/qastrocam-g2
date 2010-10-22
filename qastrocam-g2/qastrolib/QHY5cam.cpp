@@ -122,14 +122,16 @@ int QHY5cam::move(int direction, int duration) {
    unsigned int ret;
    int pulses[2]={-1,-1};
 
-   if((duration==0)||(direction==QHY_NONE)) {
+   if((duration==0)||(direction==QHY_NONE)||(direction==QHY_STOP_NS)||(direction==QHY_STOP_EW)) {
       switch(direction) {
          case QHY_NORTH :
          case QHY_SOUTH :
+         case QHY_STOP_NS :
             direction=0x22;
             break;
          case QHY_EAST :
          case QHY_WEST :
+         case QHY_STOP_EW :
             direction=0x21;
             break;
          case QHY_NONE :
@@ -160,10 +162,43 @@ int QHY5cam::move(int direction, int duration) {
    return(usb_control_msg(dev,0x42,0x10,0,direction,(char*)pulses,sizeof(pulses),500));
 }
 
+// moves until stoped
 int QHY5cam::move(int direction) {
-   //
-   return(0);
-   //
+   pthread_mutex_lock(&loopMutex);
+   switch(direction) {
+      case QHY_NORTH :
+         move_south_=FALSE;
+         move_north_=TRUE;
+         break;
+      case QHY_SOUTH :
+         move_north_=FALSE;
+         move_south_=TRUE;
+         break;
+      case QHY_EAST :
+         move_west_=FALSE;
+         move_east_=TRUE;
+         break;
+      case QHY_WEST :
+         move_east_=FALSE;
+         move_west_=TRUE;
+         break;
+      case QHY_STOP_NS :
+         move_north_=FALSE;
+         move_south_=FALSE;
+         break;
+      case QHY_STOP_EW :
+         move_east_=FALSE;
+         move_west_=FALSE;
+         break;
+      case QHY_NONE :
+      default :
+         move_east_=FALSE;
+         move_west_=FALSE;
+         move_south_=FALSE;
+         move_north_=FALSE;
+   }
+   pthread_mutex_unlock(&loopMutex);
+   return(move(direction,2000));
 }
 
 // configure the cam
@@ -257,6 +292,18 @@ bool QHY5cam::plugged() {
 }
 
 
+void* QHY5cam::timedLoop() {
+   while(loop_on_) {
+      sleep(1);
+      if(move_north_) move(QHY_NORTH,2000);
+      if(move_south_) move(QHY_SOUTH,2000);
+      if(move_east_) move(QHY_EAST,2000);
+      if(move_west_) move(QHY_WEST,2000);
+   }
+   pthread_exit(NULL);
+}
+
+
 QHY5cam::QHY5cam() {
    int temp1,temp2;
    struct usb_bus* bus;
@@ -265,6 +312,11 @@ QHY5cam::QHY5cam() {
    // init
    dev=NULL;
    image_=NULL;
+   move_east_=FALSE;
+   move_west_=FALSE;
+   move_north_=FALSE;
+   move_south_=FALSE;
+   loop_on_=TRUE;
 
    // update usb datas
    usb_init();
@@ -287,13 +339,25 @@ QHY5cam::QHY5cam() {
          }
       }
    }
+
    // init config
    configure(0,0,1280,1024,1,1,1,1,&temp1,&temp2);
+
+   // start the loop thread
+   pthread_mutex_init(&loopMutex,NULL);
+   pthread_create(&loop, NULL, QHY5cam::callTimedLoop, this);
 }
 
 QHY5cam::~QHY5cam() {
+   // stop the loop thread, step 1
+   pthread_mutex_lock(&loopMutex);
+   loop_on_=FALSE;
+   pthread_mutex_unlock(&loopMutex);
    // close usb device
    usb_close(dev);
    // free buffer
    free(image_);
+   // stop the loop thread, step 2
+   pthread_join(loop, NULL);
+   pthread_mutex_destroy(&loopMutex);
 }

@@ -23,6 +23,11 @@ MA  02110-1301, USA.
 #ifndef _QHY5CAM_HPP_
 #define _QHY5CAM_HPP_
 
+#ifndef _REENTRANT
+#define _REENTRANT
+#endif
+#include <pthread.h>
+
 using namespace std;
 
 // guider directions
@@ -62,6 +67,9 @@ private :
    // functions
    QHY5cam();
    ~QHY5cam();
+   // thread loop
+   static void* callTimedLoop(void* arg) { return(((QHY5cam*)arg)->timedLoop()); }
+   void* timedLoop();
 
    // vars
    static QHY5cam* instance_;
@@ -74,8 +82,15 @@ private :
    int ypos_;
    int width_;
    int height_;
+   // gains
    int gg1_, bg_, rg_, gg2_;
+   // moves
+   bool move_east_, move_west_, move_north_, move_south_;
    int size_;
+   // timed loop thread
+   pthread_t loop;
+   pthread_mutex_t loopMutex;
+   bool loop_on_;
 };
 
 #endif
