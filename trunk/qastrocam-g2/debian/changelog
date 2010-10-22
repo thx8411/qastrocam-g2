@@ -4,6 +4,7 @@ qastrocam-g2 (4.9beta20101022) jaunty; urgency=low
   * QHY5 gain value fixed
   * The camera display can now be resized/scrolled
   * small telescope's bugs fixed
+  * no more time limites for QHY5 telescope moves
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 10 Oct 2010 03:18:49 +0100
 
