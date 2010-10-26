@@ -314,8 +314,14 @@ bool QCamVesta::getFlicker() const {
 }
 
 void QCamVesta::setGama(int val) {
+   struct v4l2_control ctrl;
    picture_.whiteness=val;
-   updatePictureSettings();
+   ctrl.id=V4L2_CID_WHITENESS;
+   ctrl.value=val;
+   if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
+      perror("");
+   }
+   //updatePictureSettings();
 }
 
 int QCamVesta::getGama() const {
@@ -613,6 +619,9 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       //QToolTip::add(rawBayer,tr("switch off camera Bayer Matrix => RGB"));
    }
    remoteCTRLgama_=new QCamSlider(tr("Gamma"),false,sliders);
+   // not very clean...but works
+   remoteCTRLgama_->setMinValue(0);
+   remoteCTRLgama_->setMaxValue(32);
    QToolTip::add(remoteCTRLgama_,tr("Low gamma implies less contrasts"));
    remoteCTRLgain_=new QCamSlider(tr("Gain"),true,sliders);
    QToolTip::add(remoteCTRLgain_,tr("More Gain implies more noise in the images"));
