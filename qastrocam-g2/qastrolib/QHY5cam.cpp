@@ -22,6 +22,10 @@ MA  02110-1301, USA.
 // Uses Tom's firmware
 // singleton class
 
+// Tom's firmware only supports timed moves ont the ST4 port.
+// For permanent moves, this driver use a periodic thread, refreshing
+// the timed moves until stop
+
 #include <stdlib.h>
 #include <usb.h>
 #include <iostream>
@@ -40,6 +44,7 @@ MA  02110-1301, USA.
 QHY5cam* QHY5cam::instance_=NULL;
 bool QHY5cam::feature_used[2]={false,false};
 
+// get the class instance for a feature. Create the singleton if needed
 QHY5cam* QHY5cam::instance(int feature) {
    // claim device part
    if(feature>=2)
@@ -75,7 +80,7 @@ int QHY5cam::stop() {
    return(usb_bulk_write(dev,0,&data,1,1000));
 }
 
-// start picture shoot
+// start picture shoot (duration in ms)
 int QHY5cam::shoot(int duration) {
    int val,index,ret;
    char buffer[11]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -91,6 +96,7 @@ int QHY5cam::shoot(int duration) {
 }
 
 // read the picture
+// image buffer size : x*y*1 byte
 int QHY5cam::read(char* image) {
    int res,line,row,offset;
    offset=0;
@@ -122,6 +128,7 @@ int QHY5cam::move(int direction, int duration) {
    unsigned int ret;
    int pulses[2]={-1,-1};
 
+   // stopping
    if((duration==0)||(direction==QHY_NONE)||(direction==QHY_STOP_NS)||(direction==QHY_STOP_EW)) {
       switch(direction) {
          case QHY_NORTH :
@@ -164,7 +171,7 @@ int QHY5cam::move(int direction, int duration) {
 
 // moves until stoped
 int QHY5cam::move(int direction) {
-   pthread_mutex_lock(&loopMutex);
+   pthread_mutex_lock(&moveLoopMutex);
    switch(direction) {
       case QHY_NORTH :
          move_south_=FALSE;
@@ -197,7 +204,7 @@ int QHY5cam::move(int direction) {
          move_south_=FALSE;
          move_north_=FALSE;
    }
-   pthread_mutex_unlock(&loopMutex);
+   pthread_mutex_unlock(&moveLoopMutex);
    return(move(direction,2000));
 }
 
@@ -292,8 +299,8 @@ bool QHY5cam::plugged() {
 }
 
 
-void* QHY5cam::timedLoop() {
-   while(loop_on_) {
+void* QHY5cam::moveLoop() {
+   while(moveLoop_on_) {
       sleep(1);
       if(move_north_) move(QHY_NORTH,2000);
       if(move_south_) move(QHY_SOUTH,2000);
@@ -316,7 +323,7 @@ QHY5cam::QHY5cam() {
    move_west_=FALSE;
    move_north_=FALSE;
    move_south_=FALSE;
-   loop_on_=TRUE;
+   moveLoop_on_=TRUE;
 
    // update usb datas
    usb_init();
@@ -344,20 +351,20 @@ QHY5cam::QHY5cam() {
    configure(0,0,1280,1024,1,1,1,1,&temp1,&temp2);
 
    // start the loop thread
-   pthread_mutex_init(&loopMutex,NULL);
-   pthread_create(&loop, NULL, QHY5cam::callTimedLoop, this);
+   pthread_mutex_init(&moveLoopMutex,NULL);
+   pthread_create(&moveLoopThread, NULL, QHY5cam::callMoveLoop, this);
 }
 
 QHY5cam::~QHY5cam() {
    // stop the loop thread, step 1
-   pthread_mutex_lock(&loopMutex);
-   loop_on_=FALSE;
-   pthread_mutex_unlock(&loopMutex);
+   pthread_mutex_lock(&moveLoopMutex);
+   moveLoop_on_=FALSE;
+   pthread_mutex_unlock(&moveLoopMutex);
    // close usb device
    usb_close(dev);
    // free buffer
    free(image_);
    // stop the loop thread, step 2
-   pthread_join(loop, NULL);
-   pthread_mutex_destroy(&loopMutex);
+   pthread_join(moveLoopThread, NULL);
+   pthread_mutex_destroy(&moveLoopMutex);
 }
