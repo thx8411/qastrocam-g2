@@ -105,8 +105,8 @@ const QSize * QCamQHY5::getAllowedSize() const {
       sizeTable_=new QSize[5];
       int currentIndex=0;
       sizeTable_[currentIndex++]=QSize(1280,1024);
-      sizeTable_[currentIndex++]=QSize(640,480);
-      sizeTable_[currentIndex++]=QSize(320,240);
+      sizeTable_[currentIndex++]=QSize(640,512);
+      sizeTable_[currentIndex++]=QSize(320,256);
       sizeTable_[currentIndex++]=QSize(0,0);
    }
    return sizeTable_;

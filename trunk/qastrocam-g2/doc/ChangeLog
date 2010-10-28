@@ -1,5 +1,6 @@
-4.9beta20101026
+4.9beta20101028
 
+  - QHY5 available frame sizes changed
   - gamma bug on philips cameras fixed
   - no more time limites for QHY5 telescope moves
   - small telescope's bugs fixed
