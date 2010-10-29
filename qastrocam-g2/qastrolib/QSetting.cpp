@@ -87,6 +87,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
+   lxDeviceEntry->setMinimumWidth(72);
    QToolTip::add(lxDeviceEntry,tr("Device to use for long exposure control"));
    lxDeviceChooser=new QFileChooser(lxBox,DEVICE_FILE);
    QToolTip::add(lxDeviceChooser,tr("Selects long exposure device"));
