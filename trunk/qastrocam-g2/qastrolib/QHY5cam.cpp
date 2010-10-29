@@ -300,12 +300,21 @@ bool QHY5cam::plugged() {
 
 
 void* QHY5cam::moveLoop() {
-   while(moveLoop_on_) {
+   bool state;
+
+   pthread_mutex_lock(&moveLoopMutex);
+   state=moveLoop_on_;
+   pthread_mutex_unlock(&moveLoopMutex);
+
+   while(state) {
       sleep(1);
+      pthread_mutex_lock(&moveLoopMutex);
       if(move_north_) move(QHY_NORTH,2000);
       if(move_south_) move(QHY_SOUTH,2000);
       if(move_east_) move(QHY_EAST,2000);
       if(move_west_) move(QHY_WEST,2000);
+      state=moveLoop_on_;
+      pthread_mutex_unlock(&moveLoopMutex);
    }
    pthread_exit(NULL);
 }
