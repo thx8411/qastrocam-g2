@@ -77,7 +77,12 @@ void QHY5cam::destroy(int feature) {
 // resets the cam
 int QHY5cam::stop() {
    char data=0x00;
-   return(usb_bulk_write(dev,0,&data,1,1000));
+   int res;
+
+   pthread_mutex_lock(&usbMutex);
+   res=usb_bulk_write(dev,0,&data,1,1000);
+   pthread_mutex_unlock(&usbMutex);
+   return(res);
 }
 
 // start picture shoot (duration in ms)
@@ -88,7 +93,9 @@ int QHY5cam::shoot(int duration) {
    index= duration >> 16;
    val= duration & 0xffff;
 
+   pthread_mutex_lock(&usbMutex);
    ret=usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 500);
+   pthread_mutex_unlock(&usbMutex);
 
    int tmp=buffer[0];
 
@@ -103,7 +110,9 @@ int QHY5cam::read(char* image) {
 
    if(image==NULL) return(-1);
 
+   pthread_mutex_lock(&usbMutex);
    res=usb_bulk_read(dev,0x82,image_,size_,/*100*/0);
+   pthread_mutex_unlock(&usbMutex);
    if(res==size_) {
       for(line=0;line<height_;line++) {
          for(row=0;row<width_;row++) {
@@ -126,6 +135,7 @@ int QHY5cam::read(char* image) {
 // one move per call
 int QHY5cam::move(int direction, int duration) {
    unsigned int ret;
+   int res;
    int pulses[2]={-1,-1};
 
    // stopping
@@ -145,7 +155,10 @@ int QHY5cam::move(int direction, int duration) {
          default :
             direction=0x18;
       }
-      return(usb_control_msg(dev,0xc2,direction,0,0,(char*)&ret,sizeof(&ret),500));
+      pthread_mutex_lock(&usbMutex);
+      res=usb_control_msg(dev,0xc2,direction,0,0,(char*)&ret,sizeof(&ret),500);
+      pthread_mutex_unlock(&usbMutex);
+      return(res);
    }
    // apply moves
    switch(direction) {
@@ -166,7 +179,10 @@ int QHY5cam::move(int direction, int duration) {
          pulses[0]=duration;
          break;
    }
-   return(usb_control_msg(dev,0x42,0x10,0,direction,(char*)pulses,sizeof(pulses),500));
+   pthread_mutex_lock(&usbMutex);
+   res=usb_control_msg(dev,0x42,0x10,0,direction,(char*)pulses,sizeof(pulses),500);
+   pthread_mutex_unlock(&usbMutex);
+   return(res);
 }
 
 // moves until stoped
@@ -269,9 +285,13 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gg1, int bg, int r
    STORE_WORD_BE(registers+14,0x0521);
    STORE_WORD_BE(registers+16,height_+25);
    registers[18]=0xcc;
+
+   pthread_mutex_lock(&usbMutex);
    res=usb_control_msg(dev,0x42,0x13,value,index,registers,19,500);
    usb_control_msg(dev,0x42,0x14,0x31a5,0,registers,0,500);
    usb_control_msg(dev,0x42,0x16,0,0,registers,0,500);
+   pthread_mutex_unlock(&usbMutex);
+
    // alloc mem
    free(image_);
    image_=(char*)malloc(size_);
@@ -359,6 +379,9 @@ QHY5cam::QHY5cam() {
    // init config
    configure(0,0,1280,1024,1,1,1,1,&temp1,&temp2);
 
+   // init usb mutex
+   pthread_mutex_init(&usbMutex,NULL);
+
    // start the loop thread
    pthread_mutex_init(&moveLoopMutex,NULL);
    pthread_create(&moveLoopThread, NULL, QHY5cam::callMoveLoop, this);
@@ -376,4 +399,5 @@ QHY5cam::~QHY5cam() {
    // stop the loop thread, step 2
    pthread_join(moveLoopThread, NULL);
    pthread_mutex_destroy(&moveLoopMutex);
+   pthread_mutex_destroy(&usbMutex);
 }

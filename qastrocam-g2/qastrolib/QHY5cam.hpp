@@ -103,6 +103,9 @@ private :
    // active moves
    bool move_east_, move_west_, move_north_, move_south_;
 
+   // usb mutex
+   pthread_mutex_t usbMutex;
+
    // timed moves loop thread
    pthread_t moveLoopThread;
    pthread_mutex_t moveLoopMutex;
