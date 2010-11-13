@@ -24,9 +24,15 @@ MA  02110-1301, USA.
 #include <qvgroupbox.h>
 #include <qhbox.h>
 
+#include "SettingsBackup.hpp"
+
 #include "QCamQHY5.moc"
 
+// the GUI can't handle high frame rates
 #define PROGRESS_TIME	200
+
+// settings object, needed everywhere
+extern settingsBackup settings;
 
 // the exposure slider use an exp scale
 // returns exposure time in ms
@@ -39,9 +45,12 @@ QCamQHY5::QCamQHY5() {
    label(QString("QHY5"));
    // vars init
    sizeTable_=NULL;
+
+   // setting exposure
    frameExposure_=getTime(0);
    frameRate_=frameExposure_;
    if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
+
    xstart_=0;
    ystart_=0;
    width_=640;
@@ -50,10 +59,29 @@ QCamQHY5::QCamQHY5() {
    targetHeight_=height_;
    targetSize.setWidth(targetWidth_);
    targetSize.setHeight(targetHeight_);
-   gainG1_=37;
-   gainG2_=37;
-   gainR_=37;
-   gainB_=37;
+
+   // setting gains
+   if(settings.haveKey("QHY5_GAIN_G1")) {
+      gainG1_=atoi(settings.getKey("QHY5_GAIN_G1"));
+      if(gainG1_==0) gainG1_=37;
+   } else
+      gainG1_=37;
+   if(settings.haveKey("QHY5_GAIN_G2")) {
+      gainG2_=atoi(settings.getKey("QHY5_GAIN_G2"));
+      if(gainG2_==0) gainG2_=37;
+   } else
+      gainG2_=37;
+   if(settings.haveKey("QHY5_GAIN_R")) {
+      gainR_=atoi(settings.getKey("QHY5_GAIN_R"));
+      if(gainR_==0) gainR_=37;
+   } else
+      gainR_=37;
+   if(settings.haveKey("QHY5_GAIN_B")) {
+      gainB_=atoi(settings.getKey("QHY5_GAIN_B"));
+      if(gainB_==0) gainB_=37;
+   } else
+      gainB_=37;
+
    sizeTable=getAllowedSize();
    // get the cam instance
    camera=QHY5cam::instance(QHY_IMAGER);
@@ -176,10 +204,19 @@ void QCamQHY5::setExposure() {
 }
 
 void QCamQHY5::setGain() {
+   char value[4];
    setProperty("Gain Green1",gainG1_,false);
    setProperty("Gain Green2",gainG1_,false);
    setProperty("Gain Red",gainR_,false);
    setProperty("Gain Blue",gainB_,false);
+   sprintf(value,"%i",gainG1_);
+   settings.setKey("QHY5_GAIN_G1",value);
+   sprintf(value,"%i",gainG2_);
+   settings.setKey("QHY5_GAIN_G2",value);
+   sprintf(value,"%i",gainR_);
+   settings.setKey("QHY5_GAIN_R",value);
+   sprintf(value,"%i",gainB_);
+   settings.setKey("QHY5_GAIN_B",value);
 }
 
 void QCamQHY5::changeExposure(int e) {

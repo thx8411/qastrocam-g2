@@ -41,7 +41,7 @@ using namespace std;
 // global :
 //
 // FILE_FORMAT <FITS/AVI raw/AVI huff/BMP/PNG>
-// FRAME_RESOLUTION <width>x<heigt>
+// FRAME_RESOLUTION <width>x<height>
 // LX_LEVELS_INVERTED <yes/no>
 // TS_LEVELS_INVERTED <yes/no>
 // TELESCOPE_DEVICE <file>
@@ -62,6 +62,13 @@ using namespace std;
 // ALIGN_MODULE <yes/no>
 // RAW_MODE <none/ GR/BG / RG/GB / BG/GR / GB/RG >
 // RAW_METHOD <Nearest/Bilinear>
+//
+// QHY5 dedicated :
+//
+// QHY5_GAIN_G1 <value>
+// QHY5_GAIN_G2 <value>
+// QHY5_GAIN_R <value>
+// QHY5_GAIN_B <value>
 
 class settingsBackup {
    private :
