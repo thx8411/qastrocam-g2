@@ -45,8 +45,12 @@ int QCamQHY5::getExposureTime(int i) {
 
 // return the given time in ms index
 int QCamQHY5::getExposureIndex(int t) {
-   // to be done
-   return(0);
+   int index=0;
+   while((t>exposureTable[index])&&(index<QHY5_EXPOSURE_TABLE_SIZE))
+      index++;
+   if(index==QHY5_EXPOSURE_TABLE_SIZE)
+      index--;
+   return(index);
 }
 
 QCamQHY5::QCamQHY5() {
@@ -56,7 +60,12 @@ QCamQHY5::QCamQHY5() {
    sizeTable_=NULL;
 
    // setting exposure
-   frameExposure_=getExposureTime(0);
+   if(settings.haveKey("QHY5_EXPOSURE")) {
+      frameExposure_=atoi(settings.getKey("QHY5_EXPOSURE"));
+      if(frameExposure_==0)
+         frameExposure_=getExposureTime(0);
+   } else
+      frameExposure_=getExposureTime(0);
    frameRate_=frameExposure_;
    if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
 
@@ -193,12 +202,18 @@ void QCamQHY5::setSize(int x, int y) {
 }
 
 void QCamQHY5::setExposure() {
+   char value[10];
+
    // resets the cam
    camera->stop();
    // update vars
    frameRate_=frameExposure_;
    if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
    timer_->start(frameRate_,true);
+   // update conf file
+   sprintf(value,"%i",frameExposure_);
+   settings.setKey("QHY5_EXPOSURE",value);
+   // update properties
    setProperty("FrameExposure",frameExposure_);
    // disable progress bar for short time
    if(frameExposure_>(3*PROGRESS_TIME)) {
@@ -231,6 +246,8 @@ void QCamQHY5::setGain() {
 void QCamQHY5::changeExposure(int e) {
    // update exposure time
    frameExposure_=getExposureTime(e);
+
+   // update display
    if(frameExposure_<1000)
       exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
    else
@@ -306,6 +323,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    exposureSlider=new QSlider(Qt::Horizontal,exposureBox);
    exposureSlider->setMinValue(0);
    exposureSlider->setMaxValue(QHY5_EXPOSURE_TABLE_SIZE-1);
+   exposureSlider->setValue(getExposureIndex(frameExposure_));
    exposureSlider->setTickmarks(QSlider::Below);
    exposureSlider->setTickInterval(1);
    exposureValue=new QLabel(exposureBox);
