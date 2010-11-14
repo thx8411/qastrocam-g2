@@ -69,6 +69,7 @@ using namespace std;
 // QHY5_GAIN_G2 <value>
 // QHY5_GAIN_R <value>
 // QHY5_GAIN_B <value>
+// QHY5_EXPOSURE <time in ms>
 
 class settingsBackup {
    private :
