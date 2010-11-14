@@ -1,5 +1,7 @@
-4.9beta20101113
+4.9beta20101114
 
+  - QHY5 previous exposure time value stored
+  - QHY5 exposure time better slider
   - QHY5 previous gain value stored
   - QHY5 available frame sizes changed
   - gamma bug on philips cameras fixed
