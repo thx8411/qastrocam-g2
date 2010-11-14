@@ -30,6 +30,8 @@ MA  02110-1301, USA.
 #include "QCam.hpp"
 #include "QHY5cam.hpp"
 
+#define QHY5_EXPOSURE_TABLE_SIZE	16
+
 /** QCam implementation to support QHY5 and clones cameras **/
 class QCamQHY5 : public QCam {
    Q_OBJECT
@@ -46,7 +48,11 @@ protected:
 private:
    // functions
    void setSize(int x, int y);
-   int getTime(int v);
+
+   // slider position to/from exposure in ms
+   int getExposureTime(int i);
+   int getExposureIndex(int t);
+
    // vars
    QHY5cam* camera;
    QCamFrame inputBuffer_;
@@ -76,6 +82,8 @@ private:
    QSlider* exposureSlider;
    QLabel* exposureValue;
    QProgressBar* progressBar;
+   // exposure tab
+   static const int exposureTable[QHY5_EXPOSURE_TABLE_SIZE];
 public slots:
 protected slots:
    void changeExposure(int e);

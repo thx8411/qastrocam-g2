@@ -34,10 +34,19 @@ MA  02110-1301, USA.
 // settings object, needed everywhere
 extern settingsBackup settings;
 
-// the exposure slider use an exp scale
+//
+const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={20,40,80,100,200,1000,2000,3000,5000,10000,15000,20000,30000,40000,50000,60000};
+
+// the exposure slider use a table
 // returns exposure time in ms
-int QCamQHY5::getTime(int v) {
-   return((int)(exp((float)v/10.0-1.6)*1000.0));
+int QCamQHY5::getExposureTime(int i) {
+   return(exposureTable[i]);
+}
+
+// return the given time in ms index
+int QCamQHY5::getExposureIndex(int t) {
+   // to be done
+   return(0);
 }
 
 QCamQHY5::QCamQHY5() {
@@ -47,7 +56,7 @@ QCamQHY5::QCamQHY5() {
    sizeTable_=NULL;
 
    // setting exposure
-   frameExposure_=getTime(0);
+   frameExposure_=getExposureTime(0);
    frameRate_=frameExposure_;
    if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
 
@@ -221,8 +230,11 @@ void QCamQHY5::setGain() {
 
 void QCamQHY5::changeExposure(int e) {
    // update exposure time
-   frameExposure_=getTime(e);
-   exposureValue->setText(QString().sprintf("%6.2f",(float)frameExposure_/1000));
+   frameExposure_=getExposureTime(e);
+   if(frameExposure_<1000)
+      exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+   else
+      exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
 }
 
 void QCamQHY5::changeGain(int g) {
@@ -293,10 +305,15 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QLabel* label1=new QLabel(QString("Exposure"),exposureBox);
    exposureSlider=new QSlider(Qt::Horizontal,exposureBox);
    exposureSlider->setMinValue(0);
-   exposureSlider->setMaxValue(50);
+   exposureSlider->setMaxValue(QHY5_EXPOSURE_TABLE_SIZE-1);
+   exposureSlider->setTickmarks(QSlider::Below);
+   exposureSlider->setTickInterval(1);
    exposureValue=new QLabel(exposureBox);
-   exposureValue->setText(QString().sprintf("%6.2f",(float)getTime(0)/1000));
-   QLabel* label2=new QLabel(QString("s"),exposureBox);
+   exposureValue->setMinimumWidth(48);
+   if(frameExposure_<1000)
+      exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+   else
+      exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
    // progress bar
    QHBox* progressBox=new QHBox(settingsBox);
    QLabel* label3=new QLabel(QString("Progress"),progressBox);
