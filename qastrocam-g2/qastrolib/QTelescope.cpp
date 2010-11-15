@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 
 #include <iostream>
 
+#include <stdlib.h>
 #include <qlayout.h>
 #include <qvgroupbox.h>
 #include <qlabel.h>
@@ -32,6 +33,10 @@ MA  02110-1301, USA.
 #include <qhgroupbox.h>
 
 #include "QCamUtilities.hpp"
+#include "SettingsBackup.hpp"
+
+// settings object, needed everywhere
+extern settingsBackup settings;
 
 QTelescope::QTelescope() {
    mainWidget_=NULL;
@@ -104,6 +109,17 @@ void QTelescope::buildGUI(QWidget * parent) {
       speedSlider_->setEnabled(false);
       speedValue_->setEnabled(false);
    }
+
+   // read the stored speed
+   if(settings.haveKey("TELESCOPE_SPEED")) {
+      speed=atof(settings.getKey("TELESCOPE_SPEED"));
+      if(speed!=0) {
+         speed=setSpeed(speed);
+         speedSlider_->setValue(speed*100);
+         speedValue_->setText(QString().sprintf("%3i%%",(int)(speed*100)));
+      }
+   }
+
    connect(speedSlider_,SIGNAL(valueChanged(int)),this,SLOT(speedChanged(int)));
    speedBox->show();
 }
@@ -120,4 +136,9 @@ void QTelescope::speedChanged(int speed) {
    double newSpeed;
    newSpeed=setSpeed((double)speed/100.0);
    speedValue_->setText(QString().sprintf("%3i%%",(int)(newSpeed*100)));
+
+   //  saving speed
+   char value[10];
+   sprintf(value,"%1.1f",currentSpeed);
+   settings.setKey("TELESCOPE_SPEED",value);
 }

@@ -29,6 +29,7 @@ MA  02110-1301, USA.
 #include <termios.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 
 using namespace std;
@@ -186,20 +187,20 @@ string QTelescopeAutostar::recvCmd(ReturnType t) {
 }
 
 double QTelescopeAutostar::setSpeed(double speed) {
-   if (speed <=1.0/3) {
-      speed=1.0/3;
+   if (speed <=0.3) {
+      speed=0.3;
       if(speed!=currentSpeed) {
          sendCommand(setMoveSpeed,"2");
          currentSpeed=speed;
       }
-   } else if (speed <=2.0/3) {
-      speed=2.0/3;
+   } else if (speed <=0.6) {
+      speed=0.6;
       if(speed!=currentSpeed) {
          sendCommand(setMoveSpeed,"3");
          currentSpeed=speed;
       }
    } else /*if (speed <=3/3)*/ {
-      speed=3.0/3;
+      speed=1.0;
       if(speed!=currentSpeed) {
          sendCommand(setMoveSpeed,"4");
          currentSpeed=speed;

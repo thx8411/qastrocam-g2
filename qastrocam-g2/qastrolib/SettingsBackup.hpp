@@ -43,8 +43,6 @@ using namespace std;
 // FILE_FORMAT <FITS/AVI raw/AVI huff/BMP/PNG>
 // FRAME_RESOLUTION <width>x<height>
 // LX_LEVELS_INVERTED <yes/no>
-// TS_LEVELS_INVERTED <yes/no>
-// TELESCOPE_DEVICE <file>
 // LX_DEVICE <file>
 // FORCE_V4LGENERIC <yes/no>
 // SDL <yes/no>
@@ -53,6 +51,9 @@ using namespace std;
 // REGISTAX_AVI <yes/no>
 // NIGHT_VISION <yes/no>
 // TELESCOPE <none/qhy5/apm/autostar/nexstar/fifo/mcu/mts/file>
+// TS_LEVELS_INVERTED <yes/no>
+// TELESCOPE_DEVICE <file>
+// TELESCOPE_SPEED <0 to 1>
 // VIDEO_DEVICE <file>
 // LIB_PATH <directory>
 // ADD_MODULE <yes/no>
