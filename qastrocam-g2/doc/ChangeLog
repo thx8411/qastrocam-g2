@@ -1,5 +1,6 @@
-4.9beta20101115
+4.9beta20101116
 
+  - frame scaling mode is now stored
   - The telescope speed is now stored
   - QHY5 previous exposure time value stored
   - QHY5 exposure time better slider

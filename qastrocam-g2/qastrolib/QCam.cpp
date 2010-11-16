@@ -552,6 +552,14 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       QWidget* padding3=new QWidget(sizeGroup);
       QToolTip::add(cropCombo,"Resizing mode");
+
+      // read previous scale mode
+      if(settings.haveKey("FRAME_MODE")) {
+         if(string(settings.getKey("FRAME_MODE"))=="scaling") { setCropping(0); cropCombo->setCurrentItem(0); }
+         if(string(settings.getKey("FRAME_MODE"))=="cropping") { setCropping(1); cropCombo->setCurrentItem(1); }
+         if(string(settings.getKey("FRAME_MODE"))=="binning") { setCropping(2); cropCombo->setCurrentItem(2); }
+      }
+
       if(size==1) cropCombo->setEnabled(false);
    }
    return remoteCTRL_;
@@ -724,4 +732,11 @@ void QCam::setCropping(int index) {
    croppingMode=index;
    if(sizeCombo!=NULL)
       resize(sizeTable[sizeCombo->value()]);
+
+   // save the scaling mode
+   switch(index) {
+      case 0 : settings.setKey("FRAME_MODE","scaling"); break;
+      case 1 : settings.setKey("FRAME_MODE","cropping"); break;
+      case 2 : settings.setKey("FRAME_MODE","binning"); break;
+   }
 }
