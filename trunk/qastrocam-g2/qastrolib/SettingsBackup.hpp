@@ -42,6 +42,7 @@ using namespace std;
 //
 // FILE_FORMAT <FITS/AVI raw/AVI huff/BMP/PNG>
 // FRAME_RESOLUTION <width>x<height>
+// FRAME_MODE <scaling/cropping/binning>
 // LX_LEVELS_INVERTED <yes/no>
 // LX_DEVICE <file>
 // FORCE_V4LGENERIC <yes/no>

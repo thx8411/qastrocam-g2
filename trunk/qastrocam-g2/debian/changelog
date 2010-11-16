@@ -1,4 +1,4 @@
-qastrocam-g2 (4.9beta20101115) jaunty; urgency=low
+qastrocam-g2 (4.9beta20101116) jaunty; urgency=low
 
   * gamma bug on philips cameras fixed
   * Nexstar protocol support added (1.6+)
@@ -11,6 +11,7 @@ qastrocam-g2 (4.9beta20101115) jaunty; urgency=low
   * QHY5 previous exposure time value stored
   * QHY5 exposure time better slider
   * The telescope speed is now stored
+  * frame scaling mode is now stored
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 10 Oct 2010 03:18:49 +0100
 
