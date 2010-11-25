@@ -434,8 +434,8 @@ int main(int argc, char ** argv) {
       if(QHY5cam::plugged())
          cam = new QCamQHY5();
       else {
-          QMessageBox::information(0,"Qastrocam-g2","QHY5 camera detected\nSettings panel only");
-         cout << "QHY4 camera not detected" <<endl;
+          QMessageBox::information(0,"Qastrocam-g2","QHY5 camera not detected\nSettings panel only");
+         cout << "QHY5 camera not detected" <<endl;
       }
    } else {
       // find the best V4L device
