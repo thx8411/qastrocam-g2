@@ -23,6 +23,7 @@ MA  02110-1301, USA.
 #include <qtimer.h>
 #include <qvgroupbox.h>
 #include <qhbox.h>
+#include <qtooltip.h>
 
 #include "SettingsBackup.hpp"
 
@@ -35,7 +36,7 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 //
-const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={66,100,200,1000,1500,2000,2500,3000,5000,10000,15000,20000,30000,40000,50000,60000};
+const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={20,40,50,66,100,200,1000,1500,2000,2500,3000,5000,10000,15000,20000,30000};
 
 // the exposure slider use a table
 // returns exposure time in ms
@@ -66,9 +67,9 @@ QCamQHY5::QCamQHY5() {
          frameExposure_=getExposureTime(0);
    } else
       frameExposure_=getExposureTime(0);
-   frameRate_=frameExposure_;
-   if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
-   //frameRate_=PROGRESS_TIME;
+   //frameRate_=frameExposure_;
+   //if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
+   frameRate_=PROGRESS_TIME;
 
    xstart_=0;
    ystart_=0;
@@ -114,7 +115,10 @@ QCamQHY5::QCamQHY5() {
    inputBuffer_.setMode(GreyFrame);
    inputBuffer_.setSize(QSize(width_,height_));
    // start the first frame
-   camera->shoot(frameExposure_);
+   // count the usb transfer time. Rate is 24M pixels / second
+   int poseTime=frameExposure_-(1558*(height_+26)/24000);
+   if(poseTime<0) poseTime=0;
+   camera->shoot(poseTime);
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
@@ -195,7 +199,10 @@ void QCamQHY5::setSize(int x, int y) {
    inputBuffer_.setSize(QSize(width_,height_));
    // start the new frame
    camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
-   camera->shoot(frameExposure_);
+   // count the usb transfer time. Rate is 24M pixels / second
+   int poseTime=frameExposure_-(1558*(height_+26)/24000);
+   if(poseTime<0) poseTime=0;
+   camera->shoot(poseTime);
    // update datas
    static char buff[11];
    snprintf(buff,10,"%dx%d",x,y);
@@ -249,10 +256,15 @@ void QCamQHY5::changeExposure(int e) {
    frameExposure_=getExposureTime(e);
 
    // update display
-   if(frameExposure_<1000)
-      exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
-   else
-      exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+   //int transferTime=1558*(height_+26)/24000;
+   //if(transferTime>frameExposure_) {
+   //   exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)transferTime*1000)));
+   //} else {
+      if(frameExposure_<1000)
+         exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+      else
+         exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+   //}
 }
 
 void QCamQHY5::changeGain(int g) {
@@ -345,6 +357,10 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
       progressBar->setEnabled(false);
    }
 
+   // tooltips
+   QToolTip::add(gainSlider,tr("Camera's gain "));
+   QToolTip::add(exposureSlider,tr("Camera's exposure, may be limited by the frame sizes"));
+
    // connections
    connect(gainSlider,SIGNAL(valueChange(int)),this,SLOT(changeGain(int)));
    connect(gainSlider,SIGNAL(sliderReleased()),this,SLOT(setGain()));
@@ -383,7 +399,10 @@ bool QCamQHY5::updateFrame() {
    if(camera->read((char*)YBuff)) {
       setTime();
       camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
-      camera->shoot(frameExposure_);
+      // count the usb transfer time. Rate is 24M pixels / second
+      int poseTime=frameExposure_-(1558*(height_+26)/24000);
+      if(poseTime<0) poseTime=0;
+      camera->shoot(poseTime);
       // gives a new shot for the timer
       timer_->start(frameRate_,true);
          // set the output frame

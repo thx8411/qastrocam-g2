@@ -91,6 +91,7 @@ private :
 
    // configuration
    char* image_;
+   bool frameAvailable;
    int xpos_;
    int ypos_;
    int width_;
