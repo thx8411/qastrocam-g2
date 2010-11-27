@@ -35,7 +35,7 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 //
-const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={20,40,80,100,200,1000,2000,3000,5000,10000,15000,20000,30000,40000,50000,60000};
+const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={66,100,200,1000,1500,2000,2500,3000,5000,10000,15000,20000,30000,40000,50000,60000};
 
 // the exposure slider use a table
 // returns exposure time in ms
@@ -68,6 +68,7 @@ QCamQHY5::QCamQHY5() {
       frameExposure_=getExposureTime(0);
    frameRate_=frameExposure_;
    if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
+   //frameRate_=PROGRESS_TIME;
 
    xstart_=0;
    ystart_=0;

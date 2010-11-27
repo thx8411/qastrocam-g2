@@ -97,8 +97,6 @@ int QHY5cam::shoot(int duration) {
    ret=usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 500);
    pthread_mutex_unlock(&usbMutex);
 
-   int tmp=buffer[0];
-
    return(ret);
 }
 
@@ -185,7 +183,7 @@ int QHY5cam::move(int direction, int duration) {
    return(res);
 }
 
-// moves until stoped
+// moves until stopped
 int QHY5cam::move(int direction) {
    pthread_mutex_lock(&moveLoopMutex);
    switch(direction) {
