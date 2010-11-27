@@ -36,7 +36,7 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 //
-const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={20,40,50,66,100,200,1000,1500,2000,2500,3000,5000,10000,15000,20000,30000};
+const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={33,40,50,66,100,200,1000,2000,3000,4000,5000,10000,15000,20000,30000,40000};
 
 // the exposure slider use a table
 // returns exposure time in ms
@@ -59,6 +59,7 @@ QCamQHY5::QCamQHY5() {
    label(QString("QHY5"));
    // vars init
    sizeTable_=NULL;
+   exposureValue=NULL;
 
    // setting exposure
    if(settings.haveKey("QHY5_EXPOSURE")) {
@@ -74,7 +75,7 @@ QCamQHY5::QCamQHY5() {
    xstart_=0;
    ystart_=0;
    width_=640;
-   height_=480;
+   height_=512;
    targetWidth_=width_;
    targetHeight_=height_;
    targetSize.setWidth(targetWidth_);
@@ -116,7 +117,7 @@ QCamQHY5::QCamQHY5() {
    inputBuffer_.setSize(QSize(width_,height_));
    // start the first frame
    // count the usb transfer time. Rate is 24M pixels / second
-   int poseTime=frameExposure_-(1558*(height_+26)/24000);
+   int poseTime=frameExposure_-(1558*(height_+26)/14000);
    if(poseTime<0) poseTime=0;
    camera->shoot(poseTime);
    // set the first timer shot
@@ -165,10 +166,10 @@ const QSize * QCamQHY5::getAllowedSize() const {
 
 void QCamQHY5::setSize(int x, int y) {
    // drop the last frame
-   void* YBuff=NULL;
-   camera->stop();
-   YBuff=inputBuffer_.YforOverwrite();
-   camera->read((char*)YBuff);
+   //void* YBuff=NULL;
+   //camera->stop();
+   //YBuff=inputBuffer_.YforOverwrite();
+   //camera->read((char*)YBuff);
 
    // selects resizing mode
    switch(croppingMode) {
@@ -200,13 +201,26 @@ void QCamQHY5::setSize(int x, int y) {
    // start the new frame
    camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    // count the usb transfer time. Rate is 24M pixels / second
-   int poseTime=frameExposure_-(1558*(height_+26)/24000);
+   int poseTime=frameExposure_-(1558*(height_+26)/14000);
    if(poseTime<0) poseTime=0;
    camera->shoot(poseTime);
    // update datas
    static char buff[11];
    snprintf(buff,10,"%dx%d",x,y);
    setProperty("FrameSize",buff,true);
+
+   // update display
+   if(exposureValue!=NULL) {
+      int transferTime=1558*(height_+26)/14000;
+      if(transferTime>frameExposure_) {
+         exposureValue->setText(QString().sprintf("%2i fps (max)",(int)(1.0/(float)transferTime*1000)));
+      } else {
+         if(frameExposure_<1000)
+            exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+         else
+            exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+      }
+   }
 }
 
 void QCamQHY5::setExposure() {
@@ -256,15 +270,15 @@ void QCamQHY5::changeExposure(int e) {
    frameExposure_=getExposureTime(e);
 
    // update display
-   //int transferTime=1558*(height_+26)/24000;
-   //if(transferTime>frameExposure_) {
-   //   exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)transferTime*1000)));
-   //} else {
+   int transferTime=1558*(height_+26)/14000;
+   if(transferTime>frameExposure_) {
+      exposureValue->setText(QString().sprintf("%2i fps (max)",(int)(1.0/(float)transferTime*1000)));
+   } else {
       if(frameExposure_<1000)
          exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
       else
          exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
-   //}
+   }
 }
 
 void QCamQHY5::changeGain(int g) {
@@ -340,11 +354,17 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    exposureSlider->setTickmarks(QSlider::Below);
    exposureSlider->setTickInterval(1);
    exposureValue=new QLabel(exposureBox);
-   exposureValue->setMinimumWidth(48);
-   if(frameExposure_<1000)
-      exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
-   else
-      exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+   exposureValue->setMinimumWidth(72);
+   // update value
+   int transferTime=1558*(height_+26)/14000;
+   if(transferTime>frameExposure_) {
+      exposureValue->setText(QString().sprintf("%2i fps (max)",(int)(1.0/(float)transferTime*1000)));
+   } else {
+      if(frameExposure_<1000)
+         exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+      else
+         exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+   }
    // progress bar
    QHBox* progressBox=new QHBox(settingsBox);
    QLabel* label3=new QLabel(QString("Progress"),progressBox);
@@ -400,35 +420,35 @@ bool QCamQHY5::updateFrame() {
       setTime();
       camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
       // count the usb transfer time. Rate is 24M pixels / second
-      int poseTime=frameExposure_-(1558*(height_+26)/24000);
+      int poseTime=frameExposure_-(1558*(height_+26)/14000);
       if(poseTime<0) poseTime=0;
       camera->shoot(poseTime);
       // gives a new shot for the timer
       timer_->start(frameRate_,true);
-         // set the output frame
-         if((targetWidth_==1280)&&(targetHeight_==1024)) {
-             // nothing to resize
-             yuvBuffer_=inputBuffer_;
-         } else {
-            switch(croppingMode) {
-               case SCALING :
-                  yuvBuffer_.scaling(inputBuffer_,targetWidth_,targetHeight_);
-                  break;
-               case CROPPING :
-                  // cropping allready done by driver
-                  yuvBuffer_=inputBuffer_;
-                  break;
-               case BINNING :
-                  yuvBuffer_.binning(inputBuffer_,targetWidth_,targetHeight_);
-                  break;
-            }
+      // set the output frame
+      if((targetWidth_==1280)&&(targetHeight_==1024)) {
+          // nothing to resize
+          yuvBuffer_=inputBuffer_;
+      } else {
+         switch(croppingMode) {
+            case SCALING :
+               yuvBuffer_.scaling(inputBuffer_,targetWidth_,targetHeight_);
+               break;
+            case CROPPING :
+               // cropping allready done by driver
+               yuvBuffer_=inputBuffer_;
+               break;
+            case BINNING :
+               yuvBuffer_.binning(inputBuffer_,targetWidth_,targetHeight_);
+               break;
          }
-         // publish the frame
-         newFrameAvaible();
-         // update progress bar if needed
-         if(frameExposure_>(3*PROGRESS_TIME)) {
-            progressBar->reset();
-            progress_=0;
-         }
+      }
+      // publish the frame
+      newFrameAvaible();
+      // update progress bar if needed
+      if(frameExposure_>(3*PROGRESS_TIME)) {
+         progressBar->reset();
+         progress_=0;
+      }
    }
 }

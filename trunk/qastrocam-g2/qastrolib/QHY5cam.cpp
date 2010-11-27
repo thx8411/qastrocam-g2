@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 // For permanent moves, this driver use a periodic thread, refreshing
 // the timed moves until stop
 
+#include <sys/time.h>
 #include <stdlib.h>
 #include <usb.h>
 #include <iostream>
@@ -88,6 +89,7 @@ int QHY5cam::stop() {
 // start picture shoot (duration in ms)
 int QHY5cam::shoot(int duration) {
    int val,index,ret;
+
    char buffer[11]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
    index= duration >> 16;
@@ -126,9 +128,11 @@ int QHY5cam::read(char* image) {
             offset++;
          }
       }
+      frameAvailable=FALSE;
+      return(1);
    } //else
    //   stop();
-   return(frameAvailable);
+   return(0);
 }
 
 
@@ -404,4 +408,14 @@ QHY5cam::~QHY5cam() {
    pthread_join(moveLoopThread, NULL);
    pthread_mutex_destroy(&moveLoopMutex);
    pthread_mutex_destroy(&usbMutex);
+}
+
+// gives os time in second (usec accuracy)
+unsigned long QHY5cam::getTime() {
+   unsigned long t;
+   struct timeval tv;
+   gettimeofday(&tv,NULL);
+   t=tv.tv_usec;
+   t+=tv.tv_sec*1000000;
+   return(t);
 }
