@@ -82,6 +82,10 @@ private :
    static void* callMoveLoop(void* arg) { return(((QHY5cam*)arg)->moveLoop()); }
    void* moveLoop();
 
+   // debug tool
+   // gives os time in second (usec accuracy)
+   unsigned long getTime();
+
    // singleton vars
    static QHY5cam* instance_;
    static bool feature_used[2];
