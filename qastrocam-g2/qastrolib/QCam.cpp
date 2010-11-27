@@ -549,7 +549,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       const char* labelList2[]={"Scaling","Cropping","Binning"};
       int valueList2[]={SCALING,CROPPING,BINNING};
       cropCombo=new QCamComboBox("Cropping mode",sizeGroup,3,valueList2,labelList2);
-      connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       QWidget* padding3=new QWidget(sizeGroup);
       QToolTip::add(cropCombo,"Resizing mode");
 
@@ -559,7 +558,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
          if(string(settings.getKey("FRAME_MODE"))=="cropping") { setCropping(1); cropCombo->setCurrentItem(1); }
          if(string(settings.getKey("FRAME_MODE"))=="binning") { setCropping(2); cropCombo->setCurrentItem(2); }
       }
-
+      connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       if(size==1) cropCombo->setEnabled(false);
    }
    return remoteCTRL_;
@@ -723,8 +722,8 @@ void QCam::annotate(const Vector2D & pos) const {
 void QCam::setSizeFromAllowed(int index) {
    // saving frame resolution
    settings.setKey("FRAME_RESOLUTION",sizeCombo->text(index));
-   if(cropCombo!=NULL)
-      croppingMode=cropCombo->value();
+   //if(cropCombo!=NULL)
+   //   croppingMode=cropCombo->value();
    resize(sizeTable[index]);
 }
 
