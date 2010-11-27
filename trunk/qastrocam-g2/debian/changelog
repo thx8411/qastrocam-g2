@@ -12,6 +12,7 @@ qastrocam-g2 (4.9beta20101116) jaunty; urgency=low
   * QHY5 exposure time better slider
   * The telescope speed is now stored
   * frame scaling mode is now stored
+  * QHY5 short exposures enabled
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 10 Oct 2010 03:18:49 +0100
 

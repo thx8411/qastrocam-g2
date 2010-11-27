@@ -94,8 +94,16 @@ int QHY5cam::shoot(int duration) {
    val= duration & 0xffff;
 
    pthread_mutex_lock(&usbMutex);
-   ret=usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 500);
+   ret=usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 0);
    pthread_mutex_unlock(&usbMutex);
+
+   usleep(duration*1000);
+
+   pthread_mutex_lock(&usbMutex);
+   ret=usb_bulk_read(dev,0x82,image_,size_,0);
+   pthread_mutex_unlock(&usbMutex);
+
+   frameAvailable=(ret==size_);
 
    return(ret);
 }
@@ -108,10 +116,7 @@ int QHY5cam::read(char* image) {
 
    if(image==NULL) return(-1);
 
-   pthread_mutex_lock(&usbMutex);
-   res=usb_bulk_read(dev,0x82,image_,size_,/*100*/0);
-   pthread_mutex_unlock(&usbMutex);
-   if(res==size_) {
+   if(frameAvailable) {
       for(line=0;line<height_;line++) {
          for(row=0;row<width_;row++) {
             //
@@ -123,7 +128,7 @@ int QHY5cam::read(char* image) {
       }
    } //else
    //   stop();
-   return(res==size_);
+   return(frameAvailable);
 }
 
 
@@ -351,6 +356,7 @@ QHY5cam::QHY5cam() {
    move_north_=FALSE;
    move_south_=FALSE;
    moveLoop_on_=TRUE;
+   frameAvailable=FALSE;
 
    // update usb datas
    usb_init();
