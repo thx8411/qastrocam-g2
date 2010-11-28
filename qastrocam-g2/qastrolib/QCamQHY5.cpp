@@ -36,7 +36,7 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 //
-const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={33,40,50,66,100,200,1000,1500,2000,3000,4000,5000,10000,15000,20000,30000};
+const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={34,40,50,66,100,200,1000,1500,2000,3000,4000,5000,10000,15000,20000,30000};
 
 // the exposure slider use a table
 // returns exposure time in ms
@@ -123,7 +123,7 @@ QCamQHY5::QCamQHY5() {
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->start(frameRate_,true);
+   timer_->start(/*frameRate_*/frameExposure_,true);
    // set prop.
    static char buff[11];
    snprintf(buff,10,"%dx%d",width_,height_);
@@ -229,9 +229,10 @@ void QCamQHY5::setExposure() {
    // resets the cam
    camera->stop();
    // update vars
-   frameRate_=frameExposure_;
-   if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
-   timer_->start(frameRate_,true);
+   //frameRate_=frameExposure_;
+   //if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
+   frameRate_=PROGRESS_TIME;
+   timer_->start(/*frameRate_*/frameExposure_,true);
    // update conf file
    sprintf(value,"%i",frameExposure_);
    settings.setKey("QHY5_EXPOSURE",value);
@@ -424,7 +425,7 @@ bool QCamQHY5::updateFrame() {
       if(poseTime<0) poseTime=0;
       camera->shoot(poseTime);
       // gives a new shot for the timer
-      timer_->start(frameRate_,true);
+      timer_->start(/*frameRate_*/frameExposure_,true);
       // set the output frame
       if((targetWidth_==1280)&&(targetHeight_==1024)) {
           // nothing to resize
