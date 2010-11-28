@@ -36,7 +36,7 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 //
-const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={33,40,50,66,100,200,1000,2000,3000,4000,5000,10000,15000,20000,30000,40000};
+const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={33,40,50,66,100,200,1000,1500,2000,3000,4000,5000,10000,15000,20000,30000};
 
 // the exposure slider use a table
 // returns exposure time in ms
@@ -216,9 +216,9 @@ void QCamQHY5::setSize(int x, int y) {
          exposureValue->setText(QString().sprintf("%2i fps (max)",(int)(1.0/(float)transferTime*1000)));
       } else {
          if(frameExposure_<1000)
-            exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+            exposureValue->setText(QString().sprintf("%2.1f fps",(1.0/(float)frameExposure_*1000)));
          else
-            exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+            exposureValue->setText(QString().sprintf("%2.1f s",((float)frameExposure_/1000)));
       }
    }
 }
@@ -275,9 +275,9 @@ void QCamQHY5::changeExposure(int e) {
       exposureValue->setText(QString().sprintf("%2i fps (max)",(int)(1.0/(float)transferTime*1000)));
    } else {
       if(frameExposure_<1000)
-         exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+         exposureValue->setText(QString().sprintf("%2.1f fps",(1.0/(float)frameExposure_*1000)));
       else
-         exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+         exposureValue->setText(QString().sprintf("%2.1f s",((float)frameExposure_/1000)));
    }
 }
 
@@ -354,16 +354,16 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    exposureSlider->setTickmarks(QSlider::Below);
    exposureSlider->setTickInterval(1);
    exposureValue=new QLabel(exposureBox);
-   exposureValue->setMinimumWidth(72);
+   exposureValue->setMinimumWidth(80);
    // update value
    int transferTime=1558*(height_+26)/14000;
    if(transferTime>frameExposure_) {
       exposureValue->setText(QString().sprintf("%2i fps (max)",(int)(1.0/(float)transferTime*1000)));
    } else {
       if(frameExposure_<1000)
-         exposureValue->setText(QString().sprintf("%2i fps",(int)(1.0/(float)frameExposure_*1000)));
+         exposureValue->setText(QString().sprintf("%2.1f fps",(1.0/(float)frameExposure_*1000)));
       else
-         exposureValue->setText(QString().sprintf("%2i s",(int)((float)frameExposure_/1000)));
+         exposureValue->setText(QString().sprintf("%2.1f s",((float)frameExposure_/1000)));
    }
    // progress bar
    QHBox* progressBox=new QHBox(settingsBox);
