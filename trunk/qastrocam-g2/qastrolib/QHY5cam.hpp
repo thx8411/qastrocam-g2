@@ -111,6 +111,9 @@ private :
    // usb mutex
    pthread_mutex_t usbMutex;
 
+   // exposure mutex
+   pthread_mutex_t exposureMutex;
+
    // timed moves loop thread
    pthread_t moveLoopThread;
    pthread_mutex_t moveLoopMutex;

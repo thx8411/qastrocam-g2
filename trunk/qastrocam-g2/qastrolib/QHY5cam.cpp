@@ -101,11 +101,12 @@ int QHY5cam::shoot(int duration) {
 
    usleep(duration*1000);
 
+   pthread_mutex_lock(&exposureMutex);
    pthread_mutex_lock(&usbMutex);
    ret=usb_bulk_read(dev,0x82,image_,size_,0);
-   pthread_mutex_unlock(&usbMutex);
-
    frameAvailable=(ret==size_);
+   pthread_mutex_unlock(&usbMutex);
+   pthread_mutex_unlock(&exposureMutex);
 
    return(ret);
 }
@@ -118,6 +119,7 @@ int QHY5cam::read(char* image) {
 
    if(image==NULL) return(-1);
 
+   pthread_mutex_lock(&exposureMutex);
    if(frameAvailable) {
       for(line=0;line<height_;line++) {
          for(row=0;row<width_;row++) {
@@ -129,9 +131,10 @@ int QHY5cam::read(char* image) {
          }
       }
       frameAvailable=FALSE;
+      pthread_mutex_unlock(&exposureMutex);
       return(1);
-   } //else
-   //   stop();
+   }
+   pthread_mutex_unlock(&exposureMutex);
    return(0);
 }
 
@@ -390,6 +393,9 @@ QHY5cam::QHY5cam() {
    // init usb mutex
    pthread_mutex_init(&usbMutex,NULL);
 
+   // init exposure mutex
+   pthread_mutex_init(&exposureMutex,NULL);
+
    // start the loop thread
    pthread_mutex_init(&moveLoopMutex,NULL);
    pthread_create(&moveLoopThread, NULL, QHY5cam::callMoveLoop, this);
@@ -407,6 +413,7 @@ QHY5cam::~QHY5cam() {
    // stop the loop thread, step 2
    pthread_join(moveLoopThread, NULL);
    pthread_mutex_destroy(&moveLoopMutex);
+   pthread_mutex_destroy(&exposureMutex);
    pthread_mutex_destroy(&usbMutex);
 }
 
