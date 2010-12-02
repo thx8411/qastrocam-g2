@@ -87,7 +87,8 @@ int QHY5cam::stop() {
 }
 
 // start picture shoot (duration in ms)
-int QHY5cam::shoot(int duration) {
+// mode : true -> short exposure
+int QHY5cam::shoot(int duration, bool mode) {
    int val,index,ret;
 
    char buffer[11]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -99,27 +100,36 @@ int QHY5cam::shoot(int duration) {
    ret=usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 0);
    pthread_mutex_unlock(&usbMutex);
 
-   usleep(duration*1000);
+   if(mode) {
+      usleep(duration*1000);
 
-   pthread_mutex_lock(&exposureMutex);
-   pthread_mutex_lock(&usbMutex);
-   ret=usb_bulk_read(dev,0x82,image_,size_,0);
-   frameAvailable=(ret==size_);
-   pthread_mutex_unlock(&usbMutex);
-   pthread_mutex_unlock(&exposureMutex);
+      pthread_mutex_lock(&exposureMutex);
+      pthread_mutex_lock(&usbMutex);
+      ret=usb_bulk_read(dev,0x82,image_,size_,0);
+      frameAvailable=(ret==size_);
+      pthread_mutex_unlock(&usbMutex);
+      pthread_mutex_unlock(&exposureMutex);
+   }
 
    return(ret);
 }
 
 // read the picture
 // image buffer size : x*y*1 byte
-int QHY5cam::read(char* image) {
-   int res,line,row,offset;
+int QHY5cam::read(char* image, bool mode) {
+   int ret,line,row,offset;
    offset=0;
 
    if(image==NULL) return(-1);
 
    pthread_mutex_lock(&exposureMutex);
+   if(!mode) {
+      pthread_mutex_lock(&usbMutex);
+      ret=usb_bulk_read(dev,0x82,image_,size_,0);
+      pthread_mutex_unlock(&usbMutex);
+      frameAvailable=(ret==size_);
+   }
+
    if(frameAvailable) {
       for(line=0;line<height_;line++) {
          for(row=0;row<width_;row++) {

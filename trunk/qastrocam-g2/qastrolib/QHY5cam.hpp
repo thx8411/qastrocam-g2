@@ -61,9 +61,9 @@ public :
    // reset the cam
    int stop();
    // start a single shot picture
-   int shoot(int duration);
+   int shoot(int duration, bool mode=FALSE);
    // read the last picture shot
-   int read(char* image);
+   int read(char* image, bool mode=FALSE);
    // ST4 port timed move
    int move(int direction, int duration);
    // ST4 permanent move

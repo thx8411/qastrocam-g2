@@ -30,7 +30,7 @@ MA  02110-1301, USA.
 #include "QCam.hpp"
 #include "QHY5cam.hpp"
 
-#define QHY5_EXPOSURE_TABLE_SIZE	16
+#define QHY5_EXPOSURE_TABLE_SIZE	17
 
 /** QCam implementation to support QHY5 and clones cameras **/
 class QCamQHY5 : public QCam {
@@ -60,7 +60,7 @@ private:
    QTimer* timer_;
    QTimer* progressTimer_;
    QSize targetSize;
-   int frameRate_;
+   //int frameRate_;
    int frameExposure_;
    int xstart_;
    int ystart_;
@@ -73,6 +73,7 @@ private:
    int gainR_;
    int gainB_;
    int progress_;
+   bool shootMode_;
    // gui stuff
    QCamSlider* gainSlider;
    QCamSlider* gainSliderG1;
