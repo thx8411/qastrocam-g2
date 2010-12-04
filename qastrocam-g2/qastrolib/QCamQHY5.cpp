@@ -116,11 +116,12 @@ QCamQHY5::QCamQHY5() {
       QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY5 imager\nLeaving...");
       exit(1);
    }
-   // configure the cam
-   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
+
    // set frame
    inputBuffer_.setMode(GreyFrame);
    inputBuffer_.setSize(QSize(width_,height_));
+   // configure the cam
+   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    // start the first frame
    // count the usb transfer time. Rate is 24M pixels / second
    shootMode_=(frameExposure_<1000);
@@ -186,7 +187,7 @@ void QCamQHY5::setSize(int x, int y) {
    //void* YBuff=NULL;
    //camera->stop();
    //YBuff=inputBuffer_.YforOverwrite();
-   //camera->read((char*)YBuff);
+   //camera->read((char*)YBuff,shootMode_);
 
    // selects resizing mode
    switch(croppingMode) {
@@ -385,6 +386,14 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
       else
          exposureValue->setText(QString().sprintf("%2.1f s",((float)frameExposure_/1000)));
    }
+   // if exposure > 1000ms, read the frame and start a new one
+   // count the usb transfer time. Rate is 24M pixels / second
+   shootMode_=(frameExposure_<1000);
+   int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
+   if(poseTime<0) poseTime=0;
+   camera->stop();
+   camera->shoot(poseTime,shootMode_);
+
    // progress bar
    QHBox* progressBox=new QHBox(settingsBox);
    QLabel* label3=new QLabel(QString("Progress"),progressBox);
