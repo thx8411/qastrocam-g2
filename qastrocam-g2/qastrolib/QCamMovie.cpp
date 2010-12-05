@@ -24,7 +24,7 @@ MA  02110-1301, USA.
 #include <errno.h>
 #include "QCam.hpp"
 
-bool QCamMovie::open(const string & seqName, const QCam & cam) {
+bool QCamMovie::openMovie(const string & seqName, const QCam & cam) {
    propFile_=fopen((seqName+".properties").c_str(),"w");
 
    if (propFile_ == NULL) {
@@ -43,7 +43,7 @@ bool QCamMovie::open(const string & seqName, const QCam & cam) {
    frameNumber_=0;
    return openImpl(seqName,cam);
 }
-void QCamMovie::close() {
+void QCamMovie::closeMovie() {
    closeImpl();
    fclose(propFile_);
    propFile_=NULL;

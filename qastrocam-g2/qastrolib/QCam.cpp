@@ -177,9 +177,9 @@ void QCam::setCapture(bool doCapture) const {
       }
 #endif
               string fileName=directory_+"/"+captureFile_+"-"+getFileName();
-      movieWritter_->open(fileName,*this);
+      movieWritter_->openMovie(fileName,*this);
    } else {
-      movieWritter_->close();
+      movieWritter_->closeMovie();
    }
    capturedFrame_->display(fileSeqenceNumber_);
    doCapture_=doCapture;
