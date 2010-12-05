@@ -39,8 +39,8 @@ public:
    QCamMovie() {};
    virtual ~QCamMovie() {};
    virtual QWidget * buildGUI(QWidget  * father) { return father;}
-   bool open(const string & seqName, const QCam & cam);
-   void close();
+   bool openMovie(const string & seqName, const QCam & cam);
+   void closeMovie();
    bool add(const QCamFrame & newFrame, const QCam & cam);
    int getFrameNumber() const { return frameNumber_; }
 protected:
