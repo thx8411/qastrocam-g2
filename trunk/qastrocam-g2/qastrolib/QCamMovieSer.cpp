@@ -20,6 +20,10 @@ MA  02110-1301, USA.
 
 #include "../config.h"
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
 #include <stdlib.h>
 
 #include "QCamMovieSer.hpp"
@@ -31,19 +35,15 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 QCamMovieSer::QCamMovieSer() {
-
-   //
-   // to do
-   //
-
+   // setting the default header
+   memset(&header,0,sizeof(serHeader));
+   memcpy(header.FileID,"LUCAM-RECORDER",14);
+   header.LittleEndian=1;
+   header.PixelDepth=8;
 }
 
 QCamMovieSer::~QCamMovieSer() {
-
-   //
-   // to do
-   //
-
+   // nothing to do yet
 }
 
 QWidget * QCamMovieSer::buildGUI(QWidget  * father) {
@@ -52,30 +52,43 @@ QWidget * QCamMovieSer::buildGUI(QWidget  * father) {
 }
 
 bool QCamMovieSer::openImpl(const string & seqName, const QCam & cam) {
+   int ret;
+   string fileName;
 
-   //
-   // to do
-   //
-   cerr << "Open SER" << endl;
+   frameNumber=0;
+   // create the file
+   fileName=seqName+".ser";
+   fd=creat(fileName.c_str(),S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+   if(fd<0) return(FALSE);
+   // update the header
+   header.ImageWidth=cam.size().width();
+   header.ImageHeight=cam.size().height();
+   // write the header
+   ret=write(fd,&header,sizeof(serHeader));
+   if(ret!=sizeof(serHeader)) return(FALSE);
+   // warn the user about mono
 
    return true;
 }
 
 void QCamMovieSer::closeImpl() {
-
-   //
-   // to do
-   //
-   cerr << "Close SER" << endl;
-
+   int ret;
+   // update the header
+   lseek(fd,0,SEEK_SET);
+   header.FrameCount=frameNumber;
+   ret=write(fd,&header,sizeof(serHeader));
+   // close the file
+   close(fd);
 }
 
 bool QCamMovieSer::addImpl(const QCamFrame & newFrame, const QCam & cam) {
+   int ret;
+   int size=newFrame.size().width()*newFrame.size().height();
 
-   //
-   // to do
-   //
-   cerr << "Add SER" << endl;
-
-   return true;
+   ret=write(fd,newFrame.Y(),size);
+   if(ret==size) {
+      frameNumber++;
+      return(TRUE);
+   } else
+      return(FALSE);
 }

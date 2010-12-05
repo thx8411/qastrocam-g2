@@ -23,7 +23,25 @@ MA  02110-1301, USA.
 
 #include "../config.h"
 
+#include <stdint.h>
+
 #include "QCamMovie.hpp"
+
+typedef struct {
+   char FileID[14];
+   uint32_t LuID;
+   uint32_t ColorID;
+   uint32_t LittleEndian;
+   uint32_t ImageWidth;
+   uint32_t ImageHeight;
+   uint32_t PixelDepth;
+   uint32_t FrameCount;
+   char Observer[40];
+   char Instrume[40];
+   char Telescope[40];
+   uint64_t DateTime;
+   uint64_t DateTime_UTC;
+} serHeader;
 
 // ser recording class
 class QCamMovieSer : public QCamMovie {
@@ -38,6 +56,9 @@ public:
    // add a frame
    bool addImpl(const QCamFrame & newFrame, const QCam & cam);
 private:
+   serHeader header;
+   int fd;
+   int frameNumber;
 };
 
 #endif
