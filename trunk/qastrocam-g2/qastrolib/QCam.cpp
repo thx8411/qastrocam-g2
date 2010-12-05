@@ -55,6 +55,7 @@ MA  02110-1301, USA.
 #include "QCamMovieAvi.hpp"
 #include "QCamMovieAviLossless.hpp"
 #include "QCamMovieSeq.hpp"
+#include "QCamMovieSer.hpp"
 #include "SettingsBackup.hpp"
 
 #include <sys/time.h>
@@ -87,6 +88,7 @@ QCam::QCam() {
    movieWritterAviLossless_=new QCamMovieAviLossless();
 #endif
    movieWritterSeq_=new QCamMovieSeq();
+   movieWritterSer_=new QCamMovieSer();
    movieWritter_=NULL;
    annotationEnabled_=false;
 
@@ -103,6 +105,7 @@ QCam::~QCam() {
    delete movieWritterAviLossless_;
 #endif
    delete movieWritterSeq_;
+   delete movieWritterSer_;
    delete displayWindow_;
    delete displayHistogramWindow_;
 }
@@ -162,9 +165,12 @@ void QCam::setCapture(bool doCapture) const {
    if (doCapture) {
       // default writer
       movieWritter_=movieWritterSeq_;
-#if HAVE_AVIFILE_H
       string fileFormat=getSaveFormat();
-      if (fileFormat=="AVI raw") {
+      if (fileFormat=="SER") {
+         movieWritter_=movieWritterSer_;
+      }
+#if HAVE_AVIFILE_H
+      else if (fileFormat=="AVI raw") {
          movieWritter_=movieWritterAvi_;
       } else if (fileFormat=="AVI huff") {
          movieWritter_=movieWritterAviLossless_;
@@ -356,6 +362,10 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       ++size;
    }
 #endif
+   // adds ser format
+   fileFormatList_[size]="SER";
+   tmpTab[size]=size;
+   ++size;
    // adds bmp format
    if(formatList.findIndex("BMP")!=-1) {
       fileFormatList_[size]="BMP";
@@ -462,7 +472,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    snapshot_->show();
    capture_->show();
 
-   if((getSaveFormat()=="AVI raw")||(getSaveFormat()=="AVI huff"))
+   if((getSaveFormat()=="AVI raw")||(getSaveFormat()=="AVI huff")||(getSaveFormat()=="SER"))
       snapshot_->setEnabled(FALSE);
    else
       snapshot_->setEnabled(TRUE);
@@ -638,7 +648,7 @@ void QCam::writeProperties(const string & fileName) const {
 void QCam::updateFileFormat(int value) {
    fileFormatCurrent_=value;
 
-   if((getSaveFormat()=="AVI raw")||(getSaveFormat()=="AVI huff"))
+   if((getSaveFormat()=="AVI raw")||(getSaveFormat()=="AVI huff")||(getSaveFormat()=="SER"))
       snapshot_->setEnabled(FALSE);
    else
       snapshot_->setEnabled(TRUE);

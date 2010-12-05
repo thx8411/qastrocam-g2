@@ -193,6 +193,7 @@ private:
    QString label_;
    mutable QCamMovie* movieWritter_;
    QCamMovie* movieWritterSeq_;
+   QCamMovie* movieWritterSer_;
 #if HAVE_AVIFILE_H
    QCamMovie* movieWritterAvi_;
    QCamMovie* movieWritterAviLossless_;

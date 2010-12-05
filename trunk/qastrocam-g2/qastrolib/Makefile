@@ -45,7 +45,7 @@ OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieAviLossless.o QCamMovieSeq.o \
 	  SettingsBackup.o SCmodParPortPPdev.o PPort.o yuv.o jmemsrc.o \
-	  QHY5cam.o
+	  QHY5cam.o QCamMovieSer.o
 
 OBJ_c =
 

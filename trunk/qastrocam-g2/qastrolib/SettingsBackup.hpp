@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -40,7 +40,7 @@ using namespace std;
 //
 // global :
 //
-// FILE_FORMAT <FITS/AVI raw/AVI huff/BMP/PNG>
+// FILE_FORMAT <FITS/AVI raw/AVI huff/SER/BMP/PNG>
 // FRAME_RESOLUTION <width>x<height>
 // FRAME_MODE <scaling/cropping/binning>
 // LX_LEVELS_INVERTED <yes/no>
