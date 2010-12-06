@@ -41,7 +41,7 @@ typedef struct {
    char Telescope[40];
    uint64_t DateTime;
    uint64_t DateTime_UTC;
-} serHeader;
+} __attribute((packed)) serHeader;
 
 // ser recording class
 class QCamMovieSer : public QCamMovie {
