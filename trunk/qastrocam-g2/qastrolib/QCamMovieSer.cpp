@@ -38,7 +38,6 @@ QCamMovieSer::QCamMovieSer() {
    // setting the default header
    memset(&header,0,sizeof(serHeader));
    memcpy(header.FileID,"LUCAM-RECORDER",14);
-   header.LittleEndian=1;
    header.PixelDepth=8;
 }
 
