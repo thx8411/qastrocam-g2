@@ -1,5 +1,6 @@
-4.9beta20101204
+4.9beta20101206
 
+  - basic lucam-recorder SER format support
   - QHY5 short exposures enabled
   - frame scaling mode is now stored
   - The telescope speed is now stored
