@@ -354,8 +354,9 @@ int main(int argc, char ** argv) {
            << "* qhy5\n"
            << "* apm\n"
            << "* autostar\n"
+           << "* lx200\n"
            << "* nexstar\n"
-           //<< "* fifo\n"
+           << "* fifo\n"
            << "* mcu\n"
            << "* mts\n"
 	   << "* file\n";
@@ -450,7 +451,7 @@ int main(int argc, char ** argv) {
    if(telescopeType=="none") telescopeType="";
    QTelescope * theTelescope=NULL;
    if (telescopeType.length() != 0) {
-      if (telescopeType=="autostar") {
+      if ((telescopeType=="autostar")||(telescopeType=="lx200")) {
          theTelescope = new QTelescopeAutostar(telescopeDeviceName.c_str());
       } else if (telescopeType=="nexstar") {
          theTelescope = new QTelescopeNexstar(telescopeDeviceName.c_str());

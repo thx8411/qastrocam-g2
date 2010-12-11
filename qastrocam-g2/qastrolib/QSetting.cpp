@@ -63,9 +63,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    lineOne->setStretchFactor(padding0,5);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
    lineOne->setStretchFactor(telescopeListLabel,0);
-   int telescopeTable[]={0,1,2,3,4,5,6,7,8};
-   const char* telescopeLabel[]={"none","qhy5","autostar","nexstar","mcu","mts","apm","fifo","file"};
-   telescopeList=new QCamComboBox("telescope type : ",lineOne,9,telescopeTable,telescopeLabel);
+   int telescopeTable[]={0,1,2,3,4,5,6,7,8,9};
+   const char* telescopeLabel[]={"none","qhy5","autostar","lx200","nexstar","mcu","mts","apm","fifo","file"};
+   telescopeList=new QCamComboBox("telescope type : ",lineOne,10,telescopeTable,telescopeLabel);
    QToolTip::add(telescopeList,tr("Telescope protocol to use for guiding"));
    lineOne->setStretchFactor(telescopeList,10);
    padding1=new QWidget(lineOne);
@@ -401,7 +401,7 @@ void QSetting::changeTelescope(int index) {
       telescopeDeviceChooser->setEnabled(false);
       telescopeLevels->setEnabled(false);
    // protoles, devices but no levels
-   } else if(telescopeList->currentText()==QString("autostar")||telescopeList->currentText()==QString("nexstar")||telescopeList->currentText()==QString("mcu")||telescopeList->currentText()==QString("mts")) {
+   } else if(telescopeList->currentText()==QString("lx200")||telescopeList->currentText()==QString("autostar")||telescopeList->currentText()==QString("nexstar")||telescopeList->currentText()==QString("mcu")||telescopeList->currentText()==QString("mts")) {
       telescopeDeviceChooser->setType(DEVICE_FILE);
       telescopeDeviceEntry->setEnabled(true);
       telescopeDeviceChooser->setEnabled(true);

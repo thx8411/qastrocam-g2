@@ -1,5 +1,6 @@
-4.9beta20101206
+4.9beta20101211
 
+  - LX200 telescope added
   - basic lucam-recorder SER format support
   - QHY5 short exposures enabled
   - frame scaling mode is now stored
