@@ -124,14 +124,14 @@ QCamQHY5::QCamQHY5() {
    camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    // start the first frame
    // count the usb transfer time. Rate is 24M pixels / second
-   shootMode_=(frameExposure_<1000);
-   int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
-   if(poseTime<0) poseTime=0;
-   camera->shoot(poseTime,shootMode_);
+   //shootMode_=(frameExposure_<1000);
+   //int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
+   //if(poseTime<0) poseTime=0;
+   //camera->shoot(poseTime,shootMode_);
    // set the first timer shot
-   timer_=new QTimer(this);
-   connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->start(/*frameRate_*/frameExposure_,true);
+   //timer_=new QTimer(this);
+   //connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
+   //timer_->start(/*frameRate_*/frameExposure_,true);
    // set prop.
    static char buff[11];
    snprintf(buff,10,"%dx%d",width_,height_);
@@ -184,10 +184,10 @@ const QSize * QCamQHY5::getAllowedSize() const {
 
 void QCamQHY5::setSize(int x, int y) {
    // drop the last frame
-   //void* YBuff=NULL;
-   //camera->stop();
-   //YBuff=inputBuffer_.YforOverwrite();
-   //camera->read((char*)YBuff,shootMode_);
+   void* YBuff=NULL;
+   camera->stop();
+   YBuff=inputBuffer_.YforOverwrite();
+   camera->read((char*)YBuff,shootMode_);
 
    // selects resizing mode
    switch(croppingMode) {
@@ -216,13 +216,12 @@ void QCamQHY5::setSize(int x, int y) {
    targetSize.setHeight(targetHeight_);
    // update frame mem
    inputBuffer_.setSize(QSize(width_,height_));
-   // start the new frame
-   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    // count the usb transfer time. Rate is 24M pixels / second
    shootMode_=(frameExposure_<1000);
    int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
    if(poseTime<0) poseTime=0;
-   camera->stop();
+   // start the new frame
+   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    camera->shoot(poseTime,shootMode_);
    // update datas
    static char buff[11];
@@ -425,12 +424,17 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
 
    connect(exposureSlider,SIGNAL(valueChanged(int)),this,SLOT(changeExposure(int)));
    connect(exposureSlider,SIGNAL(sliderReleased()),this,SLOT(setExposure()));
+
+   cerr << "QHY5 ready..." << endl;
+
+   // set the first timer shot
+   timer_=new QTimer(this);
+   connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
+   timer_->start(/*frameRate_*/frameExposure_,true);
    // progress timer
    progressTimer_=new QTimer(this);
    progressTimer_->start(PROGRESS_TIME);
    connect(progressTimer_,SIGNAL(timeout()),this,SLOT(progressUpdate()));
-
-   cerr << "QHY5 ready..." << endl;
 
    return remoteCTRL;
 }
