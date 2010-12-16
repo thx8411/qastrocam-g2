@@ -60,124 +60,88 @@ QTelescopeLX200::QTelescopeLX200(const char * deviceName) :
    setSpeed(0.1);
 }
 
-QTelescopeAutostar::~QTelescopeAutostar() {
+QTelescopeLX200::~QTelescopeLX200() {
    close(descriptor_);
 }
 
-void QTelescopeAutostar::buildGUI(QWidget * parent) {
+void QTelescopeLX200::buildGUI(QWidget* parent) {
    QTelescope::buildGUI(parent);
-   widget()->setCaption(version(versionFull).c_str());
+   widget()->setCaption("LX200 generic");
 }
 
-string QTelescopeAutostar::sendCommand(CommandType com,const string & param) {
-   ssize_t tmp;
-   switch (com) {
+void QTelescopeLX200::sendCommand(CommandType c) {
+   string msg;
+   switch (c) {
    case moveWest:
-      sendCmd("Mw");
+      msg=":Mw#";
       break;
    case moveEast:
-      sendCmd("Me");
+      msg=":Me#";
       break;
    case moveNorth:
-      sendCmd("Mn");
+      msg=":Mn#";
       break;
    case moveSouth:
-      sendCmd("Ms");
+      msg=":Ms#";
       break;
    case stopMoveSouth:
-      sendCmd("Qs");
+      msg=":Qs#";
       break;
    case stopMoveNorth:
-      sendCmd("Qn");
+      msg=":Qn#";
       break;
    case stopMoveEast:
-      sendCmd("Qe");
+      msg=":Qe#";
       break;
    case stopMoveWest:
-      sendCmd("Qw");
-      break;
-   case park:
-      sendCmd("hP");
-      break;
-   case setAlignment:
-      sendCmd("A",param);
-      break;
-   case getAlignment:
-      {
-         char szACK[1]={(char)0x06};
-         tmp=write(descriptor_,szACK,1);
-         return recvCmd(singleChar);
-      }
-      break;
-   case setMoveSpeed:
-      sendCmd("Sw",param);
+      msg=":Qw#";
       break;
    }
-   return "";
-}
-
-bool QTelescopeAutostar::sendCmd(const string & cmd,const string & param) {
-   // '#' removed at the beginning of the command
-   // not really needed for autostar, depsite the Meade docs
-   // now also supports the LX200 telescopes
-   string fullCmd=string(":")+cmd+param+"#";
-   cout <<"sending command '"<<fullCmd<<"'"<<endl;
-   if (fullCmd.length() != write(descriptor_,
-                                 fullCmd.c_str(),
-                                 fullCmd.length())) {
-      perror(fullCmd.c_str());
+   if (msg.length() != write(descriptor_,msg.c_str(),msg.length())) {
+      perror(msg.c_str());
       close(descriptor_);
       descriptor_=-1;
-      return false;
    }
-   return true;
 }
 
-double QTelescopeAutostar::setSpeed(double speed) {
+void QTelescopeLX200::sendSpeed(string speed){
+   string msg;
+   msg+=":Sw";
+   msg+=speed;
+   msg+="#";
+   if (msg.length() != write(descriptor_,msg.c_str(),msg.length())) {
+      perror(msg.c_str());
+      close(descriptor_);
+      descriptor_=-1;
+   }
+}
+
+double QTelescopeLX200::setSpeed(double speed) {
    if (speed <=0.3) {
       speed=0.3;
       if(speed!=currentSpeed) {
-         sendCommand(setMoveSpeed,"2");
+         sendSpeed("2");
          currentSpeed=speed;
       }
    } else if (speed <=0.6) {
       speed=0.6;
       if(speed!=currentSpeed) {
-         sendCommand(setMoveSpeed,"3");
+         sendSpeed("3");
          currentSpeed=speed;
       }
    } else /*if (speed <=3/3)*/ {
       speed=1.0;
       if(speed!=currentSpeed) {
-         sendCommand(setMoveSpeed,"4");
+         sendSpeed("4");
          currentSpeed=speed;
       }
    }
    return(currentSpeed);
 }
 
-bool QTelescopeAutostar::setTracking(bool activated) {
-   if (aligment_ == land) {
-      return !activated;
-   }
-   // set Aligment mode not working
+bool QTelescopeLX200::setTracking(bool activated) {
+   // always tracking
    return activated;
 }
 
-void QTelescopeAutostar::setTracking(TrackingMode mode) {
-   switch (mode) {
-   case polar:
-      sendCommand(setAlignment,"P");
-      break;
-   case german:
-      sendCommand(setAlignment,"G");
-      break;
-   case altAz:
-      sendCommand(setAlignment,"A");
-      break;
-   case land:
-      sendCommand(setAlignment,"L");
-      break;
-   }
-}
 
