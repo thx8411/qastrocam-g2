@@ -37,17 +37,6 @@ public:
    ~QTelescopeLX200();
    virtual int telescopeType() { return(TELESCOPE_LX200); }
    void buildGUI(QWidget * parent);
-public slots:
-   virtual void goE(float shift) {sendCommand(moveEast);};
-   virtual void goW(float shift) {sendCommand(moveWest);};
-   virtual void goS(float shift) {sendCommand(moveSouth);};
-   virtual void goN(float shift) {sendCommand(moveNorth);};
-   virtual void stopE() {sendCommand(stopMoveEast);};
-   virtual void stopN() {sendCommand(stopMoveNorth);};
-   virtual void stopW() {sendCommand(stopMoveWest);};
-   virtual void stopS() {sendCommand(stopMoveSouth);};
-   virtual double setSpeed(double speed);
-   virtual bool setTracking(bool activated);
 private:
    /** send a command to the Autostar, wait the result and
        return it. */
@@ -60,12 +49,22 @@ private:
       stopMoveWest,
       stopMoveNorth,
       stopMoveSouth,
-      setMoveSpeed
    };
-   /** really send the command. */
    void sendCommand(CommandType c);
+   void sendSpeed(string speed);
    // the file descritor of the serial port.
    int descriptor_;
+public slots:
+   virtual void goE(float shift) {sendCommand(moveEast);};
+   virtual void goW(float shift) {sendCommand(moveWest);};
+   virtual void goS(float shift) {sendCommand(moveSouth);};
+   virtual void goN(float shift) {sendCommand(moveNorth);};
+   virtual void stopE() {sendCommand(stopMoveEast);};
+   virtual void stopN() {sendCommand(stopMoveNorth);};
+   virtual void stopW() {sendCommand(stopMoveWest);};
+   virtual void stopS() {sendCommand(stopMoveSouth);};
+   virtual double setSpeed(double speed);
+   virtual bool setTracking(bool activated);
 };
 
 #endif
