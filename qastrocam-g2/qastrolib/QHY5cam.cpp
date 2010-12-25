@@ -397,17 +397,19 @@ QHY5cam::QHY5cam() {
       }
    }
 
-   // init config
-   configure(0,0,1280,1024,1,1,1,1,&temp1,&temp2);
-
    // init usb mutex
    pthread_mutex_init(&usbMutex,NULL);
 
    // init exposure mutex
    pthread_mutex_init(&exposureMutex,NULL);
 
-   // start the loop thread
+   // init the move loop mutex
    pthread_mutex_init(&moveLoopMutex,NULL);
+
+   // init config
+   configure(0,0,1280,1024,1,1,1,1,&temp1,&temp2);
+
+   // start the loop thread
    pthread_create(&moveLoopThread, NULL, QHY5cam::callMoveLoop, this);
 }
 
