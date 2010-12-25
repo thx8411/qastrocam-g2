@@ -418,6 +418,8 @@ QHY5cam::~QHY5cam() {
    pthread_mutex_lock(&moveLoopMutex);
    moveLoop_on_=FALSE;
    pthread_mutex_unlock(&moveLoopMutex);
+   // release the interface
+   usb_release_interface(dev,0);
    // close usb device
    usb_close(dev);
    // free buffer
