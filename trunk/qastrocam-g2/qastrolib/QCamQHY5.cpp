@@ -396,7 +396,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    }
 
    // tooltips
-   QToolTip::add(gainSlider,tr("Camera's gain, non linear, 0 to 81 (patterns after 52)"));
+   QToolTip::add(gainSlider,tr("Camera's gain, non linear, 0 to 81 , 5 means x1 (patterns after 52)"));
    QToolTip::add(exposureSlider,tr("Camera's exposure, may be limited by the frame sizes"));
    QToolTip::add(exposureValue,tr("Exposure time (not a real fps, not very accurate for high rates)"));
 
