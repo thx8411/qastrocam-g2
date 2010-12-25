@@ -333,29 +333,19 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
 
    // gain
-   gainSlider=new QCamSlider("Gain",false,settingsBox,1,73,false,false);
-   //gainSlider->setTickMinValue(1);
-   //gainSlider->setMaxValue(73);
+   gainSlider=new QCamSlider("Gain",false,settingsBox,0,81,false,false);
    gainSlider->setValue(gainG1_);
 
-   gainSliderG1=new QCamSlider("Gain Green 1",false,settingsBox,1,73,false,false);
-   //gainSliderG1->setMinValue(1);
-   //gainSliderG1->setMaxValue(73);
+   gainSliderG1=new QCamSlider("Gain Green 1",false,settingsBox,0,81,false,false);
    gainSliderG1->setValue(gainG1_);
 
-   gainSliderG2=new QCamSlider("Gain Green 2",false,settingsBox,1,73,false,false);
-   //gainSliderG2->setMinValue(1);
-   //gainSliderG2->setMaxValue(73);
+   gainSliderG2=new QCamSlider("Gain Green 2",false,settingsBox,0,81,false,false);
    gainSliderG2->setValue(gainG2_);
 
-   gainSliderR=new QCamSlider("Gain Red",false,settingsBox,1,73,false,false);
-   //gainSliderR->setMinValue(1);
-   //gainSliderR->setMaxValue(73);
+   gainSliderR=new QCamSlider("Gain Red",false,settingsBox,0,81,false,false);
    gainSliderR->setValue(gainR_);
 
-   gainSliderB=new QCamSlider("Gain Blue",false,settingsBox,1,73,false,false);
-   //gainSliderB->setMinValue(1);
-   //gainSliderB->setMaxValue(73);
+   gainSliderB=new QCamSlider("Gain Blue",false,settingsBox,0,81,false,false);
    gainSliderB->setValue(gainB_);
 
    // no finished at this time, so hidden
@@ -406,7 +396,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    }
 
    // tooltips
-   QToolTip::add(gainSlider,tr("Camera's gain "));
+   QToolTip::add(gainSlider,tr("Camera's gain, non linear, 0 to 81 (patterns after 52)"));
    QToolTip::add(exposureSlider,tr("Camera's exposure, may be limited by the frame sizes"));
    QToolTip::add(exposureValue,tr("Exposure time (not a real fps, not very accurate for high rates)"));
 
