@@ -90,24 +90,24 @@ QCamQHY5::QCamQHY5() {
    // setting gains
    if(settings.haveKey("QHY5_GAIN_G1")) {
       gainG1_=atoi(settings.getKey("QHY5_GAIN_G1"));
-      if(gainG1_==0) gainG1_=37;
+      if(gainG1_==0) gainG1_=5;
    } else
-      gainG1_=37;
+      gainG1_=5;
    if(settings.haveKey("QHY5_GAIN_G2")) {
       gainG2_=atoi(settings.getKey("QHY5_GAIN_G2"));
-      if(gainG2_==0) gainG2_=37;
+      if(gainG2_==0) gainG2_=5;
    } else
-      gainG2_=37;
+      gainG2_=5;
    if(settings.haveKey("QHY5_GAIN_R")) {
       gainR_=atoi(settings.getKey("QHY5_GAIN_R"));
-      if(gainR_==0) gainR_=37;
+      if(gainR_==0) gainR_=5;
    } else
-      gainR_=37;
+      gainR_=5;
    if(settings.haveKey("QHY5_GAIN_B")) {
       gainB_=atoi(settings.getKey("QHY5_GAIN_B"));
-      if(gainB_==0) gainB_=37;
+      if(gainB_==0) gainB_=5;
    } else
-      gainB_=37;
+      gainB_=5;
 
    sizeTable=getAllowedSize();
    // get the cam instance
@@ -333,29 +333,29 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
 
    // gain
-   gainSlider=new QCamSlider("Gain",false,settingsBox);
-   gainSlider->setMinValue(1);
-   gainSlider->setMaxValue(73);
+   gainSlider=new QCamSlider("Gain",false,settingsBox,1,73,false,false);
+   //gainSlider->setTickMinValue(1);
+   //gainSlider->setMaxValue(73);
    gainSlider->setValue(gainG1_);
 
-   gainSliderG1=new QCamSlider("Gain Green 1",false,settingsBox);
-   gainSliderG1->setMinValue(1);
-   gainSliderG1->setMaxValue(73);
+   gainSliderG1=new QCamSlider("Gain Green 1",false,settingsBox,1,73,false,false);
+   //gainSliderG1->setMinValue(1);
+   //gainSliderG1->setMaxValue(73);
    gainSliderG1->setValue(gainG1_);
 
-   gainSliderG2=new QCamSlider("Gain Green 2",false,settingsBox);
-   gainSliderG2->setMinValue(1);
-   gainSliderG2->setMaxValue(73);
+   gainSliderG2=new QCamSlider("Gain Green 2",false,settingsBox,1,73,false,false);
+   //gainSliderG2->setMinValue(1);
+   //gainSliderG2->setMaxValue(73);
    gainSliderG2->setValue(gainG2_);
 
-   gainSliderR=new QCamSlider("Gain Red",false,settingsBox);
-   gainSliderR->setMinValue(1);
-   gainSliderR->setMaxValue(73);
+   gainSliderR=new QCamSlider("Gain Red",false,settingsBox,1,73,false,false);
+   //gainSliderR->setMinValue(1);
+   //gainSliderR->setMaxValue(73);
    gainSliderR->setValue(gainR_);
 
-   gainSliderB=new QCamSlider("Gain Blue",false,settingsBox);
-   gainSliderB->setMinValue(1);
-   gainSliderB->setMaxValue(73);
+   gainSliderB=new QCamSlider("Gain Blue",false,settingsBox,1,73,false,false);
+   //gainSliderB->setMinValue(1);
+   //gainSliderB->setMaxValue(73);
    gainSliderB->setValue(gainB_);
 
    // no finished at this time, so hidden

@@ -290,6 +290,7 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gg1, int bg, int r
    bg_=setgain[bg_];
    rg_=setgain[rg_];
    gg2_=setgain[gg2_];
+   //if(gg1_!=0x6FF) gg1_++;
 
    size_=1558*(height_+26);
    offset=(1048-height_)/2;
