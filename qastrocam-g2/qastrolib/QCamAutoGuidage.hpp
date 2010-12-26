@@ -25,6 +25,7 @@ MA  02110-1301, USA.
 
 #include <qobject.h>
 #include <qsound.h>
+#include <qlabel.h>
 
 class QCam;
 class QCamFindShift;
@@ -95,6 +96,12 @@ private:
    QCamFindShift * tracker_;
    // alert sound
    QSound* bell_;
+   // alert label;
+   QLabel* alert_;
+   // last alert backgroung color
+   QColor lastColor_;
+   // last state
+   QString lastState_;
    // tracking state
    bool isTracking_;
 };

@@ -37,7 +37,10 @@ QCamAutoGuidage::QCamAutoGuidage() {
    tracker_=NULL;
    telescope_=NULL;
    bell_=NULL;
+   alert_=NULL;
    isTracking_=false;
+   lastState_="Idle";
+   lastColor_=QColor(Qt::green);
 
    // test for audio device
    if(!(QSound::available()||QSound::isAvailable())) {
@@ -48,20 +51,9 @@ QCamAutoGuidage::QCamAutoGuidage() {
       bell_=new QSound("/usr/share/qastrocam-g2/sounds/bell.wav");
       bell_->setLoops(-1);
    }
-
-   //
-   // just for tests
-   startAlert();
-   //
 }
 
 QCamAutoGuidage::~QCamAutoGuidage() {
-
-   //
-   // just for tests
-   stopAlert();
-   //
-
    // release the bell
    delete bell_;
 }
@@ -87,6 +79,8 @@ void QCamAutoGuidage::track(bool mode) {
       connect(tracker_,SIGNAL(shift(const ShiftInfo&)),
               this,SLOT(frameShift(const ShiftInfo&)));
       telescope_->setTrack(true);
+      if(alert_)
+         alert_->setText("Guiding...");
    } else {
       tracker_->disconnectCam();
       disconnect(tracker_,SIGNAL(shift(const ShiftInfo&)),
@@ -96,6 +90,8 @@ void QCamAutoGuidage::track(bool mode) {
       telescope_->stopS();
       telescope_->stopN();
       telescope_->setTrack(false);
+      if(alert_)
+         alert_->setText("Idle");
    }
 }
 
@@ -113,6 +109,13 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    connect(trackButton,SIGNAL(toggled(bool)),this,SLOT(track(bool)));
    QPushButton * resetButton = new QPushButton(tr("reset"),buttons);
    connect(resetButton,SIGNAL(pressed()),tracker_,SLOT(reset()));
+
+   // visual alert
+   QHBox* state=new QHBox(mainBox);
+   //QLabel* label1=new QLabel("State : ",state);
+   alert_=new QLabel("Idle",state);
+   alert_->setPaletteBackgroundColor(Qt::green);
+   alert_->setAlignment(Qt::AlignHCenter);
    mainBox->show();
    return mainBox;
 }
@@ -158,11 +161,27 @@ void QCamAutoGuidage::moveAlt(MoveDir NSmove) {
 }
 
 void QCamAutoGuidage::startAlert() {
+   // visual alert
+   if(alert_) {
+      lastState_=alert_->text();
+      lastColor_=alert_->paletteBackgroundColor();
+      alert_->setText("Star Lost !");
+      alert_->setPaletteBackgroundColor(Qt::red);
+   }
+
+   // sound alert
    if(bell_)
       bell_->play();
 }
 
 void QCamAutoGuidage::stopAlert() {
+   // visual alert
+   if(alert_) {
+      alert_->setText(lastState_);
+      alert_->setPaletteBackgroundColor(lastColor_);
+   }
+
+   // sound alert
    if(bell_)
       bell_->stop();
 }
