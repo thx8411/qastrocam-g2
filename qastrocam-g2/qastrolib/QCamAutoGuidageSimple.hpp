@@ -46,11 +46,11 @@ public:
    virtual QWidget * buildGUI(QWidget *parent=0);
 protected slots:
    /** Swap east and west */
-   void swapEW(bool swap) { ewSwapped_=swap;}
+   void swapEW(bool swap);
    /** Swap south and north */
-   void swapNS(bool swap) { nsSwapped_=swap;}
+   void swapNS(bool swap);
    /** center the target */
-   void setCenter(bool center) { centerMode_ = center; }
+   void setCenter(bool center);
    void frameShift(const ShiftInfo & shift);
    void setMinShift(double v) { minShift_=v;}
    void setMaxShift(double v) { maxShift_=v;}

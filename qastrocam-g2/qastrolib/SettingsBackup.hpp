@@ -72,6 +72,16 @@ using namespace std;
 // QHY5_GAIN_R <value>
 // QHY5_GAIN_B <value>
 // QHY5_EXPOSURE <time in ms>
+//
+// GUIDING :
+//
+// GUIDE_RA_INVERSION <yes/no>
+// GUIDE_DEC_INVERSION <yes/no>
+// GUIDE_CENTER <yes/no>
+// GUIDE_RA_MIN <value>
+// GUIDE_RA_MAX <value>
+// GUIDE_DEC_MIN <value>
+// GUIDE_DEC_MAX <value>
 
 class settingsBackup {
    private :
