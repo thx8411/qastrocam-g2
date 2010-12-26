@@ -29,13 +29,41 @@ MA  02110-1301, USA.
 
 #include <qpushbutton.h>
 #include <qhbox.h>
-#include "qvbox.h"
+#include <qvbox.h>
+#include <qmessagebox.h>
 
 QCamAutoGuidage::QCamAutoGuidage() {
    cam_=NULL;
    tracker_=NULL;
    telescope_=NULL;
+   bell_=NULL;
    isTracking_=false;
+
+   // test for audio device
+   if(!(QSound::available()||QSound::isAvailable())) {
+      cout << "Unable to use the audio device" << endl;
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the audio device\nNo sound alerts for guiding...");
+   } else {
+      // setting the alert bell
+      bell_=new QSound("/usr/share/qastrocam-g2/sounds/bell.wav");
+      bell_->setLoops(-1);
+   }
+
+   //
+   // just for tests
+   startAlert();
+   //
+}
+
+QCamAutoGuidage::~QCamAutoGuidage() {
+
+   //
+   // just for tests
+   stopAlert();
+   //
+
+   // release the bell
+   delete bell_;
 }
 
 void QCamAutoGuidage::setCam(QCam * cam) {
@@ -127,4 +155,14 @@ void QCamAutoGuidage::moveAlt(MoveDir NSmove) {
    default:
       assert(0);
    }
+}
+
+void QCamAutoGuidage::startAlert() {
+   if(bell_)
+      bell_->play();
+}
+
+void QCamAutoGuidage::stopAlert() {
+   if(bell_)
+      bell_->stop();
 }
