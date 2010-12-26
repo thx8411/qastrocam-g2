@@ -41,6 +41,7 @@ QCamAutoGuidage::QCamAutoGuidage() {
    isTracking_=false;
    lastState_="Idle";
    lastColor_=QColor(Qt::green);
+   alertOn_=false;
 
    // test for audio device
    if(!(QSound::available()||QSound::isAvailable())) {
@@ -172,16 +173,22 @@ void QCamAutoGuidage::startAlert() {
    // sound alert
    if(bell_)
       bell_->play();
+
+   alertOn_=true;
 }
 
 void QCamAutoGuidage::stopAlert() {
-   // visual alert
-   if(alert_) {
-      alert_->setText(lastState_);
-      alert_->setPaletteBackgroundColor(lastColor_);
-   }
+   if(alertOn_) {
+      // visual alert
+      if(alert_) {
+         alert_->setText(lastState_);
+         alert_->setPaletteBackgroundColor(lastColor_);
+      }
 
-   // sound alert
-   if(bell_)
-      bell_->stop();
+      // sound alert
+      if(bell_)
+         bell_->stop();
+
+      alertOn_=false;
+   }
 }
