@@ -55,8 +55,9 @@ QCamAutoGuidage::QCamAutoGuidage() {
 }
 
 QCamAutoGuidage::~QCamAutoGuidage() {
-   // release the bell
-   delete bell_;
+   // release the bell (really needed ?)
+   if(bell_)
+      delete bell_;
 }
 
 void QCamAutoGuidage::setCam(QCam * cam) {
