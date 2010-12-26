@@ -22,16 +22,21 @@ MA  02110-1301, USA.
 
 #include "QCamAutoGuidageSimple.moc"
 
-#include "QTelescope.hpp"
-#include "QCam.hpp"
-#include "ShiftInfo.hpp"
+#include <iostream>
+
 #include <qhbox.h>
 #include <qvbox.h>
 #include <qpushbutton.h>
 #include <qcheckbox.h>
-#include "QCamUtilities.hpp"
 
-#include <iostream>
+#include "QTelescope.hpp"
+#include "QCam.hpp"
+#include "ShiftInfo.hpp"
+#include "QCamUtilities.hpp"
+#include "SettingsBackup.hpp"
+
+// settings object
+extern settingsBackup settings;
 
 TrackingControl::TrackingControl(QString label, QWidget * parent, const char * name, WFlags f ) :
    QHBox(parent,name,f),
@@ -104,15 +109,69 @@ QCamAutoGuidageSimple::QCamAutoGuidageSimple() {
    centerMode_=false;
 }
 
+void QCamAutoGuidageSimple::swapEW(bool swap) {
+   ewSwapped_=swap;
+   // update settings
+   if(swap) {
+      settings.setKey("GUIDE_RA_INVERSION","yes");
+   } else {
+      settings.setKey("GUIDE_RA_INVERSION","no");
+   }
+}
+
+void QCamAutoGuidageSimple::swapNS(bool swap) {
+   nsSwapped_=swap;
+   // update settings
+   if(swap) {
+      settings.setKey("GUIDE_DEC_INVERSION","yes");
+   } else {
+      settings.setKey("GUIDE_DEC_INVERSION","no");
+   }
+}
+
+void QCamAutoGuidageSimple::setCenter(bool center) {
+   centerMode_=center;
+   // update settings
+   if(center) {
+      settings.setKey("GUIDE_CENTER","yes");
+   } else {
+      settings.setKey("GUIDE_CENTER","no");
+   }
+}
+
 QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    QWidget * mainBox = QCamAutoGuidage::buildGUI(parent);
 
    QHBox * buttons=new QHBox(mainBox);
+
+   // RA inversion checkbutton
    QCheckBox * swapEWb = new QCheckBox(tr("swap E/W"),buttons);
+   if(settings.haveKey("GUIDE_RA_INVERSION")) {
+      if(QString(settings.getKey("GUIDE_RA_INVERSION"))=="yes") {
+         swapEWb->setChecked(true);
+         swapEW(true);
+      }
+   }
    connect(swapEWb,SIGNAL(toggled(bool)),this,SLOT(swapEW(bool)));
+
+   // DEC inversion checkbutton
    QCheckBox* swapNSb = new QCheckBox(tr("swap N/S"),buttons);
+   if(settings.haveKey("GUIDE_DEC_INVERSION")) {
+      if(QString(settings.getKey("GUIDE_DEC_INVERSION"))=="yes") {
+         swapNSb->setChecked(true);
+         swapNS(true);
+      }
+   }
    connect(swapNSb,SIGNAL(toggled(bool)),this,SLOT(swapNS(bool)));
+
+   // center mode checkbox
    QCheckBox* centerb = new QCheckBox(tr("Center"),buttons);
+   if(settings.haveKey("GUIDE_CENTER")) {
+      if(QString(settings.getKey("GUIDE_CENTER"))=="yes") {
+         centerb->setChecked(true);
+         setCenter(true);
+      }
+   }
    connect(centerb,SIGNAL(toggled(bool)),this,SLOT(setCenter(bool)));
 
    TrackingControl * trAlt = new TrackingControl(tr("Alt."),mainBox);
