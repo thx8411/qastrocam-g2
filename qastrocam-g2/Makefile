@@ -29,6 +29,7 @@ full:: all
 install:: all 
 	for i in $(SUBDIRS); do $(MAKE) -C $$i install TARBALLS= ; done
 	iconsDir="$(DESTDIR)/share/qastrocam-g2/icons"; install -d "$$iconsDir"; install icons/*.png "$$iconsDir"
+	soundsDir="$(DESTDIR)/share/qastrocam-g2/sounds"; install -d "$$soundsDir"; install sounds/*.wav "$$soundsDir"
 	gnomeMenuDir="$(DESTDIR)/share/applications"; install -d "$$gnomeMenuDir"; install qastrocam-g2.desktop "$$gnomeMenuDir"
 	gnomeIconDir="$(DESTDIR)/share/icons"; install -d "$$gnomeIconDir"; install icons/qastrocam-g2-icon.png "$$gnomeIconDir"
 	dllDir="$(DESTDIR)/lib/win32"; install -d "$$dllDir"; install lib/huffyuv.dll "$$dllDir"

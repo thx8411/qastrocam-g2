@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #define _QCamAutoGuidage_hpp_
 
 #include <qobject.h>
+#include <qsound.h>
 
 class QCam;
 class QCamFindShift;
@@ -48,6 +49,7 @@ class QCamAutoGuidage : public QObject {
    Q_OBJECT;
 public:
    QCamAutoGuidage();
+   ~QCamAutoGuidage();
    /** the the camera.*/
    void setCam(QCam * cam);
    /** set the telscope. */
@@ -57,33 +59,43 @@ public:
    /** build the associated GUI */
    virtual QWidget * buildGUI(QWidget *parent=0);
    const QCam * cam() const { return cam_;}
+
 signals:
    /** is emited when alt move is done */
    void altMove(MoveDir);
    /** is emited when asc move is done */
    void ascMove(MoveDir);
+
 public slots:
   /** To activate or desactivate the Tracking.
       tracking is possible only if a cam, a telescope and a findShift
       algorithm have been connected.
    */
    void track(bool mode);
+
 protected slots:
    /** called with the shift frome the original frame
        to the current frame.
        Must be implemented by any subclass.
    */
    virtual void frameShift(const ShiftInfo& shift)=0;
+
 protected:
    QTelescope * telescope_;
    MoveDir lastAltMove_;
    MoveDir lastAscMove_;
    void moveAsc(MoveDir EWmove);
    void moveAlt(MoveDir NSmove);
+   // alert tools
+   void startAlert();
+   void stopAlert();
 
 private:
    QCam * cam_;
    QCamFindShift * tracker_;
+   // alert sound
+   QSound* bell_;
+   // tracking state
    bool isTracking_;
 };
 #endif
