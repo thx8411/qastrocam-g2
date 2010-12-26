@@ -90,6 +90,7 @@ protected:
    // alert tools
    void startAlert();
    void stopAlert();
+   bool alertOn_;
 
 private:
    QCam * cam_;
