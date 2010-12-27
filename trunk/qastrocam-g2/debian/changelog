@@ -3,18 +3,19 @@ qastrocam-g2 (4.9beta20101226) jaunty; urgency=low
   * gamma bug on philips cameras fixed
   * Nexstar protocol support added (1.6+)
   * QHY5 gain values fixed
-  * The camera display can now be resized/scrolled
+  * the camera display can now be resized/scrolled
   * small telescope's bugs fixed
   * no more time limites for QHY5 telescope moves
   * QHY5 available frame sizes changed
   * QHY5 previous gain value stored
   * QHY5 previous exposure time value stored
   * QHY5 exposure time better slider
-  * The telescope speed is now stored
+  * the telescope speed is now stored
   * frame scaling mode is now stored
   * QHY5 short exposures enabled
   * basic lucam-recorder SER format support
   * generic LX200 telescope added
+  * guiding settings now stored
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 10 Oct 2010 03:18:49 +0100
 
