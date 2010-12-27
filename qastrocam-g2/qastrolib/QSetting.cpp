@@ -45,9 +45,14 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding3=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding3,5);
    // video device box
-   videoBox=new QHGroupBox("Video device",remoteCTRL_);
+   videoBox=new QHGroupBox("Camera",remoteCTRL_);
    remoteCTRL_->setStretchFactor(videoBox,0);
-   videoDeviceLabel=new QLabel("Video device : ",videoBox);
+   camLabel=new QLabel("Camera : ",videoBox);
+   int cameraTable[]={0,1,2};
+   const char* cameraLabel[]={"simulator","qhy5","v4l(2)"};
+   cameraList=new QCamComboBox("camera : ",videoBox,3,cameraTable,cameraLabel);
+   QToolTip::add(cameraList,tr("Camera to use"));
+   videoDeviceLabel=new QLabel("Device : ",videoBox);
    videoDeviceEntry=new QLineEdit(videoBox);
    QToolTip::add(videoDeviceEntry,tr("Video device to use, just type 'qhy5' for the QHY5 camera"));
    videoDeviceChooser=new QFileChooser(videoBox,DEVICE_FILE);
@@ -179,6 +184,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 
    // combobox connection
    connect(telescopeList,SIGNAL(activated(int)),this,SLOT(changeTelescope(int)));
+   connect(cameraList,SIGNAL(activated(int)),this,SLOT(changeCamera(int)));
 
    return(remoteCTRL_);
 }
@@ -190,8 +196,8 @@ const QString & QSetting::label() const {
 void QSetting::fillFields() {
 
    // entries
-   if(settings.haveKey("VIDEO_DEVICE"))
-      videoDeviceEntry->setText(settings.getKey("VIDEO_DEVICE"));
+   if(settings.haveKey("CAMERA_DEVICE"))
+      videoDeviceEntry->setText(settings.getKey("CAMERA_DEVICE"));
    else {
       videoDeviceEntry->setText("/dev/video0");
       hasChanged();
@@ -222,6 +228,14 @@ void QSetting::fillFields() {
    } else {
       telescopeList->setCurrentText("none");
       changeTelescope(-1);
+   }
+
+   if(settings.haveKey("CAMERA")) {
+      cameraList->setCurrentText(settings.getKey("CAMERA"));
+      changeCamera(-1);
+   } else {
+      cameraList->setCurrentText("simulator");
+      changeCamera(-1);
    }
 
    // checkboxs
@@ -283,7 +297,7 @@ void QSetting::saveSettings() {
 
    // entries
    if(!videoDeviceEntry->text().isEmpty())
-      settings.setKey("VIDEO_DEVICE",videoDeviceEntry->text().latin1());
+      settings.setKey("CAMERA_DEVICE",videoDeviceEntry->text().latin1());
    if(!telescopeDeviceEntry->text().isEmpty())
       settings.setKey("TELESCOPE_DEVICE",telescopeDeviceEntry->text().latin1());
    if(!lxDeviceEntry->text().isEmpty())
@@ -292,6 +306,7 @@ void QSetting::saveSettings() {
       settings.setKey("LIB_PATH",libpathEntry->text().latin1());
    // combo
    settings.setKey("TELESCOPE",telescopeList->currentText().latin1());
+   settings.setKey("CAMERA",cameraList->currentText().latin1());
    // checkboxes
    if(telescopeLevels->isChecked())
       temp="yes";
@@ -412,6 +427,18 @@ void QSetting::changeTelescope(int index) {
       telescopeDeviceEntry->setEnabled(true);
       telescopeDeviceChooser->setEnabled(true);
       telescopeLevels->setEnabled(true);
+   }
+   if(index!=-1)
+      hasChanged();
+}
+
+void QSetting::changeCamera(int index) {
+   if(cameraList->currentText()==QString("simulator")||cameraList->currentText()==QString("qhy5")) {
+      videoDeviceEntry->setEnabled(false);
+      videoDeviceChooser->setEnabled(false);
+   } else {
+      videoDeviceEntry->setEnabled(true);
+      videoDeviceChooser->setEnabled(true);
    }
    if(index!=-1)
       hasChanged();

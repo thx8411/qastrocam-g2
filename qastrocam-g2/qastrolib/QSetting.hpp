@@ -56,6 +56,7 @@ public slots:
    void changeLibpath(const QString& name);
    // combobox
    void changeTelescope(int index);
+   void changeCamera(int index);
    // global
    void hasChanged();
    // checkbox
@@ -67,6 +68,8 @@ private :
    QVBox* remoteCTRL_;
    QString label_;
    QHGroupBox* videoBox;
+   QLabel* camLabel;
+   QCamComboBox* cameraList;
    QLabel* videoDeviceLabel;
    QLineEdit* videoDeviceEntry;
    QFileChooser* videoDeviceChooser;

@@ -27,10 +27,16 @@ using namespace std;
 
 #define NB_RECORDS	64
 
+#define _CONF_VERSION_  "2"
+
 // store settings as a pair of strings : key<tab>value
 // strings may contain spaces
 //
 // known and used keys :
+//
+// configuration file version :
+//
+// CONF_VERSION <2>	(conf version 2)
 //
 // device dependent :
 //
@@ -55,7 +61,9 @@ using namespace std;
 // TS_LEVELS_INVERTED <yes/no>
 // TELESCOPE_DEVICE <file>
 // TELESCOPE_SPEED <0 to 1>
-// VIDEO_DEVICE <file>
+// CAMERA <v4l(2)/qhy5/simulator>	(conf version 2)
+// CAMERA_DEVICE <file>	(conf version 2)
+// VIDEO_DEVICE <file>	(conf version 1, outdated, use CAMERA_DEVICE instead)
 // LIB_PATH <directory>
 // ADD_MODULE <yes/no>
 // MAX_MODULE <yes/no>
@@ -101,8 +109,8 @@ class settingsBackup {
       void setKey(const char* key, const char* val);
       // get the value from a known key,  NULL if unknown
       const char* getKey(const char* key);
-      // load the settings file
-      void deSerialize();
+      // load the settings file, true on success
+      bool deSerialize();
 };
 
 #endif

@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #include "../config.h"
 
 #include "QCamSlider.hpp"
+#include "QCamSimulator.hpp"
 #include "QCamQHY5.hpp"
 #include "QCamV4L.hpp"
 #include "QCamVesta.hpp"
@@ -156,6 +157,7 @@ int main(int argc, char ** argv) {
    bool autoAlign=false;
    bool kingOption=false;
 //   bool V4Lforce=false;
+   string cameraName("simulator");
    string videoDeviceName("/dev/video0");
    string telescopeType;
    string telescopeDeviceName("/dev/ttyS1");
@@ -179,7 +181,10 @@ int main(int argc, char ** argv) {
    settings.setName(settingsFileName);
 
    // reading settings
-   settings.deSerialize();
+   if(!settings.deSerialize()) {
+      // no file -> new file, add the version key
+      settings.setKey("CONF_VERSION",_CONF_VERSION_);
+   }
 
    // decode all options
    for (i=1;i <argc;++i) {
@@ -268,7 +273,7 @@ int main(int argc, char ** argv) {
             usage(argv[0]);
             exit(1);
          }
-         settings.setKey("VIDEO_DEVICE",argv[i]);
+         settings.setKey("CAMERA_DEVICE",argv[i]);
       } else if (SDLon == argv[i]) {
          ++i;
           if(i==argc) {
@@ -289,7 +294,7 @@ int main(int argc, char ** argv) {
             usage(argv[0]);
             exit(1);
          }
-         settings.setKey("VIDEO_DEVICE",argv[i]);
+         settings.setKey("CAMERA_DEVICE",argv[i]);
       } else if (LogMode == argv[i]) {
          ++i;
          if(i==argc) {
@@ -326,7 +331,8 @@ int main(int argc, char ** argv) {
    }
 
    // set devices/options, using settings
-   if(settings.haveKey("VIDEO_DEVICE")) videoDeviceName=settings.getKey("VIDEO_DEVICE");
+   if(settings.haveKey("CAMERA")) cameraName=settings.getKey("CAMERA");
+   if(settings.haveKey("CAMERA_DEVICE")) videoDeviceName=settings.getKey("CAMERA_DEVICE");
    if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
    if(settings.haveKey("SDL")&&string(settings.getKey("SDL"))=="yes") QCamUtilities::useSDL(true);
    if(settings.haveKey("EXPERT")&&string(settings.getKey("EXPERT"))=="yes") QCamUtilities::expertMode(true);
@@ -432,13 +438,15 @@ int main(int argc, char ** argv) {
    // capture module creation
    QCam* cam = NULL;
    // test QHY5
-   if(videoDeviceName=="qhy5") {
+   if(cameraName=="qhy5") {
       if(QHY5cam::plugged())
          cam = new QCamQHY5();
       else {
           QMessageBox::information(0,"Qastrocam-g2","QHY5 camera not detected\nSettings panel only");
-         cout << "QHY5 camera not detected" <<endl;
+         cout << "QHY5 camera not detected" << endl;
       }
+   } else if(cameraName=="simulator") {
+         cam = new QCamSimulator();
    } else {
       // find the best V4L device
       cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
@@ -652,6 +660,11 @@ int main(int argc, char ** argv) {
    //mainWindow.adjustSize();
    //getAllRemoteCTRL()->show();
    //getAllRemoteCTRL()->adjustSize();
+
+   // test settings version
+   if(!settings.haveKey("CONF_VERSION")||QString(settings.getKey("CONF_VERSION"))!=_CONF_VERSION_) {
+      QMessageBox::information(0,"Qastrocam-g2","Your configuration file is outdated. It should be deleted");
+   }
 
    // QT event loop
    app.exec();
