@@ -78,10 +78,10 @@ using namespace std;
 // GUIDE_RA_INVERSION <yes/no>
 // GUIDE_DEC_INVERSION <yes/no>
 // GUIDE_CENTER <yes/no>
-// GUIDE_RA_MIN <value>
-// GUIDE_RA_MAX <value>
-// GUIDE_DEC_MIN <value>
-// GUIDE_DEC_MAX <value>
+// GUIDE_MIN_RA <value>
+// GUIDE_MAX_RA <value>
+// GUIDE_MIN_DEC <value>
+// GUIDE_MAX_DEC <value>
 
 class settingsBackup {
    private :

@@ -67,6 +67,10 @@ private:
    double maxShift_;
 };
 
+//
+//
+//
+
 class TrackingControl : public QHBox {
    Q_OBJECT;
    int min_;
@@ -91,6 +95,8 @@ private:
    QLineEdit minShift_;
    QLabel labelMax_;
    QLineEdit maxShift_;
+   QString keyMin_;
+   QString keyMax_;
 };
 
 #endif

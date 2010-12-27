@@ -38,22 +38,45 @@ MA  02110-1301, USA.
 // settings object
 extern settingsBackup settings;
 
+//
+// TrackingControl
+//
+
 TrackingControl::TrackingControl(QString label, QWidget * parent, const char * name, WFlags f ) :
-   QHBox(parent,name,f),
-   label_(label,this),
-   arrow_(this),
-   currentShift_(4,this),
-   labelMin_(tr("min"),this),
-   minShift_(this),
-   labelMax_(tr("max"),this),
-   maxShift_(this) {
+QHBox(parent,name,f),
+label_(label,this),
+arrow_(this),
+currentShift_(4,this),
+labelMin_(tr("min"),this),
+minShift_(this),
+labelMax_(tr("max"),this),
+maxShift_(this)
+{
    currentShift_.setSmallDecimalPoint(true);
-   setMin(2);
-   setMax(10);
+
+   // read the previous min value
+   keyMin_="GUIDE_";
+   keyMin_+=label;
+   keyMin_+="_MIN";
+   if(settings.haveKey(keyMin_.ascii())) {
+      setMin(QString(settings.getKey(keyMin_.ascii())));
+   } else
+      setMin(2);
+
+   // read the previous max value
+   keyMax_="GUIDE_";
+   keyMax_+=label;
+   keyMax_+="_MAX";
+   if(settings.haveKey(keyMax_.ascii())) {
+      setMax(QString(settings.getKey(keyMax_.ascii())));
+   } else
+      setMax(10);
+
    connect(&minShift_,SIGNAL(textChanged(const QString&)),
            this,SLOT(setMin(const QString&)));
    connect(&maxShift_,SIGNAL(textChanged(const QString&)),
            this,SLOT(setMax(const QString&)));
+
    label_.setMinimumWidth(30);
 }
 
@@ -64,11 +87,17 @@ void TrackingControl::setMin(int min) {
    min_=min;
    minShift_.setText(QString().sprintf("%d",min_));
    emit(minChanged(min_));
+
+   // save the value
+   settings.setKey(keyMin_.ascii(),minShift_.text().ascii());
 }
 void TrackingControl::setMax(int max) {
    max_=max;
    maxShift_.setText(QString().sprintf("%d",max_));
    emit(maxChanged(min_));
+
+   // save the value
+   settings.setKey(keyMax_.ascii(),maxShift_.text().ascii());
 }
 
 void TrackingControl::setMin(const QString & val) {
@@ -98,6 +127,10 @@ void TrackingControl::setMoveDir(MoveDir move) {
    }
    arrow_.setDisabled(move == NotMoved);
 }
+
+//
+// QCamAutoGuidageSimple
+//
 
 QCamAutoGuidageSimple::QCamAutoGuidageSimple() {
    ewSwapped_=false;
@@ -174,13 +207,13 @@ QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    }
    connect(centerb,SIGNAL(toggled(bool)),this,SLOT(setCenter(bool)));
 
-   TrackingControl * trAlt = new TrackingControl(tr("Alt."),mainBox);
+   TrackingControl * trAlt = new TrackingControl(tr("DEC"),mainBox);
    connect(this,SIGNAL(shiftAlt(double)),trAlt,SLOT(setShift(double)));
    connect(trAlt,SIGNAL(minChanged(int)),this,SLOT(setMinShift(int)));
    connect(trAlt,SIGNAL(maxChanged(int)),this,SLOT(setMaxShift(int)));
    connect(this,SIGNAL(altMove(MoveDir)),trAlt,SLOT(setMoveDir(MoveDir)));
 
-   TrackingControl * trAsc = new TrackingControl(tr("Asc."),mainBox);
+   TrackingControl * trAsc = new TrackingControl(tr("RA"),mainBox);
    connect(this,SIGNAL(shiftAsc(double)),trAsc,SLOT(setShift(double)));
    connect(trAsc,SIGNAL(minChanged(int)),this,SLOT(setMinShift(int)));
    connect(trAsc,SIGNAL(maxChanged(int)),this,SLOT(setMaxShift(int)));

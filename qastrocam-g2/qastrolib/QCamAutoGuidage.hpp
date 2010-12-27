@@ -91,14 +91,15 @@ protected:
    void startAlert();
    void stopAlert();
    bool alertOn_;
+   // alert label;
+   QLabel* alert_;
+
 
 private:
    QCam * cam_;
    QCamFindShift * tracker_;
    // alert sound
    QSound* bell_;
-   // alert label;
-   QLabel* alert_;
    // last alert backgroung color
    QColor lastColor_;
    // last state
