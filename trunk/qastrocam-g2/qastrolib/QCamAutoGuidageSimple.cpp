@@ -269,6 +269,11 @@ void QCamAutoGuidageSimple::frameShift(const ShiftInfo & shift) {
       break;
    case MovedEast:
    case MovedWest:
+
+      //
+      // to be checked
+      //
+
       if (lastAscMove_== asc
           || lastAscMove_ == NotMoved
           || fabs(vs.x())>maxShift_) {
@@ -288,6 +293,11 @@ void QCamAutoGuidageSimple::frameShift(const ShiftInfo & shift) {
       break;
    case MovedNorth:
    case MovedSouth:
+
+      //
+      // to be checked
+      //
+
       if (lastAltMove_== alt
           || lastAltMove_ == NotMoved
           || fabs(vs.y())>maxShift_) {
