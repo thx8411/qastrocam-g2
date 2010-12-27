@@ -86,7 +86,7 @@ const char* settingsBackup::getKey(const char* key) {
    return(datas[1][i].c_str());
 }
 
-void settingsBackup::deSerialize() {
+bool settingsBackup::deSerialize() {
    FILE* fd;
    int i;
    int j;
@@ -124,5 +124,7 @@ void settingsBackup::deSerialize() {
       }
       end_record--;
       fclose(fd);
+      return(true);
    }
+   return(false);
 }
