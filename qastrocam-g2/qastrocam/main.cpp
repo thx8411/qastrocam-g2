@@ -61,6 +61,7 @@ MA  02110-1301, USA.
 #include "QTelescopeMTS.hpp"
 #include "QTelescopeQHY5.hpp"
 #include "QTelescopeLX200.hpp"
+#include "QTelescopeSimulator.hpp"
 #include "PPort.hpp"
 #include "QHY5cam.hpp"
 #include "QKingClient.hpp"
@@ -366,6 +367,7 @@ int main(int argc, char ** argv) {
            << "* fifo\n"
            << "* mcu\n"
            << "* mts\n"
+           << "* simulator\n"
 	   << "* file\n";
       exit(0);
    }
@@ -478,6 +480,8 @@ int main(int argc, char ** argv) {
 	 theTelescope = new QTelescopeFile(telescopeDeviceName.c_str());
       } else if (telescopeType=="qhy5") {
          theTelescope = new QTelescopeQHY5();
+      } else if (telescopeType=="simulator") {
+         theTelescope = new QTelescopeSimulator();
       } else {
          cerr << "unsupported telescope type "
               <<"'"<<telescopeType<<"'"<<endl;
