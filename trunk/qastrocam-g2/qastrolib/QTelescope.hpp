@@ -38,6 +38,7 @@ MA  02110-1301, USA.
 #define TELESCOPE_NEXSTAR	7
 #define TELESCOPE_QHY5		8
 #define TELESCOPE_LX200		9
+#define TELESCOPE_SIMULATOR	10
 
 class QVGroupBox;
 class QPushButton;

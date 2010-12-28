@@ -57,7 +57,7 @@ using namespace std;
 // LOG <yes/no>
 // REGISTAX_AVI <yes/no>
 // NIGHT_VISION <yes/no>
-// TELESCOPE <none/qhy5/apm/autostar/nexstar/fifo/mcu/mts/file/lx200>
+// TELESCOPE <none/qhy5/apm/autostar/nexstar/fifo/mcu/mts/file/lx200/simulator>
 // TS_LEVELS_INVERTED <yes/no>
 // TELESCOPE_DEVICE <file>
 // TELESCOPE_SPEED <0 to 1>

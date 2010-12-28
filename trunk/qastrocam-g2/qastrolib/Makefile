@@ -38,7 +38,8 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
 	 FrameBayer.o FrameDark.o FrameFlat.o FrameBias.o QCamStack.o \
          FrameId.o QCamDC60.o QCamV4L2lx.o QCamV4L2fi.o QCamPhoto2.o \
          QCamFocus.o QCamSelection.o QCamQHY5.o QTelescopeQHY5.o \
-         QTelescopeNexstar.o QTelescopeLX200.o QCamSimulator.o
+         QTelescopeNexstar.o QTelescopeLX200.o QCamSimulator.o \
+	 QTelescopeSimulator.o
 
 OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o Vector2D.o ShiftInfo.o QCamFrame.o \
