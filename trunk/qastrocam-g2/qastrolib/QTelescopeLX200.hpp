@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -26,10 +26,7 @@ MA  02110-1301, USA.
 
 using namespace std;
 
-/** controle a Meade telescope via the serial port of
-    the Autostar controler.
-    At this time there is a bug: it is possible to send
-    data to the autostar, but not to receive. */
+/** controle a Meade telescope via the LX200 serial port **/
 class QTelescopeLX200 : public QTelescope {
    Q_OBJECT;
 public:
@@ -38,8 +35,6 @@ public:
    virtual int telescopeType() { return(TELESCOPE_LX200); }
    void buildGUI(QWidget * parent);
 private:
-   /** send a command to the Autostar, wait the result and
-       return it. */
    enum CommandType {
       moveSouth,
       moveNorth,
