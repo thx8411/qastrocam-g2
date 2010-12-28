@@ -16,6 +16,7 @@ qastrocam-g2 (4.9beta20101227) jaunty; urgency=low
   * basic lucam-recorder SER format support
   * generic LX200 telescope added
   * guiding settings now stored
+  * settings file version changed
   * simulation camera added
   * settings camera chooser changed
 
