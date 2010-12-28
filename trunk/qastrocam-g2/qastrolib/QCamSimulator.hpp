@@ -26,6 +26,12 @@ MA  02110-1301, USA.
 #include <qlabel.h>
 #include "QCam.hpp"
 
+#define _SIMULATOR_STOP_	0
+#define _SIMULATOR_UP_		1
+#define _SIMULATOR_DOWN_	2
+#define _SIMULATOR_LEFT_	3
+#define _SIMULATOR_RIGHT_	4
+
 /** QCam Simulator **/
 class QCamSimulator : public QCam {
    Q_OBJECT
@@ -42,6 +48,23 @@ protected:
 private:
    QCamFrame yuvBuffer_;
    QTimer* timer_;
+   double starPositionX_;
+   double starPositionY_;
+   double raSpeed_;
+   double decSpeed_;
+   int raMove_;
+   int decMove_;
+private slots :
+   void moveLeft();
+   void moveRight();
+   void stopRa();
+   void moveUp();
+   void moveDown();
+   void stopDec();
+   void setRaSpeed();
+   void setDecSpeed();
+   void centerRa();
+   void centerDec();
 public slots:
    virtual bool updateFrame();
 signals:
