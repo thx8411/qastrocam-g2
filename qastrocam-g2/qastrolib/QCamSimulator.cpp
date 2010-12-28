@@ -19,10 +19,13 @@ MA  02110-1301, USA.
 
 #include <qtimer.h>
 #include <qvgroupbox.h>
+#include <qhgroupbox.h>
 #include <qhbox.h>
 #include <qtooltip.h>
+#include <qpixmap.h>
 
 #include "SettingsBackup.hpp"
+#include "QCamUtilities.hpp"
 
 #include "QCamSimulator.moc"
 
@@ -80,8 +83,76 @@ const QSize& QCamSimulator::size() const {
 }
 
 QWidget* QCamSimulator::buildGUI(QWidget * parent) {
+   QPixmap* tmpIcon;
+
    QWidget* remoteCTRL=QCam::buildGUI(parent);
    QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
+
+   // RA zone
+   QHGroupBox* raZone=new QHGroupBox(QString("RA"),settingsBox);
+   raSpeedSlider_=new QCamSlider(QString("Speed : "),false,raZone,0,20,false,false);
+   raLeft_=new QPushButton(raZone,"L");
+   tmpIcon=QCamUtilities::getIcon("left.png");
+   raLeft_->setPixmap(*tmpIcon);
+   raLeft_->setToggleButton(true);
+   raRight_=new QPushButton(raZone,"R");
+   tmpIcon=QCamUtilities::getIcon("right.png");
+   raRight_->setPixmap(*tmpIcon);
+   raRight_->setToggleButton(true);
+   raStop_=new QPushButton(raZone,"S");
+   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+   raStop_->setPixmap(*tmpIcon);
+   raCenter_=new QPushButton(raZone,"C");
+   tmpIcon=QCamUtilities::getIcon("target_icon.png");
+   raCenter_->setPixmap(*tmpIcon);
+
+   // DEC zone
+   QHGroupBox* decZone=new QHGroupBox(QString("DEC"),settingsBox);
+   decSpeedSlider_=new QCamSlider(QString("Speed : "),false,decZone,0,20,false,false);
+   decUp_=new QPushButton(decZone,"U");
+   tmpIcon=QCamUtilities::getIcon("up.png");
+   decUp_->setPixmap(*tmpIcon);
+   decUp_->setToggleButton(true);
+   decDown_=new QPushButton(decZone,"D");
+   tmpIcon=QCamUtilities::getIcon("down.png");
+   decDown_->setPixmap(*tmpIcon);
+   decDown_->setToggleButton(true);
+   decStop_=new QPushButton(decZone,"S");
+   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+   decStop_->setPixmap(*tmpIcon);
+   decCenter_=new QPushButton(decZone,"C");
+   tmpIcon=QCamUtilities::getIcon("target_icon.png");
+   decCenter_->setPixmap(*tmpIcon);
+
+   // connexions
+   connect(raLeft_,SIGNAL(stateChanged(int)),this,SLOT(moveLeft(int)));
+   connect(raRight_,SIGNAL(stateChanged(int)),this,SLOT(moveRight(int)));
+   connect(decUp_,SIGNAL(stateChanged(int)),this,SLOT(moveUp(int)));
+   connect(decDown_,SIGNAL(stateChanged(int)),this,SLOT(moveDown(int)));
+   connect(raSpeedSlider_,SIGNAL(valueChange(int)),this,SLOT(setRaSpeed(int)));
+   connect(decSpeedSlider_,SIGNAL(valueChange(int)),this,SLOT(setDecSpeed(int)));
+   connect(raStop_,SIGNAL(pressed()),this,SLOT(stopRa()));
+   connect(decStop_,SIGNAL(pressed()),this,SLOT(stopDec()));
+   connect(raCenter_,SIGNAL(pressed()),this,SLOT(centerRa()));
+   connect(decCenter_,SIGNAL(pressed()),this,SLOT(centerDec()));
+
+   // init values
+   raSpeedSlider_->setValue(1);
+   decSpeedSlider_->setValue(1);
+   setRaSpeed(1);
+   setDecSpeed(1);
+
+   // tooltips
+   QToolTip::add(raSpeedSlider_,tr("RA speed (pixels/frame)"));
+   QToolTip::add(raLeft_,tr("Move left"));
+   QToolTip::add(raRight_,tr("Move right"));
+   QToolTip::add(raStop_,tr("Stop RA moves"));
+   QToolTip::add(raCenter_,tr("Center the star"));
+   QToolTip::add(decSpeedSlider_,tr("DEC speed (pixels/frame)"));
+   QToolTip::add(decUp_,tr("Move up"));
+   QToolTip::add(decDown_,tr("Move down"));
+   QToolTip::add(decStop_,tr("Stop DEC moves"));
+   QToolTip::add(decCenter_,tr("Center the star"));
 
    // set the first timer shot
    timer_=new QTimer(this);
@@ -130,58 +201,62 @@ bool QCamSimulator::updateFrame() {
 // private slots
 //
 
-void QCamSimulator::moveLeft() {
-   // add gui controls
-
-   raMove_=_SIMULATOR_LEFT_;
+void QCamSimulator::moveLeft(int s) {
+   if(s==QButton::On) {
+      raRight_->setOn(false);
+      raMove_=_SIMULATOR_LEFT_;
+   } else
+      raMove_=_SIMULATOR_STOP_;
 }
 
-void QCamSimulator::moveRight() {
-   // add gui controls
-
-   raMove_=_SIMULATOR_RIGHT_;
+void QCamSimulator::moveRight(int s) {
+   if(s==QButton::On) {
+      raLeft_->setOn(false);
+      raMove_=_SIMULATOR_RIGHT_;
+   } else
+      raMove_=_SIMULATOR_STOP_;
 }
 
 void QCamSimulator::stopRa() {
-   // add gui controls
-
+   raLeft_->setOn(false);
+   raRight_->setOn(false);
    raMove_=_SIMULATOR_STOP_;
 }
 
-void QCamSimulator::moveUp() {
-   // add gui controls
-
-   decMove_=_SIMULATOR_UP_;
+void QCamSimulator::moveUp(int s) {
+   if(s==QButton::On) {
+      decDown_->setOn(false);
+      decMove_=_SIMULATOR_UP_;
+   } else
+      decMove_=_SIMULATOR_STOP_;
 }
 
-void QCamSimulator::moveDown() {
-   // add gui controls
-
-  decMove_=_SIMULATOR_DOWN_;
+void QCamSimulator::moveDown(int s) {
+   if(s==QButton::On) {
+      decUp_->setOn(false);
+      decMove_=_SIMULATOR_DOWN_;
+   } else
+      decMove_=_SIMULATOR_STOP_;
 }
 
 void QCamSimulator::stopDec() {
-   // add gui controls
-
+   decUp_->setOn(false);
+   decDown_->setOn(false);
    decMove_=_SIMULATOR_STOP_;
 }
 
-void QCamSimulator::setRaSpeed() {
-   // add gui controls
+void QCamSimulator::setRaSpeed(int s) {
+   raSpeed_=s;
 }
 
-void QCamSimulator::setDecSpeed() {
-   // add gui controls
+void QCamSimulator::setDecSpeed(int s) {
+   decSpeed_=s;
 }
 
 void QCamSimulator::centerRa() {
-   // add gui controls
-
   starPositionX_=_SIMULATOR_WIDTH_/2;
 }
 
 void QCamSimulator::centerDec() {
-   // add gui controls
-
    starPositionY_=_SIMULATOR_HEIGHT_/2;
 }
