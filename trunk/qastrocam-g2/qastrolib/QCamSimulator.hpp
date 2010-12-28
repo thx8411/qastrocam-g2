@@ -24,6 +24,8 @@ MA  02110-1301, USA.
 #include <stdio.h>
 #include <stdlib.h>
 #include <qlabel.h>
+#include <qpushbutton.h>
+#include "QCamSlider.hpp"
 #include "QCam.hpp"
 
 #define _SIMULATOR_STOP_	0
@@ -54,15 +56,26 @@ private:
    double decSpeed_;
    int raMove_;
    int decMove_;
+   // GUI
+   QPushButton* raLeft_;
+   QPushButton* raRight_;
+   QPushButton* raStop_;
+   QPushButton* raCenter_;
+   QPushButton* decUp_;
+   QPushButton* decDown_;
+   QPushButton* decStop_;
+   QPushButton* decCenter_;
+   QCamSlider* raSpeedSlider_;
+   QCamSlider* decSpeedSlider_;
 private slots :
-   void moveLeft();
-   void moveRight();
+   void moveLeft(int s);
+   void moveRight(int s);
    void stopRa();
-   void moveUp();
-   void moveDown();
+   void moveUp(int s);
+   void moveDown(int s);
    void stopDec();
-   void setRaSpeed();
-   void setDecSpeed();
+   void setRaSpeed(int s);
+   void setDecSpeed(int s);
    void centerRa();
    void centerDec();
 public slots:
