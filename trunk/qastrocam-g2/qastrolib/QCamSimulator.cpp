@@ -94,17 +94,21 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    raLeft_=new QPushButton(raZone,"L");
    tmpIcon=QCamUtilities::getIcon("left.png");
    raLeft_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    raLeft_->setToggleButton(true);
    raRight_=new QPushButton(raZone,"R");
    tmpIcon=QCamUtilities::getIcon("right.png");
    raRight_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    raRight_->setToggleButton(true);
    raStop_=new QPushButton(raZone,"S");
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    raStop_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    raCenter_=new QPushButton(raZone,"C");
    tmpIcon=QCamUtilities::getIcon("target_icon.png");
    raCenter_->setPixmap(*tmpIcon);
+   delete tmpIcon;
 
    // DEC zone
    QHGroupBox* decZone=new QHGroupBox(QString("DEC"),settingsBox);
@@ -112,17 +116,21 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    decUp_=new QPushButton(decZone,"U");
    tmpIcon=QCamUtilities::getIcon("up.png");
    decUp_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    decUp_->setToggleButton(true);
    decDown_=new QPushButton(decZone,"D");
    tmpIcon=QCamUtilities::getIcon("down.png");
    decDown_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    decDown_->setToggleButton(true);
    decStop_=new QPushButton(decZone,"S");
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    decStop_->setPixmap(*tmpIcon);
+   delete tmpIcon;
    decCenter_=new QPushButton(decZone,"C");
    tmpIcon=QCamUtilities::getIcon("target_icon.png");
    decCenter_->setPixmap(*tmpIcon);
+   delete tmpIcon;
 
    // connexions
    connect(raLeft_,SIGNAL(stateChanged(int)),this,SLOT(moveLeft(int)));
