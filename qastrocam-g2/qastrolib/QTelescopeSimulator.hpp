@@ -24,7 +24,6 @@ MA  02110-1301, USA.
 #include <string>
 
 #include <qlabel.h>
-#include <qpushbutton.h>
 #include <qvgroupbox.h>
 
 #include "QTelescope.hpp"
@@ -41,10 +40,11 @@ public:
 private:
    QVGroupBox* simulatorWidget_;
    QLabel* speedLabel_;
-   QPushButton* buttonUp_;
-   QPushButton* buttonDown_;
-   QPushButton* buttonLeft_;
-   QPushButton* buttonRight_;
+   QLabel* buttonUp_;
+   QLabel* buttonDown_;
+   QLabel* buttonLeft_;
+   QLabel* buttonRight_;
+   QLabel* buttonCenter_;
 public slots:
    virtual void goE(float shift);
    virtual void goW(float shift);
