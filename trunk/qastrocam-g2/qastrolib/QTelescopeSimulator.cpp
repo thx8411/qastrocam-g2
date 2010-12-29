@@ -54,34 +54,41 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QWidget* simulatorArrows_=new QWidget(simulatorWidget_);
    QGridLayout* simulatorArrowsLayout_=new QGridLayout(simulatorArrows_,3,3);
 
-   buttonUp_=new QPushButton(simulatorArrows_,"U");
-   tmpIcon=QCamUtilities::getIcon("up.png");
+   buttonUp_=new QLabel(simulatorArrows_,"U");
+   tmpIcon=QCamUtilities::getIcon("north.png");
    buttonUp_->setPixmap(*tmpIcon);
    buttonUp_->setDisabled(true);
+   buttonUp_->setAlignment(Qt::AlignHCenter);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonUp_,0,1);
 
-   buttonDown_=new QPushButton(simulatorArrows_,"D");
-   tmpIcon=QCamUtilities::getIcon("down.png");
+   buttonDown_=new QLabel(simulatorArrows_,"D");
+   tmpIcon=QCamUtilities::getIcon("south.png");
    buttonDown_->setPixmap(*tmpIcon);
    buttonDown_->setDisabled(true);
+   buttonDown_->setAlignment(Qt::AlignHCenter);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonDown_,2,1);
 
-   buttonLeft_=new QPushButton(simulatorArrows_,"L");
-   tmpIcon=QCamUtilities::getIcon("left.png");
+   buttonLeft_=new QLabel(simulatorArrows_,"L");
+   tmpIcon=QCamUtilities::getIcon("east.png");
    buttonLeft_->setPixmap(*tmpIcon);
    buttonLeft_->setDisabled(true);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonLeft_,1,0);
 
-   buttonRight_=new QPushButton(simulatorArrows_,"R");
-   tmpIcon=QCamUtilities::getIcon("right.png");
+   buttonRight_=new QLabel(simulatorArrows_,"R");
+   tmpIcon=QCamUtilities::getIcon("west.png");
    buttonRight_->setPixmap(*tmpIcon);
    buttonRight_->setDisabled(true);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonRight_,1,2);
-   //
+
+   buttonCenter_=new QLabel(simulatorArrows_,"C");
+   tmpIcon=QCamUtilities::getIcon("directions.png");
+   buttonCenter_->setPixmap(*tmpIcon);
+   delete tmpIcon;
+   simulatorArrowsLayout_->addWidget(buttonCenter_,1,1);
 
    speedLabel_=new QLabel(simulatorWidget_);
    speedLabel_->setAlignment(Qt::AlignHCenter);
@@ -137,3 +144,4 @@ bool QTelescopeSimulator::setTracking(bool activated) {
    // always tracking
    return activated;
 }
+
