@@ -46,6 +46,8 @@ QTelescope::QTelescope() {
    downButton_=NULL;
    leftButton_=NULL;
    rightButton_=NULL;
+   decSwap_=NULL;
+   raSwap_=NULL;
 }
 
 void QTelescope::buildGUI(QWidget * parent) {
@@ -77,16 +79,34 @@ void QTelescope::buildGUI(QWidget * parent) {
    arrowsLayout_->addWidget(downButton_,2,1);
    arrowsLayout_->addWidget(leftButton_,1,0);
    arrowsLayout_->addWidget(rightButton_,1,2);
+
+   decSwap_=new QCheckBox("Swap North/South",mainWidget_);
+   raSwap_=new QCheckBox("Swap East/West",mainWidget_);
+
+   if(settings.haveKey("TELESCOPE_DEC_INVERSION")) {
+      if(QString(settings.getKey("TELESCOPE_DEC_INVERSION"))=="yes")
+         decSwap_->setChecked(true);
+   }
+   if(settings.haveKey("TELESCOPE_RA_INVERSION")) {
+      if(QString(settings.getKey("TELESCOPE_RA_INVERSION"))=="yes")
+         raSwap_->setChecked(true);
+   }
+
+   connect(decSwap_,SIGNAL(toggled(bool)),this,SLOT(swapDec(bool)));
+   connect(raSwap_,SIGNAL(toggled(bool)),this,SLOT(swapRa(bool)));
+
    upButton_->show();
    arrows_->show();
-   connect(upButton_,SIGNAL(pressed()),this,SLOT(goN()));
-   connect(upButton_,SIGNAL(released()),this,SLOT(stopN()));
-   connect(downButton_,SIGNAL(pressed()),this,SLOT(goS()));
-   connect(downButton_,SIGNAL(released()),this,SLOT(stopS()));
-   connect(leftButton_,SIGNAL(pressed()),this,SLOT(goE()));
-   connect(leftButton_,SIGNAL(released()),this,SLOT(stopE()));
-   connect(rightButton_,SIGNAL(pressed()),this,SLOT(goW()));
-   connect(rightButton_,SIGNAL(released()),this,SLOT(stopW()));
+
+   connect(upButton_,SIGNAL(pressed()),this,SLOT(goUp()));
+   connect(upButton_,SIGNAL(released()),this,SLOT(stopUp()));
+   connect(downButton_,SIGNAL(pressed()),this,SLOT(goDown()));
+   connect(downButton_,SIGNAL(released()),this,SLOT(stopDown()));
+   connect(leftButton_,SIGNAL(pressed()),this,SLOT(goLeft()));
+   connect(leftButton_,SIGNAL(released()),this,SLOT(stopLeft()));
+   connect(rightButton_,SIGNAL(pressed()),this,SLOT(goRight()));
+   connect(rightButton_,SIGNAL(released()),this,SLOT(stopRight()));
+
    mainWidget_->show();
 
    // disable buttons if fifo
@@ -141,4 +161,92 @@ void QTelescope::speedChanged(int speed) {
    char value[10];
    sprintf(value,"%1.1f",currentSpeed);
    settings.setKey("TELESCOPE_SPEED",value);
+}
+
+void QTelescope::goUp() {
+   if(decSwap_) {
+      if(decSwap_->isChecked())
+         goS();
+      else
+         goN();
+   }
+}
+
+void QTelescope::goDown() {
+   if(decSwap_) {
+      if(decSwap_->isChecked())
+         goN();
+      else
+         goS();
+   }
+}
+
+void QTelescope::goLeft() {
+   if(raSwap_) {
+      if(raSwap_->isChecked())
+         goW();
+      else
+         goE();
+   }
+}
+
+void QTelescope::goRight() {
+   if(raSwap_) {
+      if(raSwap_->isChecked())
+         goE();
+      else
+         goW();
+   }
+}
+
+void QTelescope::stopUp() {
+   if(decSwap_) {
+      if(decSwap_->isChecked())
+         stopS();
+      else
+         stopN();
+   }
+}
+
+void QTelescope::stopDown() {
+   if(decSwap_) {
+      if(decSwap_->isChecked())
+         stopN();
+      else
+         stopS();
+   }
+}
+
+void QTelescope::stopLeft() {
+   if(raSwap_) {
+      if(raSwap_->isChecked())
+         stopW();
+      else
+         stopE();
+   }
+}
+
+void QTelescope::stopRight() {
+   if(raSwap_) {
+      if(raSwap_->isChecked())
+         stopE();
+      else
+         stopW();
+   }
+}
+
+void QTelescope::swapRa(bool s) {
+   if(s) {
+      settings.setKey("TELESCOPE_RA_INVERSION","yes");
+   } else {
+      settings.setKey("TELESCOPE_RA_INVERSION","no");
+   }
+}
+
+void QTelescope::swapDec(bool s) {
+   if(s) {
+      settings.setKey("TELESCOPE_DEC_INVERSION","yes");
+   } else {
+      settings.setKey("TELESCOPE_DEC_INVERSION","no");
+   }
 }
