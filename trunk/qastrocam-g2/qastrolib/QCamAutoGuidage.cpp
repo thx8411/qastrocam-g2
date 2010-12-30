@@ -46,7 +46,7 @@ QCamAutoGuidage::QCamAutoGuidage() {
    // test for audio device
    if(!(QSound::available()||QSound::isAvailable())) {
       cout << "Unable to use the audio device" << endl;
-      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the audio device\nNo sound alerts for guiding...");
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the audio device\nNo sound alerts for guiding.\nIs NAS installed ?");
    } else {
       // setting the alert bell
       bell_=new QSound("/usr/share/qastrocam-g2/sounds/bell.wav");

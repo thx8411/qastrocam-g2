@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2010   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -21,13 +21,19 @@ MA  02110-1301, USA.
 
 
 #include "QCamMax.moc"
-#include "qpushbutton.h"
+
+#include <qpushbutton.h>
+#include <qpixmap.h>
+
+#include "QCamUtilities.hpp"
 
 QCamMax::QCamMax(QCam* cam) {
    cam_=cam;
    connect(cam_,SIGNAL(newFrame()),this,SLOT(addNewFrame()));
    label("Max stacking");
    //initRemoteControl(remoteCTRL_);
+
+   paused_=false;
 }
 
 void QCamMax::clear() {
@@ -35,44 +41,63 @@ void QCamMax::clear() {
 }
 
 void QCamMax::addNewFrame() {
-   QCamFrame origFrame = cam_->yuvFrame();
-   bool colorMode=(origFrame.getMode()==YuvFrame);
-   if (origFrame.size() != yuvFrame_.size()) {
-      yuvFrame_.setSize(origFrame.size());
-      yuvFrame_.clear();
-   }
-   int frameSize=yuvFrame_.size().height()*yuvFrame_.size().width();
-   int frameWidth=yuvFrame_.size().width();
-   uchar * locY=yuvFrame_.YforUpdate();
-   uchar * locU=yuvFrame_.UforUpdate();
-   uchar * locV=yuvFrame_.VforUpdate();
-   const uchar * oriY=origFrame.Y();
-   const uchar * oriU=NULL;
-   const uchar * oriV=NULL;
-   if (colorMode) {
-      oriU=origFrame.U();
-      oriV=origFrame.V();
-   }
-   int uvLineSize=frameWidth;
-   for(int i=0;i<frameSize;++i) {
-      if (oriY[i] > locY[i]) {
-         locY[i]=oriY[i];
-         if (colorMode) {
-            int x=i%frameWidth;
-            int y=i/frameWidth;
-            int shift2=y*uvLineSize+x;
-            locU[shift2]=oriU[shift2];
-            locV[shift2]=oriV[shift2];
+   if(!paused_) {
+      QCamFrame origFrame = cam_->yuvFrame();
+      bool colorMode=(origFrame.getMode()==YuvFrame);
+      if (origFrame.size() != yuvFrame_.size()) {
+         yuvFrame_.setSize(origFrame.size());
+         yuvFrame_.clear();
+      }
+      int frameSize=yuvFrame_.size().height()*yuvFrame_.size().width();
+      int frameWidth=yuvFrame_.size().width();
+      uchar * locY=yuvFrame_.YforUpdate();
+      uchar * locU=yuvFrame_.UforUpdate();
+      uchar * locV=yuvFrame_.VforUpdate();
+      const uchar * oriY=origFrame.Y();
+      const uchar * oriU=NULL;
+      const uchar * oriV=NULL;
+      if (colorMode) {
+         oriU=origFrame.U();
+         oriV=origFrame.V();
+      }
+      int uvLineSize=frameWidth;
+      for(int i=0;i<frameSize;++i) {
+         if (oriY[i] > locY[i]) {
+            locY[i]=oriY[i];
+            if (colorMode) {
+               int x=i%frameWidth;
+               int y=i/frameWidth;
+               int shift2=y*uvLineSize+x;
+               locU[shift2]=oriU[shift2];
+               locV[shift2]=oriV[shift2];
+            }
          }
       }
+      newFrameAvaible();
    }
-   newFrameAvaible();
 }
 
-QWidget * QCamMax::buildGUI(QWidget * parent) {
-   QWidget * remoteCTRL=QCam::buildGUI(parent);
-   QPushButton * resetBufferFill_= new QPushButton("reset",remoteCTRL);
+QWidget* QCamMax::buildGUI(QWidget * parent) {
+   QWidget* remoteCTRL=QCam::buildGUI(parent);
+   QPushButton* resetBufferFill_= new QPushButton("reset",remoteCTRL);
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(clear()));
+
+   QPushButton* pauseBufferFill_= new QPushButton("",remoteCTRL);
+   QPixmap* tmpIcon;
+   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+   pauseBufferFill_->setToggleButton(true);
+   pauseBufferFill_->setPixmap(*tmpIcon);
+   delete tmpIcon;
+   connect(pauseBufferFill_,SIGNAL(pressed()),this,SLOT(pause()));
+
+   pauseBufferFill_->show();
    resetBufferFill_->show();
    return remoteCTRL;
+}
+
+void QCamMax::pause() {
+   if(paused_)
+      paused_=false;
+   else
+      paused_=true;
 }

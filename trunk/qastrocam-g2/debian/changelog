@@ -1,4 +1,4 @@
-qastrocam-g2 (4.9beta20101228) jaunty; urgency=low
+qastrocam-g2 (4.9beta20101230) jaunty; urgency=low
 
   * gamma bug on philips cameras fixed
   * Nexstar protocol support added (1.6+)
@@ -20,6 +20,7 @@ qastrocam-g2 (4.9beta20101228) jaunty; urgency=low
   * simulation camera added
   * settings camera chooser changed
   * telescope simulator added
+  * the ghost module can now be paused
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 10 Oct 2010 03:18:49 +0100
 
