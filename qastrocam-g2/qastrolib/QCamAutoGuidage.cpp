@@ -39,9 +39,9 @@ QCamAutoGuidage::QCamAutoGuidage() {
    bell_=NULL;
    alert_=NULL;
    isTracking_=false;
-   lastState_="Idle";
-   lastColor_=QColor(Qt::green);
-   alertOn_=false;
+   isGuiding_=false;
+   alertAscOn_=false;
+   alertAltOn_=false;
 
    // test for audio device
    if(!(QSound::available()||QSound::isAvailable())) {
@@ -74,26 +74,34 @@ void QCamAutoGuidage::setTracker(QCamFindShift * tracker) {
 
 void QCamAutoGuidage::track(bool mode) {
    if (!(cam_ && tracker_ && telescope_)) {
+      if(alert_) {
+         alert_->setText("Not connected");
+         alert_->setPaletteBackgroundColor(Qt::red);
+      }
       return;
    }
    if (mode) {
       tracker_->connectCam(*cam_);
-      connect(tracker_,SIGNAL(shift(const ShiftInfo&)),
-              this,SLOT(frameShift(const ShiftInfo&)));
+      connect(tracker_,SIGNAL(shift(const ShiftInfo&)),this,SLOT(frameShift(const ShiftInfo&)));
       telescope_->setTrack(true);
-      if(alert_)
+      isGuiding_=true;
+      if(alert_) {
          alert_->setText("Guiding...");
+         alert_->setPaletteBackgroundColor(Qt::green);
+      }
    } else {
       tracker_->disconnectCam();
-      disconnect(tracker_,SIGNAL(shift(const ShiftInfo&)),
-                 this,SLOT(frameShift(const ShiftInfo&)));
+      disconnect(tracker_,SIGNAL(shift(const ShiftInfo&)),this,SLOT(frameShift(const ShiftInfo&)));
       telescope_->stopE();
       telescope_->stopW();
       telescope_->stopS();
       telescope_->stopN();
       telescope_->setTrack(false);
-      if(alert_)
+      isGuiding_=false;
+      if(alert_) {
          alert_->setText("Idle");
+         alert_->setPaletteBackgroundColor(Qt::lightGray);
+      }
    }
 }
 
@@ -109,6 +117,11 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    QPushButton * trackButton = new QPushButton(tr("track"),buttons);
    trackButton->setToggleButton(true);
    connect(trackButton,SIGNAL(toggled(bool)),this,SLOT(track(bool)));
+
+   //
+   track(false);
+   //
+
    QPushButton * resetButton = new QPushButton(tr("reset"),buttons);
    connect(resetButton,SIGNAL(pressed()),tracker_,SLOT(reset()));
 
@@ -116,7 +129,7 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    QHBox* state=new QHBox(mainBox);
    //QLabel* label1=new QLabel("State : ",state);
    alert_=new QLabel("Idle",state);
-   alert_->setPaletteBackgroundColor(Qt::green);
+   alert_->setPaletteBackgroundColor(Qt::lightGray);
    alert_->setAlignment(Qt::AlignHCenter);
    mainBox->show();
    return mainBox;
@@ -162,34 +175,46 @@ void QCamAutoGuidage::moveAlt(MoveDir NSmove) {
    }
 }
 
-void QCamAutoGuidage::startAlert() {
-   // visual alert
-   if(alert_) {
-      lastState_=alert_->text();
-      lastColor_=alert_->paletteBackgroundColor();
-      alert_->setText("Star Lost !");
-      alert_->setPaletteBackgroundColor(Qt::red);
-   }
-
-   // sound alert
-   if(bell_)
-      bell_->play();
-
-   alertOn_=true;
-}
-
-void QCamAutoGuidage::stopAlert() {
-   if(alertOn_) {
+void QCamAutoGuidage::startAlert(int d) {
+   if(!(alertAscOn_||alertAltOn_)) {
       // visual alert
       if(alert_) {
-         alert_->setText(lastState_);
-         alert_->setPaletteBackgroundColor(lastColor_);
+         alert_->setText("Star Lost !");
+         alert_->setPaletteBackgroundColor(Qt::red);
+      }
+      // sound alert
+      if(bell_) {
+         //bell_->play();
+      }
+   }
+
+   if(d==GUIDE_ASC)
+      alertAscOn_=true;
+   else
+      alertAltOn_=true;
+}
+
+void QCamAutoGuidage::stopAlert(int d) {
+
+   if(d==GUIDE_ASC)
+      alertAscOn_=false;
+   else
+      alertAltOn_=false;
+
+   if(!(alertAscOn_||alertAltOn_)) {
+      // visual alert
+      if(alert_) {
+         if(isGuiding_) {
+            alert_->setText("Guiding...");
+            alert_->setPaletteBackgroundColor(Qt::green);
+         } else {
+            alert_->setText("Idle");
+            alert_->setPaletteBackgroundColor(Qt::gray);
+         }
       }
 
       // sound alert
       if(bell_)
          bell_->stop();
-
-      alertOn_=false;
    }
 }

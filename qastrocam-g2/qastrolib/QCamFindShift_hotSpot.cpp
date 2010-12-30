@@ -125,10 +125,8 @@ bool QCamFindShift_hotSpot::findHotSpot(Vector2D & center) {
    Vector2D newHotSpot;
    double newBrightness, hotSpotBrightness=0;
 
-   for(int j=cam().size().height()-1-searchBoxSize_/2;
-       j>=0;j-=searchBoxSize_) {
-      for (int i=cam().size().width()-1-searchBoxSize_/2;
-           i>=0;i-=searchBoxSize_) {
+   for(int j=cam().size().height()-1-searchBoxSize_/2;j>=0;j-=searchBoxSize_/2) {
+      for (int i=cam().size().width()-1-searchBoxSize_/2;i>=0;i-=searchBoxSize_/2) {
          newBrightness=findHotSpot(Vector2D(i,j),newHotSpot);
          if (newBrightness>hotSpotBrightness) {
             hotSpotBrightness=newBrightness;
@@ -136,6 +134,7 @@ bool QCamFindShift_hotSpot::findHotSpot(Vector2D & center) {
          }
       }
    }
+
    if (hotSpotBrightness>0) {
       //cerr << "hotspot = " << center <<endl;
       lastCenter_=center;
@@ -157,6 +156,7 @@ double QCamFindShift_hotSpot::findHotSpot(const Vector2D & from,
    newBrightness=computeBarycenter(from,seuil_,2*binning_,
                                    searchBoxSize_,
                                    center,0.5);
+
    /* second pass for good value */
    newBrightness=computeBarycenter(center,seuil_,binning_,
                                    searchBoxSize_*2/3,
@@ -173,6 +173,7 @@ bool QCamFindShift_hotSpot::registerFirstFrame() {
 
 bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
    Vector2D newCenter;
+
    double newBrightness = findHotSpot(lastCenter_,newCenter);
    if (fabs((newBrightness/lastBrightness_)-1)<0.2) {
       shift.setCenter(newCenter);

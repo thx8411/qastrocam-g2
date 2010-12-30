@@ -52,8 +52,10 @@ protected slots:
    /** center the target */
    void setCenter(bool center);
    void frameShift(const ShiftInfo & shift);
-   void setMinShift(double v) { minShift_=v;}
-   void setMaxShift(double v) { maxShift_=v;}
+   void setAltMinShift(double v) { minAltShift_=v;}
+   void setAltMaxShift(double v) { maxAltShift_=v;}
+   void setAscMinShift(double v) { minAscShift_=v;}
+   void setAscMaxShift(double v) { maxAscShift_=v;}
    void setMinShift(int v) { setMinShift((double)v);}
    void setMaxShift(int v) { setMaxShift((double)v);}
 signals:
@@ -63,8 +65,10 @@ private:
    bool nsSwapped_;
    bool ewSwapped_;
    bool centerMode_;
-   double minShift_;
-   double maxShift_;
+   double minAltShift_;
+   double maxAltShift_;
+   double minAscShift_;
+   double maxAscShift_;
 };
 
 //
@@ -77,6 +81,7 @@ class TrackingControl : public QHBox {
    int max_;
 public:
    TrackingControl(QString label, QWidget * parent=0, const char * name=0, WFlags f=0 );
+   void init();
 public slots:
    void setShift(double shift);
    void setMin(int min);
@@ -85,8 +90,8 @@ public slots:
    void setMax(const QString &);
    void setMoveDir(MoveDir);
 signals:
-   void minChanged(int);
-   void maxChanged(int);
+   void minChanged(double);
+   void maxChanged(double);
 private:
    QLabel label_;
    QLabel arrow_;
