@@ -23,6 +23,7 @@ qastrocam-g2 (4.9beta20101230) jaunty; urgency=low
   * the ghost module can now be paused
   * Ra and Dec can be inverted on telescope keypad
   * some guiding module bugs fixed
+  * lost star alarm added in guiding module
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 10 Oct 2010 03:18:49 +0100
 
