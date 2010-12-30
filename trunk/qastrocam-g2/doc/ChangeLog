@@ -1,5 +1,6 @@
 4.9beta20101230
 
+  - lost star alarm added in guiding module
   - some guiding module bugs fixed
   - Ra and Dec can be inverted on telescope keypad
   - the ghost module can now be paused
