@@ -667,7 +667,7 @@ int main(int argc, char ** argv) {
 
    // test settings version
    if(!settings.haveKey("CONF_VERSION")||QString(settings.getKey("CONF_VERSION"))!=_CONF_VERSION_) {
-      QMessageBox::information(0,"Qastrocam-g2","Your configuration file is outdated. It should be deleted");
+      QMessageBox::information(0,"Qastrocam-g2","Your configuration file is outdated. It should be deleted.\nDefault name is <.qastrocam-g2.conf>");
    }
 
    // QT event loop
