@@ -38,6 +38,7 @@ class QCamMax : public QCam {
    void allocBuff(const QSize &);
    void addFrame(const uchar *);
    QCamFrame yuvFrame_;
+   bool paused_;
 public:
    QCamMax(QCam * cam);
    QCamFrame yuvFrame() const { return yuvFrame_; }
@@ -48,6 +49,7 @@ public:
    QWidget * buildGUI(QWidget * parent);
  public slots:
    void clear();
+   void pause();
  private slots:
    void addNewFrame();
 };

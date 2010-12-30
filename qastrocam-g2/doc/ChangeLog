@@ -1,5 +1,6 @@
-4.9beta20101228
+4.9beta20101230
 
+  - the ghost module can now be paused
   - telescope simulator added
   - simulation camera added
   - settings camera chooser changed
