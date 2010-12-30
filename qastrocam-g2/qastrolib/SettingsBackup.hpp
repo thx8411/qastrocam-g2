@@ -90,6 +90,12 @@ using namespace std;
 // GUIDE_MAX_RA <value>
 // GUIDE_MIN_DEC <value>
 // GUIDE_MAX_DEC <value>
+//
+// TELESCOPE :
+//
+// TELESCOPE_RA_INVERSION <yes/no>	(conf version 2)
+// TELESCOPE_DEC_INVERSION <yes/no>	(conf version 2)
+//
 
 class settingsBackup {
    private :

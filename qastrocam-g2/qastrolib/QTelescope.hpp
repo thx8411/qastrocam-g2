@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include <qobject.h>
 #include <qslider.h>
 #include <qlabel.h>
+#include <qcheckbox.h>
 
 // telescope types
 #define TELESCOPE_VIRTUAL	0
@@ -77,11 +78,27 @@ private:
    QPushButton * downButton_;
    QPushButton * leftButton_;
    QPushButton * rightButton_;
+   // swap box
+   QCheckBox* raSwap_;
+   QCheckBox* decSwap_;
    /** copy constructor not implemented. */
    QTelescope(const QTelescope&);
 private slots:
    void speedChanged(int speed);
 public slots:
+   // buttons slots
+   void goUp();
+   void goDown();
+   void goLeft();
+   void goRight();
+   void stopUp();
+   void stopDown();
+   void stopLeft();
+   void stopRight();
+   // checkbox slots
+   void swapRa(bool s);
+   void swapDec(bool s);
+   // move slots
    /// move East
    virtual void goE(float shift)=0;
    /// move West
