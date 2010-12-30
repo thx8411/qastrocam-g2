@@ -1,5 +1,6 @@
 4.9beta20101230
 
+  - some guiding module bugs fixed
   - Ra and Dec can be inverted on telescope keypad
   - the ghost module can now be paused
   - telescope simulator added

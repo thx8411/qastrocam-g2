@@ -33,6 +33,9 @@ class QTelescope;
 class QWidget;
 class ShiftInfo;
 
+#define GUIDE_ALT	0
+#define GUIDE_ASC	1
+
 enum MoveDir {
    NotMoved,
    MovedEast,
@@ -42,7 +45,7 @@ enum MoveDir {
 };
 
 
-/** base class of any object who want to control
+/** base class of any object who wants to control
     a telescope to do automatic tracking of object.
     The only thing to implement is the slot frameShift(const QPoint& shift).
 */
@@ -75,7 +78,7 @@ public slots:
    void track(bool mode);
 
 protected slots:
-   /** called with the shift frome the original frame
+   /** called with the shift from the original frame
        to the current frame.
        Must be implemented by any subclass.
    */
@@ -88,9 +91,10 @@ protected:
    void moveAsc(MoveDir EWmove);
    void moveAlt(MoveDir NSmove);
    // alert tools
-   void startAlert();
-   void stopAlert();
-   bool alertOn_;
+   void startAlert(int d);
+   void stopAlert(int d);
+   bool alertAscOn_;
+   bool alertAltOn_;
    // alert label;
    QLabel* alert_;
 
@@ -100,10 +104,8 @@ private:
    QCamFindShift * tracker_;
    // alert sound
    QSound* bell_;
-   // last alert backgroung color
-   QColor lastColor_;
-   // last state
-   QString lastState_;
+   // current state
+   bool isGuiding_;
    // tracking state
    bool isTracking_;
 };

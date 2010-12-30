@@ -25,7 +25,7 @@ MA  02110-1301, USA.
 
 #include "Vector2D.hpp"
 
-/** this class is used to discribe the shift between 2 frames.
+/** this class is used to describe the shift between 2 frames.
     it contain the translation to apply, followed by the
     rotation (in radian) to map the second frame to the reference one.
 */
