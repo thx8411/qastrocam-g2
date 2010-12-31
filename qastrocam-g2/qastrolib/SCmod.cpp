@@ -52,7 +52,7 @@ void SCmod::setLevels(bool polarity) {
 
 SCmodTucLed::SCmodTucLed(QCamVesta & cam) : cam_(cam) {
    if(settings.haveKey("LX_LEVELS_INVERTED"))
-      inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+      inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"yes")==0);
    else
       inverted_=false;
    stopAccumulation();
@@ -89,7 +89,7 @@ SCmodTucLed::~SCmodTucLed() {
 
 SCmodSerialPort::SCmodSerialPort() {
    if(settings.haveKey("LX_LEVELS_INVERTED"))
-      inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+      inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"yes")==0);
    else
       inverted_=false;
 
