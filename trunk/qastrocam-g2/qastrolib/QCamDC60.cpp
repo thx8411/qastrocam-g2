@@ -35,7 +35,7 @@ extern settingsBackup settings;
 QCamDC60::QCamDC60(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
    if(settings.haveKey("LX_LEVELS_INVERTED")) {
-      bool inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+      bool inverted_=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"yes")==0);
       if(inverted_)
          setInverted(true);
       else

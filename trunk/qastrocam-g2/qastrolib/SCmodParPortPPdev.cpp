@@ -35,7 +35,7 @@ SCmodParPortPPdev::SCmodParPortPPdev() {
       device="/dev/parport0";
    // checks if levels are inverted or not in the settings file
    if(settings.haveKey("LX_LEVELS_INVERTED")) {
-      inverted=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"YES")==0);
+      inverted=(strcasecmp(settings.getKey("LX_LEVELS_INVERTED"),"yes")==0);
    } else {
       // else no
       inverted=false;
