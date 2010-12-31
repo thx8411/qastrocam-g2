@@ -90,6 +90,7 @@ using namespace std;
 // GUIDE_MAX_RA <value>
 // GUIDE_MIN_DEC <value>
 // GUIDE_MAX_DEC <value>
+// GUIDE_ALERT <yes/no>			(conf version 2)
 //
 // TELESCOPE :
 //

@@ -1,5 +1,6 @@
-4.9beta20101230
+4.9beta20101231
 
+  - the sound alert can be disabled
   - lost star alarm added in guiding module
   - some guiding module bugs fixed
   - Ra and Dec can be inverted on telescope keypad
