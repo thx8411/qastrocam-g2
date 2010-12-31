@@ -23,8 +23,8 @@ MA  02110-1301, USA.
 #ifndef _qastrolibVersion_hpp_
 #define _qastrolibVersion_hpp_
 
-const char * const qastrolibVersion ="4.9beta20101230";
-const int          qastrolibBuild   =140;
+const char * const qastrolibVersion ="4.9beta20101231";
+const int          qastrolibBuild   =141;
 const char * const qastrolibWeb = "http://sourceforge.net/projects/qastrocam-g2/";
 const char * const qastrolibMail = "thx8411@users.sourceforge.net";
 const char * const qastrolibName = "QastroLib-g2";

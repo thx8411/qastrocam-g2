@@ -1,4 +1,4 @@
-qastrocam-g2 (4.9beta20101230) jaunty; urgency=low
+qastrocam-g2 (4.9beta20101231) jaunty; urgency=low
 
   * gamma bug on philips cameras fixed
   * Nexstar protocol support added (1.6+)
@@ -24,6 +24,7 @@ qastrocam-g2 (4.9beta20101230) jaunty; urgency=low
   * Ra and Dec can be inverted on telescope keypad
   * some guiding module bugs fixed
   * lost star alarm added in guiding module
+  * the sound alert can be disabled
 
  -- Blaise-Florentin Collin <collin@eeepc901>  Fri, 10 Oct 2010 03:18:49 +0100
 

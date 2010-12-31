@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include <qobject.h>
 #include <qsound.h>
 #include <qlabel.h>
+#include <qcheckbox.h>
 
 class QCam;
 class QCamFindShift;
@@ -84,6 +85,9 @@ protected slots:
    */
    virtual void frameShift(const ShiftInfo& shift)=0;
 
+private slots :
+   void soundAlertChanged(bool s);
+
 protected:
    QTelescope * telescope_;
    MoveDir lastAltMove_;
@@ -95,10 +99,12 @@ protected:
    void stopAlert(int d);
    bool alertAscOn_;
    bool alertAltOn_;
+   bool soundAlertOn_;
+   bool bellOn_;
    // alert label;
    QLabel* alert_;
-
-
+   // sound alert checkbox
+   QCheckBox* soundAlert_;
 private:
    QCam * cam_;
    QCamFindShift * tracker_;

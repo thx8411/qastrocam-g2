@@ -26,11 +26,14 @@ MA  02110-1301, USA.
 #include "QTelescope.hpp"
 #include "QCamFindShift.hpp"
 #include "QCamUtilities.hpp"
+#include "SettingsBackup.hpp"
 
 #include <qpushbutton.h>
 #include <qhbox.h>
 #include <qvbox.h>
 #include <qmessagebox.h>
+
+extern settingsBackup settings;
 
 QCamAutoGuidage::QCamAutoGuidage() {
    cam_=NULL;
@@ -42,6 +45,8 @@ QCamAutoGuidage::QCamAutoGuidage() {
    isGuiding_=false;
    alertAscOn_=false;
    alertAltOn_=false;
+   soundAlertOn_=false;
+   bellOn_=false;
 
    // test for audio device
    if(!(QSound::available()||QSound::isAvailable())) {
@@ -131,6 +136,20 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    alert_=new QLabel("Idle",state);
    alert_->setPaletteBackgroundColor(Qt::lightGray);
    alert_->setAlignment(Qt::AlignHCenter);
+
+   // sound alert checkbox
+   soundAlert_=new QCheckBox("Enable the sound alert",mainBox);
+   connect(soundAlert_,SIGNAL(toggled(bool)),this,SLOT(soundAlertChanged(bool)));
+   if(settings.haveKey("GUIDE_ALERT")) {
+      if(QString(settings.getKey("GUIDE_ALERT"))=="yes") {
+         soundAlert_->setChecked(true);
+         soundAlertChanged(true);
+      } else {
+         soundAlert_->setChecked(false);
+         soundAlertChanged(false);
+      }
+   }
+
    mainBox->show();
    return mainBox;
 }
@@ -184,7 +203,11 @@ void QCamAutoGuidage::startAlert(int d) {
       }
       // sound alert
       if(bell_) {
-         //bell_->play();
+         if(soundAlertOn_) {
+            cerr << "bell" << endl;
+            bell_->play();
+         }
+         bellOn_=true;
       }
    }
 
@@ -195,7 +218,6 @@ void QCamAutoGuidage::startAlert(int d) {
 }
 
 void QCamAutoGuidage::stopAlert(int d) {
-
    if(d==GUIDE_ASC)
       alertAscOn_=false;
    else
@@ -214,7 +236,30 @@ void QCamAutoGuidage::stopAlert(int d) {
       }
 
       // sound alert
-      if(bell_)
+      if(bell_) {
+         if(soundAlertOn_) {
+            cerr << "bell stop" << endl;
+            bell_->stop();
+         }
+         bellOn_=false;
+      }
+   }
+}
+
+void QCamAutoGuidage::soundAlertChanged(bool s) {
+   if(s) {
+      soundAlertOn_=true;
+      if(bell_&&bellOn_) {
+         cerr << "bell" << endl;
+         bell_->play();
+      }
+      settings.setKey("GUIDE_ALERT","yes");
+   } else {
+      soundAlertOn_=false;
+      if(bell_&&bellOn_) {
+         cerr << "bell stop" << endl;
          bell_->stop();
+      }
+      settings.setKey("GUIDE_ALERT","no");
    }
 }
