@@ -36,6 +36,7 @@ MA  02110-1301, USA.
 using namespace std;
 
 // guider directions
+#ifndef QHY_NORTH
 #define QHY_NORTH	0
 #define QHY_SOUTH	1
 #define QHY_EAST	2
@@ -43,10 +44,11 @@ using namespace std;
 #define QHY_NONE	4
 #define	QHY_STOP_NS	5
 #define QHY_STOP_EW	6
+#endif
 
 // camera's features
-#define QHY_IMAGER	0
-#define QHY_GUIDER	1
+#define QHY5_IMAGER	0
+#define QHY5_GUIDER	1
 
 class QHY5cam {
 public :
