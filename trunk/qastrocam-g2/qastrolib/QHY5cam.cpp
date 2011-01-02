@@ -65,7 +65,7 @@ QHY5cam* QHY5cam::instance(int feature) {
 // release the device part
 void QHY5cam::destroy(int feature) {
    feature_used[feature]=false;
-   if(!(feature_used[QHY_IMAGER] || feature_used[QHY_GUIDER])) {
+   if(!(feature_used[QHY5_IMAGER] || feature_used[QHY5_GUIDER])) {
       delete instance_;
       instance_=NULL;
    }
@@ -93,13 +93,11 @@ int QHY5cam::stop() {
 int QHY5cam::shoot(int duration, bool mode) {
    int val,index,ret;
 
-   char buffer[11]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-
    index= duration >> 16;
    val= duration & 0xffff;
 
    pthread_mutex_lock(&usbMutex);
-   ret=usb_control_msg(dev,0xc2,0x12,val, index, buffer, 10, 0);
+   ret=usb_control_msg(dev,0xc2,0x12,val, index, NULL, 0, 0);
    pthread_mutex_unlock(&usbMutex);
 
    if(mode) {
@@ -156,7 +154,6 @@ int QHY5cam::read(char* image, bool mode) {
 // duration in ms, 0 to cancel
 // one move per call
 int QHY5cam::move(int direction, int duration) {
-   unsigned int ret;
    int res;
    int pulses[2]={-1,-1};
 
@@ -178,7 +175,7 @@ int QHY5cam::move(int direction, int duration) {
             direction=0x18;
       }
       pthread_mutex_lock(&usbMutex);
-      res=usb_control_msg(dev,0xc2,direction,0,0,(char*)&ret,sizeof(&ret),500);
+      res=usb_control_msg(dev,0xc2,direction,0,0,NULL,0,500);
       pthread_mutex_unlock(&usbMutex);
       return(res);
    }
@@ -300,21 +297,21 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gg1, int bg, int r
    offset=(1048-height_)/2;
    index=(1558*(height_+26))>>16;
    value=(1558*(height_+26))&0xffff;
-   STORE_WORD_BE(registers+0,gg1_);
-   STORE_WORD_BE(registers+2,bg_);
-   STORE_WORD_BE(registers+4,rg_);
-   STORE_WORD_BE(registers+6,gg2_);
-   STORE_WORD_BE(registers+8,offset);
-   STORE_WORD_BE(registers+10,0);
-   STORE_WORD_BE(registers+12,height_-1);
-   STORE_WORD_BE(registers+14,0x0521);
-   STORE_WORD_BE(registers+16,height_+25);
+   STORE_WORD_BE(registers+0,gg1_);	// register 0x2B
+   STORE_WORD_BE(registers+2,bg_);	// register 0x2C
+   STORE_WORD_BE(registers+4,rg_);	// register 0x2D
+   STORE_WORD_BE(registers+6,gg2_);	// register 0x2E
+   STORE_WORD_BE(registers+8,offset);	// row start 0x01
+   STORE_WORD_BE(registers+10,0);	// column start 0x02
+   STORE_WORD_BE(registers+12,height_-1);	// row size 0x03
+   STORE_WORD_BE(registers+14,0x0521);	// column size 0x04
+   STORE_WORD_BE(registers+16,height_+25);	// register 0x09
    registers[18]=0xcc;
 
    pthread_mutex_lock(&usbMutex);
    res=usb_control_msg(dev,0x42,0x13,value,index,registers,19,500);
-   usb_control_msg(dev,0x42,0x14,0x31a5,0,registers,0,500);
-   usb_control_msg(dev,0x42,0x16,0,0,registers,0,500);
+   usb_control_msg(dev,0x42,0x14,0x31a5,0,NULL,0,500);	// starting row offset ?
+   usb_control_msg(dev,0x42,0x16,0,0,NULL,0,500);	// really used ??
    pthread_mutex_unlock(&usbMutex);
 
    // alloc mem
