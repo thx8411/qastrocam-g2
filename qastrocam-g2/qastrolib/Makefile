@@ -39,14 +39,14 @@ OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
          FrameId.o QCamDC60.o QCamV4L2lx.o QCamV4L2fi.o QCamPhoto2.o \
          QCamFocus.o QCamSelection.o QCamQHY5.o QTelescopeQHY5.o \
          QTelescopeNexstar.o QTelescopeLX200.o QCamSimulator.o \
-	 QTelescopeSimulator.o
+	 QTelescopeSimulator.o QTelescopeQHY6.o QCamQHY6.o
 
 OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o Vector2D.o ShiftInfo.o QCamFrame.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieAviLossless.o QCamMovieSeq.o \
 	  SettingsBackup.o SCmodParPortPPdev.o PPort.o yuv.o jmemsrc.o \
-	  QHY5cam.o QCamMovieSer.o
+	  QHY5cam.o QCamMovieSer.o QHY6cam.o
 
 OBJ_c =
 

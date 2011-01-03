@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 
 #include "SettingsBackup.hpp"
 
-#include "QCamQHY5.moc"
+#include "QCamQHY6.moc"
 
 // camera's pixel rate (per ms)
 #define PIXEL_RATE	24000
@@ -39,81 +39,61 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 //
-const int QCamQHY5::exposureTable[QHY5_EXPOSURE_TABLE_SIZE]={20,40,50,66,100,200,1000,1500,2000,3000,4000,5000,10000,15000,20000,30000,60000};
+const int QCamQHY6::exposureTable[QHY6_EXPOSURE_TABLE_SIZE]={20,40,50,66,100,200,1000,1500,2000,3000,4000,5000,10000,15000,20000,30000,60000};
 
 // the exposure slider use a table
 // returns exposure time in ms
-int QCamQHY5::getExposureTime(int i) {
+int QCamQHY6::getExposureTime(int i) {
    return(exposureTable[i]);
 }
 
 // return the given time in ms index
-int QCamQHY5::getExposureIndex(int t) {
+int QCamQHY6::getExposureIndex(int t) {
    int index=0;
-   while((t>exposureTable[index])&&(index<QHY5_EXPOSURE_TABLE_SIZE))
+   while((t>exposureTable[index])&&(index<QHY6_EXPOSURE_TABLE_SIZE))
       index++;
-   if(index==QHY5_EXPOSURE_TABLE_SIZE)
+   if(index==QHY6_EXPOSURE_TABLE_SIZE)
       index--;
    return(index);
 }
 
-QCamQHY5::QCamQHY5() {
+QCamQHY6::QCamQHY6() {
    // set cam label
-   label(QString("QHY5"));
+   label(QString("QHY6"));
    // vars init
    sizeTable_=NULL;
    exposureValue=NULL;
 
    // message
-   cerr << "Starting QHY5, please wait..." << endl;
+   cerr << "Starting QHY6, please wait..." << endl;
 
    // setting exposure
-   if(settings.haveKey("QHY5_EXPOSURE")) {
-      frameExposure_=atoi(settings.getKey("QHY5_EXPOSURE"));
+   if(settings.haveKey("QHY6_EXPOSURE")) {
+      frameExposure_=atoi(settings.getKey("QHY6_EXPOSURE"));
       if(frameExposure_==0)
          frameExposure_=getExposureTime(0);
    } else
       frameExposure_=getExposureTime(0);
-   //frameRate_=frameExposure_;
-   //if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
-   //frameRate_=PROGRESS_TIME;
 
-   xstart_=0;
-   ystart_=0;
-   width_=640;
-   height_=512;
+   width_=796;
+   height_=596;
    targetWidth_=width_;
    targetHeight_=height_;
    targetSize.setWidth(targetWidth_);
    targetSize.setHeight(targetHeight_);
 
    // setting gains
-   if(settings.haveKey("QHY5_GAIN_G1")) {
-      gainG1_=atoi(settings.getKey("QHY5_GAIN_G1"));
-      if(gainG1_==0) gainG1_=5;
+   if(settings.haveKey("QHY6_GAIN")) {
+      gain_=atoi(settings.getKey("QHY6_GAIN"));
+      if(gain_==0) gain_=5;
    } else
-      gainG1_=5;
-   if(settings.haveKey("QHY5_GAIN_G2")) {
-      gainG2_=atoi(settings.getKey("QHY5_GAIN_G2"));
-      if(gainG2_==0) gainG2_=5;
-   } else
-      gainG2_=5;
-   if(settings.haveKey("QHY5_GAIN_R")) {
-      gainR_=atoi(settings.getKey("QHY5_GAIN_R"));
-      if(gainR_==0) gainR_=5;
-   } else
-      gainR_=5;
-   if(settings.haveKey("QHY5_GAIN_B")) {
-      gainB_=atoi(settings.getKey("QHY5_GAIN_B"));
-      if(gainB_==0) gainB_=5;
-   } else
-      gainB_=5;
+      gain_=5;
 
    sizeTable=getAllowedSize();
    // get the cam instance
-   camera=QHY5cam::instance(QHY5_IMAGER);
+   camera=QHY6cam::instance(QHY6_IMAGER);
    if(camera==NULL) {
-      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY5 imager\nLeaving...");
+      QMessageBox::information(0,"Qastrocam-g2","Unable to reach the QHY6 imager\nLeaving...");
       exit(1);
    }
 
@@ -121,33 +101,20 @@ QCamQHY5::QCamQHY5() {
    inputBuffer_.setMode(GreyFrame);
    inputBuffer_.setSize(QSize(width_,height_));
    // configure the cam
-   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
-   // start the first frame
-   // count the usb transfer time. Rate is 24M pixels / second
-   //shootMode_=(frameExposure_<1000);
-   //int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
-   //if(poseTime<0) poseTime=0;
-   //camera->shoot(poseTime,shootMode_);
-   // set the first timer shot
-   //timer_=new QTimer(this);
-   //connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   //timer_->start(/*frameRate_*/frameExposure_,true);
+   camera->configure(frameExposure_,gain_);
    // set prop.
    static char buff[11];
    snprintf(buff,10,"%dx%d",width_,height_);
    setProperty("FrameSize",buff,true);
-   setProperty("CameraName","QHY5");
+   setProperty("CameraName","QHY6");
    setProperty("FrameExposure",frameExposure_);
-   setProperty("Gain Green1",gainG1_,false);
-   setProperty("Gain Green2",gainG1_,false);
-   setProperty("Gain Red",gainR_,false);
-   setProperty("Gain Blue",gainB_,false);
+   setProperty("Gain",gain_,false);
 }
 
-QCamQHY5::~QCamQHY5() {
+QCamQHY6::~QCamQHY6() {
    void* tmp;
 
-   cerr << "Closing QHY5, please wait..." << endl;
+   cerr << "Closing QHY6, please wait..." << endl;
 
    // read the last frame
    camera->stop();
@@ -160,29 +127,28 @@ QCamQHY5::~QCamQHY5() {
    camera->read((char*)tmp,shootMode_);
    free(tmp);
    // release the imager
-   QHY5cam::destroy(QHY5_IMAGER);
+   QHY6cam::destroy(QHY6_IMAGER);
 
-   cerr << "QHY5 closed..." << endl;
+   cerr << "QHY6 closed..." << endl;
 }
 
-void QCamQHY5::resize(const QSize & s) {
+void QCamQHY6::resize(const QSize & s) {
    setSize(s.width(),s.height());
 }
 
-const QSize * QCamQHY5::getAllowedSize() const {
+const QSize * QCamQHY6::getAllowedSize() const {
    // lists sizes
    if (sizeTable_==NULL) {
       sizeTable_=new QSize[5];
       int currentIndex=0;
-      sizeTable_[currentIndex++]=QSize(1280,1024);
-      sizeTable_[currentIndex++]=QSize(640,512);
-      sizeTable_[currentIndex++]=QSize(320,256);
+      sizeTable_[currentIndex++]=QSize(796,596);
+      sizeTable_[currentIndex++]=QSize(398,298);
       sizeTable_[currentIndex++]=QSize(0,0);
    }
    return sizeTable_;
 }
 
-void QCamQHY5::setSize(int x, int y) {
+void QCamQHY6::setSize(int x, int y) {
    // drop the last frame
    void* YBuff=NULL;
    camera->stop();
@@ -193,22 +159,12 @@ void QCamQHY5::setSize(int x, int y) {
    switch(croppingMode) {
       case BINNING :
       case SCALING :
-         // update vars
-         width_=1280;
-         height_=1024;
-         targetWidth_=x;
-         targetHeight_=y;
-         xstart_=0;
-         ystart_=0;
-         break;
       case CROPPING :
          // update vars
-         width_=x;
-         height_=y;
-         targetWidth_=width_;
-         targetHeight_=height_;
-         xstart_=(1280-x)/2;
-         ystart_=(1024-y)/2;
+         width_=796;
+         height_=596;
+         targetWidth_=x;
+         targetHeight_=y;
          break;
    }
    // update size
@@ -221,7 +177,7 @@ void QCamQHY5::setSize(int x, int y) {
    int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
    if(poseTime<0) poseTime=0;
    // start the new frame
-   camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
+   camera->configure(frameExposure_,gain_);
    camera->shoot(poseTime,shootMode_);
    // update datas
    static char buff[11];
@@ -242,19 +198,15 @@ void QCamQHY5::setSize(int x, int y) {
    }
 }
 
-void QCamQHY5::setExposure() {
+void QCamQHY6::setExposure() {
    char value[10];
 
    // resets the cam
    camera->stop();
-   // update vars
-   //frameRate_=frameExposure_;
-   //if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
-   //frameRate_=PROGRESS_TIME;
-   timer_->start(/*frameRate_*/frameExposure_,true);
+   timer_->start(frameExposure_,true);
    // update conf file
    sprintf(value,"%i",frameExposure_);
-   settings.setKey("QHY5_EXPOSURE",value);
+   settings.setKey("QHY6_EXPOSURE",value);
    // update properties
    setProperty("FrameExposure",frameExposure_);
    // disable progress bar for short time
@@ -269,23 +221,15 @@ void QCamQHY5::setExposure() {
    }
 }
 
-void QCamQHY5::setGain() {
+void QCamQHY6::setGain() {
    char value[4];
-   setProperty("Gain Green1",gainG1_,false);
-   setProperty("Gain Green2",gainG1_,false);
-   setProperty("Gain Red",gainR_,false);
-   setProperty("Gain Blue",gainB_,false);
-   sprintf(value,"%i",gainG1_);
-   settings.setKey("QHY5_GAIN_G1",value);
-   sprintf(value,"%i",gainG2_);
-   settings.setKey("QHY5_GAIN_G2",value);
-   sprintf(value,"%i",gainR_);
-   settings.setKey("QHY5_GAIN_R",value);
-   sprintf(value,"%i",gainB_);
-   settings.setKey("QHY5_GAIN_B",value);
+   setProperty("Gain",gain_,false);
+   sprintf(value,"%i",gain_);
+   settings.setKey("QHY6_GAIN",value);
+   sprintf(value,"%i",gain_);
 }
 
-void QCamQHY5::changeExposure(int e) {
+void QCamQHY6::changeExposure(int e) {
    // update exposure time
    frameExposure_=getExposureTime(e);
 
@@ -301,65 +245,28 @@ void QCamQHY5::changeExposure(int e) {
    }
 }
 
-void QCamQHY5::changeGain(int g) {
-   gainG1_=g;
-   gainG2_=g;
-   gainR_=g;
-   gainB_=g;
+void QCamQHY6::changeGain(int g) {
+   gain_=g;
 }
 
-void QCamQHY5::changeGainG1(int g) {
-   gainG1_=g;
-}
-
-void QCamQHY5::changeGainG2(int g) {
-   gainG2_=g;
-}
-
-void QCamQHY5::changeGainR(int g) {
-   gainR_=g;
-}
-
-void QCamQHY5::changeGainB(int g) {
-   gainB_=g;
-}
-
-const QSize & QCamQHY5::size() const {
+const QSize & QCamQHY6::size() const {
    return(targetSize);
 }
 
-QWidget * QCamQHY5::buildGUI(QWidget * parent) {
+QWidget * QCamQHY6::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
    QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
 
    // gain
-   gainSlider=new QCamSlider("Gain",false,settingsBox,0,81,false,false);
-   gainSlider->setValue(gainG1_);
-
-   gainSliderG1=new QCamSlider("Gain Green 1",false,settingsBox,0,81,false,false);
-   gainSliderG1->setValue(gainG1_);
-
-   gainSliderG2=new QCamSlider("Gain Green 2",false,settingsBox,0,81,false,false);
-   gainSliderG2->setValue(gainG2_);
-
-   gainSliderR=new QCamSlider("Gain Red",false,settingsBox,0,81,false,false);
-   gainSliderR->setValue(gainR_);
-
-   gainSliderB=new QCamSlider("Gain Blue",false,settingsBox,0,81,false,false);
-   gainSliderB->setValue(gainB_);
-
-   // no finished at this time, so hidden
-   gainSliderG1->hide();
-   gainSliderG2->hide();
-   gainSliderR->hide();
-   gainSliderB->hide();
+   gainSlider=new QCamSlider("Gain",false,settingsBox,0,63,false,false);
+   gainSlider->setValue(gain_);
 
    // exposure
    QHBox* exposureBox=new QHBox(settingsBox);
    QLabel* label1=new QLabel(QString("Exposure"),exposureBox);
    exposureSlider=new QSlider(Qt::Horizontal,exposureBox);
    exposureSlider->setMinValue(0);
-   exposureSlider->setMaxValue(QHY5_EXPOSURE_TABLE_SIZE-1);
+   exposureSlider->setMaxValue(QHY6_EXPOSURE_TABLE_SIZE-1);
    exposureSlider->setValue(getExposureIndex(frameExposure_));
    exposureSlider->setTickmarks(QSlider::Below);
    exposureSlider->setTickInterval(1);
@@ -396,26 +303,18 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    }
 
    // tooltips
-   QToolTip::add(gainSlider,tr("Camera's gain, non linear, 0 to 81 , 5 means x1 (patterns after 52)"));
-   QToolTip::add(exposureSlider,tr("Camera's exposure, may be limited by the frame sizes"));
-   QToolTip::add(exposureValue,tr("Exposure time (not a real fps, not very accurate for high rates)"));
+   QToolTip::add(gainSlider,tr("Camera's gain"));
+   QToolTip::add(exposureSlider,tr("Camera's exposure"));
+   QToolTip::add(exposureValue,tr("Exposure time"));
 
    // connections
    connect(gainSlider,SIGNAL(valueChange(int)),this,SLOT(changeGain(int)));
    connect(gainSlider,SIGNAL(sliderReleased()),this,SLOT(setGain()));
-   connect(gainSliderG1,SIGNAL(valueChange(int)),this,SLOT(changeGainG1(int)));
-   connect(gainSliderG1,SIGNAL(sliderReleased()),this,SLOT(setGain()));
-   connect(gainSliderG2,SIGNAL(valueChange(int)),this,SLOT(changeGainG2(int)));
-   connect(gainSliderG2,SIGNAL(sliderReleased()),this,SLOT(setGain()));
-   connect(gainSliderR,SIGNAL(valueChange(int)),this,SLOT(changeGainR(int)));
-   connect(gainSliderR,SIGNAL(sliderReleased()),this,SLOT(setGain()));
-   connect(gainSliderB,SIGNAL(valueChange(int)),this,SLOT(changeGainB(int)));
-   connect(gainSliderB,SIGNAL(sliderReleased()),this,SLOT(setGain()));
 
    connect(exposureSlider,SIGNAL(valueChanged(int)),this,SLOT(changeExposure(int)));
    connect(exposureSlider,SIGNAL(sliderReleased()),this,SLOT(setExposure()));
 
-   cerr << "QHY5 ready..." << endl;
+   cerr << "QHY6 ready..." << endl;
 
    // set the first timer shot
    timer_=new QTimer(this);
@@ -429,7 +328,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    return remoteCTRL;
 }
 
-void QCamQHY5::progressUpdate() {
+void QCamQHY6::progressUpdate() {
    // update progress bar (only if needed)
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progress_++;
@@ -437,23 +336,23 @@ void QCamQHY5::progressUpdate() {
    }
 }
 
-bool QCamQHY5::updateFrame() {
+bool QCamQHY6::updateFrame() {
    // get the frame buffer
    void* YBuff=NULL;
    YBuff=inputBuffer_.YforOverwrite();
    // read picture datas
    if(camera->read((char*)YBuff,shootMode_)) {
       setTime();
-      camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
+      camera->configure(frameExposure_,gain_);
       // count the usb transfer time. Rate is 24M pixels / second
       shootMode_=(frameExposure_<1000);
       int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
       if(poseTime<0) poseTime=0;
       camera->shoot(poseTime,shootMode_);
       // gives a new shot for the timer
-      timer_->start(/*frameRate_*/frameExposure_,true);
+      timer_->start(frameExposure_,true);
       // set the output frame
-      if((targetWidth_==1280)&&(targetHeight_==1024)) {
+      if((targetWidth_==796)&&(targetHeight_==596)) {
           // nothing to resize
           yuvBuffer_=inputBuffer_;
       } else {
@@ -462,8 +361,7 @@ bool QCamQHY5::updateFrame() {
                yuvBuffer_.scaling(inputBuffer_,targetWidth_,targetHeight_);
                break;
             case CROPPING :
-               // cropping allready done by driver
-               yuvBuffer_=inputBuffer_;
+               yuvBuffer_.cropping(inputBuffer_,(796-targetWidth_)/2,(596-targetHeight_)/2,targetWidth_,targetHeight_);
                break;
             case BINNING :
                yuvBuffer_.binning(inputBuffer_,targetWidth_,targetHeight_);

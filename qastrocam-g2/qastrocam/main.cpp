@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include "QCamSlider.hpp"
 #include "QCamSimulator.hpp"
 #include "QCamQHY5.hpp"
+#include "QCamQHY6.hpp"
 #include "QCamV4L.hpp"
 #include "QCamVesta.hpp"
 #include "qastrocamVersion.hpp"
@@ -60,10 +61,12 @@ MA  02110-1301, USA.
 #include "QTelescopeFile.hpp"
 #include "QTelescopeMTS.hpp"
 #include "QTelescopeQHY5.hpp"
+#include "QTelescopeQHY6.hpp"
 #include "QTelescopeLX200.hpp"
 #include "QTelescopeSimulator.hpp"
 #include "PPort.hpp"
 #include "QHY5cam.hpp"
+#include "QHY6cam.hpp"
 #include "QKingClient.hpp"
 #include "SettingsBackup.hpp"
 #include "QSetting.hpp"
@@ -360,6 +363,7 @@ int main(int argc, char ** argv) {
       cerr << "supported scopes:\n"
            << "* none\n"
            << "* qhy5\n"
+           << "* qhy6\n"
            << "* apm\n"
            << "* autostar\n"
            << "* lx200\n"
@@ -447,6 +451,13 @@ int main(int argc, char ** argv) {
           QMessageBox::information(0,"Qastrocam-g2","QHY5 camera not detected\nSettings panel only");
          cout << "QHY5 camera not detected" << endl;
       }
+   } else if(cameraName=="qhy6") {
+      if(QHY6cam::plugged())
+         cam = new QCamQHY6();
+      else {
+          QMessageBox::information(0,"Qastrocam-g2","QHY6 camera not detected\nSettings panel only");
+         cout << "QHY6 camera not detected" << endl;
+      }
    } else if(cameraName=="simulator") {
          cam = new QCamSimulator();
    } else {
@@ -480,6 +491,8 @@ int main(int argc, char ** argv) {
 	 theTelescope = new QTelescopeFile(telescopeDeviceName.c_str());
       } else if (telescopeType=="qhy5") {
          theTelescope = new QTelescopeQHY5();
+      } else if (telescopeType=="qhy6") {
+         theTelescope = new QTelescopeQHY6();
       } else if (telescopeType=="simulator") {
          theTelescope = new QTelescopeSimulator();
       } else {

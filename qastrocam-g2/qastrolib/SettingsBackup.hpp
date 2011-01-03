@@ -57,11 +57,11 @@ using namespace std;
 // LOG <yes/no>
 // REGISTAX_AVI <yes/no>
 // NIGHT_VISION <yes/no>
-// TELESCOPE <none/qhy5/apm/autostar/nexstar/fifo/mcu/mts/file/lx200/simulator>
+// TELESCOPE <none/qhy5/qhy6/apm/autostar/nexstar/fifo/mcu/mts/file/lx200/simulator>	(qhy6 in conf version 2 only)
 // TS_LEVELS_INVERTED <yes/no>
 // TELESCOPE_DEVICE <file>
 // TELESCOPE_SPEED <0 to 1>
-// CAMERA <v4l(2)/qhy5/simulator>	(conf version 2)
+// CAMERA <v4l(2)/qhy5/qhy6/simulator>	(conf version 2)
 // CAMERA_DEVICE <file>	(conf version 2)
 // VIDEO_DEVICE <file>	(conf version 1, outdated, use CAMERA_DEVICE instead)
 // LIB_PATH <directory>
@@ -80,6 +80,11 @@ using namespace std;
 // QHY5_GAIN_R <value>
 // QHY5_GAIN_B <value>
 // QHY5_EXPOSURE <time in ms>
+//
+// QHY6 dedicated :	(conf version 2)
+//
+// QHY6_GAIN <value>
+// QHY6_EXPOSURE <time in ms>
 //
 // GUIDING :
 //
