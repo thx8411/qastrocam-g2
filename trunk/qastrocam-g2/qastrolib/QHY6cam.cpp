@@ -215,7 +215,7 @@ int  QHY6cam::configure(int exposure, int gain, int offset, int amp, int speed) 
    if(exposure<0) exposure=0;
 
    if(gain<0) gain=0;
-   if(gain>63) gaine=63;
+   if(gain>63) gain=63;
 
    memset(registers,0,24 );
 
