@@ -1,6 +1,7 @@
-4.9beta20110101
+4.9beta20110109
 
   - QHY6 support added (imager and telescope)
+  - QHY5's bands filter added
   - the sound alert can be disabled
   - lost star alarm added in guiding module
   - some guiding module bugs fixed

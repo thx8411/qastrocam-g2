@@ -74,6 +74,7 @@ private:
    int gainB_;
    int progress_;
    bool shootMode_;
+   bool denoise_;
    // gui stuff
    QCamSlider* gainSlider;
    QCamSlider* gainSliderG1;
@@ -83,6 +84,7 @@ private:
    QSlider* exposureSlider;
    QLabel* exposureValue;
    QProgressBar* progressBar;
+   QCheckBox* denoiseBox;
    // exposure tab
    static const int exposureTable[QHY5_EXPOSURE_TABLE_SIZE];
 public slots:
@@ -96,6 +98,7 @@ protected slots:
    void changeGainB(int g);
    void setGain();
    void progressUpdate();
+   void denoiseChange(bool d);
    virtual bool updateFrame();
 signals:
 };

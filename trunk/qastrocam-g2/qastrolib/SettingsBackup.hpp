@@ -80,6 +80,7 @@ using namespace std;
 // QHY5_GAIN_R <value>
 // QHY5_GAIN_B <value>
 // QHY5_EXPOSURE <time in ms>
+// QHY5_BANDS_FILTER <yes/no>	(conf version 2)
 //
 // QHY6 dedicated :	(conf version 2)
 //

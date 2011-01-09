@@ -33,6 +33,8 @@ MA  02110-1301, USA.
 
 #include <qmessagebox.h>
 
+#include "yuv.hpp"
+
 #include "QHY5cam.hpp"
 
 #define GAIN_SCALE_SIZE	82
@@ -105,7 +107,7 @@ int QHY5cam::shoot(int duration, bool mode) {
 
       pthread_mutex_lock(&exposureMutex);
       pthread_mutex_lock(&usbMutex);
-      ret=usb_bulk_read(dev,0x82,image_,size_,0);
+      ret=usb_bulk_read(dev,0x82,(char*)image_,size_,0);
       frameAvailable=(ret==size_);
       pthread_mutex_unlock(&usbMutex);
       pthread_mutex_unlock(&exposureMutex);
@@ -116,8 +118,9 @@ int QHY5cam::shoot(int duration, bool mode) {
 
 // read the picture
 // image buffer size : x*y*1 byte
-int QHY5cam::read(char* image, bool mode) {
+int QHY5cam::read(unsigned char* image, bool mode, bool denoise) {
    int ret,line,row,offset;
+   int temp;
    offset=0;
 
    if(image==NULL) return(-1);
@@ -125,18 +128,41 @@ int QHY5cam::read(char* image, bool mode) {
    pthread_mutex_lock(&exposureMutex);
    if(!mode) {
       pthread_mutex_lock(&usbMutex);
-      ret=usb_bulk_read(dev,0x82,image_,size_,0);
+      ret=usb_bulk_read(dev,0x82,(char*)image_,size_,0);
       pthread_mutex_unlock(&usbMutex);
       frameAvailable=(ret==size_);
+   }
+
+   // denoise filtering stuff
+   if(denoise) {
+      memset(lineOffsets_,0,1024*sizeof(unsigned char));
+      // build the line corrections offsets
+      for(line=0;line<height_;line++) {
+      // read the black pixels
+         temp=0;
+         // first edge
+         for(row=3;row<18;row++) {
+            temp+=image_[1558*line+row];
+         }
+         // second edge
+         for(row=1301;row<1309;row++) {
+            temp+=image_[1558*line+row];
+         }
+         // average value
+         lineOffsets_[line]=clip(temp/23);
+      }
    }
 
    if(frameAvailable) {
       for(line=0;line<height_;line++) {
          for(row=0;row<width_;row++) {
-            //
-            // to be fixed
-            image[offset]=image_[1558*line+20+row+xpos_];
-            //
+            if(denoise) {
+               // filtering
+               image[offset]=clip((int)image_[1558*line+20+row+xpos_]-(int)lineOffsets_[line]);
+            } else {
+               // no filter
+               image[offset]=image_[1558*line+20+row+xpos_];
+            }
             offset++;
          }
       }
@@ -316,7 +342,7 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gg1, int bg, int r
 
    // alloc mem
    free(image_);
-   image_=(char*)malloc(size_);
+   image_=(unsigned char*)malloc(size_);
 
    return(0);
 }
