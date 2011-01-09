@@ -65,7 +65,7 @@ public :
    // start a single shot picture
    int shoot(int duration, bool mode=FALSE);
    // read the last picture shot
-   int read(char* image, bool mode=FALSE);
+   int read(unsigned char* image, bool mode=FALSE, bool denoise=FALSE);
    // ST4 port timed move
    int move(int direction, int duration);
    // ST4 permanent move
@@ -96,7 +96,7 @@ private :
    struct usb_dev_handle* dev;
 
    // configuration
-   char* image_;
+   unsigned char* image_;
    bool frameAvailable;
    int xpos_;
    int ypos_;
@@ -120,6 +120,9 @@ private :
    pthread_t moveLoopThread;
    pthread_mutex_t moveLoopMutex;
    bool moveLoop_on_;
+
+   // line corrections offsets
+   unsigned char lineOffsets_[1024];
 };
 
 #endif

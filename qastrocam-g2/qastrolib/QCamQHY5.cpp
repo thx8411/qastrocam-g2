@@ -78,6 +78,7 @@ QCamQHY5::QCamQHY5() {
    //if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
    //frameRate_=PROGRESS_TIME;
 
+   denoise_=FALSE;
    xstart_=0;
    ystart_=0;
    width_=640;
@@ -157,7 +158,7 @@ QCamQHY5::~QCamQHY5() {
       QMessageBox::information(0,"Qastrocam-g2","Sorry, we must wait for the last frame to be read...");
    }
    // last frame read
-   camera->read((char*)tmp,shootMode_);
+   camera->read((unsigned char*)tmp,shootMode_,denoise_);
    free(tmp);
    // release the imager
    QHY5cam::destroy(QHY5_IMAGER);
@@ -187,7 +188,7 @@ void QCamQHY5::setSize(int x, int y) {
    void* YBuff=NULL;
    camera->stop();
    YBuff=inputBuffer_.YforOverwrite();
-   camera->read((char*)YBuff,shootMode_);
+   camera->read((unsigned char*)YBuff,shootMode_,denoise_);
 
    // selects resizing mode
    switch(croppingMode) {
@@ -332,6 +333,19 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
    QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
 
+   QHBox* filtersBox=new QHBox(settingsBox);
+   // denoise
+   denoiseBox=new QCheckBox("Horizontal bands filtering",filtersBox);
+
+   // read denoise settings
+   if(settings.haveKey("QHY5_BANDS_FILTER")&&(strcasecmp(settings.getKey("QHY5_BANDS_FILTER"),"yes")==0)) {
+      denoise_=TRUE;
+      denoiseBox->setChecked(TRUE);
+   } else {
+      denoise_=FALSE;
+      denoiseBox->setChecked(FALSE);
+   }
+
    // gain
    gainSlider=new QCamSlider("Gain",false,settingsBox,0,81,false,false);
    gainSlider->setValue(gainG1_);
@@ -396,11 +410,13 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    }
 
    // tooltips
+   QToolTip::add(denoiseBox,tr("Denoise the horizontal bands using the edge black pixels"));
    QToolTip::add(gainSlider,tr("Camera's gain, non linear, 0 to 81 , 5 means x1 (patterns after 52)"));
    QToolTip::add(exposureSlider,tr("Camera's exposure, may be limited by the frame sizes"));
    QToolTip::add(exposureValue,tr("Exposure time (not a real fps, not very accurate for high rates)"));
 
    // connections
+   connect(denoiseBox,SIGNAL(toggled(bool)),this,SLOT(denoiseChange(bool)));
    connect(gainSlider,SIGNAL(valueChange(int)),this,SLOT(changeGain(int)));
    connect(gainSlider,SIGNAL(sliderReleased()),this,SLOT(setGain()));
    connect(gainSliderG1,SIGNAL(valueChange(int)),this,SLOT(changeGainG1(int)));
@@ -437,12 +453,20 @@ void QCamQHY5::progressUpdate() {
    }
 }
 
+void QCamQHY5::denoiseChange(bool d) {
+   denoise_=d;
+   if(d)
+      settings.setKey("QHY5_BANDS_FILTER","yes");
+   else
+      settings.setKey("QHY5_BANDS_FILTER","no");
+}
+
 bool QCamQHY5::updateFrame() {
    // get the frame buffer
    void* YBuff=NULL;
    YBuff=inputBuffer_.YforOverwrite();
    // read picture datas
-   if(camera->read((char*)YBuff,shootMode_)) {
+   if(camera->read((unsigned char*)YBuff,shootMode_,denoise_)) {
       setTime();
       camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
       // count the usb transfer time. Rate is 24M pixels / second
