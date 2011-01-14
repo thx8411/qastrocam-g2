@@ -60,7 +60,6 @@ private:
    QTimer* timer_;
    QTimer* progressTimer_;
    QSize targetSize;
-   //int frameRate_;
    int frameExposure_;
    int xstart_;
    int ystart_;
@@ -75,6 +74,7 @@ private:
    int progress_;
    bool shootMode_;
    bool denoise_;
+   bool shooting_;
    // gui stuff
    QCamSlider* gainSlider;
    QCamSlider* gainSliderG1;

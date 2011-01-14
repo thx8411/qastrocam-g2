@@ -1,7 +1,7 @@
 /******************************************************************
 Qastrocam-g2
 Copyright (C) 2010 Blaise-Florentin Collin
-Thanks to Geoffrey Hauser and Clive
+Thanks to Geoffrey Hausheer and Clive
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2

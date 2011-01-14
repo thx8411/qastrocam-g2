@@ -74,11 +74,9 @@ QCamQHY5::QCamQHY5() {
          frameExposure_=getExposureTime(0);
    } else
       frameExposure_=getExposureTime(0);
-   //frameRate_=frameExposure_;
-   //if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
-   //frameRate_=PROGRESS_TIME;
 
    denoise_=FALSE;
+   shooting_=FALSE;
    xstart_=0;
    ystart_=0;
    width_=640;
@@ -118,21 +116,13 @@ QCamQHY5::QCamQHY5() {
       exit(1);
    }
 
+   // compute the shooting mode
+   shootMode_=(frameExposure_<1000);
    // set frame
    inputBuffer_.setMode(GreyFrame);
    inputBuffer_.setSize(QSize(width_,height_));
    // configure the cam
    camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
-   // start the first frame
-   // count the usb transfer time. Rate is 24M pixels / second
-   //shootMode_=(frameExposure_<1000);
-   //int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
-   //if(poseTime<0) poseTime=0;
-   //camera->shoot(poseTime,shootMode_);
-   // set the first timer shot
-   //timer_=new QTimer(this);
-   //connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   //timer_->start(/*frameRate_*/frameExposure_,true);
    // set prop.
    static char buff[11];
    snprintf(buff,10,"%dx%d",width_,height_);
@@ -152,14 +142,16 @@ QCamQHY5::~QCamQHY5() {
 
    // read the last frame
    camera->stop();
-   tmp=malloc(width_*height_);
-   // message
-   if(frameExposure_>5000) {
-      QMessageBox::information(0,"Qastrocam-g2","Sorry, we must wait for the last frame to be read...");
+   if(shooting_) {
+      tmp=malloc(width_*height_);
+      // message
+      if(frameExposure_>5000) {
+         QMessageBox::information(0,"Qastrocam-g2","Sorry, we must wait for the last frame to be read...");
+      }
+      // last frame read
+      camera->read((unsigned char*)tmp,shootMode_,denoise_);
+      free(tmp);
    }
-   // last frame read
-   camera->read((unsigned char*)tmp,shootMode_,denoise_);
-   free(tmp);
    // release the imager
    QHY5cam::destroy(QHY5_IMAGER);
 
@@ -185,10 +177,12 @@ const QSize * QCamQHY5::getAllowedSize() const {
 
 void QCamQHY5::setSize(int x, int y) {
    // drop the last frame
-   void* YBuff=NULL;
-   camera->stop();
-   YBuff=inputBuffer_.YforOverwrite();
-   camera->read((unsigned char*)YBuff,shootMode_,denoise_);
+   if(shooting_) {
+      void* YBuff=NULL;
+      camera->stop();
+      YBuff=inputBuffer_.YforOverwrite();
+      camera->read((unsigned char*)YBuff,shootMode_,denoise_);
+   }
 
    // selects resizing mode
    switch(croppingMode) {
@@ -224,6 +218,7 @@ void QCamQHY5::setSize(int x, int y) {
    // start the new frame
    camera->configure(xstart_,ystart_,width_,height_,gainG1_,gainB_,gainR_,gainG2_,&width_,&height_);
    camera->shoot(poseTime,shootMode_);
+   shooting_=TRUE;
    // update datas
    static char buff[11];
    snprintf(buff,10,"%dx%d",x,y);
@@ -249,10 +244,7 @@ void QCamQHY5::setExposure() {
    // resets the cam
    camera->stop();
    // update vars
-   //frameRate_=frameExposure_;
-   //if(frameRate_<PROGRESS_TIME) frameRate_=PROGRESS_TIME;
-   //frameRate_=PROGRESS_TIME;
-   timer_->start(/*frameRate_*/frameExposure_,true);
+   timer_->start(frameExposure_,true);
    // update conf file
    sprintf(value,"%i",frameExposure_);
    settings.setKey("QHY5_EXPOSURE",value);
@@ -396,6 +388,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    if(poseTime<0) poseTime=0;
    camera->stop();
    camera->shoot(poseTime,shootMode_);
+   shooting_=TRUE;
 
    // progress bar
    QHBox* progressBox=new QHBox(settingsBox);
@@ -436,7 +429,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->start(/*frameRate_*/frameExposure_,true);
+   timer_->start(frameExposure_,true);
    // progress timer
    progressTimer_=new QTimer(this);
    progressTimer_->start(PROGRESS_TIME);
@@ -474,8 +467,9 @@ bool QCamQHY5::updateFrame() {
       int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
       if(poseTime<0) poseTime=0;
       camera->shoot(poseTime,shootMode_);
+      shooting_=TRUE;
       // gives a new shot for the timer
-      timer_->start(/*frameRate_*/frameExposure_,true);
+      timer_->start(frameExposure_,true);
       // set the output frame
       if((targetWidth_==1280)&&(targetHeight_==1024)) {
           // nothing to resize
