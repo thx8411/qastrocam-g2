@@ -103,6 +103,10 @@ using namespace std;
 // TELESCOPE_RA_INVERSION <yes/no>	(conf version 2)
 // TELESCOPE_DEC_INVERSION <yes/no>	(conf version 2)
 //
+// GUI :
+//
+// GUI_NAS_MESSAGE <yes/no>		(conf version 2)
+//
 
 class settingsBackup {
    private :
