@@ -1,4 +1,4 @@
-qastrocam-g2 (4.9beta20110109) jaunty; urgency=low
+qastrocam-g2 (4.9beta20110115) jaunty; urgency=low
 
   * gamma bug on philips cameras fixed
   * Nexstar protocol support added (1.6+)
