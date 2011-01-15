@@ -350,19 +350,22 @@ int  QHY5cam::configure(int xpos, int ypos, int w, int h, int gg1, int bg, int r
 // is the cam plugged ?
 bool QHY5cam::plugged() {
    struct usb_bus* bus;
+   struct usb_bus *busses;
    struct usb_device* device;
 
    // update usb datas
    usb_init();
    usb_find_busses();
    usb_find_devices();
+   busses=usb_get_busses();
    // look for the device
-   for(bus = usb_busses; bus; bus = bus->next) {
+   for(bus = busses; bus; bus = bus->next) {
       for(device = bus->devices; device; device=device->next) {
          if((device->descriptor.idVendor == 0x16c0)&&(device->descriptor.idProduct == 0x296d))
             return(true);
       }
    }
+
    return(false);
 }
 
@@ -391,6 +394,7 @@ void* QHY5cam::moveLoop() {
 QHY5cam::QHY5cam() {
    int temp1,temp2;
    struct usb_bus* bus;
+   struct usb_bus* busses;
    struct usb_device* device;
 
    // init
@@ -407,9 +411,9 @@ QHY5cam::QHY5cam() {
    usb_init();
    usb_find_busses();
    usb_find_devices();
-
+   busses=usb_get_busses();
    // get the usb device handle
-   for(bus = usb_busses; bus; bus = bus->next) {
+   for(bus = busses; bus; bus = bus->next) {
       for(device = bus->devices; device; device=device->next) {
          if((device->descriptor.idVendor == 0x16c0)&&(device->descriptor.idProduct == 0x296d)) {
             dev=usb_open(device);
