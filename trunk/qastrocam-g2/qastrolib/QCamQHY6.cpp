@@ -75,6 +75,7 @@ QCamQHY6::QCamQHY6() {
    } else
       frameExposure_=getExposureTime(0);
 
+   shooting_=FALSE;
    width_=796;
    height_=596;
    targetWidth_=width_;
@@ -97,6 +98,8 @@ QCamQHY6::QCamQHY6() {
       exit(1);
    }
 
+   // setting shoot mode
+   shootMode_=(frameExposure_<1000);
    // set frame
    inputBuffer_.setMode(GreyFrame);
    inputBuffer_.setSize(QSize(width_,height_));
@@ -118,14 +121,16 @@ QCamQHY6::~QCamQHY6() {
 
    // read the last frame
    camera->stop();
-   tmp=malloc(width_*height_);
-   // message
-   if(frameExposure_>5000) {
-      QMessageBox::information(0,"Qastrocam-g2","Sorry, we must wait for the last frame to be read...");
+   if(shooting_) {
+      tmp=malloc(width_*height_);
+      // message
+      if(frameExposure_>5000) {
+         QMessageBox::information(0,"Qastrocam-g2","Sorry, we must wait for the last frame to be read...");
+      }
+      // last frame read
+      camera->read((char*)tmp,shootMode_);
+      free(tmp);
    }
-   // last frame read
-   camera->read((char*)tmp,shootMode_);
-   free(tmp);
    // release the imager
    QHY6cam::destroy(QHY6_IMAGER);
 
@@ -150,10 +155,12 @@ const QSize * QCamQHY6::getAllowedSize() const {
 
 void QCamQHY6::setSize(int x, int y) {
    // drop the last frame
-   void* YBuff=NULL;
-   camera->stop();
-   YBuff=inputBuffer_.YforOverwrite();
-   camera->read((char*)YBuff,shootMode_);
+   if(shooting_) {
+      void* YBuff=NULL;
+      camera->stop();
+      YBuff=inputBuffer_.YforOverwrite();
+      camera->read((char*)YBuff,shootMode_);
+   }
 
    // selects resizing mode
    switch(croppingMode) {
@@ -179,6 +186,7 @@ void QCamQHY6::setSize(int x, int y) {
    // start the new frame
    camera->configure(frameExposure_,gain_);
    camera->shoot(poseTime,shootMode_);
+   shooting_=TRUE;
    // update datas
    static char buff[11];
    snprintf(buff,10,"%dx%d",x,y);
@@ -289,6 +297,7 @@ QWidget * QCamQHY6::buildGUI(QWidget * parent) {
    if(poseTime<0) poseTime=0;
    camera->stop();
    camera->shoot(poseTime,shootMode_);
+   shooting_=TRUE;
 
    // progress bar
    QHBox* progressBox=new QHBox(settingsBox);
@@ -349,6 +358,7 @@ bool QCamQHY6::updateFrame() {
       int poseTime=frameExposure_-(1558*(height_+26)/PIXEL_RATE);
       if(poseTime<0) poseTime=0;
       camera->shoot(poseTime,shootMode_);
+      shooting_=TRUE;
       // gives a new shot for the timer
       timer_->start(frameExposure_,true);
       // set the output frame
