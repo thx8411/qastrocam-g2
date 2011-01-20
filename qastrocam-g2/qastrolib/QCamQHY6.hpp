@@ -69,6 +69,7 @@ private:
    int gain_;
    int progress_;
    bool shootMode_;
+   bool shooting_;
    // gui stuff
    QCamSlider* gainSlider;
    QSlider* exposureSlider;
