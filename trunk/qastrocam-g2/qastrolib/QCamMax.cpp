@@ -86,7 +86,7 @@ QWidget* QCamMax::buildGUI(QWidget * parent) {
    QPixmap* tmpIcon;
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    pauseBufferFill_->setToggleButton(true);
-   pauseBufferFill_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) pauseBufferFill_->setPixmap(*tmpIcon);
    delete tmpIcon;
    connect(pauseBufferFill_,SIGNAL(pressed()),this,SLOT(pause()));
 

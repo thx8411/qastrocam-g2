@@ -75,7 +75,9 @@ maxShift_(this)
    connect(&minShift_,SIGNAL(textChanged(const QString&)),this,SLOT(setMin(const QString&)));
    connect(&maxShift_,SIGNAL(textChanged(const QString&)),this,SLOT(setMax(const QString&)));
 
-   arrow_.setPixmap(*QCamUtilities::getIcon("movie_pause.png"));
+   QPixmap* tmpIcon;
+   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+   if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
 
    label_.setMinimumWidth(30);
 }
@@ -129,21 +131,27 @@ void TrackingControl::setMax(const QString & val) {
 }
 
 void TrackingControl::setMoveDir(MoveDir move) {
+   QPixmap* tmpIcon;
    switch(move) {
    case MovedNorth:
-      arrow_.setPixmap(*QCamUtilities::getIcon("up.png"));
+      tmpIcon=QCamUtilities::getIcon("up.png");
+      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
       break;
    case MovedSouth:
-      arrow_.setPixmap(*QCamUtilities::getIcon("down.png"));
+      tmpIcon=QCamUtilities::getIcon("down.png");
+      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
       break;
    case MovedEast:
-      arrow_.setPixmap(*QCamUtilities::getIcon("left.png"));
+      tmpIcon=QCamUtilities::getIcon("left.png");
+      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
       break;
    case MovedWest:
-      arrow_.setPixmap(*QCamUtilities::getIcon("right.png"));
+      tmpIcon=QCamUtilities::getIcon("right.png");
+      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
       break;
    case NotMoved:
-      arrow_.setPixmap(*QCamUtilities::getIcon("movie_pause.png"));
+      tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
       break;
    }
    //arrow_.setDisabled(move == NotMoved);
