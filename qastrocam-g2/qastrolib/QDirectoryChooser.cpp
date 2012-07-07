@@ -43,7 +43,7 @@ QDirectoryChooser::QDirectoryChooser(QWidget * parent):
    setDirectory(curDir);
    free(curDir);
    tmpIcon=QCamUtilities::getIcon("choose_directory.png");
-   setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) setPixmap(*tmpIcon);
    delete tmpIcon;
 }
 

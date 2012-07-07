@@ -56,7 +56,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    buttonUp_=new QLabel(simulatorArrows_,"U");
    tmpIcon=QCamUtilities::getIcon("north.png");
-   buttonUp_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) buttonUp_->setPixmap(*tmpIcon);
    buttonUp_->setDisabled(true);
    buttonUp_->setAlignment(Qt::AlignHCenter);
    delete tmpIcon;
@@ -64,7 +64,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    buttonDown_=new QLabel(simulatorArrows_,"D");
    tmpIcon=QCamUtilities::getIcon("south.png");
-   buttonDown_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) buttonDown_->setPixmap(*tmpIcon);
    buttonDown_->setDisabled(true);
    buttonDown_->setAlignment(Qt::AlignHCenter);
    delete tmpIcon;
@@ -72,21 +72,21 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    buttonLeft_=new QLabel(simulatorArrows_,"L");
    tmpIcon=QCamUtilities::getIcon("east.png");
-   buttonLeft_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) buttonLeft_->setPixmap(*tmpIcon);
    buttonLeft_->setDisabled(true);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonLeft_,1,0);
 
    buttonRight_=new QLabel(simulatorArrows_,"R");
    tmpIcon=QCamUtilities::getIcon("west.png");
-   buttonRight_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) buttonRight_->setPixmap(*tmpIcon);
    buttonRight_->setDisabled(true);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonRight_,1,2);
 
    buttonCenter_=new QLabel(simulatorArrows_,"C");
    tmpIcon=QCamUtilities::getIcon("directions.png");
-   buttonCenter_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) buttonCenter_->setPixmap(*tmpIcon);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonCenter_,1,1);
 

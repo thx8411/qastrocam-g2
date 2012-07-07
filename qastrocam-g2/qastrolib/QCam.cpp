@@ -311,7 +311,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QToolTip::add(displayFramesButton_,"display frames");
    displayFramesButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayFrames.png");
-   displayFramesButton_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) displayFramesButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
    if (displayWindow_ && displayWindow_->isActive()) {
       cout << "set displayFramesButton_ on\n";
@@ -323,7 +323,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QToolTip::add(displayHistogramButton_,"display frames histograms,\nand focus information");
    displayHistogramButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayHistogram.png");
-   displayHistogramButton_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) displayHistogramButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
    displayHistogramButton_->setMinimumHeight(28);
    if (displayHistogramWindow_ && displayHistogramWindow_->isActive()) {
@@ -431,12 +431,12 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    QHBox * buttons2=new QHBox(saveGroup);
    snapshot_=new QPushButton("snapshot",buttons2);
    tmpIcon=QCamUtilities::getIcon("snapshot.png");
-   snapshot_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) snapshot_->setPixmap(*tmpIcon);
    delete tmpIcon;
    capture_=new QPushButton("capture",buttons2);
    capture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie.png");
-   capture_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) capture_->setPixmap(*tmpIcon);
    delete tmpIcon;
 
    pauseCapture_=new QPushButton("pause",buttons2);
@@ -444,7 +444,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
                  "Suspend the current capture");
    pauseCapture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   pauseCapture_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) pauseCapture_->setPixmap(*tmpIcon);
    delete tmpIcon;
    capturedFrame_=new QLCDNumber(buttons2);
    capturedFrame_->setSegmentStyle(QLCDNumber::Flat);

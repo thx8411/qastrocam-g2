@@ -36,7 +36,7 @@ QFileChooser::QFileChooser(QWidget * parent, int type):
    QPixmap* tmpIcon;
    connect(this,SIGNAL(pressed()),this,SLOT(selectFile()));
    tmpIcon=QCamUtilities::getIcon("choose_directory.png");
-   setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) setPixmap(*tmpIcon);
    delete tmpIcon;
    fileType=type;
 }

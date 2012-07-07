@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2012   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -61,19 +61,19 @@ void QTelescope::buildGUI(QWidget * parent) {
    arrowsLayout_=new QGridLayout(arrows_,3,3);
    upButton_=new QPushButton(arrows_,"U");
    tmpIcon=QCamUtilities::getIcon("up.png");
-   upButton_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) upButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
    downButton_=new QPushButton(arrows_,"D");
    tmpIcon=QCamUtilities::getIcon("down.png");
-   downButton_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) downButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
    leftButton_=new QPushButton(arrows_,"L");
    tmpIcon=QCamUtilities::getIcon("left.png");
-   leftButton_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) leftButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
    rightButton_=new QPushButton(arrows_,"R");
    tmpIcon=QCamUtilities::getIcon("right.png");
-   rightButton_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) rightButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
    arrowsLayout_->addWidget(upButton_,0,1);
    arrowsLayout_->addWidget(downButton_,2,1);
