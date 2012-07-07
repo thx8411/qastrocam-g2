@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2012 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -78,6 +78,7 @@ maxShift_(this)
    QPixmap* tmpIcon;
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
+   delete(tmpIcon);
 
    label_.setMinimumWidth(30);
 }
@@ -154,6 +155,7 @@ void TrackingControl::setMoveDir(MoveDir move) {
       if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
       break;
    }
+   delete(tmpIcon);
    //arrow_.setDisabled(move == NotMoved);
 }
 
