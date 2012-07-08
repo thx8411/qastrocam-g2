@@ -34,7 +34,7 @@ MA  02110-1301, USA.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <linux/videodev.h>
+#include <linux/videodev2.h>
 
 #include "jmemsrc.hpp"
 
@@ -98,6 +98,8 @@ public:
       supportCropping=(1<<8)
    };
    static const int DefaultOptions;
+   // camera detection
+   static QCam * openBestDevice(const char * devpath = "/dev/video0");
    // constructor
    QCamV4L2(const char * devpath="/dev/video0",
            unsigned long options =  DefaultOptions /* cf QCamV4L::options */);

@@ -25,7 +25,7 @@ TMP_DESTDIR=../lib
 OTHERINC=-I/usr/include/SDL
 OTHERLIB=
 
-OBJ_QT = QCam.o QCamSlider.o QCamV4L.o QCamVesta.o QCamAdd.o \
+OBJ_QT = QCam.o QCamSlider.o QCamVesta.o QCamAdd.o \
          QCamRadioBox.o CamHistogram.o QCamClient.o QHistogram.o \
          QCamDisplay.o QCamFindShift.o QCamFindShift_barycentre.o \
          QTelescope.o QTelescopeAutostar.o QTelescopeAPM.o \

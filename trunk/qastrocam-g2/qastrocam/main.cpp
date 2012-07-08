@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 #include "QCamSimulator.hpp"
 #include "QCamQHY5.hpp"
 #include "QCamQHY6.hpp"
-#include "QCamV4L.hpp"
+//#include "QCamV4L.hpp"
 #include "QCamVesta.hpp"
 #include "qastrocamVersion.hpp"
 #include "QCamAdd.hpp"
@@ -462,7 +462,7 @@ int main(int argc, char ** argv) {
          cam = new QCamSimulator();
    } else {
       // find the best V4L device
-      cam = QCamV4L::openBestDevice(videoDeviceName.c_str());
+      cam = QCamV4L2::openBestDevice(videoDeviceName.c_str());
       if (cam == NULL) {
          QMessageBox::information(0,"Qastrocam-g2","No camera detected\nSettings panel only");
          cout << "No camera detected" <<endl;

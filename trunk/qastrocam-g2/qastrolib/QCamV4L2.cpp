@@ -354,18 +354,24 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    }
    if(frameRate_<=0) {
       cout << "unable to get video frame rate" << endl;
+
+      // V4L1 ioctls, removed
+
       // try to get framerate for pwc
-      struct video_window window_;
-      memset(&window_,0,sizeof(struct video_window));
+      //struct video_window window_;
+      //memset(&window_,0,sizeof(struct video_window));
       // v4l
-      if(ioctl(device_,VIDIOCGWIN, &window_)==0) {
-         frameRate_=(window_.flags&/*PWC_FPS_FRMASK*/0x00FF0000)>>/*PWC_FPS_SHIFT*/16;
-         if(frameRate_<=0)
-            frameRate_=10;
-      } else {
-         frameRate_=10;
-         cout <<  "Using default Framerate: " << frameRate_ << " fps" << endl;
-      }
+      //if(ioctl(device_,VIDIOCGWIN, &window_)==0) {
+      //   frameRate_=(window_.flags&/*PWC_FPS_FRMASK*/0x00FF0000)>>/*PWC_FPS_SHIFT*/16;
+      //   if(frameRate_<=0)
+      //      frameRate_=10;
+      //} else {
+
+      frameRate_=10;
+      cout <<  "Using default Framerate: " << frameRate_ << " fps" << endl;
+
+      //}
+
       cout << endl;
    } else
       cout <<  "Using Framerate : " << frameRate_ << " fps" << endl << endl;
