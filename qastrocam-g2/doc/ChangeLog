@@ -1,5 +1,6 @@
-4.9beta20110115
+4.9beta20120706
 
+  - missing icons segfault bug fixed
   - QHY6 support added (imager and telescope)
   - QHY5's bands filter added
   - the sound alert can be disabled
