@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2009-2012   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -27,19 +27,19 @@ MA  02110-1301, USA.
 #include <qvbox.h>
 #include <qhgroupbox.h>
 
-#include <qwtplot3d-qt3/qwt3d_surfaceplot.h>
+//#include <qwtplot3d-qt3/qwt3d_surfaceplot.h>
 
 #include "QCam.hpp"
 #include "QCamSelection.hpp"
 
 //
-using namespace Qwt3D;
+//using namespace Qwt3D;
 
-class FocusPlot : public SurfacePlot
-{
-  public:
-    FocusPlot();
-};
+//class FocusPlot : public SurfacePlot
+//{
+//  public:
+//    FocusPlot();
+//};
 //
 
 class QCamFocus : public QObject {

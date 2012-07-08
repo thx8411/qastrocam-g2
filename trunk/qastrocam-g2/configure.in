@@ -110,12 +110,6 @@ then
 fi
 AC_CHECK_HEADERS(avifile.h)
 
-# qwtplot
-AC_CHECK_HEADER(qwtplot3d-qt3/qwt3d_global.h,,[AC_MSG_ERROR([cannot find qwtplot headers])])
-CXXFLAGS="$CXXFLAGS -L /usr/include/qwtplot3d-qt3 "
-CPPFLAGS="$CPPFLAGS -L /usr/include/qwtplot3d-qt3 "
-LDFLAGS="$LDFLAGS -lqwtplot3d-qt3 "
-
 # libusb
 AC_CHECK_HEADER(usb.h,,[AC_MSG_ERROR([cannot find libusb headers])])
 LDFLAGS="$LDFLAGS -lusb "

@@ -1,5 +1,6 @@
-4.9beta20120707
+4.9beta20120708
 
+  - qwtplot3d no more needed
   - V4L1 not supported anymore
   - missing icons segfault bug fixed
   - QHY6 support added (imager and telescope)

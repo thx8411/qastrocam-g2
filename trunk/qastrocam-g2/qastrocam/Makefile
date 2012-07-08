@@ -27,7 +27,7 @@ OBJ_asm =
 OBJ_c =
 
 OTHERINC=-I../qastrolib
-OTHERLIB=-L../lib -lqastro -lX11 -lSDL -laviplay -lqwtplot3d-qt3  -lusb -lcfitsio
+OTHERLIB=-L../lib -lqastro -lX11 -lSDL -laviplay -lusb -lcfitsio
 
 EXTERNAL_DEPENDENCIES=../lib/libqastro.a
 
