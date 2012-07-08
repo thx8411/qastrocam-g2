@@ -2,14 +2,14 @@ Source: qastrocam-g2
 Section: graphics
 Priority: optional
 Maintainer: Blaise-Florentin Collin <thx8411@users.sourceforge.net>
-Build-Depends: debhelper (>= 4.0.0), libqt3-dev|libqt3-mt-dev, libsdl1.2-dev, libavifile-0.7-dev|libavifile0.7-dev, libcfitsio3-dev, libdts-dev, texlive, libqwtplot3d-qt3-dev, libusb-dev
+Build-Depends: debhelper (>= 4.0.0), libqt3-dev|libqt3-mt-dev, libsdl1.2-dev, libavifile-0.7-dev|libavifile0.7-dev, libcfitsio3-dev, libdts-dev, texlive, libusb-dev
 Standards-Version: 3.6.0
 
 Package: qastrocam-g2
 Architecture: any
 Section: graphics
 Priority: optional
-Depends: libavifile-0.7c2 (>= 1:0.7.47.20070718), libc6 (>= 2.7), libcfitsio3, libgcc1 (>= 1:4.1.1), libjpeg62, libqt3-mt (>= 3:3.3.8-b), libsdl1.2debian (>= 1.2.10-1), libstdc++6  (>= 4.2.1), libx11-6, libqwtplot3d-qt3 | libqwtplot3d-qt3-0 , libusb-0.1-4 (>= 2:0.1.12)
+Depends: libavifile-0.7c2 (>= 1:0.7.47.20070718), libc6 (>= 2.7), libcfitsio3, libgcc1 (>= 1:4.1.1), libjpeg62, libqt3-mt (>= 3:3.3.8-b), libsdl1.2debian (>= 1.2.10-1), libstdc++6  (>= 4.2.1), libx11-6, libusb-0.1-4 (>= 2:0.1.12)
 Recommends: avifile-win32-plugin (>= 1:0.7.47), nas
 Replaces: astroavibrowser, w32codecs
 Description: Webcam capture software for astronomy
