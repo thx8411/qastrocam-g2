@@ -1,5 +1,6 @@
-4.9beta20120706
+4.9beta20120707
 
+  - V4L1 not supported anymore
   - missing icons segfault bug fixed
   - QHY6 support added (imager and telescope)
   - QHY5's bands filter added
