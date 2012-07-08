@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamV4L.hpp"
+//#include "QCamV4L.hpp"
 #include "QCamV4L2.hpp"
 #include "QCamV4L2lx.hpp"
 #include "QCamV4L2fi.hpp"
@@ -33,7 +33,7 @@ MA  02110-1301, USA.
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <linux/videodev.h>
+#include <linux/videodev2.h>
 #include "SettingsBackup.hpp"
 
 #define CRITICAL_INTEGRATION_TIME	5.0
@@ -42,7 +42,7 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 // Creat the best QCamV4l object depending on the device
-QCam * QCamV4L::openBestDevice(const char * devpath) {
+QCam * QCamV4L2::openBestDevice(const char * devpath) {
    int cam_fd;
    int palette;
    QCam * camFound=NULL;
@@ -187,8 +187,8 @@ QCam * QCamV4L::openBestDevice(const char * devpath) {
       }
    }
    // else using V4L generic
-   cout << "Using generic V4L" << endl;
-   close(cam_fd);
-   camFound = new QCamV4L(devpath);
-   return(camFound);
+   //cout << "Using generic V4L" << endl;
+   //close(cam_fd);
+   //camFound = new QCamV4L(devpath);
+   //return(camFound);
 }

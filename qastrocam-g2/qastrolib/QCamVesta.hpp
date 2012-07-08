@@ -28,7 +28,7 @@ MA  02110-1301, USA.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <linux/videodev.h>
+#include <linux/videodev2.h>
 
 #include "pwc-ioctl.h"
 
@@ -65,7 +65,7 @@ public:
    void setSCmodImpl(SCmod *impl) {SCmodCtrl_=impl;}
    const QSize * getAllowedSize() const;
 protected:
-   struct video_window window_;
+   //struct video_window window_;
    QWidget *  buildGUI(QWidget * parent);
    virtual void refreshPictureSettings();
    friend class SCmodTucLed;

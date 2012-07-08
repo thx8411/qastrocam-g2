@@ -70,9 +70,9 @@ QCamVesta::QCamVesta(const char * devpath):
          }
       }
       if (!IsPhilips) {
-      QMessageBox::information(0,"Qastrocam-g2","QCamVesta::QCamVesta() called on a non Philips Webcam.\ndid you use QCamV4L::openBestDevice() to open your device?");
+      QMessageBox::information(0,"Qastrocam-g2","QCamVesta::QCamVesta() called on a non Philips Webcam.\ndid you use QCamV4L2::openBestDevice() to open your device?");
          cout << "QCamVesta::QCamVesta() called on a non Philips Webcam.\n"
-              << "did you use QCamV4L::openBestDevice() to open your device?"
+              << "did you use QCamV4L2::openBestDevice() to open your device?"
               << endl;
          exit(1);
       }
@@ -91,10 +91,12 @@ QCamVesta::QCamVesta(const char * devpath):
    getWhiteBalance();
    lastGain_=getGain();
 
+   // must be rewritten for V4L2
+
    // read the window_ values
    // generic V4L don't do it anymore
-   if(ioctl(device_,VIDIOCGWIN, &window_))
-      perror("ioctl (VIDIOCGWIN)");
+   //if(ioctl(device_,VIDIOCGWIN, &window_))
+      //perror("ioctl (VIDIOCGWIN)");
 }
 
 
@@ -335,6 +337,11 @@ int QCamVesta::getGama() const {
 }
 
 void QCamVesta::setFrameRate(int value) {
+
+   // must be rewritten for V4L2
+
+
+   /*
    int res;
    // update the window_
    if(ioctl(device_,VIDIOCGWIN, &window_))
@@ -356,10 +363,13 @@ void QCamVesta::setFrameRate(int value) {
       setProperty("FrameRateSecond",value/(double)multiplicateur_);
       emit exposureTime(multiplicateur_/(double)getFrameRate());
    }
+   */
 }
 
 int QCamVesta::getFrameRate() const {
-   return ((window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT);
+
+   // must be rewritten for V4L2
+   return (0/*(window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT*/);
 }
 
 void QCamVesta::getWhiteBalance() {
