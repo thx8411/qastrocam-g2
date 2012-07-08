@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2009-2012   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -58,16 +58,16 @@ QCamVesta::QCamVesta(const char * devpath):
    {
       /* sanity check */
       bool IsPhilips = false;
-      struct pwc_probe probe;
+      //struct pwc_probe probe;
       if (sscanf((char*)v4l2_cap_.card, "Philips %d webcam", &type_) == 1) {
          /* original phillips */
          IsPhilips = true;
-      } else if (ioctl(device_, VIDIOCPWCPROBE, &probe) == 0) {
-         /* an OEM clone ? */
-         if (!strcmp((char*)v4l2_cap_.card,probe.name)) {
-           IsPhilips = true;
-           type_=probe.type;
-         }
+      //} else if (ioctl(device_, VIDIOCPWCPROBE, &probe) == 0) {
+      //   /* an OEM clone ? */
+      //   if (!strcmp((char*)v4l2_cap_.card,probe.name)) {
+      //     IsPhilips = true;
+      //     type_=probe.type;
+      //   }
       }
       if (!IsPhilips) {
       QMessageBox::information(0,"Qastrocam-g2","QCamVesta::QCamVesta() called on a non Philips Webcam.\ndid you use QCamV4L2::openBestDevice() to open your device?");
@@ -87,7 +87,7 @@ QCamVesta::QCamVesta(const char * devpath):
    refreshGui_=true;
    haveLeds_= (type_ >= 730);
    setLed(0,255);
-   setWhiteBalanceMode(PWC_WB_AUTO);
+   //setWhiteBalanceMode(PWC_WB_AUTO);
    getWhiteBalance();
    lastGain_=getGain();
 
@@ -173,19 +173,19 @@ void QCamVesta::refreshPictureSettings() {
 }
 
 void QCamVesta::saveSettings() {
-   if (ioctl(device_, VIDIOCPWCSUSER)==-1) {
-      perror("VIDIOCPWCSUSER");
-   }
+   //if (ioctl(device_, VIDIOCPWCSUSER)==-1) {
+   //   perror("VIDIOCPWCSUSER");
+   //}
 }
 
 void QCamVesta::restoreSettings() {
-   ioctl(device_, VIDIOCPWCRUSER);
+   //ioctl(device_, VIDIOCPWCRUSER);
    refreshPictureSettings();
    refreshGui_=true;
 }
 
 void QCamVesta::restoreFactorySettings() {
-   ioctl(device_, VIDIOCPWCFACTORY);
+   //ioctl(device_, VIDIOCPWCFACTORY);
    setBestQuality();
    refreshPictureSettings();
    refreshGui_=true;
@@ -197,16 +197,17 @@ void QCamVesta::setLiveWhiteBalance(bool val) {
 }
 
 void QCamVesta::setGain(int val) {
-   if(-1==ioctl(device_, VIDIOCPWCSAGC, &val)) {
-      perror("VIDIOCPWCSAGC");
-   } else {
-      lastGain_=val;
-   }
+   //if(-1==ioctl(device_, VIDIOCPWCSAGC, &val)) {
+   //   perror("VIDIOCPWCSAGC");
+   //} else {
+   //   lastGain_=val;
+   //}
 }
 
 int QCamVesta::getGain() const {
-   int gain;
+   int gain=0;
    static int cpt=0;
+   /*
    if ((cpt%4)==0) {
       if (-1==ioctl(device_, VIDIOCPWCGAGC, &gain)) {
          perror("VIDIOCPWCGAGC");
@@ -220,15 +221,16 @@ int QCamVesta::getGain() const {
       gain=lastGain_;
    }
    if (gain < 0) gain*=-1;
+   */
    return gain;
 }
 
 void QCamVesta::setExposure(int val) {
-   if (-1==ioctl(device_, VIDIOCPWCSSHUTTER, &val)) {
-      perror("VIDIOCPWCSSHUTTER");
-   } else {
-      setProperty("Exposure",val,false);
-   }
+   //if (-1==ioctl(device_, VIDIOCPWCSSHUTTER, &val)) {
+   //   perror("VIDIOCPWCSSHUTTER");
+   //} else {
+   //   setProperty("Exposure",val,false);
+   //}
 }
 
 /*
@@ -241,44 +243,44 @@ int QCamVesta::getExposure() const {
 */
 
 void QCamVesta::setCompression(int val) {
-   ioctl(device_, VIDIOCPWCSCQUAL, &val);
+   //ioctl(device_, VIDIOCPWCSCQUAL, &val);
 }
 
 int QCamVesta::getCompression() const {
-   int gain;
-   ioctl(device_, VIDIOCPWCGCQUAL , &gain);
+   int gain=0;
+   //ioctl(device_, VIDIOCPWCGCQUAL , &gain);
    if (gain < 0) gain*=-1;
    return gain;
 }
 
 void QCamVesta::setNoiseRemoval(int val) {
-   if (-1 == ioctl(device_, VIDIOCPWCSDYNNOISE, &val)) {
-       perror("VIDIOCPWCGDYNNOISE");
-   }
-   emit(sharpnessChange(getSharpness()));
+   //if (-1 == ioctl(device_, VIDIOCPWCSDYNNOISE, &val)) {
+   //    perror("VIDIOCPWCGDYNNOISE");
+   //}
+   //emit(sharpnessChange(getSharpness()));
 }
 
 int QCamVesta::getNoiseRemoval() const {
-   int gain;
-   if (-1 == ioctl(device_, VIDIOCPWCGDYNNOISE , &gain)) {
-      perror("VIDIOCPWCGDYNNOISE");
-   }
+   int gain=0;
+   //if (-1 == ioctl(device_, VIDIOCPWCGDYNNOISE , &gain)) {
+   //   perror("VIDIOCPWCGDYNNOISE");
+   //}
    cout <<"get noise = "<<gain<<endl;
    return gain;
 }
 
 void QCamVesta::setSharpness(int val) {
-   if (-1 == ioctl(device_, VIDIOCPWCSCONTOUR, &val)) {
-       perror("VIDIOCPWCSCONTOUR");
-   }
-   emit(noiseRemovalChange(getNoiseRemoval()));
+   //if (-1 == ioctl(device_, VIDIOCPWCSCONTOUR, &val)) {
+   //    perror("VIDIOCPWCSCONTOUR");
+   //}
+   //emit(noiseRemovalChange(getNoiseRemoval()));
 }
 
 int QCamVesta::getSharpness() const {
-   int gain;
-   if (-1 == ioctl(device_, VIDIOCPWCGCONTOUR, &gain)) {
-      perror("VIDIOCPWCGCONTOUR");
-   }
+   int gain=0;
+   //if (-1 == ioctl(device_, VIDIOCPWCGCONTOUR, &gain)) {
+   //   perror("VIDIOCPWCGCONTOUR");
+   //}
    cout <<"get sharpness = "<<gain<<endl;
    return gain;
 }
@@ -286,33 +288,33 @@ int QCamVesta::getSharpness() const {
 void QCamVesta::setBackLight(bool val) {
    static int on=1;
    static int off=0;
-   if (-1 == ioctl(device_,VIDIOCPWCSBACKLIGHT, &  val?&on:&off)) {
-      perror("VIDIOCPWCSBACKLIGHT");
-   }
+   //if (-1 == ioctl(device_,VIDIOCPWCSBACKLIGHT, &  val?&on:&off)) {
+   //   perror("VIDIOCPWCSBACKLIGHT");
+   //}
 }
 
 bool QCamVesta::getBackLight() const {
-   int val;
-   if (-1 == ioctl(device_,VIDIOCPWCGBACKLIGHT, & val)) {
-      perror("VIDIOCPWCSBACKLIGHT");
-   }
+   int val=0;
+   //if (-1 == ioctl(device_,VIDIOCPWCGBACKLIGHT, & val)) {
+   //   perror("VIDIOCPWCSBACKLIGHT");
+   //}
    return val !=0;
 }
 
 void QCamVesta::setFlicker(bool val) {
    static int on=1;
    static int off=0;
-   if (-1 == ioctl(device_,VIDIOCPWCSFLICKER, val?&on:&off)) {
-      perror("VIDIOCPWCSFLICKER");
-   }
+   //if (-1 == ioctl(device_,VIDIOCPWCSFLICKER, val?&on:&off)) {
+   //   perror("VIDIOCPWCSFLICKER");
+   //}
 }
 
 bool QCamVesta::getFlicker() const {
-   int val;
-   if (-1 == ioctl(device_,VIDIOCPWCGFLICKER, & val)) {
-      perror("VIDIOCPWCGFLICKER");
-   }
-   return val !=0;
+   int val=0;
+   //if (-1 == ioctl(device_,VIDIOCPWCGFLICKER, & val)) {
+   //   perror("VIDIOCPWCGFLICKER");
+   //}
+   return(val !=0);
 }
 
 void QCamVesta::setGama(int val) {
@@ -337,9 +339,7 @@ int QCamVesta::getGama() const {
 }
 
 void QCamVesta::setFrameRate(int value) {
-
    // must be rewritten for V4L2
-
 
    /*
    int res;
@@ -373,7 +373,7 @@ int QCamVesta::getFrameRate() const {
 }
 
 void QCamVesta::getWhiteBalance() {
-   struct pwc_whitebalance tmp_whitebalance;
+/*   struct pwc_whitebalance tmp_whitebalance;
    tmp_whitebalance.mode
       =tmp_whitebalance.manual_red
       =tmp_whitebalance.manual_blue
@@ -386,7 +386,7 @@ void QCamVesta::getWhiteBalance() {
       //remoteCTRLWhiteBalance_->hide();
    } else {
       /* manual_red and manual_blue are garbage :-( */
-      whiteBalanceMode_=tmp_whitebalance.mode;
+/*      whiteBalanceMode_=tmp_whitebalance.mode;
       switch(whiteBalanceMode_) {
          case PWC_WB_INDOOR:
             setProperty("WhiteBalanceMode","Indor");
@@ -432,10 +432,11 @@ void QCamVesta::getWhiteBalance() {
          }
       }
    }
+   */
 }
 
 void QCamVesta::setWhiteBalance() {
-   struct pwc_whitebalance wb;
+   /*struct pwc_whitebalance wb;
    memset(&wb,0,sizeof(struct pwc_whitebalance));
    wb.mode=whiteBalanceMode_;
    if (wb.mode == PWC_WB_MANUAL) {
@@ -447,10 +448,11 @@ void QCamVesta::setWhiteBalance() {
       if (guiBuild()) remoteCTRLWhiteBalance_->hide();
    }
    emit whiteBalanceModeChange(whiteBalanceMode_);
+   */
 }
 
 void QCamVesta::setWhiteBalanceMode(int val) {
-   if (val == whiteBalanceMode_) {
+   /*if (val == whiteBalanceMode_) {
       return;
    }
    if (val != PWC_WB_AUTO) {
@@ -476,18 +478,19 @@ void QCamVesta::setWhiteBalanceMode(int val) {
    whiteBalanceMode_=val;
    setWhiteBalance();
    getWhiteBalance();
+   */
 }
 
 void QCamVesta::setWhiteBalanceRed(int val) {
-   whiteBalanceMode_ = PWC_WB_MANUAL;
-   whiteBalanceRed_=val;
-   setWhiteBalance();
+   //whiteBalanceMode_ = PWC_WB_MANUAL;
+   //whiteBalanceRed_=val;
+   //setWhiteBalance();
 }
 
 void QCamVesta::setWhiteBalanceBlue(int val) {
-   whiteBalanceMode_ = PWC_WB_MANUAL;
-   whiteBalanceBlue_=val;
-   setWhiteBalance();
+   //whiteBalanceMode_ = PWC_WB_MANUAL;
+   //whiteBalanceBlue_=val;
+   //setWhiteBalance();
 }
 
 void QCamVesta::setFrameRateMultiplicateur(int val) {
@@ -658,12 +661,12 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       QToolTip::add(remoteCTRLsharpness_,tr("Shaprness enhancement (0=none, 65536=high) (low value blurs image)"));
    }
 
-   int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
-   const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
-   remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),VctrlBox,5,wbValue,wbLabel,5);
+   //int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
+   //const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
+   //remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),VctrlBox,5,wbValue,wbLabel,5);
 
-   connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),this,SLOT(setWhiteBalanceMode(int)));
-   connect(this,SIGNAL(whiteBalanceModeChange(int)),remoteCTRLWhiteBalance_,SLOT(update(int)));
+   //connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),this,SLOT(setWhiteBalanceMode(int)));
+   //connect(this,SIGNAL(whiteBalanceModeChange(int)),remoteCTRLWhiteBalance_,SLOT(update(int)));
 
    QHBox * whiteBalanceSliders = new QHBox(remoteCTRLWhiteBalance_);
    QCheckBox * liveWBupdateB = new QCheckBox(tr("live"),whiteBalanceSliders);
@@ -745,12 +748,12 @@ void QCamVesta::setBestQuality() {
 
 void QCamVesta::setLed(int on, int off) const {
    if (haveLeds_) {
-      struct pwc_leds leds;
-      leds.led_on=on;
-      leds.led_off=off;
-      if (ioctl(device_, VIDIOCPWCSLED, &leds)) {
-         haveLeds_=false;
-      }
+      //struct pwc_leds leds;
+      //leds.led_on=on;
+      //leds.led_off=off;
+      //if (ioctl(device_, VIDIOCPWCSLED, &leds)) {
+      //   haveLeds_=false;
+      //}
    }
 }
 

@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2012   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -20,7 +20,6 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-//#include "QCamV4L.hpp"
 #include "QCamV4L2.hpp"
 #include "QCamV4L2lx.hpp"
 #include "QCamV4L2fi.hpp"
@@ -56,7 +55,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
    struct v4l2_capability vcap;
    // if V4L2 api supported
    if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
-      struct pwc_probe probe;
+      //struct pwc_probe probe;
       int type;
       bool IsPhilips = false;
 
@@ -70,12 +69,12 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
       if (sscanf((char*)vcap.card, "Philips %d webcam", &type) == 1) {
          //original phillips
          IsPhilips = true;
-      } else if (ioctl(cam_fd, VIDIOCPWCPROBE, &probe) == 0) {
+      //} else if (ioctl(cam_fd, VIDIOCPWCPROBE, &probe) == 0) {
          // an OEM clone ?
-         if (!strcmp((char*)vcap.card,probe.name)) {
-            IsPhilips = true;
-            type=probe.type;
-         }
+      //   if (!strcmp((char*)vcap.card,probe.name)) {
+      //      IsPhilips = true;
+      //      type=probe.type;
+      //   }
       }
       if (IsPhilips) {
          cout << "Philips webcam type " << type << " detected." << endl;

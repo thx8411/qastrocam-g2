@@ -30,8 +30,6 @@ MA  02110-1301, USA.
 #include <stdlib.h>
 #include <linux/videodev2.h>
 
-#include "pwc-ioctl.h"
-
 #include "QCamV4L2.hpp"
 
 class QCamSlider;
