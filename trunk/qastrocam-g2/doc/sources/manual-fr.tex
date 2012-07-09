@@ -452,6 +452,14 @@ modifi\'e par l'utilisation du module de pose longue.
 \item libusb-dev
 \end{itemize}
 
+\paragraph*{}
+Pour compiler qastrocam-g2, il vous faut d'abord g\'en\'erer les Makefile,
+ avec la commande make configure-plateforme. La commande make vous permet 
+alors de g\'en\'erer le binaire. Pour g\'en\'erer un package debian, utilisez
+la commande fakeroot ./debian/rules binary. Le package debhelper est alors 
+n\'ec\'essaire. Pour g\'en\'erer cette documentation, vous avez besoin du
+package texlive.
+
 \section{Configuration de la plate-forme}
 
 \section{Compilation et instalation}
