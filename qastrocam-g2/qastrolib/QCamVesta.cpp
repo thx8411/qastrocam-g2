@@ -62,13 +62,12 @@ QCamVesta::QCamVesta(const char * devpath):
       if (sscanf((char*)v4l2_cap_.card, "Philips %d webcam", &type_) == 1) {
          /* original phillips */
          IsPhilips = true;
-      //} else if (ioctl(device_, VIDIOCPWCPROBE, &probe) == 0) {
-      //   /* an OEM clone ? */
-      //   if (!strcmp((char*)v4l2_cap_.card,probe.name)) {
-      //     IsPhilips = true;
-      //     type_=probe.type;
-      //   }
+      } else if (v4l2_cap_.driver[0]=='p' && v4l2_cap_.driver[1]=='w' && v4l2_cap_.driver[2]=='c') {
+         // an OEM clone
+         IsPhilips = true;
+         type_=0; // OEM camera
       }
+
       if (!IsPhilips) {
       QMessageBox::information(0,"Qastrocam-g2","QCamVesta::QCamVesta() called on a non Philips Webcam.\ndid you use QCamV4L2::openBestDevice() to open your device?");
          cout << "QCamVesta::QCamVesta() called on a non Philips Webcam.\n"
@@ -92,7 +91,6 @@ QCamVesta::QCamVesta(const char * devpath):
    lastGain_=getGain();
 
    // must be rewritten for V4L2
-
    // read the window_ values
    // generic V4L don't do it anymore
    //if(ioctl(device_,VIDIOCGWIN, &window_))
@@ -123,16 +121,16 @@ bool QCamVesta::updateFrame() {
          int tmpVal;
          setProperty("Gain",tmpVal=getGain(),false);
          emit gainChange(tmpVal);
+
          //emit exposureChange(getExposure());
          //setProperty("Gama",tmpVal=getGama());
          //emit gamaChange(tmpVal);
          //emit compressionChange(getCompression());
-         /*
-           setProperty("NoiseRemoval",tmpVal=getNoiseRemoval());
-           emit noiseRemovalChange(tmpVal);
-           setProperty("Sharpness",tmpVal=getSharpness());
-           emit sharpnessChange(tmpVal);
-         */
+         //setProperty("NoiseRemoval",tmpVal=getNoiseRemoval());
+         //emit noiseRemovalChange(tmpVal);
+         //setProperty("Sharpness",tmpVal=getSharpness());
+         //emit sharpnessChange(tmpVal);
+
          setProperty("FrameRateSecond",(tmpVal=getFrameRate())/(double)multiplicateur_);
          emit frameRateChange(tmpVal);
          if (liveWhiteBalance_ || refreshGui_) {
@@ -233,14 +231,14 @@ void QCamVesta::setExposure(int val) {
    //}
 }
 
-/*
+
 int QCamVesta::getExposure() const {
-   int gain;
-   ioctl(device_, VIDIOCPWCGSHUTTER, &gain);
-   if (gain < 0) gain*=-1;
+   int gain=0;
+   //ioctl(device_, VIDIOCPWCGSHUTTER, &gain);
+   //if (gain < 0) gain*=-1;
    return gain;
 }
-*/
+
 
 void QCamVesta::setCompression(int val) {
    //ioctl(device_, VIDIOCPWCSCQUAL, &val);
