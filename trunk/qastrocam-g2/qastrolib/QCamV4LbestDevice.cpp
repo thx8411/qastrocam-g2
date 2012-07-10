@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
 #include "QCamV4L2.hpp"
 #include "QCamV4L2lx.hpp"
 #include "QCamV4L2fi.hpp"
@@ -56,8 +55,8 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
    // if V4L2 api supported
    if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
       //struct pwc_probe probe;
-      int type;
-      bool IsPhilips = false;
+      int type=0;
+      bool IsPhilips=false;
 
       if (strcmp((char*)vcap.card, "AstroEasyCap") == 0) {
          cout << "AstroEasyCap driver detected" << endl;
@@ -69,15 +68,16 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
       if (sscanf((char*)vcap.card, "Philips %d webcam", &type) == 1) {
          //original phillips
          IsPhilips = true;
-      //} else if (ioctl(cam_fd, VIDIOCPWCPROBE, &probe) == 0) {
-         // an OEM clone ?
-      //   if (!strcmp((char*)vcap.card,probe.name)) {
-      //      IsPhilips = true;
-      //      type=probe.type;
-      //   }
+      } else if (vcap.driver[0]=='p' && vcap.driver[1]=='w' && vcap.driver[2]=='c') {
+         // if the driver is pwc, we have an OEM clone
+         IsPhilips = true;
       }
+
       if (IsPhilips) {
-         cout << "Philips webcam type " << type << " detected." << endl;
+         if(type!=0)
+            cout << "Philips webcam type " << type << " detected." << endl;
+         else
+            cout << "OEM Philips compatible webcam detected." << endl;
          close(cam_fd);
          camFound = new QCamVesta(devpath);
          return(camFound);
@@ -185,9 +185,6 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
          return(camFound);
       }
    }
-   // else using V4L generic
-   //cout << "Using generic V4L" << endl;
-   //close(cam_fd);
-   //camFound = new QCamV4L(devpath);
-   //return(camFound);
+   cout << "No camera found" << endl;
+   return(NULL);
 }

@@ -1,5 +1,3 @@
 Don't forget to :
 
-- check the framerate detection in QCamV4L2 (V4L1 removal)
-- check the static bestDevice function (V4L1 removal)
 - rewrite QCamVesta
