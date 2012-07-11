@@ -41,21 +41,23 @@ extern settingsBackup settings;
 
 // Creat the best QCamV4l object depending on the device
 QCam * QCamV4L2::openBestDevice(const char * devpath) {
+   struct v4l2_capability vcap;
    int cam_fd;
    int palette;
-   QCam * camFound=NULL;
+   QCam* camFound=NULL;
 
    // try to open the device
    if (-1 == (cam_fd=open(devpath,O_RDONLY))) {
       perror(devpath);
       return NULL;
    }
+
+
+   memset(&vcap,0,sizeof(v4l2_capability));
    // read device cap to get device name
-   struct v4l2_capability vcap;
    // if V4L2 api supported
    if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
-      //struct pwc_probe probe;
-      int type=0;
+      char type[32];
       bool IsPhilips=false;
 
       if (strcmp((char*)vcap.card, "AstroEasyCap") == 0) {
@@ -65,23 +67,21 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
          return(camFound);
       }
 
-      if (sscanf((char*)vcap.card, "Philips %d webcam", &type) == 1) {
+      if (sscanf((char*)vcap.card, "Philips %s webcam", &type) == 1) {
          //original phillips
+         cout << "Philips webcam type " << type << " detected." << endl;
          IsPhilips = true;
-      } else if (vcap.driver[0]=='p' && vcap.driver[1]=='w' && vcap.driver[2]=='c') {
+      } else if (strcmp((char*)vcap.driver,"pwc")==0) {
          // if the driver is pwc, we have an OEM clone
+         cout << "OEM Philips compatible webcam detected." << endl;
          IsPhilips = true;
       }
-
       if (IsPhilips) {
-         if(type!=0)
-            cout << "Philips webcam type " << type << " detected." << endl;
-         else
-            cout << "OEM Philips compatible webcam detected." << endl;
          close(cam_fd);
          camFound = new QCamVesta(devpath);
          return(camFound);
       }
+
       // looking for an OV511 device
       if (strncmp((char*)vcap.card,"OV511",5)==0) {
          cout << "webcam " << vcap.card << " detected." << endl;
