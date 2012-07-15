@@ -57,8 +57,10 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
    // read device cap to get device name
    // if V4L2 api supported
    if (ioctl(cam_fd, VIDIOC_QUERYCAP,&vcap )== 0) {
-      char type[32];
+      char* type;
       bool IsPhilips=false;
+
+      type=(char*)malloc(32);
 
       if (strcmp((char*)vcap.card, "AstroEasyCap") == 0) {
          cout << "AstroEasyCap driver detected" << endl;
@@ -67,7 +69,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
          return(camFound);
       }
 
-      if (sscanf((char*)vcap.card, "Philips %s webcam", &type) == 1) {
+      if (sscanf((char*)vcap.card, "Philips %s webcam", type) == 1) {
          //original phillips
          cout << "Philips webcam type " << type << " detected." << endl;
          IsPhilips = true;
@@ -78,9 +80,14 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
       }
       if (IsPhilips) {
          close(cam_fd);
-         camFound = new QCamVesta(devpath);
-         return(camFound);
+
+         // temp, just act as a standard V4L2 device, to avoid bus error
+         // QCamVesta has to be rewritten
+         //camFound = new QCamVesta(devpath);
+         //return(camFound);
       }
+
+      free(type);
 
       // looking for an OV511 device
       if (strncmp((char*)vcap.card,"OV511",5)==0) {
