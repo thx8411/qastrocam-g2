@@ -1,5 +1,6 @@
 qastrocam-g2 (4.9beta20120708) jaunty; urgency=low
 
+  * Philips Cameras act as simple V4L2 device to avoid bus error (tmp)
   * qwtplot3d no more needed
   * V4L1 not supported anymore
   * missing icons segfault bug fixed
