@@ -365,7 +365,6 @@ bool QHY5cam::plugged() {
             return(true);
       }
    }
-
    return(false);
 }
 
