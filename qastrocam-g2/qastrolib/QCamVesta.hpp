@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2012   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -61,9 +61,7 @@ public:
    int getFrameRate() const;
    int getType() const {return type_;}
    void setSCmodImpl(SCmod *impl) {SCmodCtrl_=impl;}
-   const QSize * getAllowedSize() const;
 protected:
-   //struct video_window window_;
    QWidget *  buildGUI(QWidget * parent);
    virtual void refreshPictureSettings();
    friend class SCmodTucLed;
@@ -106,8 +104,6 @@ private:
    int skippedFrame_;
    int type_;
    SCmod * SCmodCtrl_;
-   //bool rawBayerMode_;
-   uchar* mmapCapture();
 
 public slots:
    void setGain(int value);
@@ -135,13 +131,11 @@ public slots:
    void setLiveWhiteBalance(bool val);
    void setBackLight(bool val);
    void setFlicker(bool val);
-   //void activateRawBayerMode(bool val);
 protected slots:
    bool updateFrame();
 
 signals:
    void gainChange(int);
-   void exposureChange(int);
    void compressionChange(int);
    void noiseRemovalChange(int);
    void sharpnessChange(int);
