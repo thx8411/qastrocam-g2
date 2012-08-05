@@ -83,8 +83,8 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
 
          // temp, just act as a standard V4L2 device, to avoid bus error
          // QCamVesta has to be rewritten
-         //camFound = new QCamVesta(devpath);
-         //return(camFound);
+         camFound = new QCamVesta(devpath);
+         return(camFound);
       }
 
       free(type);

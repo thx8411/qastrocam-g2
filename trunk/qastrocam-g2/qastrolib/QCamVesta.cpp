@@ -49,6 +49,17 @@ MA  02110-1301, USA.
 #include "SCmodParPortPPdev.hpp"
 #include "QCamUtilities.hpp"
 
+// PWC WHITE BALANCE MODES
+
+#define PWC_WB_AUTO	0
+#define PWC_WB_INDOOR	1
+#define PWC_WB_OUTDOOR	2
+#define PWC_WB_FL	3
+#define PWC_WB_MANUAL	4
+
+
+// Vesta class
+
 QCamVesta::QCamVesta(const char * devpath):
    QCamV4L2(devpath,(ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveColor)) {
    SCmodCtrl_=NULL;
@@ -60,7 +71,6 @@ QCamVesta::QCamVesta(const char * devpath):
       // OEM camera
       type_=0;
 
-   //initRemoteControl(remoteCTRL_);
    multiplicateur_=1;
    if (exposureTimeLeft_) exposureTimeLeft_->hide();
    skippedFrame_=0;
@@ -69,15 +79,9 @@ QCamVesta::QCamVesta(const char * devpath):
    refreshGui_=true;
    haveLeds_= (type_ >= 730);
    setLed(0,255);
-   //setWhiteBalanceMode(PWC_WB_AUTO);
+   setWhiteBalanceMode(PWC_WB_AUTO);
    getWhiteBalance();
    lastGain_=getGain();
-
-   // must be rewritten for V4L2
-   // read the window_ values
-   // generic V4L don't do it anymore
-   //if(ioctl(device_,VIDIOCGWIN, &window_))
-      //perror("ioctl (VIDIOCGWIN)");
 }
 
 
@@ -99,26 +103,20 @@ bool QCamVesta::updateFrame() {
       return false;
    } else {
       if (QCamV4L2::updateFrame()) {
+         int tmpVal;
+
          skippedFrame_=0;
          if (multiplicateur_ > 1) {
             startAccumulation();
             if (guiBuild()) exposureTimeLeft_->reset();
          }
-         int tmpVal;
+
          setProperty("Gain",tmpVal=getGain(),false);
          emit gainChange(tmpVal);
 
-         //emit exposureChange(getExposure());
-         //setProperty("Gama",tmpVal=getGama());
-         //emit gamaChange(tmpVal);
-         //emit compressionChange(getCompression());
-         //setProperty("NoiseRemoval",tmpVal=getNoiseRemoval());
-         //emit noiseRemovalChange(tmpVal);
-         //setProperty("Sharpness",tmpVal=getSharpness());
-         //emit sharpnessChange(tmpVal);
-
          setProperty("FrameRateSecond",(tmpVal=getFrameRate())/(double)multiplicateur_);
          emit frameRateChange(tmpVal);
+
          if (liveWhiteBalance_ || refreshGui_) {
             getWhiteBalance();
          }
@@ -159,6 +157,7 @@ void QCamVesta::refreshPictureSettings() {
    getWhiteBalance();
 }
 
+// ************* TODO ***************
 void QCamVesta::saveSettings() {
 
    cout << "saveSettings" << endl;
@@ -167,7 +166,9 @@ void QCamVesta::saveSettings() {
    //   perror("VIDIOCPWCSUSER");
    //}
 }
+// **********************************
 
+// ************* TODO ***************
 void QCamVesta::restoreSettings() {
 
    cout << "restoreSettings" << endl;
@@ -176,7 +177,9 @@ void QCamVesta::restoreSettings() {
    refreshPictureSettings();
    refreshGui_=true;
 }
+// **********************************
 
+// ************* TODO ***************
 void QCamVesta::restoreFactorySettings() {
 
    cout << "restoreFactorySettings" << endl;
@@ -186,15 +189,14 @@ void QCamVesta::restoreFactorySettings() {
    refreshPictureSettings();
    refreshGui_=true;
 }
+// **********************************
 
 void QCamVesta::setLiveWhiteBalance(bool val) {
-
-   cout << "setLiveWhiteBalance" << endl;
-
    liveWhiteBalance_=val;
    getWhiteBalance();
 }
 
+// ************* TODO ***************
 void QCamVesta::setGain(int val) {
 
    cout << "setGain" << endl;
@@ -205,7 +207,9 @@ void QCamVesta::setGain(int val) {
    //   lastGain_=val;
    //}
 }
+// **********************************
 
+// ************* TODO ***************
 int QCamVesta::getGain() const {
    int gain=0;
    static int cpt=0;
@@ -229,7 +233,9 @@ int QCamVesta::getGain() const {
    */
    return gain;
 }
+// **********************************
 
+// ************* TODO ***************
 void QCamVesta::setExposure(int val) {
 
    cout << "setExposure" << endl;
@@ -240,8 +246,9 @@ void QCamVesta::setExposure(int val) {
    //   setProperty("Exposure",val,false);
    //}
 }
+// **********************************
 
-
+// ************* TODO ***************
 int QCamVesta::getExposure() const {
    int gain=0;
 
@@ -251,15 +258,18 @@ int QCamVesta::getExposure() const {
    //if (gain < 0) gain*=-1;
    return gain;
 }
+// **********************************
 
-
+// ************* TODO ***************
 void QCamVesta::setCompression(int val) {
 
    cout << "setCompression" << endl;
 
    //ioctl(device_, VIDIOCPWCSCQUAL, &val);
 }
+// **********************************
 
+// ************* TODO ***************
 int QCamVesta::getCompression() const {
    int gain=0;
 
@@ -269,7 +279,9 @@ int QCamVesta::getCompression() const {
    if (gain < 0) gain*=-1;
    return gain;
 }
+// **********************************
 
+// ************* TODO ***************
 void QCamVesta::setNoiseRemoval(int val) {
 
    cout << "setNoiseRemoval" << endl;
@@ -279,7 +291,9 @@ void QCamVesta::setNoiseRemoval(int val) {
    //}
    //emit(sharpnessChange(getSharpness()));
 }
+// **********************************
 
+// ************* TODO ****************
 int QCamVesta::getNoiseRemoval() const {
    int gain=0;
 
@@ -291,7 +305,9 @@ int QCamVesta::getNoiseRemoval() const {
    cout <<"get noise = "<<gain<<endl;
    return gain;
 }
+// ***********************************
 
+// ************* TODO ****************
 void QCamVesta::setSharpness(int val) {
 
    cout << "setSharpness" << endl;
@@ -301,7 +317,9 @@ void QCamVesta::setSharpness(int val) {
    //}
    //emit(noiseRemovalChange(getNoiseRemoval()));
 }
+// ***********************************
 
+// ************** TODO ***************
 int QCamVesta::getSharpness() const {
    int gain=0;
 
@@ -313,7 +331,9 @@ int QCamVesta::getSharpness() const {
    cout <<"get sharpness = "<<gain<<endl;
    return gain;
 }
+// ***********************************
 
+// ************* TODO **************
 void QCamVesta::setBackLight(bool val) {
    static int on=1;
    static int off=0;
@@ -324,7 +344,9 @@ void QCamVesta::setBackLight(bool val) {
    //   perror("VIDIOCPWCSBACKLIGHT");
    //}
 }
+// *********************************
 
+// ************* TODO **************
 bool QCamVesta::getBackLight() const {
    int val=0;
 
@@ -335,7 +357,9 @@ bool QCamVesta::getBackLight() const {
    //}
    return val !=0;
 }
+// *********************************
 
+// ************* TODO **************
 void QCamVesta::setFlicker(bool val) {
    static int on=1;
    static int off=0;
@@ -346,7 +370,9 @@ void QCamVesta::setFlicker(bool val) {
    //   perror("VIDIOCPWCSFLICKER");
    //}
 }
+// *********************************
 
+// ************** TODO ***************
 bool QCamVesta::getFlicker() const {
    int val=0;
 
@@ -357,11 +383,10 @@ bool QCamVesta::getFlicker() const {
    //}
    return(val !=0);
 }
+// ***********************************
 
 void QCamVesta::setGama(int val) {
    struct v4l2_control ctrl;
-
-   cout << "setGama" << endl;
 
    picture_.whiteness=val;
    ctrl.id=V4L2_CID_WHITENESS;
@@ -369,13 +394,10 @@ void QCamVesta::setGama(int val) {
    if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
       perror("");
    }
-   //updatePictureSettings();
 }
 
 int QCamVesta::getGama() const {
    struct v4l2_control ctrl;
-
-   cout << "getGama" << endl;
 
    ctrl.id=V4L2_CID_WHITENESS;
    ctrl.value=0;
@@ -385,11 +407,10 @@ int QCamVesta::getGama() const {
    return ctrl.value;
 }
 
+// *************** TODO ******************
 void QCamVesta::setFrameRate(int value) {
 
    cout << "setFrameRate" << endl;
-
-   // must be rewritten for V4L2
 
    /*
    int res;
@@ -415,15 +436,18 @@ void QCamVesta::setFrameRate(int value) {
    }
    */
 }
+// *********************************
 
+// ************ TODO ***************
 int QCamVesta::getFrameRate() const {
 
    cout << "getFrameRate" << endl;
 
-   // must be rewritten for V4L2
    return (0/*(window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT*/);
 }
+// *********************************
 
+// ************* TODO ****************
 void QCamVesta::getWhiteBalance() {
 
    cout << "getWhiteBalance" << endl;
@@ -489,7 +513,9 @@ void QCamVesta::getWhiteBalance() {
    }
    */
 }
+// *****************************
 
+// ********* TODO **************
 void QCamVesta::setWhiteBalance() {
 
    cout << "setWhiteBalance" << endl;
@@ -508,12 +534,10 @@ void QCamVesta::setWhiteBalance() {
    emit whiteBalanceModeChange(whiteBalanceMode_);
    */
 }
+// ******************************
 
 void QCamVesta::setWhiteBalanceMode(int val) {
-
-   cout << "setWhiteBalanceMode" << endl;
-
-   /*if (val == whiteBalanceMode_) {
+   if (val == whiteBalanceMode_) {
       return;
    }
    if (val != PWC_WB_AUTO) {
@@ -539,37 +563,25 @@ void QCamVesta::setWhiteBalanceMode(int val) {
    whiteBalanceMode_=val;
    setWhiteBalance();
    getWhiteBalance();
-   */
 }
 
 void QCamVesta::setWhiteBalanceRed(int val) {
-
-   cout << "setWhiteBalanceRed" << endl;
-
-   //whiteBalanceMode_ = PWC_WB_MANUAL;
-   //whiteBalanceRed_=val;
-   //setWhiteBalance();
+   whiteBalanceMode_ = PWC_WB_MANUAL;
+   whiteBalanceRed_=val;
+   setWhiteBalance();
 }
 
 void QCamVesta::setWhiteBalanceBlue(int val) {
-
-   cout << "setWhiteBalanceBlue" << endl;
-
-   //whiteBalanceMode_ = PWC_WB_MANUAL;
-   //whiteBalanceBlue_=val;
-   //setWhiteBalance();
+   whiteBalanceMode_ = PWC_WB_MANUAL;
+   whiteBalanceBlue_=val;
+   setWhiteBalance();
 }
 
 void QCamVesta::setFrameRateMultiplicateur(int val) {
-
-   cout << "setFrameRateMultiplicateur" << endl;
-
    if (SCmodCtrl_==NULL) { return;}
    if (multiplicateur_ == 1 && val>1) {
       SCmodCtrl_->enterLongPoseMode();
       if (guiBuild()) exposureTimeLeft_->show();
-      //emit(sharpnessChange(0));
-      //emit(noiseRemovalChange(2));
       startAccumulation();
    } else if (multiplicateur_ > 1 && val==1) {
       SCmodCtrl_->leaveLongPoseMode();
@@ -584,16 +596,10 @@ void QCamVesta::setFrameRateMultiplicateur(int val) {
 
 
 QCamVesta::~QCamVesta() {
-
-   cout << "destructor" << endl;
-
    delete SCmodCtrl_;
 }
 
 void QCamVesta::setSCmod(int value) {
-
-   cout << "setSCmod" << endl;
-
    if (SCmodCtrl_) {
       setFrameRateMultiplicateur(1);
       delete SCmodCtrl_;
@@ -633,29 +639,18 @@ void QCamVesta::setSCmod(int value) {
 
 void QCamVesta::setLongExposureTime(const QString& str) {
    float val;
-
-   cout << "setLongExposureTime" << endl;
-
    if (sscanf(str.latin1(),"%f",&val)!=1) {
       val=0.0;
    }
    int mult=(int)round(val*getFrameRate());
-   //float realTime=(float)mult/getFrameRate();
    if (mult <=1) {
       setFrameRateMultiplicateur(1);
    } else {
       setFrameRateMultiplicateur(mult);
    }
-   //longExposureTime_->setText(QString().sprintf("%1f",realTime));
 }
 
 void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
-
-   cout << "initRemoteConstrolLongExposure" << endl;
-
-   //QHGroupBox *  remoteCTRLframeRateGroup
-   //   = new QHGroupBox(tr("Long Exposure"),
-   //                    remoteCTRL);
    char tmp[32];
    longExposureTime_ = new  QLineEdit(remoteCTRL);
    longExposureTime_->setMaxLength(4);
@@ -664,12 +659,7 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
    longExposureTime_->setEnabled(false);
    connect(longExposureTime_,SIGNAL(textChanged(const QString&)),this,SLOT(setLongExposureTime(const QString&)));
    QToolTip::add(longExposureTime_,tr("exposure time in secondes (0 to disable)"));
-   /*
-     connect(remoteCTRLframeRateMultiplicateur_,SIGNAL(change(int)),
-     this,SLOT(setFrameRateMultiplicateur(int)));
-     connect(this,SIGNAL(frameRateMultiplicateurChange(int)),
-     remoteCTRLframeRateMultiplicateur_,SLOT(update(int)));
-   */
+
    exposureTimeLeft_=new QProgressBar(remoteCTRL);
    exposureTimeLeft_->hide();
    exposureTimeLeft_->setCenterIndicator(true);
@@ -688,18 +678,9 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
 }
 
 QWidget *  QCamVesta::buildGUI(QWidget * parent) {
-
-   cout << "buildGUI" << endl;
-
    QWidget * remoteCTRL=QCamV4L2::buildGUI(parent);
+   QGridBox * sliders= new QGridBox(VctrlBox,Qt::Vertical,3);
 
-   //QHGroupBox* vestaCtrl=new QHGroupBox("Vesta controls",remoteCTRL);
-   QGridBox * sliders= new QGridBox(/*vestaCtrl*/VctrlBox,Qt::Vertical,3);
-   /*
-   QHBox * sliders=new QHBox(remoteCTRL);
-   QVBox * left = new QVBox(sliders);
-   QVBox * right = new QVBox(sliders);
-   */
    if (QCamUtilities::expertMode()) {
       QCheckBox * backLight = new QCheckBox(tr("Back Light"),sliders);
       connect(backLight,SIGNAL(toggled(bool)),this,SLOT(setBackLight(bool)));
@@ -712,9 +693,6 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       QCheckBox * flicker = new QCheckBox(tr("Anti-flicker"),sliders);
       connect(flicker,SIGNAL(toggled(bool)),this,SLOT(setFlicker(bool)));
       QToolTip::add(flicker,tr("Suppress 'flickering' of the image when light with a fluo tube"));
-      //QCheckBox * rawBayer = new QCheckBox(tr("Raw Bayer"),sliders);
-      //connect(rawBayer,SIGNAL(toggled(bool)),this,SLOT(activateRawBayerMode(bool)));
-      //QToolTip::add(rawBayer,tr("switch off camera Bayer Matrix => RGB"));
    }
    remoteCTRLgama_=new QCamSlider(tr("Gamma"),false,sliders);
    // not very clean...but works
@@ -746,12 +724,12 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       QToolTip::add(remoteCTRLsharpness_,tr("Shaprness enhancement (0=none, 65536=high) (low value blurs image)"));
    }
 
-   //int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
-   //const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
-   //remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),VctrlBox,5,wbValue,wbLabel,5);
+   int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
+   const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
+   remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),VctrlBox,5,wbValue,wbLabel,5);
 
-   //connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),this,SLOT(setWhiteBalanceMode(int)));
-   //connect(this,SIGNAL(whiteBalanceModeChange(int)),remoteCTRLWhiteBalance_,SLOT(update(int)));
+   connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),this,SLOT(setWhiteBalanceMode(int)));
+   connect(this,SIGNAL(whiteBalanceModeChange(int)),remoteCTRLWhiteBalance_,SLOT(update(int)));
 
    QHBox * whiteBalanceSliders = new QHBox(remoteCTRLWhiteBalance_);
    QCheckBox * liveWBupdateB = new QCheckBox(tr("live"),whiteBalanceSliders);
@@ -778,10 +756,6 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    connect(this,SIGNAL(gainChange(int)),remoteCTRLgain_,SLOT(setValue(int)));
    connect(remoteCTRLgain_,SIGNAL(valueChange(int)),this,SLOT(setGain(int)));
 
-   /*
-     connect(this,SIGNAL(exposureChange(int)),remoteCTRLexposure_,
-     SLOT(setValue(int)));
-   */
    connect(remoteCTRLexposure_,SIGNAL(valueChange(int)),this,SLOT(setExposure(int)));
    connect(this,SIGNAL(gamaChange(int)),remoteCTRLgama_,SLOT(setValue(int)));
    connect(remoteCTRLgama_,SIGNAL(valueChange(int)),this,SLOT(setGama(int)));
@@ -826,14 +800,13 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
 }
 
 void QCamVesta::setBestQuality() {
-
-   cout << "setBestQuality" << endl;
-
    setNoiseRemoval(0);
    setSharpness(0);
    setCompression(0);
 }
 
+
+// ******* TODO *********
 void QCamVesta::setLed(int on, int off) const {
 
    cout << "setLed" << endl;
@@ -847,56 +820,17 @@ void QCamVesta::setLed(int on, int off) const {
       //}
    }
 }
+// **********************
 
 void QCamVesta::stopAccumulation() {
-
-   cout << "stopAccumulation" << endl;
-
    if (SCmodCtrl_) {
       SCmodCtrl_->stopAccumulation();
    }
 }
 
 void QCamVesta::startAccumulation() {
-
-   cout << "startAccumulation" << endl;
-
    if (SCmodCtrl_) {
       SCmodCtrl_->startAccumulation();
    }
 }
 
-const QSize * QCamVesta::getAllowedSize() const {
-
-   cout << "getAllowedSize" << endl;
-
-   if (sizeTable_==NULL) {
-      sizeTable_=new QSize[7];
-      int currentIndex=0;
-
-      if (getType()<700) sizeTable_[currentIndex++]=QSize(128,96);
-      sizeTable_[currentIndex++]=QSize(160,120);
-      if (getType()<700) sizeTable_[currentIndex++]=QSize(176,144);
-      sizeTable_[currentIndex++]=QSize(320,240);
-      if (getType()<700) sizeTable_[currentIndex++]=QSize(352,288);
-      sizeTable_[currentIndex++]=QSize(640,480);
-      sizeTable_[currentIndex++]=QSize(0,0);
-   }
-   return sizeTable_;
-}
-
-uchar* QCamVesta::mmapCapture() {
-   static v4l2_buffer buffer;
-
-   cout << "mmapCapture" << endl;
-
-   buffer.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
-   buffer.memory=V4L2_MEMORY_MMAP;
-   // enqueue previous buffer
-   //if(ioctl(device_, VIDIOC_QBUF,&buffer)!=0)
-   // dequeue new buffer
-   if(ioctl(device_, VIDIOC_DQBUF,&buffer)!=0)
-      perror("DQBUF");
-
-   return((uchar*)buffers[buffer.index].start);
-}
