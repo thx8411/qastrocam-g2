@@ -31,7 +31,6 @@ QCamMax::QCamMax(QCam* cam) {
    cam_=cam;
    connect(cam_,SIGNAL(newFrame()),this,SLOT(addNewFrame()));
    label("Max stacking");
-   //initRemoteControl(remoteCTRL_);
 
    paused_=false;
 }

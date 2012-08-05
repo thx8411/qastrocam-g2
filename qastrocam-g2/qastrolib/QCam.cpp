@@ -81,8 +81,6 @@ QCam::QCam() {
    displayHistogramButton_=NULL;
    sizeCombo=NULL;
    cropCombo=NULL;
-   //initRemoteControl();
-   //remoteCTRL_->show();
 #if HAVE_AVIFILE_H
    movieWritterAvi_=new QCamMovieAvi();
    movieWritterAviLossless_=new QCamMovieAviLossless();
