@@ -196,44 +196,43 @@ void QCamVesta::setLiveWhiteBalance(bool val) {
    getWhiteBalance();
 }
 
-// ************* TODO ***************
 void QCamVesta::setGain(int val) {
-
-   cout << "setGain" << endl;
-
-   //if(-1==ioctl(device_, VIDIOCPWCSAGC, &val)) {
-   //   perror("VIDIOCPWCSAGC");
-   //} else {
-   //   lastGain_=val;
-   //}
+   struct v4l2_control ctrl;
+   if(val==-1) {
+      // auto gain on
+      ctrl.id=V4L2_CID_AUTOGAIN;
+      ctrl.value=1;
+      if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+         perror("V4L2_CID_AUTOGAIN on");
+   } else {
+      // auto gain off
+      ctrl.id=V4L2_CID_AUTOGAIN;
+      ctrl.value=0;
+      if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+         perror("V4L2_CID_AUTOGAIN off");
+      //  gain setting
+      ctrl.id=V4L2_CID_GAIN;
+      ctrl.value=val%64;
+      if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
+         perror("V4L2_CID_GAIN setting");
+      } else
+         lastGain_=val;
+   }
 }
-// **********************************
 
-// ************* TODO ***************
 int QCamVesta::getGain() const {
    int gain=0;
-   static int cpt=0;
-
-   cout << "getGain" << endl;
-
-   /*
-   if ((cpt%4)==0) {
-      if (-1==ioctl(device_, VIDIOCPWCGAGC, &gain)) {
-         perror("VIDIOCPWCGAGC");
-         gain=lastGain_;
-      } else {
-         ++cpt;
-         lastGain_=gain;
-      }
-   } else {
-      ++cpt;
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_GAIN;
+   ctrl.value=0;
+   if (-1==ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
+      perror("V4L2_CID_GAIN getting");
       gain=lastGain_;
-   }
-   if (gain < 0) gain*=-1;
-   */
+   } else
+      gain=ctrl.value;
+      lastGain_=gain;
    return gain;
 }
-// **********************************
 
 // ************* TODO ***************
 void QCamVesta::setExposure(int val) {
@@ -250,13 +249,13 @@ void QCamVesta::setExposure(int val) {
 
 // ************* TODO ***************
 int QCamVesta::getExposure() const {
-   int gain=0;
+   int exposure=0;
 
    cout << "getExposure" << endl;
 
-   //ioctl(device_, VIDIOCPWCGSHUTTER, &gain);
-   //if (gain < 0) gain*=-1;
-   return gain;
+   //ioctl(device_, VIDIOCPWCGSHUTTER, &exposure);
+   if (exposure < 0) exposure*=-1;
+   return exposure;
 }
 // **********************************
 
@@ -271,13 +270,13 @@ void QCamVesta::setCompression(int val) {
 
 // ************* TODO ***************
 int QCamVesta::getCompression() const {
-   int gain=0;
+   int compression=0;
 
    cout << "getCompression" << endl;
 
-   //ioctl(device_, VIDIOCPWCGCQUAL , &gain);
-   if (gain < 0) gain*=-1;
-   return gain;
+   //ioctl(device_, VIDIOCPWCGCQUAL , &compression);
+   if (compression < 0) compression*=-1;
+   return compression;
 }
 // **********************************
 
@@ -295,15 +294,14 @@ void QCamVesta::setNoiseRemoval(int val) {
 
 // ************* TODO ****************
 int QCamVesta::getNoiseRemoval() const {
-   int gain=0;
+   int noise=0;
 
    cout << "getNoiseRemoval" << endl;
 
-   //if (-1 == ioctl(device_, VIDIOCPWCGDYNNOISE , &gain)) {
+   //if (-1 == ioctl(device_, VIDIOCPWCGDYNNOISE , &noise)) {
    //   perror("VIDIOCPWCGDYNNOISE");
    //}
-   cout <<"get noise = "<<gain<<endl;
-   return gain;
+   return noise;
 }
 // ***********************************
 
@@ -321,69 +319,54 @@ void QCamVesta::setSharpness(int val) {
 
 // ************** TODO ***************
 int QCamVesta::getSharpness() const {
-   int gain=0;
+   int sharp=0;
 
    cout << "getSharpness" << endl;
 
-   //if (-1 == ioctl(device_, VIDIOCPWCGCONTOUR, &gain)) {
+   //if (-1 == ioctl(device_, VIDIOCPWCGCONTOUR, &sharp)) {
    //   perror("VIDIOCPWCGCONTOUR");
    //}
-   cout <<"get sharpness = "<<gain<<endl;
-   return gain;
+   return sharp;
 }
 // ***********************************
 
-// ************* TODO **************
 void QCamVesta::setBackLight(bool val) {
-   static int on=1;
-   static int off=0;
-
-   cout << "setBackLight" << endl;
-
-   //if (-1 == ioctl(device_,VIDIOCPWCSBACKLIGHT, &  val?&on:&off)) {
-   //   perror("VIDIOCPWCSBACKLIGHT");
-   //}
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_BACKLIGHT_COMPENSATION;
+   ctrl.value=val;
+   if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
+      perror("V4L2_CID_BACKLIGHT_COMPENSATION setting");
+   }
 }
-// *********************************
 
-// ************* TODO **************
 bool QCamVesta::getBackLight() const {
-   int val=0;
-
-   cout << "getBackLight" << endl;
-
-   //if (-1 == ioctl(device_,VIDIOCPWCGBACKLIGHT, & val)) {
-   //   perror("VIDIOCPWCSBACKLIGHT");
-   //}
-   return val !=0;
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_BACKLIGHT_COMPENSATION;
+   ctrl.value=0;
+   if (-1 == ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
+      perror("V4L2_CID_BACKLIGHT_COMPENSATION getting");
+   }
+   return ctrl.value;
 }
-// *********************************
 
-// ************* TODO **************
 void QCamVesta::setFlicker(bool val) {
-   static int on=1;
-   static int off=0;
-
-   cout << "setFlicker" << endl;
-
-   //if (-1 == ioctl(device_,VIDIOCPWCSFLICKER, val?&on:&off)) {
-   //   perror("VIDIOCPWCSFLICKER");
-   //}
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_BAND_STOP_FILTER;
+   ctrl.value=val;
+   if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
+      perror("V4L2_CID_BAND_STOP_FILTER setting");
+   }
 }
-// *********************************
 
-// ************** TODO ***************
 bool QCamVesta::getFlicker() const {
-   int val=0;
-
-   cout << "getFlicker" << endl;
-
-   //if (-1 == ioctl(device_,VIDIOCPWCGFLICKER, & val)) {
-   //   perror("VIDIOCPWCGFLICKER");
-   //}
-   return(val !=0);
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_BAND_STOP_FILTER;
+   ctrl.value=0;
+   if (-1 == ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
+      perror("V4L2_CID_BAND_STOP_FILTER getting");
+   }
+   return ctrl.value;
 }
-// ***********************************
 
 void QCamVesta::setGama(int val) {
    struct v4l2_control ctrl;
@@ -443,7 +426,7 @@ int QCamVesta::getFrameRate() const {
 
    cout << "getFrameRate" << endl;
 
-   return (0/*(window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT*/);
+   return (5/*(window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT*/);
 }
 // *********************************
 
@@ -694,12 +677,9 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       connect(flicker,SIGNAL(toggled(bool)),this,SLOT(setFlicker(bool)));
       QToolTip::add(flicker,tr("Suppress 'flickering' of the image when light with a fluo tube"));
    }
-   remoteCTRLgama_=new QCamSlider(tr("Gamma"),false,sliders);
-   // not very clean...but works
-   remoteCTRLgama_->setMinValue(0);
-   remoteCTRLgama_->setMaxValue(32);
+   remoteCTRLgama_=new QCamSlider(tr("Gamma"),false,sliders,0,31);
    QToolTip::add(remoteCTRLgama_,tr("Low gamma implies less contrasts"));
-   remoteCTRLgain_=new QCamSlider(tr("Gain"),true,sliders);
+   remoteCTRLgain_=new QCamSlider(tr("Gain"),true,sliders,0,63,false,false);
    QToolTip::add(remoteCTRLgain_,tr("More Gain implies more noise in the images"));
    remoteCTRLexposure_=new QCamSlider(tr("Exp."),true,sliders,0,65535,true);
    QToolTip::add(remoteCTRLexposure_,
