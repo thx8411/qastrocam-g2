@@ -57,6 +57,14 @@ MA  02110-1301, USA.
 #define PWC_WB_FL	3
 #define PWC_WB_MANUAL	4
 
+// PWC CUSTOM COMMANDES
+
+// comes from the PWC driver, hope it won't change...
+#define PWC_CID_CUSTOM(ctrl) ((V4L2_CID_USER_BASE | 0xf000) + custom_ ## ctrl)
+
+enum { custom_autocontour, custom_contour, custom_noise_reduction,
+        custom_awb_speed, custom_awb_delay,
+        custom_save_user, custom_restore_user, custom_restore_factory };
 
 // Vesta class
 
@@ -66,7 +74,6 @@ QCamVesta::QCamVesta(const char * devpath):
    exposureTimeLeft_=NULL;
    whiteBalanceMode_=-1;
 
-   //struct pwc_probe probe;
    if (sscanf((char*)v4l2_cap_.card, "Philips %d webcam", &type_) != 1)
       // OEM camera
       type_=0;
@@ -148,8 +155,8 @@ void QCamVesta::refreshPictureSettings() {
    emit(noiseRemovalChange(getNoiseRemoval()));
    emit(gainChange(getGain()));
 
-   setProperty("CompressionWished",tmp=getCompression());
-   emit(compressionChange(tmp));
+   //setProperty("CompressionWished",tmp=getCompression());
+   //emitcompressionChange(tmp));
 
    setProperty("Gama",tmp=getGama());
    emit gamaChange(tmp);
@@ -157,39 +164,33 @@ void QCamVesta::refreshPictureSettings() {
    getWhiteBalance();
 }
 
-// ************* TODO ***************
 void QCamVesta::saveSettings() {
-
-   cout << "saveSettings" << endl;
-
-   //if (ioctl(device_, VIDIOCPWCSUSER)==-1) {
-   //   perror("VIDIOCPWCSUSER");
-   //}
+   struct v4l2_control ctrl;
+   ctrl.id=PWC_CID_CUSTOM(save_user);
+   if (-1==ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+      perror("PWC_CID_CUSTOM(save_user)");
 }
-// **********************************
 
-// ************* TODO ***************
 void QCamVesta::restoreSettings() {
+   struct v4l2_control ctrl;
+   ctrl.id=PWC_CID_CUSTOM(restore_user);
+   if (-1==ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+      perror("PWC_CID_CUSTOM(restore_user)");
 
-   cout << "restoreSettings" << endl;
-
-   //ioctl(device_, VIDIOCPWCRUSER);
    refreshPictureSettings();
    refreshGui_=true;
 }
-// **********************************
 
-// ************* TODO ***************
 void QCamVesta::restoreFactorySettings() {
+   struct v4l2_control ctrl;
+   ctrl.id=PWC_CID_CUSTOM(restore_factory);
+   if (-1==ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+      perror("PWC_CID_CUSTOM(restore_factory)");
 
-   cout << "restoreFactorySettings" << endl;
-
-   //ioctl(device_, VIDIOCPWCFACTORY);
    setBestQuality();
    refreshPictureSettings();
    refreshGui_=true;
 }
-// **********************************
 
 void QCamVesta::setLiveWhiteBalance(bool val) {
    liveWhiteBalance_=val;
@@ -234,101 +235,122 @@ int QCamVesta::getGain() const {
    return gain;
 }
 
-// ************* TODO ***************
+// *************** TO BE FIXED ******************
 void QCamVesta::setExposure(int val) {
+   struct v4l2_ext_controls ext_ctrls;
+   struct v4l2_ext_control ext_ctrl[1];
+   struct v4l2_control ctrl;
 
-   cout << "setExposure" << endl;
-
-   //if (-1==ioctl(device_, VIDIOCPWCSSHUTTER, &val)) {
-   //   perror("VIDIOCPWCSSHUTTER");
-   //} else {
-   //   setProperty("Exposure",val,false);
-   //}
+   //ext_ctrls.ctrl_class=V4L2_CTRL_CLASS_USER;
+   ext_ctrls.count=1;
+   ext_ctrls.controls=ext_ctrl;
+   if(val==-1) {
+      // auto exposure on
+      ext_ctrl->id=V4L2_CID_EXPOSURE_AUTO;
+      ext_ctrl->value=V4L2_EXPOSURE_AUTO;
+      //if (-1 == ioctl(device_,VIDIOC_S_EXT_CTRLS, &ext_ctrls))
+      //   perror("V4L2_CID_EXPOSURE_AUTO on");
+   } else {
+      // auto exposure off
+      ext_ctrl->id=V4L2_CID_EXPOSURE_AUTO;
+      ext_ctrl->value=V4L2_EXPOSURE_MANUAL;
+      //if (-1 == ioctl(device_,VIDIOC_S_EXT_CTRLS, &ext_ctrls))
+      //   perror("V4L2_CID_EXPSOURE_AUTO off");
+      //  exposure setting
+      ctrl.id=V4L2_CID_EXPOSURE;
+      ctrl.value=val;
+      if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
+         perror("V4L2_CID_EXPOSURE setting");
+      } else
+         setProperty("Exposure",val,false);
+   }
 }
-// **********************************
+// ****************************************
 
-// ************* TODO ***************
 int QCamVesta::getExposure() const {
    int exposure=0;
-
-   cout << "getExposure" << endl;
-
-   //ioctl(device_, VIDIOCPWCGSHUTTER, &exposure);
-   if (exposure < 0) exposure*=-1;
+   struct v4l2_control ctrl;
+   ctrl.id=V4L2_CID_EXPOSURE;
+   ctrl.value=0;
+   if (-1==ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
+      perror("V4L2_CID_EXPOSURE getting");
+   } else
+      exposure=ctrl.value;
    return exposure;
 }
-// **********************************
 
-// ************* TODO ***************
+// * NOT AVAILABLE IN THE DRIVER ANYMORE *
+/*
 void QCamVesta::setCompression(int val) {
-
-   cout << "setCompression" << endl;
-
    //ioctl(device_, VIDIOCPWCSCQUAL, &val);
 }
-// **********************************
+*/
+// ****************************************
 
-// ************* TODO ***************
-int QCamVesta::getCompression() const {
+// * NOT AVAILABLE IN THE DRIVER ANYMORE *
+/*int QCamVesta::getCompression() const {
    int compression=0;
-
-   cout << "getCompression" << endl;
-
-   //ioctl(device_, VIDIOCPWCGCQUAL , &compression);
+   ioctl(device_, VIDIOCPWCGCQUAL , &compression);
    if (compression < 0) compression*=-1;
    return compression;
 }
-// **********************************
+*/
+// ****************************************
 
-// ************* TODO ***************
 void QCamVesta::setNoiseRemoval(int val) {
-
-   cout << "setNoiseRemoval" << endl;
-
-   //if (-1 == ioctl(device_, VIDIOCPWCSDYNNOISE, &val)) {
-   //    perror("VIDIOCPWCGDYNNOISE");
-   //}
-   //emit(sharpnessChange(getSharpness()));
+   struct v4l2_control ctrl;
+   ctrl.id=PWC_CID_CUSTOM(noise_reduction);
+   ctrl.value=val;
+   if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
+      perror("PWC_CUSTOM(noise_reduction) setting");
+   }
+   emit(noiseRemovalChange(getNoiseRemoval()));
 }
-// **********************************
 
-// ************* TODO ****************
 int QCamVesta::getNoiseRemoval() const {
    int noise=0;
-
-   cout << "getNoiseRemoval" << endl;
-
-   //if (-1 == ioctl(device_, VIDIOCPWCGDYNNOISE , &noise)) {
-   //   perror("VIDIOCPWCGDYNNOISE");
-   //}
+   struct v4l2_control ctrl;
+   ctrl.id=PWC_CID_CUSTOM(noise_reduction);
+   if (-1 == ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
+      perror("PWC_CUSTOM(noise_reduction) setting");
+   } else
+      noise=ctrl.value;
    return noise;
 }
-// ***********************************
 
-// ************* TODO ****************
 void QCamVesta::setSharpness(int val) {
-
-   cout << "setSharpness" << endl;
-
-   //if (-1 == ioctl(device_, VIDIOCPWCSCONTOUR, &val)) {
-   //    perror("VIDIOCPWCSCONTOUR");
-   //}
-   //emit(noiseRemovalChange(getNoiseRemoval()));
+struct v4l2_control ctrl;
+   if(val==-1) {
+      // auto sharpness on
+      ctrl.id=PWC_CID_CUSTOM(autocontour);
+      ctrl.value=1;
+      if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+         perror("PWC_CID_CUSTOM(autocontour) on");
+   } else {
+      // auto sharpness off
+      ctrl.id=PWC_CID_CUSTOM(autocontour);
+      ctrl.value=0;
+      if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+         perror("PWC_CID_CUSTOM(autocontour) off");
+      //  gain setting
+      ctrl.id=PWC_CID_CUSTOM(contour);
+      ctrl.value=val%64;
+      if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl))
+         perror("PWC_CID_CUSTOM(contour) setting");
+   }
+   emit(sharpnessChange(getSharpness()));
 }
-// ***********************************
 
-// ************** TODO ***************
 int QCamVesta::getSharpness() const {
    int sharp=0;
-
-   cout << "getSharpness" << endl;
-
-   //if (-1 == ioctl(device_, VIDIOCPWCGCONTOUR, &sharp)) {
-   //   perror("VIDIOCPWCGCONTOUR");
-   //}
+   struct v4l2_control ctrl;
+   ctrl.id=PWC_CID_CUSTOM(contour);
+   if (-1 == ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
+      perror("PWC_CID_CUSTOM(contour) setting");
+   } else
+      sharp=ctrl.value;
    return sharp;
 }
-// ***********************************
 
 void QCamVesta::setBackLight(bool val) {
    struct v4l2_control ctrl;
@@ -375,7 +397,7 @@ void QCamVesta::setGama(int val) {
    ctrl.id=V4L2_CID_WHITENESS;
    ctrl.value=val;
    if (-1 == ioctl(device_,VIDIOC_S_CTRL, &ctrl)) {
-      perror("");
+      perror("V4L2_CID_WHITENESS setting");
    }
 }
 
@@ -385,7 +407,7 @@ int QCamVesta::getGama() const {
    ctrl.id=V4L2_CID_WHITENESS;
    ctrl.value=0;
    if (-1 == ioctl(device_,VIDIOC_G_CTRL, &ctrl)) {
-      perror("");
+      perror("V4L2_CID_WHITENESS getting");
    }
    return ctrl.value;
 }
@@ -423,10 +445,14 @@ void QCamVesta::setFrameRate(int value) {
 
 // ************ TODO ***************
 int QCamVesta::getFrameRate() const {
-
-   cout << "getFrameRate" << endl;
-
-   return (5/*(window_.flags&PWC_FPS_FRMASK)>>PWC_FPS_SHIFT*/);
+   int fps=10; // default fps
+   struct v4l2_streamparm parms;
+   parms.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   if (-1 == ioctl(device_,VIDIOC_G_PARM, &parms)) {
+      perror("VIDIOC_G_PARM");
+   } else
+      fps=(int)(parms.parm.capture.timeperframe.denominator/parms.parm.capture.timeperframe.numerator);
+   return (fps);
 }
 // *********************************
 
@@ -677,23 +703,25 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       connect(flicker,SIGNAL(toggled(bool)),this,SLOT(setFlicker(bool)));
       QToolTip::add(flicker,tr("Suppress 'flickering' of the image when light with a fluo tube"));
    }
-   remoteCTRLgama_=new QCamSlider(tr("Gamma"),false,sliders,0,31);
+   remoteCTRLgama_=new QCamSlider(tr("Gamma"),false,sliders,0,31, false, false);
    QToolTip::add(remoteCTRLgama_,tr("Low gamma implies less contrasts"));
    remoteCTRLgain_=new QCamSlider(tr("Gain"),true,sliders,0,63,false,false);
    QToolTip::add(remoteCTRLgain_,tr("More Gain implies more noise in the images"));
-   remoteCTRLexposure_=new QCamSlider(tr("Exp."),true,sliders,0,65535,true);
+
+   /* TODO : set the exposure limit depending on camera */
+   remoteCTRLexposure_=new QCamSlider(tr("Exp."),true,sliders,0,/*65535*/255,false);
    QToolTip::add(remoteCTRLexposure_,
                  tr("More exposure reduce noise in images.\n"
                  "(manual exposure setting don't work on type 740\n"
                  "if automatic gain is activated).")
       );
    if (QCamUtilities::expertMode()) {
-      remoteCTRLcompression_=new QCamSlider(tr("Comp."),false,sliders,0,3);
+      //remoteCTRLcompression_=new QCamSlider(tr("Comp."),false,sliders,0,3);
       remoteCTRLnoiseRemoval_=new QCamSlider(tr("Noise"),false,sliders,0,3);
-      remoteCTRLsharpness_=new QCamSlider(tr("Sharp."),false,sliders,0,65535);
+      remoteCTRLsharpness_=new QCamSlider(tr("Sharp."),true,sliders,0,63,false,false);
 
-      connect(this,SIGNAL(compressionChange(int)),remoteCTRLcompression_,SLOT(setValue(int)));
-      connect(remoteCTRLcompression_,SIGNAL(valueChange(int)),this,SLOT(setCompression(int)));
+      //connect(this,SIGNAL(compressionChange(int)),remoteCTRLcompression_,SLOT(setValue(int)));
+      //connect(remoteCTRLcompression_,SIGNAL(valueChange(int)),this,SLOT(setCompression(int)));
       connect(this,SIGNAL(noiseRemovalChange(int)),remoteCTRLnoiseRemoval_,SLOT(setValue(int)));
       connect(remoteCTRLnoiseRemoval_,SIGNAL(valueChange(int)),this,SLOT(setNoiseRemoval(int)));
 
@@ -782,7 +810,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
 void QCamVesta::setBestQuality() {
    setNoiseRemoval(0);
    setSharpness(0);
-   setCompression(0);
+   //setCompression(0);
 }
 
 
