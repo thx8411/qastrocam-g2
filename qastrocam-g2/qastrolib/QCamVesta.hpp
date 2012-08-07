@@ -52,7 +52,7 @@ public:
    ~QCamVesta();
    int getGain() const;
    int getExposure() const;
-   int getCompression() const;
+   //int getCompression() const;
    bool getFlicker() const;
    bool getBackLight() const;
    int getNoiseRemoval() const;
@@ -90,7 +90,7 @@ private:
    QCamSlider * remoteCTRLWBred_;
    QCamSlider * remoteCTRLWBblue_;
    QCamSlider * remoteCTRLexposure_;
-   QCamSlider * remoteCTRLcompression_;
+   //QCamSlider * remoteCTRLcompression_;
    QCamSlider * remoteCTRLnoiseRemoval_;
    QCamSlider * remoteCTRLsharpness_;
    QHGroupBox * remoteCTRLframeRate_;
@@ -108,12 +108,11 @@ private:
 public slots:
    void setGain(int value);
    void setExposure(int value);
-   void setCompression(int value);
+   //void setCompression(int value);
    void setNoiseRemoval(int value);
    void setSharpness(int value);
-   /** shortcut to :
+   /* shortcut to :
        - setSharpness(0);
-       - setCompression(0);
        - setNoiseRemoval(0);
    */
    void setBestQuality();
@@ -136,7 +135,7 @@ protected slots:
 
 signals:
    void gainChange(int);
-   void compressionChange(int);
+   //void compressionChange(int);
    void noiseRemovalChange(int);
    void sharpnessChange(int);
    void gamaChange(int);
