@@ -1195,7 +1195,7 @@ bool QCamV4L2::mmapInit() {
       mmapRelease();
       return(false);
    }
-   //cout << "Using " << mmap_reqbuf.count << " buffers for video streaming" << endl;
+   cout << "Using " << mmap_reqbuf.count << " buffers for video streaming" << endl;
 
    // alloc buffers table
    buffers=(struct mmap_buffer*)calloc(mmap_reqbuf.count, sizeof(struct mmap_buffer));
@@ -1222,8 +1222,9 @@ bool QCamV4L2::mmapInit() {
       // mmap buf
       buffers[i].length=buffer.length;
       buffers[i].start=mmap(NULL, buffer.length, PROT_READ,MAP_SHARED,device_,buffer.m.offset);
+
       if(buffers[i].start==MAP_FAILED) {
-         perror("mmap");
+         perror("mmap buf");
          cout << "Mmap mapping fails, using read/write" << endl;
          mmap_reqbuf.count=i;
          mmapRelease();
