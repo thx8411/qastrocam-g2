@@ -1,5 +1,6 @@
-4.9beta20120805
+4.9beta20120812
 
+  - work on philips cams support over kernel 3 started
   - qwtplot3d no more needed
   - V4L1 not supported anymore
   - missing icons segfault bug fixed

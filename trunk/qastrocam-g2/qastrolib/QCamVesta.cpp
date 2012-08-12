@@ -412,49 +412,47 @@ int QCamVesta::getGama() const {
    return ctrl.value;
 }
 
-// *************** TODO ******************
 void QCamVesta::setFrameRate(int value) {
+   struct v4l2_streamparm parms;
+   struct v4l2_requestbuffers mmap_reqbuf;
 
-   cout << "setFrameRate" << endl;
+   memset(&mmap_reqbuf,0,sizeof(mmap_reqbuf));
+   mmap_reqbuf.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   mmap_reqbuf.memory=V4L2_MEMORY_MMAP;
+   mmap_reqbuf.count=-1;
 
-   /*
-   int res;
-   // update the window_
-   if(ioctl(device_,VIDIOCGWIN, &window_))
-      perror("ioctl (VIDIOCGWIN)");
-   window_.flags = (window_.flags & ~PWC_FPS_MASK) | ((value << PWC_FPS_SHIFT) & PWC_FPS_FRMASK);
-   res=ioctl(device_, VIDIOCSWIN, &window_);
-   if (res!=0) {
-      QMessageBox::information(0,"Qastrocam-g2","Frame rate is to high for low compression");
-      // looking for the nearest supported framerate
-      while((value!=0)&&(res!=0)) {
-         value--;
-         window_.flags = (window_.flags & ~PWC_FPS_MASK) | ((value << PWC_FPS_SHIFT) & PWC_FPS_FRMASK);
-         res=ioctl(device_, VIDIOCSWIN, &window_);
-      }
-      remoteCTRLframeRate2_->update(value);
-      perror("setFrameRate");
+   // stopping stream
+   if (-1 == ioctl(device_,VIDIOC_STREAMOFF,&mmap_reqbuf.type)) {
+      perror("VIDIOC_STREAMOFF");
+   }
+
+   // setting new frame rate
+   parms.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+   parms.parm.capture.timeperframe.denominator=value;
+   parms.parm.capture.timeperframe.numerator=1;
+   if (-1 == ioctl(device_,VIDIOC_S_PARM, &parms)) {
+      perror("VIDIOC_S_PARM setting");
    } else {
-      ioctl(device_, VIDIOCGWIN, &window_);
       setProperty("FrameRateSecond",value/(double)multiplicateur_);
       emit exposureTime(multiplicateur_/(double)getFrameRate());
    }
-   */
-}
-// *********************************
 
-// ************ TODO ***************
+   // restarting stream
+   if (-1 == ioctl(device_,VIDIOC_STREAMON,&mmap_reqbuf.type)) {
+      perror("VIDIOC_STREAMON");
+   }
+}
+
 int QCamVesta::getFrameRate() const {
    int fps=10; // default fps
    struct v4l2_streamparm parms;
    parms.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
    if (-1 == ioctl(device_,VIDIOC_G_PARM, &parms)) {
-      perror("VIDIOC_G_PARM");
+      perror("VIDIOC_G_PARM getting");
    } else
       fps=(int)(parms.parm.capture.timeperframe.denominator/parms.parm.capture.timeperframe.numerator);
    return (fps);
 }
-// *********************************
 
 // ************* TODO ****************
 void QCamVesta::getWhiteBalance() {
