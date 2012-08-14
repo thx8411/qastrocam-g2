@@ -416,14 +416,17 @@ void QCamVesta::setFrameRate(int value) {
    struct v4l2_streamparm parms;
    struct v4l2_requestbuffers mmap_reqbuf;
 
+   // mmap stuff, if needed
    memset(&mmap_reqbuf,0,sizeof(mmap_reqbuf));
    mmap_reqbuf.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
    mmap_reqbuf.memory=V4L2_MEMORY_MMAP;
    mmap_reqbuf.count=-1;
 
-   // stopping stream
-   if (-1 == ioctl(device_,VIDIOC_STREAMOFF,&mmap_reqbuf.type)) {
-      perror("VIDIOC_STREAMOFF");
+   if(useMmap) {
+      // stopping stream
+      if (-1 == ioctl(device_,VIDIOC_STREAMOFF,&mmap_reqbuf.type)) {
+         perror("VIDIOC_STREAMOFF");
+      }
    }
 
    // setting new frame rate
@@ -438,8 +441,10 @@ void QCamVesta::setFrameRate(int value) {
    }
 
    // restarting stream
-   if (-1 == ioctl(device_,VIDIOC_STREAMON,&mmap_reqbuf.type)) {
-      perror("VIDIOC_STREAMON");
+   if(useMmap) {
+      if (-1 == ioctl(device_,VIDIOC_STREAMON,&mmap_reqbuf.type)) {
+         perror("VIDIOC_STREAMON");
+      }
    }
 }
 
@@ -813,6 +818,7 @@ void QCamVesta::setBestQuality() {
 
 
 // ******* TODO *********
+// not available in the driver anymore
 void QCamVesta::setLed(int on, int off) const {
 
    cout << "setLed" << endl;
