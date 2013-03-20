@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2012   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,8 +23,8 @@ MA  02110-1301, USA.
 #ifndef _qastrocamVersion_hpp_
 #define _qastrocamVersion_hpp_
 
-const char * const qastroCamVersion ="4.9beta20120812";
-const int          qastrocamBuild   =156;
+const char * const qastroCamVersion ="4.9beta20130320";
+const int          qastrocamBuild   =157;
 const char * const qastrocamWeb = "http://sourceforge.net/projects/qastrocam-g2/";
 const char * const qastrocamMail = "thx8411@users.sourceforge.net";
 const char * const qastrocamName = "Qastrocam-g2";
