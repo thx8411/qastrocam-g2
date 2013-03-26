@@ -1,0 +1,124 @@
+# Qastrocam   
+# Copyright (C) 2003-2009   Franck Sicard
+# Qastrocam-g2 
+# Copyright (C) 2009-2010   Blaise-Florentin Collin
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License v2
+# as published by the Free Software Foundation. 
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+# MA  02110-1301, USA.
+
+
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.53)
+AC_INIT(Qastrocam-g2, 3.6, thx8411@users.sourceforge.net)
+AC_CONFIG_HEADER(config.h)
+
+AC_CHECK_PROGS(CXX, g++ g++-4.0 g++-3.3 g++-2.95)
+AC_CHECK_PROGS(CC, gcc gcc-4.0 gcc-3.3 gcc-2.95)
+
+
+AC_LANG(C++)
+
+AC_CANONICAL_HOST
+
+AC_CONFIG_SRCDIR([qastrolib/QCam.cpp])
+
+AC_SUBST(ARCHTYPE)
+
+case "$host" in
+   i686-*)
+     ARCHTYPE=ia32      
+     ;;
+   i586-*)
+     ARCHTYPE=ia32      
+     ;;
+   i486-*)
+     ARCHTYPE=ia32      
+     ;;
+   x86_64-*)
+     ARCHTYPE=x86_64
+     ;;
+   *)
+     AC_MSG_ERROR("don't know how to handle host type $host")
+     ;;
+esac
+
+#QT
+AC_SUBST(MOC)
+AC_SUBST(QT_INC_DIR)
+AC_SUBST(QT_LIB_DIR)
+AC_SUBST(QT_LIBS)
+
+CXXFLAGS="$CXXFLAGS -I $QT_INC_DIR"
+CFLAGS="$CFLAGS -I $QT_INC_DIR"
+CPPFLAGS="$CPPFLAGS -I $QT_INC_DIR"
+AC_CHECK_HEADERS(qobject.h)
+
+# enabling threads
+CXXFLAGS="$CXXFLAGS -DQT_THREAD_SUPPORT"
+CFLAGS="$CFLAGS -DQT_THREAD_SUPPORT"
+CPPFLAGS="$CPPFLAGS -DQT_THREAD_SUPPORT"
+
+AC_CHECK_HEADER([jpeglib.h],,
+    [AC_MSG_ERROR([cannot find libjpeg headers])])
+
+test -n "$MOC" || MOC=MOC_var_not_set
+test -n "$QT_INC_DIR" || QT_INC_DIR=QT_INC_DIR_var_not_set
+test -n "$QT_LIB_DIR" || QT_LIB_DIR=QT_LIB_DIR_var_not_set
+test -n "$QT_LIBS" || QT_LIBS=QT_LIBS_var_not_set
+
+#cfitsio
+AC_SUBST(CFITSIO_LINK)
+AC_SUBST(CFITSIO_INC)
+test -n "$CFITSIO_INC" || CFITSIO_INC=QT_LIB_DIR_var_not_set
+test -n "$CFITSIO_LINK" || CFITSIO_LINK=QT_LIB_DIR_var_not_set
+
+CXXFLAGS="$CXXFLAGS $CFITSIO_INC"
+CFLAGS="$CFLAGS $CFITSIO_INC"
+AC_CHECK_HEADERS(fitsio.h)
+
+#SDL present? (optional)
+AC_PATH_PROG(SDLCONFIG, sdl-config, no)
+if test "$SDLCONFIG" != no
+then
+   CXXFLAGS="$CXXFLAGS "`sdl-config --cflags`
+   CFLAGS="$CFLAGS "`sdl-config --cflags`
+   CPPFLAGS="$CPPFLAGS "`sdl-config --cflags`
+   #LDFLAGS="$LDFLAGS -Wl,-Bstatic -lSDL -Wl,-Bdynamic "`sdl-config --static-libs | sed s/-lSDL//`
+   LDFLAGS="$LDFLAGS "`sdl-config --static-libs`
+fi
+
+# libavifile present? (optional)
+AC_PATH_PROG(AVICONFIG, avifile-config no)
+if test "$AVICONFIG" != no
+then
+   CXXFLAGS="$CXXFLAGS "`$AVICONFIG --cflags`
+   CPPFLAGS="$CPPFLAGS "`$AVICONFIG --cflags`
+   LDFLAGS="$LDFLAGS "`$AVICONFIG --libs`
+fi
+AC_CHECK_HEADERS(avifile.h)
+
+# libusb
+AC_CHECK_HEADER(usb.h,,[AC_MSG_ERROR([cannot find libusb headers])])
+LDFLAGS="$LDFLAGS -lusb "
+
+AC_CHECK_HEADERS(SDL.h)
+#AC_CHECK_LIB(pthread,pthread_create)
+#AC_CHECK_LIB(SDL,SDL_InitSubSystem)
+
+#AC_CHECK_FILE(/usr/lib/win32/huffyuv.dll,,[AC_MSG_ERROR([cannot find huffyuv.dll needed for avi lossless recording])])
+	
+#AC_CONFIG_FILES([Makefile.common])
+AC_OUTPUT(Makefile.vars)
