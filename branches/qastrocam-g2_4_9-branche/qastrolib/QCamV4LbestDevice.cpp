@@ -23,8 +23,17 @@ MA  02110-1301, USA.
 #include "QCamV4L2lx.hpp"
 #include "QCamV4L2fi.hpp"
 #include "QCamOV511.hpp"
-#include "QCamVesta.hpp"
 #include "QCamDC60.hpp"
+
+// tweak for kernel 2/ kernel 3 conditionnal compilation
+#include <linux/version.h>
+#define KERNEL_2 (LINUX_VERSION_CODE <= KERNEL_VERSION(3,0,0))
+#if KERNEL_2
+#include "QCamVestaK2.hpp"
+#else
+#include "QCamVestaK3.hpp"
+#endif /* KERNEL_2 */
+
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
