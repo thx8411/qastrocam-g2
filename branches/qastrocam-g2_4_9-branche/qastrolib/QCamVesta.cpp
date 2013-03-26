@@ -32,7 +32,9 @@ MA  02110-1301, USA.
 
 #include <linux/version.h>
 
+#ifndef KERNEL_2
 #define KERNEL_2 (LINUX_VERSION_CODE <= KERNEL_VERSION(3,0,0))
+#endif
 
 #if KERNEL_2
 #include "QCamVestaK2.cpp"
