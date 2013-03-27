@@ -27,7 +27,6 @@ MA  02110-1301, USA.
 #include "QCamSimulator.hpp"
 #include "QCamQHY5.hpp"
 #include "QCamQHY6.hpp"
-//#include "QCamV4L.hpp"
 #include "QCamV4L2.hpp"
 #include "qastrocamVersion.hpp"
 #include "QCamAdd.hpp"
@@ -72,6 +71,13 @@ MA  02110-1301, USA.
 #include "QSetting.hpp"
 #include "QCamStack.hpp"
 #include "QCamFocus.hpp"
+
+// for kernel detection
+#include <sys/utsname.h>
+#include <linux/version.h>
+#ifndef KERNEL_2
+#define KERNEL_2 (LINUX_VERSION_CODE <= KERNEL_VERSION(3,0,0))
+#endif
 
 // options strings
 const string AccumOptionString("-a");
@@ -168,6 +174,12 @@ int main(int argc, char ** argv) {
    string libPath;
    string settingsFileName(".qastrocam-g2.conf");
    string logFileName("/dev/null");
+
+   // getting the kernel version
+   utsname kernel_info;
+   int kernel_version,kernel_revision,kernel_patch;
+   uname(&kernel_info);
+   sscanf(kernel_info.release,"%i.%i.%i",&kernel_version,&kernel_revision,&kernel_patch);
 
    // looking for settings name option first
    for(i=1;i<argc;i++) {
@@ -406,6 +418,19 @@ int main(int argc, char ** argv) {
    QCamUtilities::setLocale(app);
    appPointer=&app;
 
+   // kernel checking
+   if(kernel_version==3 && KERNEL_2) {
+      QMessageBox::information(0,"Qastrocam-g2","This binary can't run on a kernel 3.x.x, leaving...");
+      app.quit();
+      exit(1);
+   }
+   if(kernel_version==2 && !KERNEL_2) {
+      QMessageBox::information(0,"Qastrocam-g2","This binary can't run on a kernel 2.x.x, leaving...");
+      app.quit();
+      exit(1);
+   }
+
+
    // main window setting
    QString caption;
    QPixmap* tmpIcon;
@@ -448,14 +473,14 @@ int main(int argc, char ** argv) {
       if(QHY5cam::plugged())
          cam = new QCamQHY5();
       else {
-          QMessageBox::information(0,"Qastrocam-g2","QHY5 camera not detected\nSettings panel only");
+         QMessageBox::information(0,"Qastrocam-g2","QHY5 camera not detected\nSettings panel only");
          cout << "QHY5 camera not detected" << endl;
       }
    } else if(cameraName=="qhy6") {
       if(QHY6cam::plugged())
          cam = new QCamQHY6();
       else {
-          QMessageBox::information(0,"Qastrocam-g2","QHY6 camera not detected\nSettings panel only");
+         QMessageBox::information(0,"Qastrocam-g2","QHY6 camera not detected\nSettings panel only");
          cout << "QHY6 camera not detected" << endl;
       }
    } else if(cameraName=="simulator") {
