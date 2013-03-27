@@ -1,7 +1,7 @@
 # Qastrocam
 # Copyright (C) 2003-2009   Franck Sicard
 # Qastrocam-g2
-# Copyright (C) 2009-2010   Blaise-Florentin Collin
+# Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License v2
@@ -47,6 +47,8 @@ distclean::
 	rm -f configure_done Makefile.vars
 	rm -f config.h config.log
 	rm -f configure config.cache config.h.in
+	rm -rf config.status
+	rm -rf bin
 
 depend dep::configure_done
 	$(MAKE) -C qastrolib depend

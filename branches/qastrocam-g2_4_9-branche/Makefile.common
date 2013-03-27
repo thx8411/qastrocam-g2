@@ -46,6 +46,7 @@ clean:
 	$(SILENT)(test -f "$(LIB)" && (echo erasing $(LIB);rm -f $(LIB))) || true
 	$(SILENT)rm -f $(OBJ) $(QT_MOC) dep
 	$(SILENT)rm -f *.rej *.orig
+	$(SILENT)rm -f *.moc
 	$(SILENT)echo ... done
 
 commit:
