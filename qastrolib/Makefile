@@ -1,7 +1,7 @@
 # Qastrocam
 # Copyright (C) 2003-2009   Franck Sicard
 # Qastrocam-g2
-# Copyright (C) 2009   Blaise-Florentin Collin
+# Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License v2
@@ -25,7 +25,7 @@ TMP_DESTDIR=../lib
 OTHERINC=-I/usr/include/SDL
 OTHERLIB=
 
-OBJ_QT = QCam.o QCamSlider.o QCamVesta.o QCamAdd.o \
+OBJ_QT = QCam.o QCamSlider.o QCamAdd.o \
          QCamRadioBox.o CamHistogram.o QCamClient.o QHistogram.o \
          QCamDisplay.o QCamFindShift.o QCamFindShift_barycentre.o \
          QTelescope.o QTelescopeAutostar.o QTelescopeAPM.o \
@@ -39,14 +39,14 @@ OBJ_QT = QCam.o QCamSlider.o QCamVesta.o QCamAdd.o \
          FrameId.o QCamDC60.o QCamV4L2lx.o QCamV4L2fi.o QCamPhoto2.o \
          QCamFocus.o QCamSelection.o QCamQHY5.o QTelescopeQHY5.o \
          QTelescopeNexstar.o QTelescopeLX200.o QCamSimulator.o \
-	 QTelescopeSimulator.o QTelescopeQHY6.o QCamQHY6.o
+	 QTelescopeSimulator.o QTelescopeQHY6.o QCamQHY6.o QCamV4L.o
 
 OBJ_cpp = QCamV4LbestDevice.o FitsImage.o QCamUtilities.o \
           QStreamTranslator.o Vector2D.o ShiftInfo.o QCamFrame.o \
 	  QFrameDisplay.o rotate.o rasterOp.o SCmod.o bayer.o \
           QCamMovie.o QCamMovieAvi.o QCamMovieAviLossless.o QCamMovieSeq.o \
 	  SettingsBackup.o SCmodParPortPPdev.o PPort.o yuv.o jmemsrc.o \
-	  QHY5cam.o QCamMovieSer.o QHY6cam.o
+	  QHY5cam.o QCamMovieSer.o QHY6cam.o QCamVesta.o
 
 OBJ_c =
 

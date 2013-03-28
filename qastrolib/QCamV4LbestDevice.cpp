@@ -23,8 +23,22 @@ MA  02110-1301, USA.
 #include "QCamV4L2lx.hpp"
 #include "QCamV4L2fi.hpp"
 #include "QCamOV511.hpp"
-#include "QCamVesta.hpp"
 #include "QCamDC60.hpp"
+
+// tweak for kernel 2/kernel 3 conditionnal compilation
+#include <linux/version.h>
+
+#ifndef KERNEL_2
+#define KERNEL_2 (LINUX_VERSION_CODE <= KERNEL_VERSION(3,0,0))
+#endif
+
+#if KERNEL_2
+#include "QCamVestaK2.hpp"
+#include "QCamV4L.hpp"
+#else
+#include "QCamVestaK3.hpp"
+#endif /* KERNEL_2 */
+
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -39,7 +53,7 @@ MA  02110-1301, USA.
 // storing settings object.
 extern settingsBackup settings;
 
-// Creat the best QCamV4l object depending on the device
+// Creat the best QCamV4L object depending on the device
 QCam * QCamV4L2::openBestDevice(const char * devpath) {
    struct v4l2_capability vcap;
    int cam_fd;
@@ -51,7 +65,6 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
       perror(devpath);
       return NULL;
    }
-
 
    memset(&vcap,0,sizeof(v4l2_capability));
    // read device cap to get device name
@@ -192,6 +205,15 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
          return(camFound);
       }
    }
+// kernel 2 is still able to handle V4L1 devices
+#if KERNEL_2
+   // else using V4L generic
+   cout << "Using generic V4L" << endl;
+   close(cam_fd);
+   camFound = new QCamV4L(devpath);
+   return(camFound);
+#else
    cout << "No camera found" << endl;
    return(NULL);
+#endif /* KERNEL_2 */
 }

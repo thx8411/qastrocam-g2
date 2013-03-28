@@ -1,8 +1,8 @@
-4.9beta20120812
+4.9rc1
 
   - work on philips cams support over kernel 3 started
   - qwtplot3d no more needed
-  - V4L1 not supported anymore
+  - V4L1 only supported on kernel 2
   - missing icons segfault bug fixed
   - QHY6 support added (imager and telescope)
   - QHY5's bands filter added

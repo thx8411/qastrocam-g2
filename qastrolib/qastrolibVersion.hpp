@@ -23,15 +23,10 @@ MA  02110-1301, USA.
 #ifndef _qastrolibVersion_hpp_
 #define _qastrolibVersion_hpp_
 
-const char * const qastrolibVersion ="4.9beta20130320";
-const int          qastrolibBuild   =147;
+const char * const qastrolibVersion ="4.9rc1";
+const int          qastrolibBuild   =149;
 const char * const qastrolibWeb = "http://sourceforge.net/projects/qastrocam-g2/";
 const char * const qastrolibMail = "thx8411@users.sourceforge.net";
 const char * const qastrolibName = "QastroLib-g2";
-
-
-// tests the host kernel version
-#include <linux/version.h>
-#define KERNEL_2 (LINUX_VERSION_CODE <= KERNEL_VERSION(3,0,0))
 
 #endif
