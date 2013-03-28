@@ -1,5 +1,5 @@
 % Qastrocam-g2
-% Copyright (C) 2009   Blaise-Florentin Collin
+% Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License v2
@@ -34,7 +34,7 @@
 
 \pdfcompresslevel9
 
-\title{Manuel d'utilisation Qastrocam-g2 vers. 5.0}
+\title{Manuel d'utilisation Qastrocam-g2 vers. 4.9}
 \author{Thx8411 \url{thx8411@users.sourceforge.net}}
 %=============== Corps ===============
 \begin{document}
@@ -75,7 +75,7 @@ Qastrocam-g2 est sous licence GPL version 2.
 \begin{itemize}
 \item work on philips cams support over kernel 3 started
 \item qwtplot3d no more needed
-\item V4L1 not supported anymore
+\item V4L1 only supported on kernel 2
 \item missing icons segfault bug fixed
 \item QHY6 support added (imager and telescope)
 \item QHY5's bands filter added
@@ -288,7 +288,10 @@ Qastrocam-g2 est sous licence GPL version 2.
 \paragraph*{}
 Qastrocam-g2 supporte deux types de p\'eriph\'eriques de capture, les p\'eriph\'eriques V4L1 
 g\'en\'eriques ainsi que les sp\'ecificit\'es de certains pilotes (notamment pour les webcams
-CCD philips). Le passage aux pilotes V4L2 est pr\'evu pour la version 4.5.
+CCD philips). Les pilotes V4L2 sont support\'es depuis la version 4.5. Il est \'a noter que
+le noyau linux 3 ne supporte plus les pr\'eriph\'riques V4L1. Certaines fonctionnalit\'es de
+l'ancien pilote pwc n'ayant pas encore \'et\'e transpos\'ees dans le pilote V4L2, les cameras
+philips ou compatibles ne pourrons \^etre exploit\'ees pleinement qu'avec un noyau 2.
 
 \subsection{P\'eriph\'eriques V4L g\'en\'eriques}
 
