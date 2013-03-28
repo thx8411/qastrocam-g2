@@ -430,7 +430,6 @@ int main(int argc, char ** argv) {
       exit(1);
    }
 
-
    // main window setting
    QString caption;
    QPixmap* tmpIcon;

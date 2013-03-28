@@ -1,4 +1,4 @@
-qastrocam-g2 (4.9beta20130326) jaunty; urgency=low
+qastrocam-g2 (4.9rc1) jaunty; urgency=low
 
   * work on philips cams support over kernel 3 started 
   * qwtplot3d no more needed
