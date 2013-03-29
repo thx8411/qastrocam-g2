@@ -1,7 +1,7 @@
 # Qastrocam   
 # Copyright (C) 2003-2009   Franck Sicard
 # Qastrocam-g2 
-# Copyright (C) 2009-2010   Blaise-Florentin Collin
+# Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License v2
@@ -71,8 +71,8 @@ CXXFLAGS="$CXXFLAGS -DQT_THREAD_SUPPORT"
 CFLAGS="$CFLAGS -DQT_THREAD_SUPPORT"
 CPPFLAGS="$CPPFLAGS -DQT_THREAD_SUPPORT"
 
-AC_CHECK_HEADER([jpeglib.h],,
-    [AC_MSG_ERROR([cannot find libjpeg headers])])
+AC_CHECK_HEADER([jpeglib.h],,[AC_MSG_ERROR([cannot find libjpeg headers])])
+LDFLAGS="$LDFLAGS -ljpeg "
 
 test -n "$MOC" || MOC=MOC_var_not_set
 test -n "$QT_INC_DIR" || QT_INC_DIR=QT_INC_DIR_var_not_set
