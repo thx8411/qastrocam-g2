@@ -43,12 +43,12 @@ MA  02110-1301, USA.
 #include <qhgroupbox.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
+#include <qlineedit.h>
 
-#include "QCamSlider.hpp"
 #include "QGridBox.hpp"
+#include "QCamSlider.hpp"
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
-#include "qlineedit.h"
 #include "SCmod.hpp"
 #include "SCmodParPortPPdev.hpp"
 #include "QCamUtilities.hpp"
