@@ -12,7 +12,7 @@ If you use a philips cameras, I advise you to use
 the last distribution of your choice using a 2.x
 kernel.
 
-The last qastrocam-g2 updates use the kernel 3.x in,
- order to be usable on the last distributions. The
-last qastrocam-g2 version able to handle all the features
-of the philips cameras at this time is the "beta20110115".
+Qastrocam-g2 binaries will now be release in two
+versions, one for kernel 2 and one for kernel 3.
+Building from source will gives you a binary
+adapted to your kernel.
