@@ -1,4 +1,8 @@
-4.9rc1
+5.0
+
+  - builds now with cmake
+
+4.9
 
   - work on philips cams support over kernel 3 started
   - qwtplot3d no more needed
