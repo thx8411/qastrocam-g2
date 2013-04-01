@@ -2,7 +2,8 @@ Please look at sourceforge for an up-to-date version of this list
 
 5.0 - migrate to cmake
 5.0 - remove libavifile and replace with libav
-5.0 - migrate to QT3 
+5.0 - migrate to QT4 
+5.0 - help file in html 
 - enable fifo telescope again
 - rewrite documentation
 Later - logitech viewport support for V4L module
