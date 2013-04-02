@@ -90,7 +90,7 @@ private:
    QCamSlider * remoteCTRLWBred_;
    QCamSlider * remoteCTRLWBblue_;
    QCamSlider * remoteCTRLexposure_;
-   //QCamSlider * remoteCTRLcompression_;
+   QCamSlider * remoteCTRLcompression_;
    QCamSlider * remoteCTRLnoiseRemoval_;
    QCamSlider * remoteCTRLsharpness_;
    QHGroupBox * remoteCTRLframeRate_;
