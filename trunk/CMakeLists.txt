@@ -70,7 +70,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Qt3 REQUIRED)
 if(!QT3_FOUND)
    message(FATAL_ERROR "Qt3 not found, generation stopped")
+else(!QT3_FOUND)
+   message(STATUS "Found Qt3: ${QT_LIBRARIES}")
 endif(!QT3_FOUND)
+
+#
+# libjpeg needed
+#
+find_package(JPEG REQUIRED)
+if(!JPEG_FOUND)
+   message(FATAL_ERROR "JPEG not found, generation stopped")
+endif(!JPEG_FOUND)
 
 #
 # Libusb needed
@@ -282,6 +292,12 @@ include_directories(${CMAKE_BINARY_DIR})
 include_directories(${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH})
 add_definitions(${QT_DEFINITIONS})
 set(LIBRARIES_LIST ${QT_LIBRARIES})
+
+#
+# we use libjpeg
+#
+#include_directories(${JPEG_INCLUDE_DIR})
+#set(LIBRARIES_LIST ${LIBRARIES_LIST} ${JPEG_LIBRARIES})
 
 #
 # we use Libusb

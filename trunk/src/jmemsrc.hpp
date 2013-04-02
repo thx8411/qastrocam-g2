@@ -11,13 +11,13 @@ extern "C"
 #ifndef XMD_H                   /* X11/xmd.h correctly defines INT16 */
 typedef short INT16;
 #define XMD_H
-#include "jpeglib.h"
+#include <jpeglib.h>
 #undef XMD_H
 #else
-#include "jpeglib.h"
+#include <jpeglib.h>
 #endif
 
-#include "jerror.h"
+#include <jerror.h>
 }
 
 void jpeg_mem_src (j_decompress_ptr cinfo,

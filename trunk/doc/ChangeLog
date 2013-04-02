@@ -2,6 +2,7 @@
 
   - builds now with cmake
   - useless philips cameras controls on kernel 3 disabled
+  - forbidden libjpeg detection during build added
 
 4.9
 
