@@ -1,13 +1,15 @@
 Please look at sourceforge for an up-to-date version of this list
 
-5.0 - migrate to cmake
+TODO IN NEXT RELEASE
+
 5.0 - remove libavifile and replace with libav
 5.0 - migrate to QT4 
-5.0 - help file in html 
-- enable fifo telescope again
-- rewrite documentation
-Later - logitech viewport support for V4L module
-Later - Multi language support
+5.0 - help file in html
+5.0 - some 'required' dependencies should become 'recommended'
+
+DONE :
+
+DONE - 5.0   - migrate to cmake
 DONE - 4.8   - dark/flat support
 DONE - 4.7   - modules GUI (on / off)
 DONE - 4.7   - global configuration GUI (port, protocol)
@@ -51,3 +53,9 @@ DONE - 3.9   - keyboard support
 DONE - 3.9   - possibility to modify the name of the save directory 
 DONE - 3.8.1 - bigger box size in hotspot search
 DONE - 3.8   - fit support
+
+TO BE DONE LATER :
+
+Later - enable fifo telescope again
+Later - logitech viewport support for V4L module
+Later - Multi language support
