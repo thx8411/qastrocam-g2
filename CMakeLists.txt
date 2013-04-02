@@ -480,17 +480,45 @@ if(DEBIAN_FOUND)
    #
    # dependencies
    #
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "libavifile-0.7c2,")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libc6, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libcfitsio3, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libgcc1, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libjpeg62, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libqt3-mt, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libsdl1.2debian, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libstdc++6, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libx11-6, ")
-   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libusb-0.1-4")
+
+   # base dependencies
+   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}libc6")
+   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libgcc1")
+   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libstdc++6")
+   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libx11-6")
+
+   # required dependencies
+   if(QT3_FOUND)
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt3-mt")
+   endif(QT3_FOUND)
+
+   if(JPEG_FOUND)
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libjpeg62")
+   endif(JPEG_FOUND)
+
+   if(USB_FOUND)
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libusb-0.1-4")
+   endif(USB_FOUND)
+
+   # recommended dependencies
+   if(CFITSIO_FOUND)
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libcfitsio3")
+   endif(CFITSIO_FOUND)
+
+   if(AVIFILE_FOUND)
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libavifile-0.7c2")
+   endif(AVIFILE_FOUND)
+
+   if(SDL_FOUND)
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libsdl1.2debian")
+   endif(SDL_FOUND)
+
+   # other recommended dependencies (not needed for build)
    set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "avifile-win32-plugin, nas")
+
+   #
+   # package infos
+   #
    set(CPACK_DEBIAN_PACKAGE_SECTION graphics)
    set(CPACK_DEBIAN_PACKAGE_VERSION "${DEB_EPOCH}:${FULL_VERSION}-1")
    set(CPACK_PACKAGE_FILE_NAME ${CPACK_DEBIAN_PACKAGE_NAME}_${FULL_VERSION}_${ARCHITECTURE}_k${KERNEL_VERSION})
@@ -529,14 +557,77 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
    #
    # dependencies
    #
+
+   #-----------------------------------------#
+   #- TODO : package names have to be fixed -#
+   #-----------------------------------------#
    if(ARCHITECURE STREQUAL "x86_64")
-      #set(CPACK_RPM_PACKAGE_REQUIRES ",") ### TODO ###
-      #set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES} ,")
-      #set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES} ")
+      # base dependencies
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}libc6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libgcc1")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libstdc++6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libx11-6")
+
+      # required dependencies
+      if(QT3_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqt3-mt")
+      endif(QT3_FOUND)
+
+      if(JPEG_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
+      endif(JPEG_FOUND)
+
+      if(USB_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-0.1-4")
+      endif(USB_FOUND)
+
+      # recommended dependencies
+      if(CFITSIO_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio3")
+      endif(CFITSIO_FOUND)
+
+      if(AVIFILE_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
+      endif(AVIFILE_FOUND)
+
+      if(SDL_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libsdl1.2debian")
+      endif(SDL_FOUND)
+
    else(ARCHITECURE STREQUAL "x86_64")
-      #set(CPACK_RPM_PACKAGE_REQUIRES ",") ### TODO ###
-      #set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES} ,")
-      #set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES} ")
+
+      # base dependencies
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}libc6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libgcc1")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libstdc++6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libx11-6")
+
+      # required dependencies
+      if(QT3_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqt3-mt")
+      endif(QT3_FOUND)
+
+      if(JPEG_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
+      endif(JPEG_FOUND)
+
+      if(USB_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-0.1-4")
+      endif(USB_FOUND)
+
+      # recommended dependencies
+      if(CFITSIO_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio3")
+      endif(CFITSIO_FOUND)
+
+      if(AVIFILE_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
+      endif(AVIFILE_FOUND)
+
+      if(SDL_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libsdl1.2debian")
+      endif(SDL_FOUND)
+
    endif(ARCHITECURE STREQUAL "x86_64")
 
 endif(FEDORA_FOUND OR MAGEIA_FOUND)
