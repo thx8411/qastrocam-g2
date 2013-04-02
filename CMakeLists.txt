@@ -70,8 +70,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Qt3 REQUIRED)
 if(!QT3_FOUND)
    message(FATAL_ERROR "Qt3 not found, generation stopped")
-else(!QT3_FOUND)
-   message(STATUS "Found Qt3: ${QT_LIBRARIES}")
 endif(!QT3_FOUND)
 
 #
