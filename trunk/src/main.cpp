@@ -72,10 +72,6 @@ MA  02110-1301, USA.
 
 // for kernel detection
 #include <sys/utsname.h>
-#include <linux/version.h>
-#ifndef KERNEL_2
-#define KERNEL_2 (LINUX_VERSION_CODE <= KERNEL_VERSION(3,0,0))
-#endif
 
 // options strings
 const string AccumOptionString("-a");

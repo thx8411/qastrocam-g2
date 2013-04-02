@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2012   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -25,12 +25,6 @@ MA  02110-1301, USA.
 #include "QCamOV511.hpp"
 #include "QCamDC60.hpp"
 
-// tweak for kernel 2/kernel 3 conditionnal compilation
-#include <linux/version.h>
-
-#ifndef KERNEL_2
-#define KERNEL_2 (LINUX_VERSION_CODE <= KERNEL_VERSION(3,0,0))
-#endif
 
 #if KERNEL_2
 #include "QCamVestaK2.hpp"
