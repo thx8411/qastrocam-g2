@@ -459,7 +459,8 @@ int QCamVesta::getFrameRate() const {
    struct v4l2_streamparm parms;
    parms.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
    if (-1 == ioctl(device_,VIDIOC_G_PARM, &parms)) {
-      perror("VIDIOC_G_PARM getting");
+      // temporary removed, not working yet
+      //perror("VIDIOC_G_PARM getting");
    } else
       fps=(int)(parms.parm.capture.timeperframe.denominator/parms.parm.capture.timeperframe.numerator);
    return (fps);
@@ -725,12 +726,12 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
                  "if automatic gain is activated).")
       );
    if (QCamUtilities::expertMode()) {
-      //remoteCTRLcompression_=new QCamSlider(tr("Comp."),false,sliders,0,3);
+      remoteCTRLcompression_=new QCamSlider(tr("Comp."),false,sliders,0,3);
       remoteCTRLnoiseRemoval_=new QCamSlider(tr("Noise"),false,sliders,0,3);
       remoteCTRLsharpness_=new QCamSlider(tr("Sharp."),true,sliders,0,63,false,false);
 
-      //connect(this,SIGNAL(compressionChange(int)),remoteCTRLcompression_,SLOT(setValue(int)));
-      //connect(remoteCTRLcompression_,SIGNAL(valueChange(int)),this,SLOT(setCompression(int)));
+      connect(this,SIGNAL(compressionChange(int)),remoteCTRLcompression_,SLOT(setValue(int)));
+      connect(remoteCTRLcompression_,SIGNAL(valueChange(int)),this,SLOT(setCompression(int)));
       connect(this,SIGNAL(noiseRemovalChange(int)),remoteCTRLnoiseRemoval_,SLOT(setValue(int)));
       connect(remoteCTRLnoiseRemoval_,SIGNAL(valueChange(int)),this,SLOT(setNoiseRemoval(int)));
 
@@ -739,6 +740,14 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       connect(this,SIGNAL(sharpnessChange(int)),remoteCTRLsharpness_,SLOT(setValue(int)));
       connect(remoteCTRLsharpness_,SIGNAL(valueChange(int)),this,SLOT(setSharpness(int)));
       QToolTip::add(remoteCTRLsharpness_,tr("Shaprness enhancement (0=none, 65536=high) (low value blurs image)"));
+
+      //
+      // TEMP
+      // driver is still incomplete, disabling useless stuff
+      //
+      remoteCTRLcompression_->setDisabled(true);
+      remoteCTRLnoiseRemoval_->setDisabled(true);
+      remoteCTRLsharpness_->setDisabled(true);
    }
 
    int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
@@ -811,6 +820,16 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    setBestQuality();
    refreshPictureSettings();
 
+   //
+   // TEMP
+   // driver is still incomplete, disabling useless stuff
+   //
+   remoteCTRLWhiteBalance_->setDisabled(true);
+   saveSettingsB->setDisabled(true);
+   restoreSettingsB->setDisabled(true);
+   restoreFactorySettingsB->setDisabled(true);
+   remoteCTRLframeRate2_->setDisabled(true);
+   SCmodSelector_->setDisabled(true);
    remoteCTRL->show();
 
    return remoteCTRL;

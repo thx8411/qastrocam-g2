@@ -1,6 +1,7 @@
 5.0
 
   - builds now with cmake
+  - useless philips cameras controls on kernel 3 disabled
 
 4.9
 
