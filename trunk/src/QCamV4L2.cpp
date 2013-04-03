@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -32,6 +32,7 @@ MA  02110-1301, USA.
 #include <math.h>
 #include <sys/mman.h>
 #include <string>
+
 #include <qtabwidget.h>
 #include <qsocketnotifier.h>
 #include <qtimer.h>
@@ -56,10 +57,14 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
+#if HAVE_JPEG_H
    {V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
+#endif
    {V4L2_PIX_FMT_SPCA505,2,1,"s505",YuvFrame},
    //{V4L2_PIX_FMT_SQ905C,1,1,"sq905c",GreyFrame},
+#if HAVE_JPEG_H
    //{V4L2_PIX_FMT_MJPEG,3,1,"mjpeg",YuvFrame},
+#endif
    //{V4L2_PIX_FMT_PWC1,3,1,"philips raw",YuvFrame},
    //{V4L2_PIX_FMT_PWC2,3,1,"philips raw",YuvFrame},
    {-1,0,0,"",0}
@@ -114,9 +119,11 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    remoteCTRLcolor_=NULL;
    remoteCTRLwhiteness_=NULL;
    sizeTable_=NULL;
+#if HAVE_JPEG_H
    jpegImageBuffer=NULL;
    jpegCopyBuffer=NULL;
    jpegLineBuffer[0]=NULL;
+#endif
    device_=-1;
    devpath_=devpath;
    mode_=(ImageMode)0;
@@ -440,14 +447,17 @@ void QCamV4L2::updatePalette() {
 void QCamV4L2::allocBuffers() {
    free(nullBuff);
    free(tmpBuffer_);
+#if HAVE_JPEG_H
    free(jpegImageBuffer);
    free(jpegCopyBuffer);
    free(jpegLineBuffer[0]);
+#endif
    inputBuffer_.setSize(QSize(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height));
    yuvFrameMemSize=v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height * supported_palettes[palette].memfactor_numerator / supported_palettes[palette].memfactor_denominator;
 
    tmpBuffer_=(unsigned char*)malloc(yuvFrameMemSize);
    nullBuff=(unsigned char*)malloc(yuvFrameMemSize);
+#if HAVE_JPEG_H
    // jpeg stuff
    // everything oversized...
    if((supported_palettes[palette].index==V4L2_PIX_FMT_JPEG)||(supported_palettes[palette].index==V4L2_PIX_FMT_MJPEG)) {
@@ -456,6 +466,7 @@ void QCamV4L2::allocBuffers() {
       jpegCopyBuffer=(unsigned char*)malloc(yuvFrameMemSize);
       jpegLineBuffer[0]=(unsigned char *)malloc(row_size);
    }
+#endif
 }
 
 // get frame sizes supported by the
@@ -773,6 +784,7 @@ bool QCamV4L2::updateFrame() {
             else
                yuyv_to_y(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf);
             break;
+#if HAVE_JPEG_H
          case V4L2_PIX_FMT_JPEG:
          case V4L2_PIX_FMT_MJPEG:
             // copy driver buffer to avoid buffer underun
@@ -804,6 +816,7 @@ bool QCamV4L2::updateFrame() {
             jpeg_finish_decompress(&cinfo);
             jpeg_destroy_decompress(&cinfo);
             break;
+#endif
          case V4L2_PIX_FMT_SPCA505:
             if(mode_==YuvFrame)
                s505_to_yuv444(v4l2_fmt_.fmt.pix.width,v4l2_fmt_.fmt.pix.height,tmpBuffer_,YBuf,UBuf,VBuf);

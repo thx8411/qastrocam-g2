@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -36,7 +36,9 @@ MA  02110-1301, USA.
 #include <stdlib.h>
 #include <linux/videodev2.h>
 
+#if HAVE_JPEG_H
 #include "jmemsrc.hpp"
+#endif
 
 #include "QCam.hpp"
 #include "SCmod.hpp"
@@ -188,6 +190,7 @@ private:
    QCamFrame outputBuffer_;
    uchar * tmpBuffer_;
    uchar * nullBuff;
+#if HAVE_JPEG_H
    // jpeg decoding stuff
    // for jpeg frames
    int row;
@@ -197,6 +200,7 @@ private:
    struct jpeg_error_mgr jerr;
    unsigned char* jpegImageBuffer;
    unsigned char* jpegCopyBuffer;
+#endif
 
    // to probe the cam if it support select
    QSocketNotifier * notifier_;
