@@ -4,6 +4,7 @@
   - useless philips cameras controls on kernel 3 disabled
   - forbidden libjpeg detection during build added
   - some source code cleaning
+  - libcfitsio not required any more for building, just recommended
 
 4.9
 

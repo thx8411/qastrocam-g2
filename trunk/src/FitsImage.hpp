@@ -23,6 +23,8 @@ MA  02110-1301, USA.
 #ifndef _FITSIMAGE_HPP_
 #define _FITSIMAGE_HPP_
 
+#if HAVE_CFITSIO_H
+
 #define IMAGE_WIDTH      640
 #define IMAGE_HEIGHT     480
 #define max(a,b) (((a) > (b)) ? (a) : (b))
@@ -66,5 +68,7 @@ public:
    bool save(const QCamFrame &);
    virtual bool close();
 };
+
+#endif /* HAVE_CFITSIO_H */
 
 #endif
