@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2012   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -126,10 +126,12 @@ bool QCam::saveFrame(const string& file) const {
 
    string fileFormat=getSaveFormat();
    int quality=-1;
+#if HAVE_CFITSIO_H
    if (fileFormat=="FITS") {
       FitsImageCFITSIO fit(file+".fit");
             return fit.save(yuvFrame());
    } else
+#endif
       return yuvFrame().colorImage().save((file
                                            +"."
                                            +QString(fileFormat).lower().latin1()).c_str(),
@@ -339,14 +341,12 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    int tmpTab[16];
 
    fileFormatList_=(const char**)malloc(sizeof(const char*)*16);
+#if HAVE_CFITSIO_H
    // adds fits format
    fileFormatList_[size]="FITS";
    tmpTab[size]=size;
    ++size;
-   // adds fits-gz format
-   //fileFormatList_[size]="FITS-GZ";
-   //tmpTab[size]=size;
-   //++size;
+#endif
 #if HAVE_AVIFILE_H
    // adds avi format
    fileFormatList_[size]="AVI raw";

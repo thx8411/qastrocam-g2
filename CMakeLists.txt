@@ -44,8 +44,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130402")
-set(BUILD_VERSION "163")
+set(PATCH_VERSION "beta20130403")
+set(BUILD_VERSION "164")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -68,51 +68,51 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # QT3 needed
 #
 find_package(Qt3 REQUIRED)
-if(!QT3_FOUND)
+if(NOT QT3_FOUND)
    message(FATAL_ERROR "Qt3 not found, generation stopped")
-endif(!QT3_FOUND)
+endif(NOT QT3_FOUND)
 
 #
 # libjpeg needed
 #
 find_package(JPEG REQUIRED)
-if(!JPEG_FOUND)
+if(NOT JPEG_FOUND)
    message(FATAL_ERROR "JPEG not found, generation stopped")
-endif(!JPEG_FOUND)
+endif(NOT JPEG_FOUND)
 
 #
 # Libusb needed
 #
 find_package(USB REQUIRED)
-if(!USB_FOUND)
+if(NOT USB_FOUND)
    message(FATAL_ERROR "Libusb not found, generation stopped")
-endif(!USB_FOUND)
+endif(NOT USB_FOUND)
 
 #
-# CFITSIO lib needed
+# CFITSIO lib recommended
 #
-find_package(CFITSIO REQUIRED)
-if(!CFITSIO_FOUND)
-   message(FATAL_ERROR "cfitsio libary not found, generation stopped")
-endif(!CFITSIO_FOUND)
+find_package(CFITSIO)
+if(NOT CFITSIO_FOUND)
+   message(STATUS "cfitsio libary not found, binary won'y handle fits images...")
+endif(NOT CFITSIO_FOUND)
 
 #
 # AVIFile lib recommended
 #
 find_package(AVIFile)
-if(!AVIFILE_FOUND)
+if(NOT AVIFILE_FOUND)
    message(STATUS "avifile library not found, binary won't handle avi files...")
-endif(!AVIFILE_FOUND)
+endif(NOT AVIFILE_FOUND)
 
 #
 # SDL recommended
 #
 find_package(SDL)
-if(!SDL_FOUND)
+if(NOT SDL_FOUND)
    message(FATAL_ERROR "SDL library not found, binary won't handle SDL...")
-else(!SDL_FOUND)
+else(NOT SDL_FOUND)
    message(STATUS "Found SDL: ${SDL_LIBRARY}")
-endif(!SDL_FOUND)
+endif(NOT SDL_FOUND)
 
 
 #################
@@ -312,7 +312,7 @@ endif(USB_FOUND)
 #
 if(CFITSIO_FOUND)
    include_directories(${CFITSIO_INCLUDE_DIR})
-   set(CFITSIO_DEFINITIONS "${CFITSIO_DEFINITIONS} -D HAVE_FITSIO_H=1")
+   set(CFITSIO_DEFINITIONS "${CFITSIO_DEFINITIONS} -D HAVE_CFITSIO_H=1")
    add_definitions(${CFITSIO_DEFINITIONS})
    set(LIBRARIES_LIST ${LIBRARIES_LIST} ${CFITSIO_LIBRARIES})
 endif(CFITSIO_FOUND)
