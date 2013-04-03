@@ -103,6 +103,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
          camFound = new QCamOV511(devpath);
          return(camFound);
       }
+#if HAVE_JPEG_H
       // looking for an OV519 device
       if (strncmp((char*)vcap.card,"OV519",5)==0) {
          cout << "webcam " << vcap.card << " detected (jpeg mode)." << endl;
@@ -110,6 +111,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
          camFound = new QCamOV519(devpath);
          return(camFound);
       }
+#endif
       // V4L2 generic
       int res;
       v4l2_fmtdesc v4l2_fmtdesc_temp;

@@ -5,6 +5,7 @@
   - forbidden libjpeg detection during build added
   - some source code cleaning
   - libcfitsio not required any more for building, just recommended
+  - libjpeg not required any more for building, just recommended
 
 4.9
 

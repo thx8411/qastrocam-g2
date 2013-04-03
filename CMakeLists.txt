@@ -73,14 +73,6 @@ if(NOT QT3_FOUND)
 endif(NOT QT3_FOUND)
 
 #
-# libjpeg needed
-#
-find_package(JPEG REQUIRED)
-if(NOT JPEG_FOUND)
-   message(FATAL_ERROR "JPEG not found, generation stopped")
-endif(NOT JPEG_FOUND)
-
-#
 # Libusb needed
 #
 find_package(USB REQUIRED)
@@ -89,11 +81,19 @@ if(NOT USB_FOUND)
 endif(NOT USB_FOUND)
 
 #
+# libjpeg recommended
+#
+find_package(JPEG REQUIRED)
+if(NOT JPEG_FOUND)
+   message(STATUS "JPEG not found, jpeg cameras won't work...")
+endif(NOT JPEG_FOUND)
+
+#
 # CFITSIO lib recommended
 #
 find_package(CFITSIO)
 if(NOT CFITSIO_FOUND)
-   message(STATUS "cfitsio libary not found, binary won'y handle fits images...")
+   message(STATUS "cfitsio libary not found, binary won't handle fits images...")
 endif(NOT CFITSIO_FOUND)
 
 #
@@ -294,8 +294,12 @@ set(LIBRARIES_LIST ${QT_LIBRARIES})
 #
 # we use libjpeg
 #
-#include_directories(${JPEG_INCLUDE_DIR})
-#set(LIBRARIES_LIST ${LIBRARIES_LIST} ${JPEG_LIBRARIES})
+if(JPEG_FOUND)
+   include_directories(${JPEG_INCLUDE_DIR})
+   set(USB_DEFINITIONS "${JPEG_DEFINITIONS} -D HAVE_JPEG_H=1")
+   add_definitions(${JPEG_DEFINITIONS})
+   set(LIBRARIES_LIST ${LIBRARIES_LIST} ${JPEG_LIBRARIES})
+endif(JPEG_FOUND)
 
 #
 # we use Libusb
