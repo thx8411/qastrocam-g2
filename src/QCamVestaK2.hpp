@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -22,6 +22,9 @@ MA  02110-1301, USA.
 
 #ifndef _QCamVesta_hpp_
 #define _QCamVesta_hpp_
+
+/* only available for kernel 2 */
+#if KERNEL_2
 
 #include <qobject.h>
 #include <qimage.h>
@@ -155,5 +158,7 @@ signals:
    void whiteBalanceRedChange(int);
    void whiteBalanceBlueChange(int);
 };
+
+#endif /* KERNEL_2 */
 
 #endif

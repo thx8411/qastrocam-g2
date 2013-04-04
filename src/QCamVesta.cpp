@@ -30,8 +30,8 @@ MA  02110-1301, USA.
 /******************************************************/
 
 
-#if KERNEL_2
-#include "QCamVestaK2.cpp"
-#else
-#include "QCamVestaK3.cpp"
-#endif /* KERNEL_2 */
+//#if KERNEL_2
+//#include "QCamVestaK2.cpp"
+//#else
+//#include "QCamVestaK3.cpp"
+//#endif /* KERNEL_2 */
