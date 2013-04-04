@@ -6,6 +6,7 @@
   - some source code cleaning
   - libcfitsio not required any more for building, just recommended
   - libjpeg not required any more for building, just recommended
+  - libusb not required any more for building, just recommended
 
 4.9
 

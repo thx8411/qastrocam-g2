@@ -5,27 +5,32 @@ TODO IN NEXT RELEASE
 5.0 - remove libavifile and replace with libav
 5.0 - migrate to QT4 
 5.0 - help file in html
-5.0 - some 'required' dependencies should become 'recommended'
 
 DONE :
 
+DONE - 5.0   - some 'required' dependencies should become 'recommended'
 DONE - 5.0   - migrate to cmake
+
 DONE - 4.8   - dark/flat support
+
 DONE - 4.7   - modules GUI (on / off)
 DONE - 4.7   - global configuration GUI (port, protocol)
 DONE - 4.7   - log file added
 DONE - 4.7   - lossless avi record added
 DONE - 4.7   - BA81 palette added
 DONE - 4.7   - palette and source GUI added
+
 DONE - 4.6   - AVI saved in raw rgb24
 DONE - 4.6   - webcam RGB palette now fully supported
 DONE - 4.6   - native format is yuv444 instead yuv420 for better colors
 DONE - 4.6   - all file formats now support raw color frames
 DONE - 4.6   - support software cropping and binning
 DONE - 4.6   - support hardware cropping
+
 DONE - 4.5   - migration to v4l2
 DONE - 4.5   - settings file name can now be forced
 DONE - 4.5   - add V4L generic usage "forcing"
+
 DONE - 4.4   - V4L generic "hot" resize for all devices
 DONE - 4.4   - RGB24 palette support (luminance only)
 DONE - 4.4   - LX mode for V4L generic added (serial and //)  
@@ -37,20 +42,25 @@ DONE - 4.4   - levels (inverted/normal) can be set for // port LX
 DONE - 4.4   - APM telescope and // port LX may now share the same port with ppdev or lp devices
 DONE - 4.4   - removed obsolete parport LX control
 DONE - 4.4   - V4L generic palette can be forced with -p option
+
 DONE - 4.3   - V4L generic frame size detection, hot-resizing capability message
 DONE - 4.3   - YUYV pallette support
 DONE - 4.3   - gnome menu entry and icon included in the debian package
 DONE - 4.3   - V4L generic devices source choice and restoration for each device
 DONE - 4.3   - file format, raw mode, resolution, level inversion, telescope device and lx device now stored and restored
 DONE - 4.3   - SCmod level control via cmd-line for serial and led mods.
+
 DONE - 4.2.2 - adding a virtual telescope to order to generate an "iris like" auto-tracking file
 DONE - 4.2.1 - long exposure serial device choice using -dx option
 DONE - 4.2.0 - serial control of SCmod
+
 DONE - 3.11  - be able to connect the camera after the launch of qastrocam
+
 DONE - 3.9   - [PWC] set long pose mode in secondes
 DONE - 3.9   - save restore options (of the pwc driver)
 DONE - 3.9   - keyboard support
 DONE - 3.9   - possibility to modify the name of the save directory 
+
 DONE - 3.8.1 - bigger box size in hotspot search
 DONE - 3.8   - fit support
 

@@ -72,11 +72,11 @@ if(NOT QT_FOUND)
 endif(NOT QT_FOUND)
 
 #
-# Libusb needed
+# Libusb recommended
 #
-find_package(USB REQUIRED)
+find_package(USB)
 if(NOT USB_FOUND)
-   message(FATAL_ERROR "Libusb not found, generation stopped")
+   message(STATUS "Libusb not found, QHY5 and QHY6 camera's won't be supported...")
 endif(NOT USB_FOUND)
 
 #
@@ -90,7 +90,8 @@ endif(NOT JPEG_FOUND)
 #
 # CFITSIO lib recommended
 #
-find_package(CFITSIO)
+#find_package(CFITSIO)
+set(CFITSIO_FOUND "")
 if(NOT CFITSIO_FOUND)
    message(STATUS "cfitsio libary not found, binary won't handle fits images...")
 endif(NOT CFITSIO_FOUND)
@@ -108,7 +109,7 @@ endif(NOT AVIFILE_FOUND)
 #
 find_package(SDL)
 if(NOT SDL_FOUND)
-   message(FATAL_ERROR "SDL library not found, binary won't handle SDL...")
+   message(STATUS "SDL library not found, binary won't handle SDL...")
 else(NOT SDL_FOUND)
    message(STATUS "Found SDL: ${SDL_LIBRARY}")
 endif(NOT SDL_FOUND)

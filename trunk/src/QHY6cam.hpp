@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010 Blaise-Florentin Collin
+Copyright (C) 2010-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -26,6 +26,9 @@ MA  02110-1301, USA.
 
 #ifndef _QHY6CAM_HPP_
 #define _QHY6CAM_HPP_
+
+// only if usb available
+#if HAVE_USB_H
 
 // threaded code must be re-entrant
 #ifndef _REENTRANT
@@ -106,5 +109,7 @@ private :
    pthread_mutex_t moveLoopMutex;
    bool moveLoop_on_;
 };
+
+#endif /* HAVE_USB_H */
 
 #endif

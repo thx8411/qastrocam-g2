@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010   Blaise-Florentin Collin
+Copyright (C) 2010-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -16,6 +16,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
+
+// only available if have usb
+#if HAVE_USB_H
 
 #include <qmessagebox.h>
 
@@ -126,3 +129,5 @@ bool QTelescopeQHY5::setTracking(bool activated) {
       return(!activated);
    }
 }
+
+#endif /* HAVE_USB_H */

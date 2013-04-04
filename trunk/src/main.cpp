@@ -342,7 +342,9 @@ int main(int argc, char ** argv) {
    if(settings.haveKey("CAMERA")) cameraName=settings.getKey("CAMERA");
    if(settings.haveKey("CAMERA_DEVICE")) videoDeviceName=settings.getKey("CAMERA_DEVICE");
    if(settings.haveKey("TELESCOPE_DEVICE")) telescopeDeviceName=settings.getKey("TELESCOPE_DEVICE");
+#if HAVE_SDL_H
    if(settings.haveKey("SDL")&&string(settings.getKey("SDL"))=="yes") QCamUtilities::useSDL(true);
+#endif
    if(settings.haveKey("EXPERT")&&string(settings.getKey("EXPERT"))=="yes") QCamUtilities::expertMode(true);
    if(settings.haveKey("LOG")&&string(settings.getKey("LOG"))=="yes") {
       char buff[30];
@@ -459,6 +461,7 @@ int main(int argc, char ** argv) {
    // capture module creation
    QCam* cam = NULL;
    // test QHY5
+#if HAVE_USB_H
    if(cameraName=="qhy5") {
       if(QHY5cam::plugged())
          cam = new QCamQHY5();
@@ -473,7 +476,9 @@ int main(int argc, char ** argv) {
          QMessageBox::information(0,"Qastrocam-g2","QHY6 camera not detected\nSettings panel only");
          cout << "QHY6 camera not detected" << endl;
       }
-   } else if(cameraName=="simulator") {
+   } else
+#endif /* HAVE_USB_H */
+   if(cameraName=="simulator") {
          cam = new QCamSimulator();
    } else {
       // find the best V4L device
@@ -504,15 +509,18 @@ int main(int argc, char ** argv) {
          theTelescope = new QTelescopeMTS(telescopeDeviceName.c_str());
       } else if (telescopeType=="file") {
 	 theTelescope = new QTelescopeFile(telescopeDeviceName.c_str());
+#if HAVE_USB_H
       } else if (telescopeType=="qhy5") {
          theTelescope = new QTelescopeQHY5();
       } else if (telescopeType=="qhy6") {
          theTelescope = new QTelescopeQHY6();
+#endif /* HAVE_USB_H */
       } else if (telescopeType=="simulator") {
          theTelescope = new QTelescopeSimulator();
       } else {
-         cerr << "unsupported telescope type "
+         cerr << "Unsupported telescope type "
               <<"'"<<telescopeType<<"'"<<endl;
+         cerr << "Your configuration file may be outdated. Please delete the file '.qastrocam.conf'." << endl;
          usage(argv[0]);
          exit(1);
       }
