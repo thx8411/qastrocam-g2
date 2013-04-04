@@ -67,9 +67,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # QT3 needed
 #
 find_package(Qt3 REQUIRED)
-if(NOT QT3_FOUND)
+if(NOT QT_FOUND)
    message(FATAL_ERROR "Qt3 not found, generation stopped")
-endif(NOT QT3_FOUND)
+endif(NOT QT_FOUND)
 
 #
 # Libusb needed
@@ -374,9 +374,9 @@ if(DEBIAN_FOUND)
    set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libx11-6")
 
    # required dependencies
-   if(QT3_FOUND)
+   if(QT_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt3-mt")
-   endif(QT3_FOUND)
+   endif(QT_FOUND)
 
    if(JPEG_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libjpeg62")
@@ -455,9 +455,9 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libx11-6")
 
       # required dependencies
-      if(QT3_FOUND)
+      if(QT_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqt3-mt")
-      endif(QT3_FOUND)
+      endif(QT_FOUND)
 
       if(JPEG_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
@@ -489,9 +489,9 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libx11-6")
 
       # required dependencies
-      if(QT3_FOUND)
+      if(QT_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqt3-mt")
-      endif(QT3_FOUND)
+      endif(QT_FOUND)
 
       if(JPEG_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
