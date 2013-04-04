@@ -1,7 +1,55 @@
 <HTML>
 <HEAD>
-<TITLE>qastrocam-g2 help</TITLE>
+<TITLE>qastrocam-g2 5.0 help file</TITLE>
+<style type="text/css">
+	BODY { text-align:justify; text-justify:newspaper }
+	p { text-indent: 20px; }
+	H3 { text-indent: 20px; }
+	H4 { text-indent: 40px; }
+	CODE { margin-left: 60px; }
+</style> 
 </HEAD>
 <BODY>
+<H1>qastrocam-g2 5.0 help file</H1>
+
+<HR width="25%" align="left">
+
+<H2>Building from sources</H2>
+
+<P>Qastrocam now uses cmake for building. You will need cmake 2.6.8 or
+higher. In order to build from source, you will also need the developpement
+packages for Qt3. Developement packages for libusb, cfitsio, libjpeg, libavifile
+and SDL are recommended.</P>
+
+<H3>Building binary :</H3>
+
+<P>Please follow these recommended commands for binary building :</P>
+
+<CODE>>gzip -d qastrocam-g2_5.0_src.tar.gz</CODE><BR>
+<CODE>>tar -xvf qastrocam-g2_5.0_src.tar</CODE><BR>
+<CODE>>mkdir qastrocam-g2-build</CODE><BR>
+<CODE>>cmake ../qastrocam-g2_5.0_src 6DCMAKE_BUILD_TYPE=Release</CODE><BR>
+<CODE>>make</CODE><BR>
+<CODE>>sudo make install</CODE><BR>
+</CODE>
+
+
+<H3>Building the source package</H3>
+
+<P>In order to build the source package, just type :</P>
+
+<CODE>>make package_source</CODE>
+
+<H3>Building a dstribution package</H3>
+
+<P>In order to build a debian or an rpm package, depending on your host
+distribution, just type :</P>
+
+<CODE>>make package</CODE>
+
+<P><BR></P>
+<HR width="25%" align="left">
+
+<P><CITE>(c) 2013 Blaise-Florentin Collin, under GPL v2 license</CITE></P>
 </BODY>
 </HTML>
