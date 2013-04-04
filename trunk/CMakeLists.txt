@@ -22,9 +22,8 @@ find_file(MAGEIA_FOUND mageia-release PATHS /etc)
 # kernel detection
 #
 execute_process(COMMAND  uname -r
-      OUTPUT_VARIABLE KERNEL_OUTPUT
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-   )
+	OUTPUT_VARIABLE KERNEL_OUTPUT
+	OUTPUT_STRIP_TRAILING_WHITESPACE)
 string(REGEX MATCH "[0-9]+" KERNEL_VERSION ${KERNEL_OUTPUT})
 message(STATUS "Kernel detection : version ${KERNEL_VERSION}")
 if(KERNEL_VERSION STREQUAL "2")
@@ -44,8 +43,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130403")
-set(BUILD_VERSION "164")
+set(PATCH_VERSION "beta20130404")
+set(BUILD_VERSION "165")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -205,77 +204,32 @@ set(qastrocam-g2_SOURCES
 	src/yuv.cpp
 )
 
-# moc files generation
-set(qastrocam-g2_MOC
-	CamHistogram
-	FrameAlgo
-	FrameBayer
-	FrameBias
-	FrameDark
-	FrameFlat
-	FrameId
-	FrameMirror
-	QCamAdd
-	QCamAutoAlign
-	QCamAutoGuidage
-	QCamAutoGuidageSimple
-	QCamClient
-	QCamComboBox
-	QCamDC60
-	QCamDisplay
-	QCamDisplayImplSDL
-	QCamFindShift_barycentre
-	QCamFindShift_hotSpot
-	QCamFindShift
-	QCamFocus
-	QCam
-	QCamMax
-	QCamOV511
-	QCamPhoto2
-	QCamQHY5
-	QCamQHY6
-	QCamRadioBox
-	QCamSelection
-	QCamSimulator
-	QCamSlider
-	QCamStack
-	QCamTrans
-	QCamV4L2fi
-	QCamV4L2
-	QCamV4L2lx
-	QCamV4L
-	QCamVestaK2
-	QCamVestaK3
-	QDirectoryChooser
-	QFileChooser
-	QGridBox
-	QHistogram
-	QKingClient
-	QSetting
-	QTelescopeAPM
-	QTelescopeAutostar
-	QTelescopeFifo
-	QTelescopeFile
-	QTelescope
-	QTelescopeLX200
-	QTelescopeMCU
-	QTelescopeMTS
-	QTelescopeNexstar
-	QTelescopeQHY5
-	QTelescopeQHY6
-	QTelescopeSimulator
-	QVectorMap
-)
+
 #
 # MOC generation
 #
 message(STATUS "MOC files generation...")
+
+# grab all the header files containing Q_OBJECT
+execute_process(COMMAND /bin/sh -c "grep -l Q_OBJECT *.hpp"
+	OUTPUT_VARIABLE qastrocam-g2_MOC
+	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/src/"
+	OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# transforms to a list
+string(REPLACE "\n" ";" qastrocam-g2_MOC ${qastrocam-g2_MOC})
+
+# moc each file
 foreach(F ${qastrocam-g2_MOC})
+   # remove the extension
+   string(REGEX REPLACE ".hpp" "" file_base_name ${F})
+
    # ---------------------------------
    # TEMPORARY
    # must be replaced by a target rule
    # ---------------------------------
-   execute_process(COMMAND ${QT_MOC_EXECUTABLE} "-o" "${CMAKE_BINARY_DIR}/${F}.moc" "${CMAKE_SOURCE_DIR}/src/${F}.hpp")
+   execute_process(COMMAND ${QT_MOC_EXECUTABLE} "-o" "${CMAKE_BINARY_DIR}/${file_base_name}.moc" "${CMAKE_SOURCE_DIR}/src/${F}")
+
 endforeach(F)
 include_directories(${CMAKE_BINARY_DIR})
 
@@ -294,6 +248,7 @@ set(LIBRARIES_LIST ${QT_LIBRARIES})
 #
 # we use libjpeg
 #
+
 if(JPEG_FOUND)
    include_directories(${JPEG_INCLUDE_DIR})
    set(USB_DEFINITIONS "${JPEG_DEFINITIONS} -D HAVE_JPEG_H=1")
