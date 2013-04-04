@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010 Blaise-Florentin Collin
+Copyright (C) 2010-2013 Blaise-Florentin Collin
 Thanks to Geoffrey Hausheer and Clive
 
 This program is free software; you can redistribute it and/or
@@ -25,6 +25,9 @@ MA  02110-1301, USA.
 // Tom's firmware only supports timed moves ont the ST4 port.
 // For permanent moves, this driver use a periodic thread, refreshing
 // the timed moves until stop
+
+// only if usb available
+#if HAVE_USB_H
 
 #include <sys/time.h>
 #include <stdlib.h>
@@ -471,3 +474,5 @@ unsigned long QHY5cam::getTime() {
    t+=tv.tv_sec*1000000;
    return(t);
 }
+
+#endif /* HAVE_USB_H */

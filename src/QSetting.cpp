@@ -38,6 +38,8 @@ QSetting::~QSetting() {
 }
 
 QWidget *QSetting::buildGUI(QWidget * parent) {
+   int cameraNumber;
+   int telescopeNumber;
    remoteCTRL_= new QVBox(parent);
    remoteCTRL_->setSpacing(4);
 
@@ -47,9 +49,16 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    videoBox=new QHGroupBox("Camera",remoteCTRL_);
    remoteCTRL_->setStretchFactor(videoBox,0);
    camLabel=new QLabel("Camera : ",videoBox);
+#if HAVE_USB_H
+   cameraNumber=4;
    int cameraTable[]={0,1,2,3};
    const char* cameraLabel[]={"simulator","qhy5","qhy6","v4l(2)"};
-   cameraList=new QCamComboBox("camera : ",videoBox,4,cameraTable,cameraLabel);
+#else
+   cameraNumber=2;
+   int cameraTable[]={0,1};
+   const char* cameraLabel[]={"simulator","v4l(2)"};
+#endif
+   cameraList=new QCamComboBox("camera : ",videoBox,cameraNumber,cameraTable,cameraLabel);
    QToolTip::add(cameraList,tr("Camera to use"));
    videoDeviceLabel=new QLabel("Device : ",videoBox);
    videoDeviceEntry=new QLineEdit(videoBox);
@@ -67,9 +76,16 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    lineOne->setStretchFactor(padding0,5);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
    lineOne->setStretchFactor(telescopeListLabel,0);
+#if HAVE_USB_H
+   telescopeNumber=12;
    int telescopeTable[]={0,1,2,3,4,5,6,7,8,9,10,11};
    const char* telescopeLabel[]={"none","qhy5","qhy6","autostar","lx200","nexstar","mcu","mts","apm","fifo","file","simulator"};
-   telescopeList=new QCamComboBox("telescope type : ",lineOne,12,telescopeTable,telescopeLabel);
+#else
+   telescopeNumber=10;
+   int telescopeTable[]={0,1,2,3,4,5,6,7,8,9};
+   const char* telescopeLabel[]={"none","autostar","lx200","nexstar","mcu","mts","apm","fifo","file","simulator"};
+#endif
+   telescopeList=new QCamComboBox("telescope type : ",lineOne,telescopeNumber,telescopeTable,telescopeLabel);
    QToolTip::add(telescopeList,tr("Telescope protocol to use for guiding"));
    lineOne->setStretchFactor(telescopeList,10);
    padding1=new QWidget(lineOne);
