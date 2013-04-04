@@ -24,6 +24,9 @@ MA  02110-1301, USA.
 /*   old pwc driver (kernel 2)    */
 /**********************************/
 
+/* only available for kernel 2 */
+#if KERNEL_2
+
 #include "QCamVestaK2.moc"
 #include <iostream>
 #include <math.h>
@@ -788,3 +791,5 @@ uchar* QCamVesta::mmapCapture() {
 
    return((uchar*)buffers[buffer.index].start);
 }
+
+#endif /* KERNEL_2 */

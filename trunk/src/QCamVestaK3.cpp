@@ -26,6 +26,9 @@ MA  02110-1301, USA.
 /*     fixed and completed        */
 /**********************************/
 
+// only available for kernel 3
+#if !KERNEL_2
+
 #include "QCamVestaK3.moc"
 #include <iostream>
 #include <math.h>
@@ -871,3 +874,4 @@ void QCamVesta::startAccumulation() {
    }
 }
 
+#endif /* !KERNEL_2 */

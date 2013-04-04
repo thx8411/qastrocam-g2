@@ -118,97 +118,23 @@ endif(NOT SDL_FOUND)
 # Build sources #
 #################
 
-# source files
-set(qastrocam-g2_SOURCES
-	src/bayer.cpp
-	src/QCamDisplay.cpp
-	src/QCamStack.cpp
-	src/QTelescopeAPM.cpp
-	src/CamHistogram.cpp
-	src/QCamDisplayImplSDL.cpp
-	src/QCamTrans.cpp
-	src/QTelescopeAutostar.cpp
-	src/FitsImage.cpp
-	src/QCamFindShift_barycentre.cpp
-	src/QCamUtilities.cpp
-	src/QTelescope.cpp
-	src/FrameAlgo.cpp
-	src/QCamFindShift.cpp
-	src/QCamV4L2.cpp
-	src/QTelescopeFifo.cpp
-	src/FrameBayer.cpp
-	src/QCamFindShift_hotSpot.cpp
-	src/QCamV4L2fi.cpp
-	src/QTelescopeFile.cpp
-	src/FrameBias.cpp
-	src/QCamFocus.cpp
-	src/QCamV4L2lx.cpp
-	src/QTelescopeLX200.cpp
-	src/FrameDark.cpp
-	src/QCamFrame.cpp
-	src/QCamV4LbestDevice.cpp
-	src/QTelescopeMCU.cpp
-	src/FrameFlat.cpp
-	src/QCamMax.cpp
-	src/QCamV4L.cpp
-	src/QTelescopeMTS.cpp
-	src/FrameId.cpp
-	src/QCamMovieAvi.cpp
-	src/QCamVesta.cpp
-	src/QTelescopeNexstar.cpp
-	src/FrameMirror.cpp
-	src/QCamMovieAviLossless.cpp
-	src/QTelescopeQHY5.cpp
-	src/jmemsrc.cpp
-	src/QCamMovie.cpp
-	src/QTelescopeQHY6.cpp
-	src/main.cpp
-	src/QCamMovieSeq.cpp
-	src/QDirectoryChooser.cpp
-	src/QTelescopeSimulator.cpp
-	src/PPort.cpp
-	src/QCamMovieSer.cpp
-	src/QFileChooser.cpp
-	src/QVectorMap.cpp
-	src/QCamAdd.cpp
-	src/QCamOV511.cpp
-	src/QFrameDisplay.cpp
-	src/rasterOp.cpp
-	src/QCamAutoAlign.cpp
-	src/QCamPhoto2.cpp
-	src/QGridBox.cpp
-	src/rotate.cpp
-	src/QCamAutoGuidage.cpp
-	src/QCamQHY5.cpp
-	src/QHistogram.cpp
-	src/SCmod.cpp
-	src/QCamAutoGuidageSimple.cpp
-	src/QCamQHY6.cpp
-	src/QHY5cam.cpp
-	src/SCmodParPortPPdev.cpp
-	src/QCamClient.cpp
-	src/QCamRadioBox.cpp
-	src/QHY6cam.cpp
-	src/SettingsBackup.cpp
-	src/QCamComboBox.cpp
-	src/QCamSelection.cpp
-	src/QKingClient.cpp
-	src/ShiftInfo.cpp
-	src/QCam.cpp
-	src/QCamSimulator.cpp
-	src/QSetting.cpp
-	src/Vector2D.cpp
-	src/QCamDC60.cpp
-	src/QCamSlider.cpp
-	src/QStreamTranslator.cpp
-	src/yuv.cpp
-)
+message(STATUS "Listing source files...")
+
+# grab all source files
+execute_process(COMMAND /bin/sh -c "ls src/*.cpp"
+        OUTPUT_VARIABLE qastrocam-g2_SOURCES
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# transforms to a list
+string(REPLACE "\n" ";" qastrocam-g2_SOURCES ${qastrocam-g2_SOURCES})
 
 
 #
 # MOC generation
 #
-message(STATUS "MOC files generation...")
+
+message(STATUS "Listing MOC header files...")
 
 # grab all the header files containing Q_OBJECT
 execute_process(COMMAND /bin/sh -c "grep -l Q_OBJECT *.hpp"
@@ -220,6 +146,7 @@ execute_process(COMMAND /bin/sh -c "grep -l Q_OBJECT *.hpp"
 string(REPLACE "\n" ";" qastrocam-g2_MOC ${qastrocam-g2_MOC})
 
 # moc each file
+message(STATUS "MOC files generation...")
 foreach(F ${qastrocam-g2_MOC})
    # remove the extension
    string(REGEX REPLACE ".hpp" "" file_base_name ${F})
