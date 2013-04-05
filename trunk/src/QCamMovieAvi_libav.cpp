@@ -52,6 +52,7 @@ QWidget * QCamMovieAvi::buildGUI(QWidget  * father) {
    return father;
 }
 
+// open a stream
 bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    cam.writeProperties(seqName+".properties");
    //aviFile_ = avm::CreateWriteFile((seqName+".avi").c_str());
@@ -66,10 +67,12 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    return true;
 }
 
+// close a stream
 void QCamMovieAvi::closeImpl() {
 
 }
 
+// add a frame
 bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
 
    return true;

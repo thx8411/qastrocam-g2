@@ -98,8 +98,7 @@ endif(NOT CFITSIO_FOUND)
 #
 # LibAV or AVIFile recommended
 #
-#find_package(LibAV REQUIRED)
-set(LIBAV_FOUND "")
+find_package(LibAV REQUIRED)
 if(NOT LIBAV_FOUND)
    message(STATUS "LibAv not found, trying libavifile...")
    #
@@ -218,7 +217,7 @@ endif(CFITSIO_FOUND)
 #
 if(LIBAV_FOUND)
    include_directories(${LIBAV_INCLUDE_DIRS})
-   set(LIBAV_DEFINITIONS "${LIBAV_DEFINITIONS} -D HAVE_LIBAV_H=1")
+   set(LIBAV_DEFINITIONS "${LIBAV_DEFINITIONS} -D HAVE_LIBAV_H=1 -D __STDC_CONSTANT_MACROS")
    add_definitions(${LIBAV_DEFINITIONS})
    set(LIBRARIES_LIST ${LIBRARIES_LIST} ${LIBAV_LIBRARIES})
 endif(LIBAV_FOUND)
