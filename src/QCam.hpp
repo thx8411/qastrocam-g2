@@ -191,7 +191,7 @@ private:
    mutable QCamMovie* movieWritter_;
    QCamMovie* movieWritterSeq_;
    QCamMovie* movieWritterSer_;
-#if HAVE_AVIFILE_H
+#if HAVE_AVIFILE_H || HAVE_LIBAV_H
    QCamMovie* movieWritterAvi_;
    QCamMovie* movieWritterAviLossless_;
 #endif

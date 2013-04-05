@@ -25,23 +25,34 @@ MA  02110-1301, USA.
 // only available if have libavifile
 #if HAVE_LIBAV_H
 
-#include "QCamMovie.hpp"
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+}
 
+#include "QCamMovie.hpp"
 
 // lossless class for avi recording
 class QCamMovieAviLossless : public QCamMovie {
-public:
-   QCamMovieAviLossless();
-   ~QCamMovieAviLossless();
-   QWidget * buildGUI(QWidget  * father);
-   // open stream
-   bool openImpl(const string & seqName, const QCam & cam);
-   // close stream
-   void closeImpl();
-   // add a frame
-   bool addImpl(const QCamFrame & newFrame, const QCam & cam);
-private:
-
+   public:
+      QCamMovieAviLossless();
+      ~QCamMovieAviLossless();
+      QWidget * buildGUI(QWidget  * father);
+      // open stream
+      bool openImpl(const string & seqName, const QCam & cam);
+      // close stream
+      void closeImpl();
+      // add a frame
+      bool addImpl(const QCamFrame & newFrame, const QCam & cam);
+   private:
+      AVOutputFormat* output_format;
+      AVFormatContext* output_format_cx;
+      AVCodec* output_codec;
+      AVCodecContext* output_codec_cx;
+      AVStream* output_video_stream;
+      AVFrame* picture;
+      uint8_t* video_outbuf;
+      int video_outbuf_size;
 };
 
 #endif /* HAVE_LIBAV_H */

@@ -25,22 +25,35 @@ MA  02110-1301, USA.
 // only available if have libav
 #if HAVE_LIBAV_H
 
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+}
+
 #include "QCamMovie.hpp"
 
 // raw avi recording class
 class QCamMovieAvi : public QCamMovie {
-public:
-   QCamMovieAvi();
-   ~QCamMovieAvi();
-   QWidget* buildGUI(QWidget* father);
-   // open the stream
-   bool openImpl(const string & seqName, const QCam & cam);
-   // close the stream
-   void closeImpl();
-   // add a frame
-   bool addImpl(const QCamFrame & newFrame, const QCam & cam);
-private:
-   bool registaxCompatibility;
+   public:
+      QCamMovieAvi();
+      ~QCamMovieAvi();
+      QWidget* buildGUI(QWidget* father);
+      // open the stream
+      bool openImpl(const string & seqName, const QCam & cam);
+      // close the stream
+      void closeImpl();
+      // add a frame
+      bool addImpl(const QCamFrame & newFrame, const QCam & cam);
+   private:
+      bool registaxCompatibility;
+      AVOutputFormat* output_format;
+      AVFormatContext* output_format_cx;
+      AVCodec* output_codec;
+      AVCodecContext* output_codec_cx;
+      AVStream* output_video_stream;
+      AVFrame* picture;
+      uint8_t* video_outbuf;
+      int video_outbuf_size;
 };
 
 #endif /* HAVE_LIBAV_H */
