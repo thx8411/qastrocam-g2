@@ -1,6 +1,6 @@
 /*******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2013 Blaise-Florentin Collin
+Copyright (C) 2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -18,15 +18,15 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#ifndef _QCamMoviAviLossless_hpp_
-#define _QCamMoviAviLossless_hpp_
+#ifndef _QCamMoviAviLossless_libav_hpp_
+#define _QCamMoviAviLossless_libav_hpp_
 
 
-#if HAVE_AVIFILE_H
+// only available if have libavifile
+#if HAVE_LIBAV_H
 
 #include "QCamMovie.hpp"
 
-#include <avifile.h>
 
 // lossless class for avi recording
 class QCamMovieAviLossless : public QCamMovie {
@@ -41,14 +41,9 @@ public:
    // add a frame
    bool addImpl(const QCamFrame & newFrame, const QCam & cam);
 private:
-   // file
-   mutable avm::IWriteFile *aviFile_;
-   // stream
-   mutable avm::IVideoWriteStream *aviStream_;
-   // frame buffer
-   mutable unsigned char *deinterlaceBuf_;
+
 };
 
-#endif
+#endif /* HAVE_LIBAV_H */
 
 #endif

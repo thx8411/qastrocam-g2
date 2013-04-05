@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -20,13 +20,14 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
+// only available if have libavifile
 #if HAVE_AVIFILE_H
 
 #include <stdlib.h>
 
 #include "yuv.hpp"
 
-#include "QCamMovieAvi.hpp"
+#include "QCamMovieAvi_avifile.hpp"
 #include "QCamFrame.hpp"
 #include "QCam.hpp"
 #include "SettingsBackup.hpp"
@@ -170,4 +171,4 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    return true;
 }
 
-#endif
+#endif /* HAVE_AVIFILE_H */

@@ -52,8 +52,17 @@ MA  02110-1301, USA.
 #include <stdio.h>
 #include "QGridBox.hpp"
 #include "FitsImage.hpp"
-#include "QCamMovieAvi.hpp"
-#include "QCamMovieAviLossless.hpp"
+
+#if HAVE_AVIFILE_H
+#include "QCamMovieAvi_avifile.hpp"
+#include "QCamMovieAviLossless_avifile.hpp"
+#endif
+
+#if HAVE_LIBAV_H
+#include "QCamMovieAvi_libav.hpp"
+#include "QCamMovieAviLossless_libav.hpp"
+#endif
+
 #include "QCamMovieSeq.hpp"
 #include "QCamMovieSer.hpp"
 #include "SettingsBackup.hpp"
@@ -81,7 +90,7 @@ QCam::QCam() {
    displayHistogramButton_=NULL;
    sizeCombo=NULL;
    cropCombo=NULL;
-#if HAVE_AVIFILE_H
+#if HAVE_AVIFILE_H || HAVE_LIBAV_H
    movieWritterAvi_=new QCamMovieAvi();
    movieWritterAviLossless_=new QCamMovieAviLossless();
 #endif
@@ -98,7 +107,7 @@ QCam::QCam() {
 QCam::~QCam() {
    delete periodicCaptureT_;
    free(fileFormatList_);
-#if HAVE_AVIFILE_H
+#if HAVE_AVIFILE_H || HAVE_LIBAV_H
    delete movieWritterAvi_;
    delete movieWritterAviLossless_;
 #endif
@@ -169,7 +178,7 @@ void QCam::setCapture(bool doCapture) const {
       if (fileFormat=="SER") {
          movieWritter_=movieWritterSer_;
       }
-#if HAVE_AVIFILE_H
+#if HAVE_AVIFILE_H || HAVE_LIBAV_H
       else if (fileFormat=="AVI raw") {
          movieWritter_=movieWritterAvi_;
       } else if (fileFormat=="AVI huff") {
@@ -202,7 +211,7 @@ void QCam::setCaptureFile(const QString & afile) {
          QToolTip::add(snapshot_,
                        (string("Save snapshot image in file '")
                         + captureFile_ +"-<date>.<type>'").c_str());
-#if HAVE_AVIFILE_H
+#if HAVE_AVIFILE_H || HAVE_LIBAV_H
          QToolTip::add(capture_,
                        (string("Save sequence in raw/lossless AVI file or picture sequence '")
                         + captureFile_ +"-<date>.<type>'").c_str());
@@ -347,18 +356,22 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    tmpTab[size]=size;
    ++size;
 #endif
-#if HAVE_AVIFILE_H
+#if HAVE_AVIFILE_H || HAVE_LIBAV_H
    // adds avi format
    fileFormatList_[size]="AVI raw";
    tmpTab[size]=size;
    ++size;
    // adds avi huff format
    // if usable
+#if HAVE_AVIFILE_H
    if(stat("/usr/lib/avifile-0.7/win32.so",&fileInfos)==0) {
+#endif
       fileFormatList_[size]="AVI huff";
       tmpTab[size]=size;
       ++size;
+#if HAVE_AVIFILE_H
    }
+#endif
 #endif
    // adds ser format
    fileFormatList_[size]="SER";
