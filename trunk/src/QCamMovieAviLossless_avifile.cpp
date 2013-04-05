@@ -18,13 +18,14 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
+// only available if have libavifile
 #if HAVE_AVIFILE_H
 
 #include <stdlib.h>
 
 #include "yuv.hpp"
 
-#include "QCamMovieAviLossless.hpp"
+#include "QCamMovieAviLossless_avifile.hpp"
 #include "QCamFrame.hpp"
 #include "QCam.hpp"
 
@@ -141,4 +142,4 @@ bool QCamMovieAviLossless::addImpl(const QCamFrame & newFrame, const QCam & cam)
    return true;
 }
 
-#endif
+#endif /* HAVE_AVIFILE_H */

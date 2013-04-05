@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -20,10 +20,10 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#ifndef _QCamMoviAvi_hpp_
-#define _QCamMoviAvi_hpp_
+#ifndef _QCamMoviAvi_avifile_hpp_
+#define _QCamMoviAvi_avifile_hpp_
 
-
+// only available if have libavifile
 #if HAVE_AVIFILE_H
 
 #include "QCamMovie.hpp"
@@ -52,6 +52,6 @@ private:
    mutable unsigned char* deinterlaceBuf_;
 };
 
-#endif
+#endif /* HAVE_AVIFILE_H */
 
 #endif

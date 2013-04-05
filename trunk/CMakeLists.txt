@@ -43,8 +43,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130404")
-set(BUILD_VERSION "165")
+set(PATCH_VERSION "beta20130405")
+set(BUILD_VERSION "166")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -90,19 +90,28 @@ endif(NOT JPEG_FOUND)
 #
 # CFITSIO lib recommended
 #
-#find_package(CFITSIO)
-set(CFITSIO_FOUND "")
+find_package(CFITSIO)
 if(NOT CFITSIO_FOUND)
    message(STATUS "cfitsio libary not found, binary won't handle fits images...")
 endif(NOT CFITSIO_FOUND)
 
 #
-# AVIFile lib recommended
+# LibAV or AVIFile recommended
 #
-find_package(AVIFile)
-if(NOT AVIFILE_FOUND)
-   message(STATUS "avifile library not found, binary won't handle avi files...")
-endif(NOT AVIFILE_FOUND)
+#find_package(LibAV REQUIRED)
+set(LIBAV_FOUND "")
+if(NOT LIBAV_FOUND)
+   message(STATUS "LibAv not found, trying libavifile...")
+   #
+   # looking for libavifile
+   #
+   find_package(AVIFile)
+   if(NOT AVIFILE_FOUND)
+      message(STATUS "avifile library not found, binary won't handle avi files...")
+   endif(NOT AVIFILE_FOUND)
+else(NOT LIBAV_FOUND)
+   set(AVIFILE_FOUND "")
+endif(NOT LIBAV_FOUND)
 
 #
 # SDL recommended
@@ -203,6 +212,16 @@ if(CFITSIO_FOUND)
    add_definitions(${CFITSIO_DEFINITIONS})
    set(LIBRARIES_LIST ${LIBRARIES_LIST} ${CFITSIO_LIBRARIES})
 endif(CFITSIO_FOUND)
+
+#
+# we use LibAV
+#
+if(LIBAV_FOUND)
+   include_directories(${LIBAV_INCLUDE_DIRS})
+   set(LIBAV_DEFINITIONS "${LIBAV_DEFINITIONS} -D HAVE_LIBAV_H=1")
+   add_definitions(${LIBAV_DEFINITIONS})
+   set(LIBRARIES_LIST ${LIBRARIES_LIST} ${LIBAV_LIBRARIES})
+endif(LIBAV_FOUND)
 
 #
 # we use AVIFile
