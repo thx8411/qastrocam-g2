@@ -35,12 +35,14 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 QCamMovieAvi::QCamMovieAvi() {
-
    // should the movie be registax compatible ?
    if(settings.haveKey("REGISTAX_AVI"))
       registaxCompatibility=(string(settings.getKey("REGISTAX_AVI"))=="yes");
    else
       registaxCompatibility=false;
+
+   // init libav
+   av_register_all();
 }
 
 QCamMovieAvi::~QCamMovieAvi() {
