@@ -56,6 +56,9 @@ class QCamMovieAvi : public QCamMovie {
       int video_outbuf_size;
 };
 
+
+class QCamMovieAviLossless : public QCamMovieAvi {
+};
 #endif /* HAVE_LIBAV_H */
 
 #endif

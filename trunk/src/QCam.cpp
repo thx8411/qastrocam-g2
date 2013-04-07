@@ -60,7 +60,6 @@ MA  02110-1301, USA.
 
 #if HAVE_LIBAV_H
 #include "QCamMovieAvi_libav.hpp"
-#include "QCamMovieAviLossless_libav.hpp"
 #endif
 
 #include "QCamMovieSeq.hpp"
