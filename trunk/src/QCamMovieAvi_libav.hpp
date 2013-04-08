@@ -36,7 +36,7 @@ extern "C" {
 class QCamMovieAvi : public QCamMovie {
    public:
       QCamMovieAvi();
-      ~QCamMovieAvi();
+      virtual ~QCamMovieAvi();
       QWidget* buildGUI(QWidget* father);
       // open the stream
       bool openImpl(const string & seqName, const QCam & cam);
@@ -45,6 +45,13 @@ class QCamMovieAvi : public QCamMovie {
       // add a frame
       bool addImpl(const QCamFrame & newFrame, const QCam & cam);
    private:
+      // methods
+      virtual void getCodec();
+      virtual void getPixelformat(const QCam & cam);
+      virtual void getBuffersize(const QCam & cam);
+      virtual void fillFrame();
+   protected:
+      // attributes
       bool registaxCompatibility;
       AVOutputFormat* output_format;
       AVFormatContext* output_format_cx;
@@ -56,8 +63,14 @@ class QCamMovieAvi : public QCamMovie {
       int video_outbuf_size;
 };
 
-
+// Huff codec lossless class
 class QCamMovieAviLossless : public QCamMovieAvi {
+   private:
+      // methods
+      void getCodec();
+      void getPixelformat(const QCam & cam);
+      void getBuffersize(const QCam & cam);
+      void fillFrame();
 };
 #endif /* HAVE_LIBAV_H */
 
