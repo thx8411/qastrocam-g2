@@ -19,14 +19,12 @@ else (LIBAV_LIBRARIES AND LIBAV_INCLUDE_DIRS)
     pkg_check_modules(_LIBAV_CODEC libavcodec)
     pkg_check_modules(_LIBAV_FORMAT libavformat)
     pkg_check_modules(_LIBAV_UTIL libavutil)
-    pkg_check_modules(_LIBAV_SWSCALE libswscale)
   endif (PKG_CONFIG_FOUND)
   
   message(STATUS "libav* pkg-config paths:")
   message(STATUS "   libavcodec:   ${_LIBAV_CODEC_PREFIX}")
   message(STATUS "   libavformat:  ${_LIBAV_FORMAT_PREFIX}")
   message(STATUS "   libavutil:    ${_LIBAV_UTIL_PREFIX}")
-  message(STATUS "   libavswscale: ${_LIBAV_SWSCALE_PREFIX}")
   
   find_path(LIBAV_CODEC_INCLUDE_DIR
     NAMES libavcodec/avcodec.h
@@ -41,11 +39,6 @@ else (LIBAV_LIBRARIES AND LIBAV_INCLUDE_DIRS)
   find_path(LIBAV_UTIL_INCLUDE_DIR
     NAMES libavutil/avutil.h
     HINTS ${_LIBAV_UTIL_INCLUDE_DIRS} ${_LIBAV_UTIL_PREFIX}/include 
-  )
-
-  find_path(LIBAV_SWSCALE_INCLUDE_DIR
-    NAMES libswscale/swscale.h
-    HINTS ${_LIBAV_SWSCALE_INCLUDE_DIRS} ${_LIBAV_SWSCALE_PREFIX}/include 
   )
   
   find_library(LIBAV_CODEC_LIBRARY
@@ -63,40 +56,29 @@ else (LIBAV_LIBRARIES AND LIBAV_INCLUDE_DIRS)
     HINTS ${_LIBAV_UTIL_LIBRARY_DIRS} ${_LIBAV_UTIL_PREFIX}/lib 
   )
   
-  find_library(LIBAV_SWSCALE_LIBRARY
-    NAMES swscale
-    HINTS ${_LIBAV_SWSCALE_LIBRARY_DIRS} ${_LIBAV_SWSCALE_PREFIX}/lib 
-  )
-  
   
   if (LIBAV_CODEC_INCLUDE_DIR AND 
         LIBAV_FORMAT_INCLUDE_DIR AND 
         LIBAV_UTIL_INCLUDE_DIR AND 
-        LIBAV_SWSCALE_INCLUDE_DIR AND
         LIBAV_CODEC_LIBRARY AND 
         LIBAV_FORMAT_LIBRARY AND 
-        LIBAV_UTIL_LIBRARY AND 
-        LIBAV_SWSCALE_LIBRARY )
+        LIBAV_UTIL_LIBRARY)
     set(LIBAV_FOUND TRUE)
   endif(LIBAV_CODEC_INCLUDE_DIR AND 
         LIBAV_FORMAT_INCLUDE_DIR AND 
         LIBAV_UTIL_INCLUDE_DIR AND 
-        LIBAV_SWSCALE_INCLUDE_DIR AND
         LIBAV_CODEC_LIBRARY AND 
         LIBAV_FORMAT_LIBRARY AND 
-        LIBAV_UTIL_LIBRARY AND 
-        LIBAV_SWSCALE_LIBRARY)
+        LIBAV_UTIL_LIBRARY)
 
   if (LIBAV_FOUND)
     set(LIBAV_INCLUDE_DIRS
       ${LIBAV_CODEC_INCLUDE_DIR}
       ${LIBAV_FORMAT_INCLUDE_DIR}
       ${LIBAV_UTIL_INCLUDE_DIR}
-      ${LIBAV_SWSCALE_INCLUDE_DIR}
     )
 
     set(LIBAV_LIBRARIES
-      ${LIBAV_SWSCALE_LIBRARY}
       ${LIBAV_FORMAT_LIBRARY}
       ${LIBAV_CODEC_LIBRARY}
       ${LIBAV_UTIL_LIBRARY}      
@@ -109,9 +91,7 @@ else (LIBAV_LIBRARIES AND LIBAV_INCLUDE_DIRS)
       message(STATUS "   ${LIBAV_CODEC_INCLUDE_DIR} ")
       message(STATUS "   ${LIBAV_FORMAT_INCLUDE_DIR} ")
       message(STATUS "   ${LIBAV_UTIL_INCLUDE_DIR} ")
-      message(STATUS "   ${LIBAV_SWSCALE_INCLUDE_DIR} ")
       
-      message(STATUS "   ${LIBAV_SWSCALE_LIBRARY} ")
       message(STATUS "   ${LIBAV_FORMAT_LIBRARY} ")
       message(STATUS "   ${LIBAV_CODEC_LIBRARY} ")
       message(STATUS "   ${LIBAV_UTIL_LIBRARY}   ")
