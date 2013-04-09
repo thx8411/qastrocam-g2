@@ -49,7 +49,7 @@ class QCamMovieAvi : public QCamMovie {
       virtual void getCodec();
       virtual void getPixelformat(const QCam & cam);
       virtual void getBuffersize(const QCam & cam);
-      virtual void fillFrame();
+      virtual void fillFrame(const QCamFrame & newFrame);
    protected:
       // attributes
       bool registaxCompatibility;
@@ -70,7 +70,7 @@ class QCamMovieAviLossless : public QCamMovieAvi {
       void getCodec();
       void getPixelformat(const QCam & cam);
       void getBuffersize(const QCam & cam);
-      void fillFrame();
+      void fillFrame(const QCamFrame & newFrame);
 };
 #endif /* HAVE_LIBAV_H */
 
