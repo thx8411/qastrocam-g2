@@ -155,7 +155,11 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    cam.writeProperties(seqName+".properties");
 
    // get output format
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   output_format=guess_format("avi", NULL, NULL );
+#else
    output_format=av_guess_format("avi", NULL, NULL );
+#endif
    if(!output_format) {
       fprintf(stderr,"Can't get AVI format, leaving...\n");
       exit(1);
@@ -180,7 +184,11 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    }
 
    // add the video stream
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   output_video_stream=av_new_stream(output_format_cx,0);
+#else
    output_video_stream=avformat_new_stream(output_format_cx,output_codec);
+#endif
    if(!output_video_stream) {
       fprintf(stderr,"Can't add video stream, leaving...\n");
       exit(1);
@@ -188,6 +196,12 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
 
    // setting codec context
    output_codec_cx=output_video_stream->codec;
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   output_codec_cx->codec_type=CODEC_TYPE_VIDEO;
+#else
+   output_codec_cx->codec_type=AVMEDIA_TYPE_VIDEO;
+#endif
+   output_codec_cx->codec_id=output_codec->id;
    output_codec_cx->width=cam.size().width();
    output_codec_cx->height=cam.size().height();
    output_codec_cx->time_base.den=atoi(cam.getProperty("FrameRateSecond").c_str());
@@ -198,7 +212,11 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    getPixelformat(cam);
 
    // opening codec
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   if(avcodec_open(output_codec_cx,output_codec)<0) {
+#else
    if(avcodec_open2(output_codec_cx,output_codec,NULL)<0) {
+#endif
       fprintf(stderr,"Can't open codec, leaving...\n");
       exit(1);
    }
@@ -226,16 +244,32 @@ bool QCamMovieAvi::openImpl(const string & seqName, const QCam & cam) {
    avpicture_fill((AVPicture*)picture,picture_buffer,output_codec_cx->pix_fmt,cam.size().width(),cam.size().height());
 
    // dump format
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   if (av_set_parameters(output_format_cx, NULL) < 0) {
+        fprintf(stderr, "Invalid output format parameters\n");
+        exit(1);
+   }
+   dump_format(output_format_cx, 0,(seqName+".avi").c_str(), 1);
+#else
    av_dump_format(output_format_cx, 0,(seqName+".avi").c_str(), 1);
+#endif
 
    // opening file
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   if(url_fopen(&output_format_cx->pb,(seqName+".avi").c_str(),URL_WRONLY)<0) {
+#else
    if(avio_open(&output_format_cx->pb,(seqName+".avi").c_str(),AVIO_FLAG_WRITE)<0) {
+#endif
       fprintf(stderr,"Can't open file, leaving...\n");
       exit(1);
    }
 
    // write header
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   av_write_header(output_format_cx);
+#else
    avformat_write_header(output_format_cx,NULL);
+#endif
 
    cam.writeProperties(seqName+".properties");
    return true;
@@ -264,7 +298,11 @@ void QCamMovieAvi::closeImpl() {
    av_freep(&output_format_cx->streams[0]->codec);
    av_freep(&output_format_cx->streams[0]);
    // close file
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+   url_fclose(output_format_cx->pb);
+#else
    avio_close(output_format_cx->pb);
+#endif
    // free format context
    av_free(output_format_cx);
 
@@ -301,7 +339,11 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    if(out_size>0) {
       AVPacket pkt;
       av_init_packet(&pkt);
+#if (LIBAV_FORMAT_MAJOR_VERSION < 53)
+      pkt.flags|=PKT_FLAG_KEY;
+#else
       pkt.flags|=AV_PKT_FLAG_KEY;
+#endif
       pkt.stream_index=output_video_stream->index;
       pkt.data=video_outbuf;
       pkt.size=out_size;
