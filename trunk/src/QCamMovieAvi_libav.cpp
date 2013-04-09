@@ -74,22 +74,14 @@ void QCamMovieAvi::getBuffersize(const QCam & cam) {
 
 // filling the frame
 void QCamMovieAvi::fillFrame(const QCamFrame & newFrame) {
-//
-// TODO
-//
    // RGB24
    if(newFrame.getMode()!=GreyFrame) {
-      //rgb24_vertical_swap(w,h,datas);
-      //memcpy(picture->data[0],datas,w*h*3);
+      yuv444_to_bgr24(newFrame.size().width(),newFrame.size().height(),newFrame.Y(),newFrame.U(),newFrame.V(),picture->data[0]);
    // 8 BITS GRAY
    } else {
       if(registaxCompatibility) {
-      //   grey_vertical_swap(w,h,plan_buf);
-      //   for(i=0;i<(h*w);i++) {
-      //      picture->data[0][i*3]=plan_buf[i];
-      //      picture->data[0][i*3+1]=plan_buf[i];
-      //      picture->data[0][i*3+2]=plan_buf[i];
-      //}
+         // force grey to RGB
+         y_to_bgr24(newFrame.size().width(),newFrame.size().height(),newFrame.Y(),picture->data[0]);
       } else {
          memcpy(picture->data[0],newFrame.Y(),newFrame.size().height()*newFrame.size().width());
       }
@@ -121,23 +113,14 @@ void QCamMovieAviLossless::getBuffersize(const QCam & cam) {
 
 // filling the frame
 void QCamMovieAviLossless::fillFrame(const QCamFrame & newFrame) {
-//
-// TODO
-//
    // RGB32
    if(newFrame.getMode()!=GreyFrame) {
-   // setting alpha
-      //memset(picture->data[0],0,h*w*4);
-      //for(i=0;i<(w*h);i++) {
-      //   picture->data[0][i*4]=datas[i*3];
-      //   picture->data[0][i*4+1]=datas[i*3+1];
-      //   picture->data[0][i*4+2]=datas[i*3+2];
-      //}
+      yuv444_to_bgr32(newFrame.size().height(),newFrame.size().width(),newFrame.Y(),newFrame.U(),newFrame.V(),picture->data[0]);
    // 8 BITS (YUYV U=V=zero)
    } else {
-      //memcpy(picture->data[0],plan_buf,h*w);
-      //memset(picture->data[1],128,h*w/2);
-      //memset(picture->data[2],128,h*w/2);
+      memcpy(picture->data[0],newFrame.Y(),newFrame.size().height()*newFrame.size().width());
+      memset(picture->data[1],128,newFrame.size().height()*newFrame.size().width()/2);
+      memset(picture->data[2],128,newFrame.size().height()*newFrame.size().width()/2);
    }
 }
 

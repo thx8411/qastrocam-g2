@@ -7,6 +7,7 @@
   - libcfitsio not required any more for building, just recommended
   - libjpeg not required any more for building, just recommended
   - libusb not required any more for building, just recommended
+  - uses libav by default for avi output, instead of libavifile
 
 4.9
 

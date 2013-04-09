@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -27,6 +27,7 @@ unsigned char clip(double v);
 
 unsigned char clip(int v);
 
+
 //
 // TO YUV444
 //
@@ -51,6 +52,7 @@ void ycbcr_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY
 
 // s505 (yyuv per lines) to yuv444
 void s505_to_yuv444(int w, int h, const unsigned char* src, unsigned char* dstY, unsigned char* dstU, unsigned char* dstV);
+
 
 //
 // TO Y only
@@ -77,6 +79,7 @@ void ycbcr_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
 // s505 (yyuv per line) to y
 void s505_to_y(int w, int h, const unsigned char* src, unsigned char* dstY);
 
+
 //
 // FROM YUV444
 //
@@ -90,6 +93,7 @@ void yuv444_to_bgr24(int w, int h, const unsigned char* srcY, const unsigned cha
 // yuv444 planar to rgb32
 void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned char* srcU, const unsigned char* srcV, unsigned char* dst);
 
+
 //
 // FROM Y ONLY
 //
@@ -99,6 +103,15 @@ void y_to_yuyv(int w, int h, const unsigned char* src, unsigned char* dst);
 
 // y to bgr24
 void y_to_bgr24(int w, int h, const unsigned char* src, unsigned char* dst);
+
+
+//
+// TO RGB32
+//
+
+// rgb24 to rgb32 (alpha is 0)
+void rgb24_to_rgb32(int w, int h, const unsigned char* src, unsigned char* dst);
+
 
 //
 // TRANSFORMS

@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -36,6 +36,7 @@ unsigned char clip(int v) {
    if(v>255) return(255);
    return((unsigned char)v);
 }
+
 
 //
 // TO YUV444
@@ -142,6 +143,7 @@ static int i,j,size,line;
    }
 }
 
+
 //
 // TO Y only
 //
@@ -214,6 +216,7 @@ void s505_to_y(int w, int h, const unsigned char* src, unsigned char* dstY) {
       dstY[i]-=128;
 }
 
+
 //
 // FROM YUV444
 //
@@ -264,6 +267,7 @@ void yuv444_to_bgr32(int w, int h, const unsigned char* srcY, const unsigned cha
    }
 }
 
+
 //
 // FROM Y only
 //
@@ -291,6 +295,24 @@ void y_to_bgr24(int w, int h, const unsigned char* src, unsigned char* dst) {
       dst[p*3]=src[p];
    }
 }
+
+
+//
+// TO RGB32
+//
+
+// rgb24 to rgb32 (alpha is 0)
+void rgb24_to_rgb32(int w, int h, const unsigned char* src, unsigned char* dst) {
+   static int i,size;
+   size=h*w;
+   memset(dst,0,size*4);
+   for(i=0;i<size;i++) {
+      dst[i*4]=src[i*3];
+      dst[i*4+1]=src[i*3+1];
+      dst[i*4+2]=src[i*3+2];
+   }
+}
+
 
 //
 // TRANSFORMS
