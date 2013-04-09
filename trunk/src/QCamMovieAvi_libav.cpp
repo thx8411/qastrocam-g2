@@ -73,31 +73,27 @@ void QCamMovieAvi::getBuffersize(const QCam & cam) {
 }
 
 // filling the frame
-void QCamMovieAvi::fillFrame() {
+void QCamMovieAvi::fillFrame(const QCamFrame & newFrame) {
 //
 // TODO
 //
-/*
    // RGB24
-   if((cam.yuvFrame().getMode()!=GreyFrame) {
-      rgb24_vertical_swap(w,h,datas);
-      memcpy(picture->data[0],datas,w*h*3);
+   if(newFrame.getMode()!=GreyFrame) {
+      //rgb24_vertical_swap(w,h,datas);
+      //memcpy(picture->data[0],datas,w*h*3);
    // 8 BITS GRAY
    } else {
-      plan_buf=getPlan(w,h,datas,plans_);
       if(registaxCompatibility) {
-         grey_vertical_swap(w,h,plan_buf);
-         for(i=0;i<(h*w);i++) {
-            picture->data[0][i*3]=plan_buf[i];
-            picture->data[0][i*3+1]=plan_buf[i];
-            picture->data[0][i*3+2]=plan_buf[i];
-         }
+      //   grey_vertical_swap(w,h,plan_buf);
+      //   for(i=0;i<(h*w);i++) {
+      //      picture->data[0][i*3]=plan_buf[i];
+      //      picture->data[0][i*3+1]=plan_buf[i];
+      //      picture->data[0][i*3+2]=plan_buf[i];
+      //}
       } else {
-         memcpy(picture->data[0],plan_buf,h*w);
+         memcpy(picture->data[0],newFrame.Y(),newFrame.size().height()*newFrame.size().width());
       }
-      free(plan_buf);
    }
-*/
 }
 
 /**************************************/
@@ -124,29 +120,25 @@ void QCamMovieAviLossless::getBuffersize(const QCam & cam) {
 }
 
 // filling the frame
-void QCamMovieAviLossless::fillFrame() {
+void QCamMovieAviLossless::fillFrame(const QCamFrame & newFrame) {
 //
 // TODO
 //
-/*
    // RGB32
-   if((cam.yuvFrame().getMode()!=GreyFrame) {
+   if(newFrame.getMode()!=GreyFrame) {
    // setting alpha
-      memset(picture->data[0],0,h*w*4);
-      for(i=0;i<(w*h);i++) {
-         picture->data[0][i*4]=datas[i*3];
-         picture->data[0][i*4+1]=datas[i*3+1];
-         picture->data[0][i*4+2]=datas[i*3+2];
-      }
+      //memset(picture->data[0],0,h*w*4);
+      //for(i=0;i<(w*h);i++) {
+      //   picture->data[0][i*4]=datas[i*3];
+      //   picture->data[0][i*4+1]=datas[i*3+1];
+      //   picture->data[0][i*4+2]=datas[i*3+2];
+      //}
    // 8 BITS (YUYV U=V=zero)
    } else {
-         plan_buf=getPlan(w,h,datas,plans_);
-         memcpy(picture->data[0],plan_buf,h*w);
-         memset(picture->data[1],128,h*w/2);
-         memset(picture->data[2],128,h*w/2);
-         free(plan_buf);
+      //memcpy(picture->data[0],plan_buf,h*w);
+      //memset(picture->data[1],128,h*w/2);
+      //memset(picture->data[2],128,h*w/2);
    }
-*/
 }
 
 /**********************/
@@ -319,7 +311,7 @@ bool QCamMovieAvi::addImpl(const QCamFrame & newFrame, const QCam & cam) {
    unsigned char* plan_buf;
 
    // fill the frame to encode
-   fillFrame();
+   fillFrame(newFrame);
 
    // encode the frame
    out_size=avcodec_encode_video(output_codec_cx,video_outbuf,video_outbuf_size,picture);
