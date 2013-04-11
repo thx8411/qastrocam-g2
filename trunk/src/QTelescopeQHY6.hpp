@@ -30,6 +30,7 @@ MA  02110-1301, USA.
 
 /** Telescope implementation for the QHY5 ST4 port **/
 class QTelescopeQHY6 : public QTelescope {
+   Q_OBJECT
 public:
    QTelescopeQHY6();
    ~QTelescopeQHY6();

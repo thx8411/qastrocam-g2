@@ -37,6 +37,7 @@ MA  02110-1301, USA.
 
 /** QCam implementation to support QHY5 and clones cameras **/
 class QCamQHY5 : public QCam {
+   Q_OBJECT
 public:
    QCamQHY5();
    QCamFrame yuvFrame() const { return yuvBuffer_; }
