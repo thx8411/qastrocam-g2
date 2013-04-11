@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2013   Blaise-Florentin Collin
+Copyright (C) 2009   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -31,6 +31,7 @@ MA  02110-1301, USA.
     Use SDL to display images. */
 
 class QCamDisplayImplSDL : public QCamDisplayImpl {
+   Q_OBJECT
 private:
    QCamDisplayImplSDL(QCamDisplay &, QWidget * parent);
    virtual ~QCamDisplayImplSDL();
