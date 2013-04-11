@@ -22,7 +22,7 @@ MA  02110-1301, USA.
 
 #include <qmessagebox.h>
 
-#include "QTelescopeQHY6.moc"
+#include "QTelescopeQHY6.hpp"
 
 #include <stdlib.h>
 #include <iostream>
