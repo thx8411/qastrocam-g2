@@ -51,7 +51,6 @@ class SCmodTucLed;
     Vesta and TOUCAM webcams.
     give acces to the mod 1 and mod 2 of the Steve Chambers hardware patch. */
 class QCamVesta : public QCamV4L2 {
-   Q_OBJECT
 public:
    QCamVesta(const char * devpath="/dev/video0");
    ~QCamVesta();
