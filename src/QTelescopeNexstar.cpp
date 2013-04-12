@@ -19,7 +19,7 @@ MA  02110-1301, USA.
 
 #include <qmessagebox.h>
 
-#include "QTelescopeNexstar.moc"
+#include "QTelescopeNexstar.hpp"
 
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 #include "SettingsBackup.hpp"
 #include "QCamUtilities.hpp"
 
-#include "QCamSimulator.moc"
+#include "QCamSimulator.hpp"
 
 // settings object, needed everywhere
 extern settingsBackup settings;

@@ -43,8 +43,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130411")
-set(BUILD_VERSION "170")
+set(PATCH_VERSION "beta20130412")
+set(BUILD_VERSION "171")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -146,28 +146,23 @@ string(REPLACE "\n" ";" qastrocam-g2_SOURCES ${qastrocam-g2_SOURCES})
 message(STATUS "Listing MOC header files...")
 
 # grab all the header files containing Q_OBJECT
-execute_process(COMMAND /bin/sh -c "grep -l Q_OBJECT *.hpp"
-	OUTPUT_VARIABLE qastrocam-g2_MOC
-	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/src/"
+execute_process(COMMAND /bin/sh -c "grep -l Q_OBJECT src/*.hpp"
+	OUTPUT_VARIABLE qastrocam-g2_MOC_HEADERS
+	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 	OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # transforms to a list
-string(REPLACE "\n" ";" qastrocam-g2_MOC ${qastrocam-g2_MOC})
+string(REPLACE "\n" ";" qastrocam-g2_MOC_HEADERS ${qastrocam-g2_MOC_HEADERS})
 
-# moc each file
-message(STATUS "MOC files generation...")
-foreach(F ${qastrocam-g2_MOC})
-   # remove the extension
-   string(REGEX REPLACE ".hpp" "" file_base_name ${F})
+# exclude conditionnal stuff
+if(KERNEL_VERSION STREQUAL "2")
+   list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamVestaK3.hpp")
+else(KERNEL_VERSION STREQUAL "2")
+   list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamV4L.hpp" "src/QCamVestaK2.hpp")
+endif(KERNEL_VERSION STREQUAL "2")
 
-   # ---------------------------------
-   # TEMPORARY
-   # must be replaced by a target rule
-   # ---------------------------------
-   execute_process(COMMAND ${QT_MOC_EXECUTABLE} "-o" "${CMAKE_BINARY_DIR}/${file_base_name}.moc" "${CMAKE_SOURCE_DIR}/src/${F}")
-
-endforeach(F)
-include_directories(${CMAKE_BINARY_DIR})
+# wrap to moc
+QT_WRAP_CPP(qastrocam-g2 qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS})
 
 
 ############################
@@ -250,7 +245,7 @@ endif(SDL_FOUND)
 #
 # target
 #
-add_executable(qastrocam-g2 ${qastrocam-g2_SOURCES})
+add_executable(qastrocam-g2 ${qastrocam-g2_SOURCES} ${qastrocam-g2_MOC_CPP})
 
 #
 # target libs

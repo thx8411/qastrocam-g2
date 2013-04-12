@@ -18,7 +18,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QTelescopeFile.moc"
+#include "QTelescopeFile.hpp"
 
 #include <sys/types.h>
 #include <sys/stat.h>

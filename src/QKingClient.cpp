@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #include <qpushbutton.h>
 #include <qstatusbar.h>
 #include <math.h>
-#include "QKingClient.moc"
+#include "QKingClient.hpp"
 #include "QCam.hpp"
 
 #include "QCamUtilities.hpp"

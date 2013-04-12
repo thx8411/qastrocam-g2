@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 
 #include <qmessagebox.h>
 
-#include "QTelescopeAPM.moc"
+#include "QTelescopeAPM.hpp"
 
 #include <iostream>
 #include <string.h>

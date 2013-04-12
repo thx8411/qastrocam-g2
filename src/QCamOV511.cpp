@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamOV511.moc"
+#include "QCamOV511.hpp"
 
 QCamOV511::QCamOV511(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {

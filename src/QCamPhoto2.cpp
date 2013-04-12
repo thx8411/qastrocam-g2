@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include "QCamPhoto2.moc"
+#include "QCamPhoto2.hpp"
 
 QCamPhoto2::QCamPhoto2() {
 }

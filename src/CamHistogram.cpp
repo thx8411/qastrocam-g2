@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "CamHistogram.moc"
+#include "CamHistogram.hpp"
 #include <iostream>
 
 #include <sys/ioctl.h>

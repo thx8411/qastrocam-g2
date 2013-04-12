@@ -18,7 +18,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamV4L2.moc"
+#include "QCamV4L2.hpp"
 #include <iostream>
 #include <sstream>
 

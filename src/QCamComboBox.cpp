@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamComboBox.moc"
+#include "QCamComboBox.hpp"
 #include <qradiobutton.h>
 #include <qhbox.h>
 #include <qbuttongroup.h>

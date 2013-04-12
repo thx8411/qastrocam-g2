@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #include <qobject.h>
 #include <qwidget.h>
 #include <qhbox.h>
+#include <qvbox.h>
 #include <qhgroupbox.h>
 #include <qvgroupbox.h>
 #include <qpushbutton.h>

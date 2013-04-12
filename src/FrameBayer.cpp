@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 #include <qhbox.h>
 #include <qtooltip.h>
 
-#include "FrameBayer.moc"
+#include "FrameBayer.hpp"
 
 #include "SettingsBackup.hpp"
 

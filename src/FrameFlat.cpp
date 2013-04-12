@@ -24,7 +24,7 @@ MA  02110-1301, USA.
 
 #include "yuv.hpp"
 
-#include "FrameFlat.moc"
+#include "FrameFlat.hpp"
 
 bool FrameFlat::transform(const QCamFrame in, QCamFrame & out) {
    if (in.empty()) {

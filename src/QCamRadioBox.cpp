@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 
 #include <stdlib.h>
 
-#include "QCamRadioBox.moc"
+#include "QCamRadioBox.hpp"
 #include <qradiobutton.h>
 #include <qhbox.h>
 #include <qbuttongroup.h>

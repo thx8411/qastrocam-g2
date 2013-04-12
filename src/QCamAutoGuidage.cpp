@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamAutoGuidage.moc"
+#include "QCamAutoGuidage.hpp"
 
 #include "QCam.hpp"
 #include "QTelescope.hpp"

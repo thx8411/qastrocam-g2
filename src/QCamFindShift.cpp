@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamFindShift.moc"
+#include "QCamFindShift.hpp"
 #include <iostream>
 
 #include "Vector2D.hpp"

@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamMax.moc"
+#include "QCamMax.hpp"
 
 #include <qpushbutton.h>
 #include <qpixmap.h>

@@ -27,6 +27,8 @@ MA  02110-1301, USA.
 
 #include <SDL.h>
 
+#include "QCamDisplay.hpp"
+
 /** helper class for QCamDisplay.
     Use SDL to display images. */
 

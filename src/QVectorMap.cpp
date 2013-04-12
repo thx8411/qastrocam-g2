@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QVectorMap.moc"
+#include "QVectorMap.hpp"
 #include <math.h>
 #include <qpen.h>
 #include <qpainter.h>

@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include "QCamStack.moc"
+#include "QCamStack.hpp"
 
 
 QCamStack::QCamStack() {

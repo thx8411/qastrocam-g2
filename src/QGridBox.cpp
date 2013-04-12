@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QGridBox.moc"
+#include "QGridBox.hpp"
 #include <iostream>
 
 using namespace std;

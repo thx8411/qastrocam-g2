@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamDisplay.moc"
+#include "QCamDisplay.hpp"
 
 #include "QCam.hpp"
 #include <math.h>
