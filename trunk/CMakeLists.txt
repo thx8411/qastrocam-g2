@@ -104,7 +104,7 @@ if(NOT LIBAV_FOUND)
    #
    # looking for libavifile
    #
-   find_package(AVIFile)
+   #find_package(AVIFile)
    if(NOT AVIFILE_FOUND)
       message(STATUS "avifile library not found, binary won't handle avi files...")
    endif(NOT AVIFILE_FOUND)
@@ -145,7 +145,9 @@ string(REPLACE "\n" ";" qastrocam-g2_SOURCES ${qastrocam-g2_SOURCES})
 
 message(STATUS "Listing MOC header files...")
 
+#
 # grab all the header files containing Q_OBJECT
+#
 execute_process(COMMAND /bin/sh -c "grep -l Q_OBJECT src/*.hpp"
 	OUTPUT_VARIABLE qastrocam-g2_MOC_HEADERS
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
@@ -154,12 +156,29 @@ execute_process(COMMAND /bin/sh -c "grep -l Q_OBJECT src/*.hpp"
 # transforms to a list
 string(REPLACE "\n" ";" qastrocam-g2_MOC_HEADERS ${qastrocam-g2_MOC_HEADERS})
 
+#
 # exclude conditionnal stuff
+#
 if(KERNEL_VERSION STREQUAL "2")
    list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamVestaK3.hpp")
 else(KERNEL_VERSION STREQUAL "2")
    list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamV4L.hpp" "src/QCamVestaK2.hpp")
 endif(KERNEL_VERSION STREQUAL "2")
+
+if(NOT USB_FOUND)
+   list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamQHY5.hpp"
+       "src/QCamQHY6.hpp"
+       "src/QHY5cam.hpp"
+       "src/QHY6cam.hpp"
+       "src/QTelescopeQHY5.hpp"
+       "src/QTelescopeQHY6.hpp"
+   )
+endif(NOT USB_FOUND)
+
+if(NOT SDL_FOUND)
+   list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamDisplayImplSDL.hpp")
+endif(NOT SDL_FOUND)
+
 
 # wrap to moc
 QT_WRAP_CPP(qastrocam-g2 qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS})
