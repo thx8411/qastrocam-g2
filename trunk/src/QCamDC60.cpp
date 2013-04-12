@@ -24,7 +24,7 @@ MA  02110-1301, USA.
 
 #include <qtooltip.h>
 
-#include "QCamDC60.moc"
+#include "QCamDC60.hpp"
 
 #include "dc60_private_ioctls.h"
 

@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 
 #include "SCmodParPortPPdev.hpp"
 
-#include "QCamV4L2lx.moc"
+#include "QCamV4L2lx.hpp"
 
 QCamV4L2lx::QCamV4L2lx(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {

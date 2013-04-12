@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 #include <qmessagebox.h>
 #include <qtooltip.h>
 
-#include "QSetting.moc"
+#include "QSetting.hpp"
 
 
 #include "QCamUtilities.hpp"

@@ -19,7 +19,7 @@ MA  02110-1301, USA.
 
 #include <qlayout.h>
 
-#include "QCamFocus.moc"
+#include "QCamFocus.hpp"
 
 
 QCamFocus::QCamFocus(QCam* cam) {

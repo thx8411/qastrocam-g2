@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QDirectoryChooser.moc"
+#include "QDirectoryChooser.hpp"
 
 #include <qfiledialog.h>
 #include <qtooltip.h>

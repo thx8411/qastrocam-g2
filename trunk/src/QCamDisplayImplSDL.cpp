@@ -24,7 +24,7 @@ MA  02110-1301, USA.
 
 #if HAVE_SDL_H
 
-#include "QCamDisplayImplSDL.moc"
+#include "QCamDisplayImplSDL.hpp"
 #include <qpainter.h>
 #include <qpen.h>
 #include <qmessagebox.h>

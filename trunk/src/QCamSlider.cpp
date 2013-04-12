@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamSlider.moc"
+#include "QCamSlider.hpp"
 #include <iostream>
 
 QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,

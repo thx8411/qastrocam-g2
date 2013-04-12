@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QTelescope.moc"
+#include "QTelescope.hpp"
 
 #include <iostream>
 

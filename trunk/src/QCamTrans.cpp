@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamTrans.moc"
+#include "QCamTrans.hpp"
 #include "QCam.hpp"
 #include "FrameAlgo.hpp"
 #include "QCamRadioBox.hpp"

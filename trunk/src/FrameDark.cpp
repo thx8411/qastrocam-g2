@@ -24,7 +24,7 @@ MA  02110-1301, USA.
 
 #include "yuv.hpp"
 
-#include "FrameDark.moc"
+#include "FrameDark.hpp"
 
 bool FrameDark::transform(const QCamFrame in, QCamFrame & out) {
    if (in.empty()) {

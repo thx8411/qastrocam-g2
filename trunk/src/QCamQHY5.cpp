@@ -30,7 +30,7 @@ MA  02110-1301, USA.
 
 #include "SettingsBackup.hpp"
 
-#include "QCamQHY5.moc"
+#include "QCamQHY5.hpp"
 
 // camera's pixel rate (per ms)
 #define PIXEL_RATE	24000

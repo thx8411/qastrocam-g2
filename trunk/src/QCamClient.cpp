@@ -22,7 +22,7 @@ MA  02110-1301, USA.
 #include <qpushbutton.h>
 #include <qtooltip.h>
 
-#include "QCamClient.moc"
+#include "QCamClient.hpp"
 #include "QCam.hpp"
 #include "QCamUtilities.hpp"
 

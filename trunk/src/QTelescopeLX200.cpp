@@ -19,7 +19,7 @@ MA  02110-1301, USA.
 
 #include <qmessagebox.h>
 
-#include "QTelescopeLX200.moc"
+#include "QTelescopeLX200.hpp"
 
 #include <sys/types.h>
 #include <sys/stat.h>

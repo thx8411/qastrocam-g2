@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamFindShift_barycentre.moc"
+#include "QCamFindShift_barycentre.hpp"
 #include "QCam.hpp"
 #include "QStreamTranslator.hpp"
 #include "ShiftInfo.hpp"

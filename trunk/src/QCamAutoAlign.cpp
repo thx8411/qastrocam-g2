@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamAutoAlign.moc"
+#include "QCamAutoAlign.hpp"
 #include "QCamFindShift.hpp"
 #include <math.h>
 #include <qimage.h>

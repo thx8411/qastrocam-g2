@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #include <qwidget.h>
 #include <qpixmap.h>
 
-#include "QTelescopeSimulator.moc"
+#include "QTelescopeSimulator.hpp"
 
 #include "QCamUtilities.hpp"
 

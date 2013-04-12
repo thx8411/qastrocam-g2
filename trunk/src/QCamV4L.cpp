@@ -26,7 +26,7 @@ MA  02110-1301, USA.
 
 #if KERNEL_2
 
-#include "QCamV4L.moc"
+#include "QCamV4L.hpp"
 #include <iostream>
 
 #include <sys/ioctl.h>

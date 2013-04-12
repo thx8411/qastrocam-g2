@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamFindShift_hotSpot.moc"
+#include "QCamFindShift_hotSpot.hpp"
 #include "QCam.hpp"
 #include "QStreamTranslator.hpp"
 #include "ShiftInfo.hpp"

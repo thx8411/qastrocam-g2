@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QHistogram.moc"
+#include "QHistogram.hpp"
 #include <string.h>
 #include <iostream>
 #include <qpen.h>

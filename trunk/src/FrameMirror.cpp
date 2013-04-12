@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "FrameMirror.moc"
+#include "FrameMirror.hpp"
 #include <qhbox.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>

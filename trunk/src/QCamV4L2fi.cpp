@@ -18,7 +18,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamV4L2fi.moc"
+#include "QCamV4L2fi.hpp"
 
 QCamV4L2fi::QCamV4L2fi(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {

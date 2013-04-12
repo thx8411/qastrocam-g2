@@ -24,7 +24,7 @@ MA  02110-1301, USA.
 
 #include "yuv.hpp"
 
-#include "FrameBias.moc"
+#include "FrameBias.hpp"
 
 bool FrameBias::transform(const QCamFrame in, QCamFrame & out) {
    if (in.empty()) {

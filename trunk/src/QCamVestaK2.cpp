@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 /* only available for kernel 2 */
 #if KERNEL_2
 
-#include "QCamVestaK2.moc"
+#include "QCamVestaK2.hpp"
 #include <iostream>
 #include <math.h>
 #include <sys/ioctl.h>

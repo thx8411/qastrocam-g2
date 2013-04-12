@@ -18,7 +18,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "FrameId.moc"
+#include "FrameId.hpp"
 #include <qhbox.h>
 
 bool FrameId::transform(const QCamFrame in, QCamFrame & out) {
