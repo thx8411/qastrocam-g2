@@ -66,9 +66,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #
 # QT3 needed
 #
-find_package(Qt3 REQUIRED)
+find_package(Qt4 REQUIRED)
 if(NOT QT_FOUND)
-   message(FATAL_ERROR "Qt3 not found, generation stopped")
+   message(FATAL_ERROR "Qt4 not found, generation stopped")
 endif(NOT QT_FOUND)
 
 #
@@ -192,6 +192,7 @@ QT_WRAP_CPP(qastrocam-g2 qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS})
 # we use Qt3
 #
 include_directories(${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH})
+set(QT_DEFINITIONS "${QT_DEFINITIONS} -D QT3_SUPPORT")
 add_definitions(${QT_DEFINITIONS})
 set(LIBRARIES_LIST ${QT_LIBRARIES})
 
