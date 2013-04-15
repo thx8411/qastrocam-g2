@@ -17,8 +17,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qhbox.h>
-#include <qtooltip.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qtooltip.h>
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 #include "FrameBayer.hpp"
 
@@ -73,7 +75,7 @@ FrameBayer::FrameBayer(QCamTrans* cam) {
    methodId=0;
 }
 
-BayerWidget::BayerWidget(QWidget * parent, const FrameBayer * algo): QHBox(parent) {
+BayerWidget::BayerWidget(QWidget * parent, const FrameBayer * algo): Q3HBox(parent) {
    padding1=new QWidget(this);
    label1=new QLabel("Bayer pattern :",this);
    pattern = new QCamComboBox("Pattern",this,5,patternsValues,patternsLabels);

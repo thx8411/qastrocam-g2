@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #ifndef _QCamTrans_hpp_
 #define _QCamTrans_hpp_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 #include "QCam.hpp"
 
 class FrameAlgo;

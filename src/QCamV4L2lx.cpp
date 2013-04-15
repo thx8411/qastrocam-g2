@@ -22,6 +22,8 @@ MA  02110-1301, USA.
 #include "SCmodParPortPPdev.hpp"
 
 #include "QCamV4L2lx.hpp"
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 QCamV4L2lx::QCamV4L2lx(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
@@ -81,11 +83,11 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
 
    // V4L generic long exposure
    // container
-   remoteCTRLlx= new QHGroupBox(tr("long exposure"),remoteCTRL);
+   remoteCTRLlx= new Q3HGroupBox(tr("long exposure"),remoteCTRL);
    // frame rate display
    lxLabel1= new QLabel("fps :",remoteCTRLlx);
    lxRate= new QLabel(QString().sprintf("%i",frameRate_),remoteCTRLlx);
-   lxRate->setAlignment(AlignLeft|AlignVCenter);
+   lxRate->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
    lxRate->setMinimumWidth(32);
    // lx mode selector
    int lxTable[]={lxNone,lxPar,lxSer};
@@ -102,7 +104,7 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
    // progress bar
-   lxBar=new QProgressBar(remoteCTRLlx);
+   lxBar=new Q3ProgressBar(remoteCTRLlx);
    lxBar->setCenterIndicator(true);
    lxBar->setTotalSteps(0);
    lxBar->reset();

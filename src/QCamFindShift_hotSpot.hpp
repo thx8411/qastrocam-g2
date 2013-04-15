@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 #include "Vector2D.hpp"
 #include "QTelescope.hpp"
 
-class QVGroupBox;
+class Q3VGroupBox;
 class QCamSlider;
 class QFrameDisplay;
 
@@ -94,7 +94,7 @@ private:
    QCamFrame centerImg_;
 
    /* GUI data */
-   QVGroupBox * mainBox_;
+   Q3VGroupBox * mainBox_;
    QCamSlider * seuilSlider_;
    QCamSlider * bigBoxSlider_;
    QFrameDisplay * dispImgCenter_;

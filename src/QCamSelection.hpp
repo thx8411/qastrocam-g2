@@ -23,17 +23,22 @@ MA  02110-1301, USA.
 #ifndef _QCamSelection_hpp_
 #define _QCamSelection_hpp_
 
-#include <qwidget.h>
+#include <Qt/qwidget.h>
 
 #include "QCamClient.hpp"
 #include "QCamFrame.hpp"
+//Added by qt3to4:
+#include <QtGui/QResizeEvent>
+#include <QtGui/QMouseEvent>
+#include <Qt/qlabel.h>
+#include <QtGui/QPaintEvent>
 
 class QCam;
 class QPainter;
-class QVBox;
+class Q3VBox;
 class QCamComboBox;
 class QCamSelectionImpl;
-class QHBox;
+class Q3HBox;
 class QLabel;
 
 /* display the frame emited by the cam */
@@ -67,9 +72,9 @@ protected slots:
    void setSizeMode(int t);
 private:
    void setCaption();
-   QVBox* mainWidget_;
+   Q3VBox* mainWidget_;
    QCamSelectionImpl* widget_;
-   QHBox* buttonsContainer_;
+   Q3HBox* buttonsContainer_;
    QCamComboBox* displayModeButton_;
    QCamComboBox* sizeModeButton_;
    QCamFrame yuvFrame_;

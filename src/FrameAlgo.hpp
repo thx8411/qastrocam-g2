@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #ifndef _FrameAlgo_hpp_
 #define _FrameAlgo_hpp_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 
 #include "QCamTrans.hpp"
 #include "QCamFrame.hpp"

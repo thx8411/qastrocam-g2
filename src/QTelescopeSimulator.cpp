@@ -17,15 +17,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qmessagebox.h>
-#include <qvgroupbox.h>
-#include <qlayout.h>
-#include <qwidget.h>
-#include <qpixmap.h>
+#include <Qt/qmessagebox.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt/qlayout.h>
+#include <Qt/qwidget.h>
+#include <Qt/qpixmap.h>
 
 #include "QTelescopeSimulator.hpp"
 
 #include "QCamUtilities.hpp"
+//Added by qt3to4:
+#include <Qt3Support/Q3GridLayout>
+#include <Qt/qlabel.h>
 
 using namespace std;
 
@@ -46,13 +49,13 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QString speed_="Speed : ";
    widget()->setCaption("Simulator");
 
-   simulatorWidget_=new QVGroupBox("Telescope Simulator",NULL);
+   simulatorWidget_=new Q3VGroupBox("Telescope Simulator",NULL);
 
    QCamUtilities::registerWidget(simulatorWidget_);
    QCamUtilities::setQastrocamIcon(simulatorWidget_);
 
    QWidget* simulatorArrows_=new QWidget(simulatorWidget_);
-   QGridLayout* simulatorArrowsLayout_=new QGridLayout(simulatorArrows_,3,3);
+   Q3GridLayout* simulatorArrowsLayout_=new Q3GridLayout(simulatorArrows_,3,3);
 
    buttonUp_=new QLabel(simulatorArrows_,"U");
    tmpIcon=QCamUtilities::getIcon("north.png");

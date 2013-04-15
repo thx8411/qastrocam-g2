@@ -25,9 +25,12 @@ MA  02110-1301, USA.
 #if HAVE_SDL_H
 
 #include "QCamDisplayImplSDL.hpp"
-#include <qpainter.h>
-#include <qpen.h>
-#include <qmessagebox.h>
+#include <Qt/qpainter.h>
+#include <Qt/qpen.h>
+#include <Qt/qmessagebox.h>
+//Added by qt3to4:
+#include <QtGui/QResizeEvent>
+#include <QtGui/QPaintEvent>
 
 #include "yuv.hpp"
 
@@ -74,7 +77,7 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
 
    colors=greyPalette;
 
-   setWFlags(WRepaintNoErase);
+   setWindowFlags(Qt::WNoAutoErase);
 
    SDL_Init(SDL_INIT_VIDEO);
 }

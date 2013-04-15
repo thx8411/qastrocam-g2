@@ -21,9 +21,9 @@ MA  02110-1301, USA.
 
 
 #include "QCamComboBox.hpp"
-#include <qradiobutton.h>
-#include <qhbox.h>
-#include <qbuttongroup.h>
+#include <Qt/qradiobutton.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3buttongroup.h>
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>

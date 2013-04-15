@@ -23,10 +23,10 @@ MA  02110-1301, USA.
 #ifndef _QCamAutoGuidage_hpp_
 #define _QCamAutoGuidage_hpp_
 
-#include <qobject.h>
-#include <qsound.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
+#include <Qt/qobject.h>
+#include <Qt/qsound.h>
+#include <Qt/qlabel.h>
+#include <Qt/qcheckbox.h>
 
 class QCam;
 class QCamFindShift;

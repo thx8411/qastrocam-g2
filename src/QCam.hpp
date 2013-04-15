@@ -23,8 +23,10 @@ MA  02110-1301, USA.
 #ifndef _QCam_hpp_
 #define _QCam_hpp_
 
-#include <qobject.h>
-#include <qvgroupbox.h>
+#include <Qt/qobject.h>
+#include <Qt3Support/q3vgroupbox.h>
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 #include <string>
 #include <stdio.h>
@@ -37,7 +39,7 @@ MA  02110-1301, USA.
 
 class QWidget;
 class QPushButton;
-class QHBox;
+class Q3HBox;
 class QImage;
 class QLabel;
 class QCamComboBox;
@@ -148,7 +150,7 @@ protected:
    // allowed sizes table
    const QSize* sizeTable;
    // gui
-   QVGroupBox* sourceGroup;
+   Q3VGroupBox* sourceGroup;
 private:
    // hide bool
    bool hideButtons_;
@@ -182,7 +184,7 @@ private:
    int timebetweenCapture_;
    QLineEdit * timebetweenCaptureW_;
    QTimer * periodicCaptureT_;
-   QHBox * buttons_;
+   Q3HBox * buttons_;
    mutable string oldFileName_;
    mutable int fileSeqenceNumber_;
    string directory_;

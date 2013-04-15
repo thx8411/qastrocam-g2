@@ -25,7 +25,10 @@ MA  02110-1301, USA.
 
 #include <string>
 
-#include <qpalette.h>
+#include <Qt/qpalette.h>
+//Added by qt3to4:
+#include <Qt/qpixmap.h>
+#include <Qt/qlabel.h>
 
 using namespace std;
 

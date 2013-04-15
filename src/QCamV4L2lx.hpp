@@ -21,9 +21,9 @@ MA  02110-1301, USA.
 #ifndef _QCamV4L2lx_hpp_
 #define _QCamV4L2lx_hpp_
 
-#include <qtimer.h>
-#include <qlabel.h>
-#include <qtooltip.h>
+#include <Qt/qtimer.h>
+#include <Qt/qlabel.h>
+#include <Qt/qtooltip.h>
 
 #include "QCamComboBox.hpp"
 
@@ -42,7 +42,7 @@ public:
    QWidget * buildGUI(QWidget * parent);
 private:
    // gui
-   QHGroupBox* remoteCTRLlx;
+   Q3HGroupBox* remoteCTRLlx;
    // lx mode widgets
    QLabel * lxLabel1;
    QLabel * lxRate;
@@ -50,7 +50,7 @@ private:
    QLabel * lxLabel2;
    QLineEdit * lxTime;
    QPushButton * lxSet;
-   QProgressBar * lxBar;
+   Q3ProgressBar * lxBar;
    QWidget* padding;
    QTimer * lxTimer;
    // lx mode vars

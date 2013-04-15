@@ -37,18 +37,17 @@ MA  02110-1301, USA.
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <qradiobutton.h>
-#include <qvbuttongroup.h>
-#include <qvbox.h>
-#include <qhbox.h>
-#include <qhbuttongroup.h>
-#include <qlcdnumber.h>
-#include <qprogressbar.h>
-#include <qtooltip.h>
-#include <qhgroupbox.h>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qlineedit.h>
+#include <Qt/qradiobutton.h>
+#include <Qt3Support/q3buttongroup.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qlcdnumber.h>
+#include <Qt3Support/q3progressbar.h>
+#include <Qt/qtooltip.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qlineedit.h>
 
 #include "QGridBox.hpp"
 #include "QCamSlider.hpp"
@@ -682,7 +681,7 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
    connect(longExposureTime_,SIGNAL(textChanged(const QString&)),this,SLOT(setLongExposureTime(const QString&)));
    QToolTip::add(longExposureTime_,tr("exposure time in secondes (0 to disable)"));
 
-   exposureTimeLeft_=new QProgressBar(remoteCTRL);
+   exposureTimeLeft_=new Q3ProgressBar(remoteCTRL);
    exposureTimeLeft_->hide();
    exposureTimeLeft_->setCenterIndicator(true);
    QToolTip::add(exposureTimeLeft_,tr("Integration progress"));
@@ -760,7 +759,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),this,SLOT(setWhiteBalanceMode(int)));
    connect(this,SIGNAL(whiteBalanceModeChange(int)),remoteCTRLWhiteBalance_,SLOT(update(int)));
 
-   QHBox * whiteBalanceSliders = new QHBox(remoteCTRLWhiteBalance_);
+   Q3HBox * whiteBalanceSliders = new Q3HBox(remoteCTRLWhiteBalance_);
    QCheckBox * liveWBupdateB = new QCheckBox(tr("live"),whiteBalanceSliders);
 
    connect(liveWBupdateB,SIGNAL(toggled(bool)),this,SLOT(setLiveWhiteBalance(bool)));
@@ -789,7 +788,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    connect(this,SIGNAL(gamaChange(int)),remoteCTRLgama_,SLOT(setValue(int)));
    connect(remoteCTRLgama_,SIGNAL(valueChange(int)),this,SLOT(setGama(int)));
 
-   QHBox * settings=new QHBox(VctrlBox);
+   Q3HBox * settings=new Q3HBox(VctrlBox);
    QToolTip::add(settings,tr("save/restore settings of gain,exposure & white balance"));
 
    QPushButton *saveSettingsB =new QPushButton(tr("save"),settings);
@@ -804,7 +803,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    QToolTip::add(restoreFactorySettingsB,tr("Restore factory default settings"));
    connect(restoreFactorySettingsB,SIGNAL(released()),this,SLOT(restoreFactorySettings()));
 
-   remoteCTRLframeRate_ =new QHGroupBox(tr("fps / long exposure"),remoteCTRL);
+   remoteCTRLframeRate_ =new Q3HGroupBox(tr("fps / long exposure"),remoteCTRL);
    int frameRate[]={5,10,15,20,25,30};
    remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
    QToolTip::add(remoteCTRLframeRate2_,tr("Camera frame rate"));

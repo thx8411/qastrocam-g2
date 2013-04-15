@@ -23,14 +23,14 @@ MA  02110-1301, USA.
 #ifndef _QCamV4L2_hpp_
 #define _QCamV4L2_hpp_
 
-#include <qobject.h>
-#include <qimage.h>
-#include <qhgroupbox.h>
-#include <qlineedit.h>
-#include <qprogressbar.h>
-#include <qpushbutton.h>
-#include <qwidget.h>
-#include <qvbox.h>
+#include <Qt/qobject.h>
+#include <Qt/qimage.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt/qlineedit.h>
+#include <Qt3Support/q3progressbar.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qwidget.h>
+#include <Qt3Support/q3vbox.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -120,7 +120,7 @@ public:
    // gui
    QWidget * buildGUI(QWidget * parent);
 protected:
-    QVBox* VctrlBox;
+    Q3VBox* VctrlBox;
    // V4L2 vars
    struct v4l2_cropcap v4l2_crop_;
    struct v4l2_capability v4l2_cap_;
@@ -212,7 +212,7 @@ private:
    QCamSlider * remoteCTRLcolor_;
    QCamSlider * remoteCTRLwhiteness_;
    // input, palette and frame mode
-   QHBox * infoBox;
+   Q3HBox * infoBox;
    QCamComboBox* sourceB;
    QCamComboBox* paletteB;
    QCamComboBox* frameModeB;

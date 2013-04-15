@@ -21,16 +21,18 @@ MA  02110-1301, USA.
 
 
 #include "QVectorMap.hpp"
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
 #include <math.h>
-#include <qpen.h>
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <Qt/qpen.h>
+#include <Qt/qpainter.h>
+#include <Qt/qpixmap.h>
 
 #include "Vector2D.hpp"
 
-QVectorMap::QVectorMap(QWidget * parent, const char * name, WFlags f):
+QVectorMap::QVectorMap(QWidget * parent, const char * name, Qt::WFlags f):
    QWidget(parent,name,f) {
-   setWFlags(WRepaintNoErase);
+   setWindowFlags(Qt::WNoAutoErase);
    mode_=DrawPoint;
    add(Vector2D(0,0));
    scale_=1;

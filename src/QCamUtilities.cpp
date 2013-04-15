@@ -22,11 +22,11 @@ MA  02110-1301, USA.
 
 #include "QCamUtilities.hpp"
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qtranslator.h>
-#include <qtextcodec.h>
-#include <qapplication.h>
+#include <Qt/qpixmap.h>
+#include <Qt/qwidget.h>
+#include <Qt/qtranslator.h>
+#include <Qt/qtextcodec.h>
+#include <Qt/qapplication.h>
 
 #include <libgen.h>
 #include <unistd.h>

@@ -23,9 +23,9 @@ MA  02110-1301, USA.
 #ifndef _FrameMirror_hpp_
 #define _FrameMirror_hpp_
 
-#include <qobject.h>
-#include <qstring.h>
-#include <qhbox.h>
+#include <Qt/qobject.h>
+#include <Qt/qstring.h>
+#include <Qt3Support/q3hbox.h>
 
 #include "FrameAlgo.hpp"
 
@@ -34,7 +34,7 @@ class QPushButton;
 class FrameMirror :  public FrameAlgo {
    Q_OBJECT
 private:
-   class Widget : public QHBox {
+   class Widget : public Q3HBox {
    public:
       ~Widget();
       Widget(QWidget * parent,const FrameMirror * algo);

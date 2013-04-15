@@ -17,14 +17,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qvbox.h>
-#include <qmessagebox.h>
-#include <qtooltip.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qtooltip.h>
 
 #include "QSetting.hpp"
 
 
 #include "QCamUtilities.hpp"
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 #include "SettingsBackup.hpp"
 
 // settings object, needed everywhere
@@ -40,13 +42,13 @@ QSetting::~QSetting() {
 QWidget *QSetting::buildGUI(QWidget * parent) {
    int cameraNumber;
    int telescopeNumber;
-   remoteCTRL_= new QVBox(parent);
+   remoteCTRL_= new Q3VBox(parent);
    remoteCTRL_->setSpacing(4);
 
    padding3=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding3,5);
    // video device box
-   videoBox=new QHGroupBox("Camera",remoteCTRL_);
+   videoBox=new Q3HGroupBox("Camera",remoteCTRL_);
    remoteCTRL_->setStretchFactor(videoBox,0);
    camLabel=new QLabel("Camera : ",videoBox);
 #if HAVE_USB_H
@@ -69,9 +71,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding6=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding6,5);
    // telescope box
-   telescopeBox=new QVGroupBox("Telescope control",remoteCTRL_);
+   telescopeBox=new Q3VGroupBox("Telescope control",remoteCTRL_);
    remoteCTRL_->setStretchFactor(telescopeBox,0);
-   lineOne=new QHBox(telescopeBox);
+   lineOne=new Q3HBox(telescopeBox);
    padding0=new QWidget(lineOne);
    lineOne->setStretchFactor(padding0,5);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
@@ -94,7 +96,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    QToolTip::add(telescopeLevels,tr("Shale we invert TTL levels ?"));
    padding2=new QWidget(lineOne);
    lineOne->setStretchFactor(padding2,5);
-   lineTwo=new QHBox(telescopeBox);
+   lineTwo=new Q3HBox(telescopeBox);
    telescopeDeviceLabel=new QLabel("Telescope device/file : ",lineTwo);
    QToolTip::add(telescopeDeviceLabel,tr("Device to use for telescope guiding"));
    telescopeDeviceEntry=new QLineEdit(lineTwo);
@@ -103,7 +105,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding7=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding7,5);
    // long exposure box
-   lxBox=new QHGroupBox("Long exposure",remoteCTRL_);
+   lxBox=new Q3HGroupBox("Long exposure",remoteCTRL_);
    remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
@@ -117,33 +119,33 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding9=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding9,5);
    // modules box
-   modulesBox=new QVGroupBox("Modules",remoteCTRL_);
+   modulesBox=new Q3VGroupBox("Modules",remoteCTRL_);
    QToolTip::add(modulesBox,tr("Modules to activate"));
    remoteCTRL_->setStretchFactor(modulesBox,0);
-   lineFive=new QHBox(modulesBox);
+   lineFive=new Q3HBox(modulesBox);
    modulesAdd=new QCheckBox("Frame stacking module",lineFive);
    modulesAlign=new QCheckBox("Align frames",lineFive);
-   lineSix=new QHBox(modulesBox);
+   lineSix=new Q3HBox(modulesBox);
    modulesMax=new QCheckBox("Frame 'ghost' module",lineSix);
    modulesKing=new QCheckBox("King method module",lineSix);
 
    padding8=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding8,5);
    // options box
-   optionsBox=new QVGroupBox("Options",remoteCTRL_);
+   optionsBox=new Q3VGroupBox("Options",remoteCTRL_);
    QToolTip::add(optionsBox,tr("Options to activate"));
    remoteCTRL_->setStretchFactor(optionsBox,0);
-   lineThree=new QHBox(optionsBox);
+   lineThree=new Q3HBox(optionsBox);
 #if HAVE_SDL_H
    optionsSdl=new QCheckBox("Use SDL",lineThree);
 #endif
    optionsExpert=new QCheckBox("Use expert mode",lineThree);
-   lineFour=new QHBox(optionsBox);
+   lineFour=new Q3HBox(optionsBox);
    optionsLog=new QCheckBox("Write log file",lineFour);
    optionsNightVision=new QCheckBox("Night vision mode",lineFour);
-   lineSeven=new QHBox(optionsBox);
+   lineSeven=new Q3HBox(optionsBox);
    optionsRegistax=new QCheckBox("Registax AVI compatibility",lineSeven);
-   libBox=new QHBox(optionsBox);
+   libBox=new Q3HBox(optionsBox);
    libpathLabel=new QLabel("Library path : ",libBox);
    libpathEntry=new QLineEdit(libBox);
    libpathChooser=new QDirectoryChooser(libBox);
@@ -151,7 +153,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding4=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding4,5);
    // buttons
-   buttonsBox=new QHBox(remoteCTRL_);
+   buttonsBox=new Q3HBox(remoteCTRL_);
    remoteCTRL_->setStretchFactor(buttonsBox,5);
    save=new QPushButton("Save",buttonsBox);
    save->setEnabled(false);
@@ -232,7 +234,9 @@ void QSetting::fillFields() {
    if(settings.haveKey("LIB_PATH"))
       libpathEntry->setText(settings.getKey("LIB_PATH"));
    else {
-      libpathEntry->setText(QCamUtilities::basePathName());
+      QString* path;
+      path=new QString(QCamUtilities::basePathName().c_str());
+      libpathEntry->setText(*path);
       hasChanged();
    }
 

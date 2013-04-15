@@ -19,8 +19,10 @@ MA  02110-1301, USA.
 
 #include "QFileChooser.hpp"
 
-#include <qfiledialog.h>
-#include <qtooltip.h>
+#include <Qt3Support/q3filedialog.h>
+#include <Qt/qtooltip.h>
+//Added by qt3to4:
+#include <Qt/qpixmap.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -54,7 +56,7 @@ void QFileChooser::selectFile() {
 
    // device dialog box
    if(fileType==DEVICE_FILE) {
-      newFile  = QFileDialog::getOpenFileName(
+      newFile  = Q3FileDialog::getOpenFileName(
          "/dev/",
          "Devices (*)",
          this,
@@ -62,14 +64,14 @@ void QFileChooser::selectFile() {
          "Choose a device");
    // file dialog box
    } else if(fileType==REGULAR_FILE) {
-      newFile  = QFileDialog::getSaveFileName(
+      newFile  = Q3FileDialog::getSaveFileName(
          get_current_dir_name(),
          "Files (*)",
          this,
          "get a file name",
          "Choose a file");
    } else {
-      newFile  = QFileDialog::getOpenFileName(
+      newFile  = Q3FileDialog::getOpenFileName(
          get_current_dir_name(),
          "Pictures (*.bmp *.BMP *.png *.PNG)",
          this,

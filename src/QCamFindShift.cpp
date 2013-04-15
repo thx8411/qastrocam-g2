@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 #include "ShiftInfo.hpp"
 #include "QCam.hpp"
 
-#include <qlabel.h>
+#include <Qt/qlabel.h>
 
 QCamFindShift::QCamFindShift(){
    scope_=NULL;

@@ -17,10 +17,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qhbox.h>
-#include <qimage.h>
-#include <qmessagebox.h>
-#include <qtooltip.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qimage.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qtooltip.h>
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 #include "yuv.hpp"
 
@@ -59,7 +61,7 @@ FrameFlat::FrameFlat(QCamTrans* cam) {
    activated=false;
 }
 
-FrameFlat::Widget::Widget(QWidget * parent,const FrameFlat * algo): QHBox(parent) {
+FrameFlat::Widget::Widget(QWidget * parent,const FrameFlat * algo): Q3HBox(parent) {
    padding1=new QWidget(this);
    activate=new QCheckBox("Activate",this);
    padding2=new QWidget(this);
@@ -81,7 +83,7 @@ FrameFlat::Widget::~Widget() {
 }
 
 void FrameFlat::activatedChange(int s) {
-   if(s==QButton::On) {
+   if(s==QCheckBox::On) {
       int depth;
       int width;
       int height;

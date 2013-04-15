@@ -23,7 +23,9 @@ MA  02110-1301, USA.
 #ifndef _QHistogram_hpp_
 #define _QHistogram_hpp_
 
-#include <qwidget.h>
+#include <Qt/qwidget.h>
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
 
 class QPen;
 class QPaintEvent;
@@ -35,7 +37,7 @@ public:
    enum DisplayMode {NormalDisplay=0,LogDisplay=1,SqrtDisplay=2,
                      Power2Display=3,ExpDisplay=4};
 
-   QHistogram(QWidget * parent=0, const char * name=0, WFlags f=0 );
+   QHistogram(QWidget * parent=0, const char * name=0, Qt::WFlags f=0 );
    virtual ~QHistogram();
    // histogram is shifted after each added value
    bool autoShift() const;

@@ -23,10 +23,12 @@ MA  02110-1301, USA.
 #ifndef _QTelescope_hpp_
 #define _QTelescope_hpp_
 
-#include <qobject.h>
-#include <qslider.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
+#include <Qt/qobject.h>
+#include <Qt/qslider.h>
+#include <Qt/qlabel.h>
+#include <Qt/qcheckbox.h>
+//Added by qt3to4:
+#include <Qt3Support/Q3GridLayout>
 
 // telescope types
 #define TELESCOPE_VIRTUAL	0
@@ -42,9 +44,9 @@ MA  02110-1301, USA.
 #define TELESCOPE_SIMULATOR	10
 #define TELESCOPE_QHY6		11
 
-class QVGroupBox;
+class Q3VGroupBox;
 class QPushButton;
-class QGridLayout;
+class Q3GridLayout;
 class QWidget;
 
 /** Base class to command a telescope.
@@ -68,8 +70,8 @@ protected:
    QWidget * widget();
    double currentSpeed;
 private:
-   QVGroupBox * mainWidget_;
-   QGridLayout * arrowsLayout_;
+   Q3VGroupBox * mainWidget_;
+   Q3GridLayout * arrowsLayout_;
    QWidget * arrows_;
    // speed stuff
    QSlider* speedSlider_;

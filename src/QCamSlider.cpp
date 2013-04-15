@@ -21,12 +21,15 @@ MA  02110-1301, USA.
 
 
 #include "QCamSlider.hpp"
+//Added by qt3to4:
+#include <Qt/qlabel.h>
+#include <Qt3Support/Q3Frame>
 #include <iostream>
 
 QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
                        QWidget * parent,int minVal, int maxVal,
                        bool noSliderMove,bool displayPercent):
-   QHBox(parent),
+   Q3HBox(parent),
    labelTxt_(label) {
    percent_=displayPercent;
    slider_=NULL;
@@ -40,7 +43,7 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
       checkBox_=NULL;
       noSliderMove_=false;
    }
-   slider_=new QSlider(QSlider::Horizontal,this);
+   slider_=new QSlider(Qt::Horizontal,this);
    slider_->setMinValue(minVal);
    slider_->setMaxValue(maxVal);
 
@@ -57,14 +60,14 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
    connect(slider_,SIGNAL(valueChanged(int)),this,SLOT(sliderMoveKey(int)));
    connect(slider_,SIGNAL(sliderReleased()),this,SLOT(sliderRelease()));
    valueLabel_= new QLabel(this);
-   valueLabel_->setFrameShadow(QFrame::Sunken);
+   valueLabel_->setFrameShadow(Q3Frame::Sunken);
    valueLabel_->show();
    lastEmit_=maxVal+1;
 
 }
 
 void QCamSlider::polish() {
-   QHBox::polish();
+   Q3HBox::polish();
    if (checkBox_) {
       checkBox_->setChecked(true);
    }

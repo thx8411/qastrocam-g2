@@ -23,8 +23,10 @@ MA  02110-1301, USA.
 #ifndef _CamHistogram_hpp_
 #define _CamHistogram_hpp_
 
-#include <qpainter.h>
-#include <qimage.h>
+#include <Qt/qpainter.h>
+#include <Qt/qimage.h>
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,11 +35,11 @@ MA  02110-1301, USA.
 
 class QPushButton;
 class QWidget;
-class QVGroupBox;
-class QProgressBar;
+class Q3VGroupBox;
+class Q3ProgressBar;
 class QLCDNumber;
-class QHBox;
-class QHGroupBox;
+class Q3HBox;
+class Q3HGroupBox;
 class QLabel;
 class QHistogram;
 class QCam;
@@ -55,16 +57,16 @@ public:
 protected slots:
    void newFrame();
 private:
-   QHGroupBox * mainWindow_;
-   QVGroupBox * histoGroup_;
+   Q3HGroupBox * mainWindow_;
+   Q3VGroupBox * histoGroup_;
    QHistogram * histogramArea_;
-   QVGroupBox * focusGroup_;
+   Q3VGroupBox * focusGroup_;
    QPushButton * resetFocus_;
    QWidget * focusLevel_;
    QHistogram * focusArea_;
-   QHBox * seeingGroup_;
+   Q3HBox * seeingGroup_;
    QLabel * seeingLabel_;
-   QProgressBar * seeingLevel_;
+   Q3ProgressBar * seeingLevel_;
    //QLCDNumber * seeingValue_;
    void init();
    //QCam * cam_;

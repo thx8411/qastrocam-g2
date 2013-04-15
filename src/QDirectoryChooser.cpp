@@ -22,8 +22,10 @@ MA  02110-1301, USA.
 
 #include "QDirectoryChooser.hpp"
 
-#include <qfiledialog.h>
-#include <qtooltip.h>
+#include <Qt3Support/q3filedialog.h>
+#include <Qt/qtooltip.h>
+//Added by qt3to4:
+#include <Qt/qpixmap.h>
 
 #include <libgen.h> // for basename
 #include <stdlib.h>
@@ -52,7 +54,7 @@ QDirectoryChooser::~QDirectoryChooser() {
 
 void QDirectoryChooser::selectDirectory() {
    setDisabled(true);
-   QString newDir = QFileDialog::getExistingDirectory(
+   QString newDir = Q3FileDialog::getExistingDirectory(
       currentDir_,
       this,
       "get existing directory",

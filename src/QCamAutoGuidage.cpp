@@ -26,12 +26,14 @@ MA  02110-1301, USA.
 #include "QTelescope.hpp"
 #include "QCamFindShift.hpp"
 #include "QCamUtilities.hpp"
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 #include "SettingsBackup.hpp"
 
-#include <qpushbutton.h>
-#include <qhbox.h>
-#include <qvbox.h>
-#include <qmessagebox.h>
+#include <Qt/qpushbutton.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt/qmessagebox.h>
 
 extern settingsBackup settings;
 
@@ -114,14 +116,14 @@ void QCamAutoGuidage::track(bool mode) {
 }
 
 QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
-   QVBox * mainBox = new QVBox(parent);
+   Q3VBox * mainBox = new Q3VBox(parent);
 
    QCamUtilities::registerWidget(mainBox);
 
    if (parent == 0) {
       QCamUtilities::setQastrocamIcon(mainBox);
    }
-   QHBox * buttons=new QHBox(mainBox);
+   Q3HBox * buttons=new Q3HBox(mainBox);
    QPushButton * trackButton = new QPushButton(tr("track"),buttons);
    trackButton->setToggleButton(true);
    connect(trackButton,SIGNAL(toggled(bool)),this,SLOT(track(bool)));
@@ -134,7 +136,7 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    connect(resetButton,SIGNAL(pressed()),tracker_,SLOT(reset()));
 
    // visual alert
-   QHBox* state=new QHBox(mainBox);
+   Q3HBox* state=new Q3HBox(mainBox);
    //QLabel* label1=new QLabel("State : ",state);
    alert_=new QLabel("Idle",state);
    alert_->setPaletteBackgroundColor(Qt::lightGray);

@@ -21,16 +21,19 @@ MA  02110-1301, USA.
 
 
 #include "QTelescope.hpp"
+//Added by qt3to4:
+#include <Qt3Support/Q3GridLayout>
 
 #include <iostream>
-
 #include <stdlib.h>
-#include <qlayout.h>
-#include <qvgroupbox.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qpushbutton.h>
-#include <qhgroupbox.h>
+#include <stdio.h>
+
+#include <Qt/qlayout.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt/qlabel.h>
+#include <Qt/qpixmap.h>
+#include <Qt/qpushbutton.h>
+#include <Qt3Support/q3hgroupbox.h>
 
 #include "QCamUtilities.hpp"
 #include "SettingsBackup.hpp"
@@ -52,13 +55,13 @@ QTelescope::QTelescope() {
 
 void QTelescope::buildGUI(QWidget * parent) {
    QPixmap* tmpIcon;
-   mainWidget_=new QVGroupBox("Telescope CTRL",parent);
+   mainWidget_=new Q3VGroupBox("Telescope CTRL",parent);
 
    QCamUtilities::registerWidget(mainWidget_);
 
    QCamUtilities::setQastrocamIcon(mainWidget_);
    arrows_ = new QWidget(mainWidget_);
-   arrowsLayout_=new QGridLayout(arrows_,3,3);
+   arrowsLayout_=new Q3GridLayout(arrows_,3,3);
    upButton_=new QPushButton(arrows_,"U");
    tmpIcon=QCamUtilities::getIcon("up.png");
    if(tmpIcon!=NULL) upButton_->setPixmap(*tmpIcon);
@@ -119,8 +122,8 @@ void QTelescope::buildGUI(QWidget * parent) {
 
    // speed slider
    double speed;
-   QHGroupBox* speedBox;
-   speedBox=new QHGroupBox(QString("Speed"),mainWidget_);
+   Q3HGroupBox* speedBox;
+   speedBox=new Q3HGroupBox(QString("Speed"),mainWidget_);
    speedSlider_=new QSlider(1,100,1,100,Qt::Horizontal,speedBox);
    speedValue_=new QLabel(speedBox);
    speed=setSpeed(100/100);

@@ -23,8 +23,8 @@ MA  02110-1301, USA.
 #ifndef _QDirectoryChooser_hpp_
 #define _QDirectoryChooser_hpp_
 
-#include <qpushbutton.h>
-#include <qobject.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qobject.h>
 
 class QDirectoryChooser : public QPushButton {
    Q_OBJECT

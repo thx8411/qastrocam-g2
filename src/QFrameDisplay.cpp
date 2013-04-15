@@ -22,17 +22,19 @@ MA  02110-1301, USA.
 
 #include "QFrameDisplay.hpp"
 #include "QCamFrame.hpp"
-#include <qcolor.h>
-#include <qpen.h>
-#include <qpainter.h>
+#include <Qt/qcolor.h>
+#include <Qt/qpen.h>
+#include <Qt/qpainter.h>
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
 
 QFrameDisplay::QFrameDisplay(QWidget * parent,const char * label) :
    QWidget(parent,label) {
    painter_ = new QPainter();
    pen_=new QPen();
-   pen_->setStyle(DotLine);
+   pen_->setStyle(Qt::DotLine);
    pen_->setColor(QColor(255,0,0));
-   setWFlags(WRepaintNoErase);
+   setWindowFlags(Qt::WNoAutoErase);
 }
 
 QFrameDisplay::~QFrameDisplay() {

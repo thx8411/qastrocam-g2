@@ -22,9 +22,11 @@ MA  02110-1301, USA.
 
 #include <linux/videodev2.h>
 
-#include <qtooltip.h>
+#include <Qt/qtooltip.h>
 
 #include "QCamDC60.hpp"
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 #include "dc60_private_ioctls.h"
 
@@ -66,8 +68,8 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    struct v4l2_control ctrl;
 
    // extra controls
-   QVGroupBox* extraCtrl=new QVGroupBox("Extra controls",remoteCTRL);
-   QHBox* line1=new QHBox(extraCtrl);
+   Q3VGroupBox* extraCtrl=new Q3VGroupBox("Extra controls",remoteCTRL);
+   Q3HBox* line1=new Q3HBox(extraCtrl);
    QWidget* padding5=new QWidget(line1);
    extraPreamp=new QCheckBox("Pre-amp",line1);
    QWidget* padding6=new QWidget(line1);
@@ -103,7 +105,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    connect(extraWhitepeak,SIGNAL(stateChanged(int)),this,SLOT(whitepeakChanged(int)));
 
    // long exposure
-   QHGroupBox* lxCtrl=new QHGroupBox("Long exposure",remoteCTRL);
+   Q3HGroupBox* lxCtrl=new Q3HGroupBox("Long exposure",remoteCTRL);
    QWidget* padding1=new QWidget(lxCtrl);
    lxCheck=new QCheckBox("Activate",lxCtrl);
    QWidget* padding2=new QWidget(lxCtrl);
@@ -118,7 +120,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
    QWidget* padding3=new QWidget(lxCtrl);
-   lxProgress= new QProgressBar(lxCtrl);
+   lxProgress= new Q3ProgressBar(lxCtrl);
    lxProgress->setEnabled(false);
    QWidget* padding4=new QWidget(lxCtrl);
 
@@ -142,11 +144,11 @@ void QCamDC60::preampChanged(int b) {
    struct v4l2_control ctrl;
 
    ctrl.id=V4L2_CID_PREAMP;
-   ctrl.value=(b==QButton::On);
+   ctrl.value=(b==QCheckBox::On);
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       extraPreamp->setEnabled(false);
 
-   if(b==QButton::On)
+   if(b==QCheckBox::On)
       extraAntialias->setEnabled(true);
    else {
       extraAntialias->setEnabled(false);
@@ -158,7 +160,7 @@ void QCamDC60::antialiasChanged(int b) {
    struct v4l2_control ctrl;
 
    ctrl.id=V4L2_CID_ANTIALIAS;
-   ctrl.value=(b==QButton::On);
+   ctrl.value=(b==QCheckBox::On);
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       extraAntialias->setEnabled(false);
 }
@@ -167,7 +169,7 @@ void QCamDC60::whitepeakChanged(int b) {
    struct v4l2_control ctrl;
 
    ctrl.id=V4L2_CID_WHITEPEAK;
-   ctrl.value=(b==QButton::On);
+   ctrl.value=(b==QCheckBox::On);
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       extraAntialias->setEnabled(false);
 }
@@ -175,7 +177,7 @@ void QCamDC60::whitepeakChanged(int b) {
 // lx slots
 
 void QCamDC60::lxActivated(int b) {
-   if(b==QButton::On) {
+   if(b==QCheckBox::On) {
       lxLabel->setEnabled(true);
       lxEntry->setEnabled(true);
       lxSet->setEnabled(true);

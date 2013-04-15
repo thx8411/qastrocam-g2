@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 #ifndef _QCamPhoto2_hpp_
 #define _QCamPhoto2_hpp_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "QCam.hpp"

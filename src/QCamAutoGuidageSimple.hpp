@@ -28,10 +28,10 @@ MA  02110-1301, USA.
 
 class ShiftInfo;
 
-#include <qlineedit.h>
-#include <qlcdnumber.h>
-#include <qlabel.h>
-#include <qhbox.h>
+#include <Qt/qlineedit.h>
+#include <Qt/qlcdnumber.h>
+#include <Qt/qlabel.h>
+#include <Qt3Support/q3hbox.h>
 
 /** basic tracking class.
     Do no prediction, dosn't do any calibration.
@@ -75,12 +75,12 @@ private:
 //
 //
 
-class TrackingControl : public QHBox {
+class TrackingControl : public Q3HBox {
    Q_OBJECT
    int min_;
    int max_;
 public:
-   TrackingControl(QString label, QWidget * parent=0, const char * name=0, WFlags f=0 );
+   TrackingControl(QString label, QWidget * parent=0, const char * name=0, Qt::WFlags f=0 );
    void init();
 public slots:
    void setShift(double shift);

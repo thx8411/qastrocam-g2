@@ -27,8 +27,8 @@ MA  02110-1301, USA.
 #ifndef _QCamV4L_hpp_
 #define _QCamV4L_hpp_
 
-#include <qobject.h>
-#include <qimage.h>
+#include <Qt/qobject.h>
+#include <Qt/qimage.h>
 
 
 #include <stdio.h>
