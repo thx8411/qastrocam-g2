@@ -22,8 +22,8 @@ MA  02110-1301, USA.
 
 #include "QCamMax.hpp"
 
-#include <qpushbutton.h>
-#include <qpixmap.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qpixmap.h>
 
 #include "QCamUtilities.hpp"
 

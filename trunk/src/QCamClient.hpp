@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #ifndef _QCamClient_hpp_
 #define _QCamClient_hpp_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 
 class QCam;
 

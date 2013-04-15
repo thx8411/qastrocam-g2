@@ -23,15 +23,15 @@ MA  02110-1301, USA.
 #ifndef _QCamAdd_hpp_
 #define _QCamAdd_hpp_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 
 #include "QCam.hpp"
-#include <qsize.h>
+#include <Qt/qsize.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-#include <qbuttongroup.h>
+#include <Qt3Support/q3buttongroup.h>
 
 #define QCAM_ADD_COLOR
 
@@ -42,15 +42,15 @@ MA  02110-1301, USA.
 
 class QCamSlider;
 class QImage;
-class QHBox;
+class Q3HBox;
 class QPushButton;
 class elementaryFrame;
-class QProgressBar;
+class Q3ProgressBar;
 class QCamRadioBox;
 class QCamComboBox;
 class QCheckBox;
-class QVGroupBox;
-class QHGroupBox;
+class Q3VGroupBox;
+class Q3HGroupBox;
 
 #define MultiSatMode
 
@@ -113,12 +113,12 @@ class QCamAdd : public QCam {
                   int & maxCrValue,
                   const bool adding);
    /* for remote control */
-   QButtonGroup* methodWidget_;
-   QHGroupBox * accumulationWidget_;
+   Q3ButtonGroup* methodWidget_;
+   Q3HGroupBox * accumulationWidget_;
    QCamComboBox *remoteCTRLnumOfActiveBuffer_;
-   QProgressBar * bufferFill_;
+   Q3ProgressBar * bufferFill_;
    QPushButton * resetBufferFill_;
-   QVGroupBox * displayOptions_;
+   Q3VGroupBox * displayOptions_;
    QCamSlider *remoteCTRLmaxYvalue_;
    QCamSlider *remoteCTRLminYvalue_;
    QCamRadioBox * modeDisplayButton_;

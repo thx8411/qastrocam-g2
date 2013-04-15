@@ -36,10 +36,10 @@ MA  02110-1301, USA.
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/mman.h>
-#include <qtabwidget.h>
-#include <qsocketnotifier.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <Qt/qtabwidget.h>
+#include <Qt/qsocketnotifier.h>
+#include <Qt/qtimer.h>
+#include <Qt/qtooltip.h>
 
 #include "yuv.hpp"
 

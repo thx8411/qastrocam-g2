@@ -35,7 +35,7 @@ class QHistogram;
 class QVectorMap;
 class QCamSlider;
 class QFrameDisplay;
-class QHGroupBox;
+class Q3HGroupBox;
 class QCheckBox;
 
 /** realign the frames of an other QCam object.
@@ -71,7 +71,7 @@ private:
    QCamFindShift * tracker_;
    ShiftInfo currentShift_;
    QCamFrame yuvFrame_;
-   QHGroupBox * findShiftWidget_;
+   Q3HGroupBox * findShiftWidget_;
    QWidget * findShiftCtrl_;
 #define ONE_MAP 1
 #if ONE_MAP

@@ -23,13 +23,13 @@ MA  02110-1301, USA.
 #ifndef _QCamSilder_h_
 #define _QCamSilder_h_
 
-#include <qobject.h>
-#include <qhbox.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qslider.h>
+#include <Qt/qobject.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qlabel.h>
+#include <Qt/qcheckbox.h>
+#include <Qt/qslider.h>
 
-class QCamSlider : public QHBox {
+class QCamSlider : public Q3HBox {
    Q_OBJECT
 public:
    QCamSlider(const QString & label,

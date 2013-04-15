@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #ifndef _QCamComboBox_hpp_
 #define _QCamComboBox_hpp_
 
-#include <qcombobox.h>
+#include <Qt/qcombobox.h>
 
 /** Handles a QComboBox like a QCamRadioBox.
 */

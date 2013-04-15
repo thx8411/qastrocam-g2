@@ -21,9 +21,9 @@ MA  02110-1301, USA.
 
 
 #include "FrameMirror.hpp"
-#include <qhbox.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qtooltip.h>
 
 #include "QCamTrans.hpp"
 
@@ -71,7 +71,7 @@ void FrameMirror::swapUpDown(bool val) {
 }
 
 FrameMirror::Widget::Widget(QWidget * parent,const FrameMirror * algo):
-   QHBox(parent) {
+   Q3HBox(parent) {
    upDown_ = new QPushButton(tr("swap Up/Down"),this);
    upDown_->setToggleButton(true);
    connect(upDown_,SIGNAL(toggled(bool)),algo,SLOT(swapUpDown(bool)));

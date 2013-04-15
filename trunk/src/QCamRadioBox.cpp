@@ -22,9 +22,9 @@ MA  02110-1301, USA.
 #include <stdlib.h>
 
 #include "QCamRadioBox.hpp"
-#include <qradiobutton.h>
-#include <qhbox.h>
-#include <qbuttongroup.h>
+#include <Qt/qradiobutton.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3buttongroup.h>
 #include <iostream>
 
 using namespace std;
@@ -33,15 +33,15 @@ QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,
                            int numOfbutton, int valueList[],
                            const char * labelList[],
                            int maxPerRow ):
-   QVGroupBox(label,parent) {
+   Q3VGroupBox(label,parent) {
    valueList_=(int*)malloc(numOfbutton*sizeof(int));
    buttonTable_=(QRadioButton**)malloc(sizeof(QRadioButton*)*numOfbutton);
    numOfButton_=numOfbutton;
-   rowTable_=(QHBox**)malloc((numOfbutton/maxPerRow+1)*sizeof(QHBox*));
+   rowTable_=(Q3HBox**)malloc((numOfbutton/maxPerRow+1)*sizeof(Q3HBox*));
    for (int i=0;i<=numOfbutton/maxPerRow;++i) {
-      rowTable_[i]=new QHBox(this);
+      rowTable_[i]=new Q3HBox(this);
    }
-   bg_=new QButtonGroup(this);
+   bg_=new Q3ButtonGroup(this);
    bg_->hide();
    for (int i=0;i<numOfButton_;++i) {
       valueList_[i]=valueList[i];

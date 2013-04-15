@@ -21,9 +21,9 @@ MA  02110-1301, USA.
 #ifndef _QCamDC60_hpp_
 #define _QCamDC60_hpp_
 
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qtimer.h>
+#include <Qt/qcheckbox.h>
+#include <Qt/qlabel.h>
+#include <Qt/qtimer.h>
 
 #include "QCamV4L2.hpp"
 /* enhance QCamV4L2 to handle specifities of the AstroEasyCap device driver. */
@@ -47,7 +47,7 @@ private:
    QLabel* lxLabel;
    QLineEdit* lxEntry;
    QPushButton* lxSet;
-   QProgressBar* lxProgress;
+   Q3ProgressBar* lxProgress;
    // extras
    QCheckBox* extraPreamp;
    QCheckBox* extraAntialias;

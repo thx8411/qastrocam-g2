@@ -26,8 +26,8 @@ MA  02110-1301, USA.
 /* only available for kernel 2 */
 #if KERNEL_2
 
-#include <qobject.h>
-#include <qimage.h>
+#include <Qt/qobject.h>
+#include <Qt/qimage.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,11 +38,11 @@ MA  02110-1301, USA.
 #include "QCamV4L2.hpp"
 
 class QCamSlider;
-class QHGroupBox;
+class Q3HGroupBox;
 class QCamRadioBox;
 class QLCDNumber;
 class QCheckBox;
-class QProgressBar;
+class Q3ProgressBar;
 class QLineEdit;
 class SCmod;
 class SCmodTucLed;
@@ -100,12 +100,12 @@ private:
    QCamSlider * remoteCTRLcompression_;
    QCamSlider * remoteCTRLnoiseRemoval_;
    QCamSlider * remoteCTRLsharpness_;
-   QHGroupBox * remoteCTRLframeRate_;
+   Q3HGroupBox * remoteCTRLframeRate_;
    QCamComboBox * remoteCTRLframeRate2_;
    enum SCmodType { SCmodNone,SCmodPPort,SCmodLed,SCmodSerial, SCmodPPort2};
    QCamComboBox * SCmodSelector_;
    QLineEdit * longExposureTime_;
-   QProgressBar * exposureTimeLeft_;
+   Q3ProgressBar * exposureTimeLeft_;
    QLCDNumber * exposureTime_;
    int multiplicateur_;
    int skippedFrame_;

@@ -22,11 +22,13 @@ MA  02110-1301, USA.
 
 #include <math.h>
 
-#include <qmessagebox.h>
-#include <qtimer.h>
-#include <qvgroupbox.h>
-#include <qhbox.h>
-#include <qtooltip.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qtimer.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qtooltip.h>
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 #include "SettingsBackup.hpp"
 
@@ -326,9 +328,9 @@ const QSize & QCamQHY5::size() const {
 
 QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
-   QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
+   Q3VGroupBox* settingsBox=new Q3VGroupBox(QString("Settings"),remoteCTRL);
 
-   QHBox* filtersBox=new QHBox(settingsBox);
+   Q3HBox* filtersBox=new Q3HBox(settingsBox);
    // denoise
    denoiseBox=new QCheckBox("Horizontal bands filtering",filtersBox);
 
@@ -364,13 +366,13 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    gainSliderB->hide();
 
    // exposure
-   QHBox* exposureBox=new QHBox(settingsBox);
+   Q3HBox* exposureBox=new Q3HBox(settingsBox);
    QLabel* label1=new QLabel(QString("Exposure"),exposureBox);
    exposureSlider=new QSlider(Qt::Horizontal,exposureBox);
    exposureSlider->setMinValue(0);
    exposureSlider->setMaxValue(QHY5_EXPOSURE_TABLE_SIZE-1);
    exposureSlider->setValue(getExposureIndex(frameExposure_));
-   exposureSlider->setTickmarks(QSlider::Below);
+   exposureSlider->setTickmarks(QSlider::TicksBelow);
    exposureSlider->setTickInterval(1);
    exposureValue=new QLabel(exposureBox);
    exposureValue->setMinimumWidth(80);
@@ -394,9 +396,9 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    shooting_=TRUE;
 
    // progress bar
-   QHBox* progressBox=new QHBox(settingsBox);
+   Q3HBox* progressBox=new Q3HBox(settingsBox);
    QLabel* label3=new QLabel(QString("Progress"),progressBox);
-   progressBar=new QProgressBar(progressBox);
+   progressBar=new Q3ProgressBar(progressBox);
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progressBar->setEnabled(true);
       progressBar->setTotalSteps((int)((float)(frameExposure_+30)/PROGRESS_TIME));

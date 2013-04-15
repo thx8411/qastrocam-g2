@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 
 #include <assert.h>
 #include <math.h>
-#include <qimage.h>
+#include <Qt/qimage.h>
 
 #include "QCamFrame.hpp"
 #include "yuv.hpp"

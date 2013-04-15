@@ -21,13 +21,13 @@ MA  02110-1301, USA.
 #ifndef _QCAMFOCUS_HPP_
 #define _QCAMFOCUS_HPP_
 
-#include <qobject.h>
-#include <qstring.h>
-#include <qwidget.h>
-#include <qvbox.h>
-#include <qhgroupbox.h>
+#include <Qt/qobject.h>
+#include <Qt/qstring.h>
+#include <Qt/qwidget.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hgroupbox.h>
 
-//#include <qwtplot3d-qt3/qwt3d_surfaceplot.h>
+//#include <Qt/qwtplot3d-qt3/qwt3d_surfaceplot.h>
 
 #include "QCam.hpp"
 #include "QCamSelection.hpp"
@@ -55,7 +55,7 @@ private slots :
 private :
    QCam* cam_;
    QCamSelection* sel_;
-   QVBox* remoteCTRL_;
+   Q3VBox* remoteCTRL_;
    QString label_;
 };
 

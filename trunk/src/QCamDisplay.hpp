@@ -23,20 +23,25 @@ MA  02110-1301, USA.
 #ifndef _QCamDisplay_hpp_
 #define _QCamDisplay_hpp_
 
-#include <qwidget.h>
-#include <qscrollview.h>
+#include <Qt/qwidget.h>
+#include <Qt3Support/q3scrollview.h>
 
 #include "QCamClient.hpp"
 #include "QCamFrame.hpp"
+//Added by qt3to4:
+#include <QtGui/QResizeEvent>
+#include <Qt/qlabel.h>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QPaintEvent>
 
 
 class QCam;
 class QPainter;
-class QVBox;
+class Q3VBox;
 class QCamComboBox;
 class QCamDisplayImpl;
 class QCamSlider;
-class QHBox;
+class Q3HBox;
 class QLabel;
 
 /** display the frame emited by the cam.
@@ -74,10 +79,10 @@ protected slots:
    void setCrossLum(int l);
 private:
    void setCaption();
-   QVBox * mainWidget_;
-   QScrollView * view_;
+   Q3VBox * mainWidget_;
+   Q3ScrollView * view_;
    QCamDisplayImpl * widget_;
-   QHBox * buttonsContainer_;
+   Q3HBox * buttonsContainer_;
    QLabel * crossLabel_;
    QCamSlider * crossLumSlider_;
    QCamComboBox * crossButton_;
@@ -134,6 +139,6 @@ private:
    friend class QCamDisplay;
 };
 
-#include "QCamDisplayImplSDL.hpp"
+//#include "QCamDisplayImplSDL.hpp"
 
 #endif

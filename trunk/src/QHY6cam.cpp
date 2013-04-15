@@ -33,7 +33,7 @@ MA  02110-1301, USA.
 #include <usb.h>
 #include <iostream>
 
-#include <qmessagebox.h>
+#include <Qt/qmessagebox.h>
 
 #include "QHY6cam.hpp"
 

@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #ifndef _QCAMMOVIE_HPP_
 #define _QCAMMOVIE_HPP_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 #include <string>
 #include <stdio.h>
 

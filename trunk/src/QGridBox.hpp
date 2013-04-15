@@ -23,12 +23,14 @@ MA  02110-1301, USA.
 #ifndef _QGridBox_h_
 #define _QGridBox_h_
 
-#include <qlayout.h>
-#include <qwidget.h>
+#include <Qt/qlayout.h>
+#include <Qt/qwidget.h>
+//Added by qt3to4:
+#include <Qt3Support/Q3GridLayout>
 
-class QGridBoxLayout : public QGridLayout {
+class QGridBoxLayout : public Q3GridLayout {
 public:
-   QGridBoxLayout(QWidget * parent , Orientation, int size,
+   QGridBoxLayout(QWidget * parent , Qt::Orientation, int size,
                   const char * name = 0 );
    virtual void addItem ( QLayoutItem * item );
    virtual QLayoutIterator iterator ();
@@ -38,13 +40,13 @@ private:
    // current number of inserted elements
    int nbElements_;
    // orientation
-   const Orientation orientation_;
+   const Qt::Orientation orientation_;
 };
 
 class QGridBox : public QWidget {
    Q_OBJECT
 public:
-   QGridBox(QWidget * parent , Orientation, int size,
+   QGridBox(QWidget * parent , Qt::Orientation, int size,
             const char * name = 0 );
    // the grid layout
    QGridBoxLayout layout_;

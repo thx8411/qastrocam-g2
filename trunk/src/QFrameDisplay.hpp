@@ -23,8 +23,10 @@ MA  02110-1301, USA.
 #ifndef _QFrameDisplay_hpp_
 #define _QFrameDisplay_hpp_
 
-#include <qwidget.h>
+#include <Qt/qwidget.h>
 #include "QCamFrame.hpp"
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
 
 class QPainter;
 

@@ -21,11 +21,11 @@ MA  02110-1301, USA.
 #ifndef _QCAMSTACK_HPP_
 #define _QCAMSTACK_HPP_
 
-#include <qobject.h>
-#include <qstring.h>
-#include <qwidget.h>
-#include <qvbox.h>
-#include <qhgroupbox.h>
+#include <Qt/qobject.h>
+#include <Qt/qstring.h>
+#include <Qt/qwidget.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hgroupbox.h>
 
 #include "QCam.hpp"
 
@@ -43,7 +43,7 @@ public :
    void addCam(QCam* cam, QString name);
 public slots:
 private :
-   QVBox* remoteCTRL_;
+   Q3VBox* remoteCTRL_;
    QString label_;
    // stack
    // name list
@@ -51,7 +51,7 @@ private :
    // cam list
    QCam* camTab[CAMSTACK_SIZE];
    // group box list
-   QHGroupBox* groupTab[CAMSTACK_SIZE];
+   Q3HGroupBox* groupTab[CAMSTACK_SIZE];
    // last +1 cam index
    int camIndex;
 };

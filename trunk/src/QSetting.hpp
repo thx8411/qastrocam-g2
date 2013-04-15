@@ -21,17 +21,17 @@ MA  02110-1301, USA.
 #ifndef _QSETTING_HPP_
 #define _QSETTING_HPP_
 
-#include <qobject.h>
-#include <qwidget.h>
-#include <qhbox.h>
-#include <qvbox.h>
-#include <qhgroupbox.h>
-#include <qvgroupbox.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qlayout.h>
-#include <qlabel.h>
+#include <Qt/qobject.h>
+#include <Qt/qwidget.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qlineedit.h>
+#include <Qt/qcheckbox.h>
+#include <Qt/qlayout.h>
+#include <Qt/qlabel.h>
 
 #include "QDirectoryChooser.hpp"
 #include "QFileChooser.hpp"
@@ -66,17 +66,17 @@ private :
    // functions
    void fillFields();
    // gui
-   QVBox* remoteCTRL_;
+   Q3VBox* remoteCTRL_;
    QString label_;
-   QHGroupBox* videoBox;
+   Q3HGroupBox* videoBox;
    QLabel* camLabel;
    QCamComboBox* cameraList;
    QLabel* videoDeviceLabel;
    QLineEdit* videoDeviceEntry;
    QFileChooser* videoDeviceChooser;
-   QVGroupBox* telescopeBox;
-   QHBox* lineOne;
-   QHBox* lineTwo;
+   Q3VGroupBox* telescopeBox;
+   Q3HBox* lineOne;
+   Q3HBox* lineTwo;
    QLabel* telescopeListLabel;
    QCamComboBox* telescopeList;
    QLabel* telescopeDeviceLabel;
@@ -94,32 +94,32 @@ private :
    QWidget* padding8;
    QWidget* padding9;
    QCheckBox* telescopeLevels;
-   QHGroupBox* lxBox;
+   Q3HGroupBox* lxBox;
    QLabel* lxDeviceLabel;
    QLineEdit* lxDeviceEntry;
    QFileChooser* lxDeviceChooser;
    QCheckBox* lxLevels;
-   QVGroupBox* modulesBox;
-   QHBox* lineFive;
-   QHBox* lineSix;
+   Q3VGroupBox* modulesBox;
+   Q3HBox* lineFive;
+   Q3HBox* lineSix;
    QCheckBox* modulesAdd;
    QCheckBox* modulesMax;
    QCheckBox* modulesKing;
    QCheckBox* modulesAlign;
-   QVGroupBox* optionsBox;
-   QHBox* lineThree;
-   QHBox* lineFour;
-   QHBox* lineSeven;
+   Q3VGroupBox* optionsBox;
+   Q3HBox* lineThree;
+   Q3HBox* lineFour;
+   Q3HBox* lineSeven;
    QCheckBox* optionsSdl;
    QCheckBox* optionsExpert;
    QCheckBox* optionsLog;
    QCheckBox* optionsNightVision;
    QCheckBox* optionsRegistax;
-   QHBox* libBox;
+   Q3HBox* libBox;
    QLabel* libpathLabel;
    QLineEdit* libpathEntry;
    QDirectoryChooser* libpathChooser;
-   QHBox* buttonsBox;
+   Q3HBox* buttonsBox;
    QPushButton* save;
    QPushButton* restore;
 };

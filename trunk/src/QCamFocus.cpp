@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qlayout.h>
+#include <Qt/qlayout.h>
 
 #include "QCamFocus.hpp"
 
@@ -45,7 +45,7 @@ QWidget *QCamFocus::buildGUI(QWidget * parent) {
    //FocusPlot* plot;
 //
 
-   remoteCTRL_= new QVBox(parent);
+   remoteCTRL_= new Q3VBox(parent);
 
 
 //

@@ -23,8 +23,10 @@ MA  02110-1301, USA.
 #ifndef _QVectorMap_hpp_
 #define _QVectorMap_hpp_
 
-#include <qwidget.h>
-#include <qvaluelist.h>
+#include <Qt/qwidget.h>
+#include <Qt3Support/q3valuelist.h>
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
 #include "Vector2D.hpp"
 class QPaintEvent;
 
@@ -36,7 +38,7 @@ enum DrawMode {
 class QVectorMap : public QWidget {
    Q_OBJECT
 public:
-   QVectorMap(QWidget * parent=0, const char * name=0, WFlags f=0 );
+   QVectorMap(QWidget * parent=0, const char * name=0, Qt::WFlags f=0 );
    virtual ~QVectorMap();
  public slots:
    void add(const Vector2D&);
@@ -46,7 +48,7 @@ public:
 protected:
    void paintEvent( QPaintEvent * ev);
 private:
-   typedef QValueList<Vector2D> VectorList;
+   typedef Q3ValueList<Vector2D> VectorList;
    VectorList vectorList_;
    DrawMode mode_;
    int scale_;

@@ -23,7 +23,7 @@ MA  02110-1301, USA.
 #include "QStreamTranslator.hpp"
 
 #include <iostream>
-#include <qpoint.h>
+#include <Qt/qpoint.h>
 
 ostream & operator<<(ostream & str,const QPoint & point) {
    str <<'('<<point.x()<<','<<point.y()<<')';

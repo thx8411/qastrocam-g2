@@ -1,3 +1,6 @@
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
+#include <QtGui/QResizeEvent>
 /******************************************************************
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
@@ -51,7 +54,7 @@ private:
    SDL_Surface * RGBImage_;
    SDL_Surface * GreyImage_;
    friend class QCamDisplay;
-  protected slots:
+protected slots:
     virtual void setDisplayMode(QCamDisplay::DisplayMode);
  };
 #endif

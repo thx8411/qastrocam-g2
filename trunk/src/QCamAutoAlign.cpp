@@ -23,11 +23,11 @@ MA  02110-1301, USA.
 #include "QCamAutoAlign.hpp"
 #include "QCamFindShift.hpp"
 #include <math.h>
-#include <qimage.h>
-#include <qpushbutton.h>
-#include <qhgroupbox.h>
-#include <qtooltip.h>
-#include <qcheckbox.h>
+#include <Qt/qimage.h>
+#include <Qt/qpushbutton.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt/qtooltip.h>
+#include <Qt/qcheckbox.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -94,7 +94,7 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
 
    QPushButton * resetCenter = new QPushButton(tr("reset"),remoteCTRL);
    connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
-   findShiftWidget_=new QHGroupBox(tr("Find Shift Ctrl"),remoteCTRL);
+   findShiftWidget_=new Q3HGroupBox(tr("Find Shift Ctrl"),remoteCTRL);
    if (tracker_) {
       findShiftCtrl_=tracker_->buildGUI(findShiftWidget_);
    }

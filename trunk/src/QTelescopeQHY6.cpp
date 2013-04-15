@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 // only available if have usb
 #if HAVE_USB_H
 
-#include <qmessagebox.h>
+#include <Qt/qmessagebox.h>
 
 #include "QTelescopeQHY6.hpp"
 

@@ -20,11 +20,11 @@ MA  02110-1301, USA.
 #ifndef _QCamSimulator_hpp_
 #define _QCamSimulator_hpp_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
+#include <Qt/qlabel.h>
+#include <Qt/qpushbutton.h>
 #include "QCamSlider.hpp"
 #include "QCam.hpp"
 

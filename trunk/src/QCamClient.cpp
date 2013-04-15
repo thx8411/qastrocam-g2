@@ -19,12 +19,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qtooltip.h>
 
 #include "QCamClient.hpp"
 #include "QCam.hpp"
 #include "QCamUtilities.hpp"
+//Added by qt3to4:
+#include <Qt/qpixmap.h>
 
 QCamClient::QCamClient(): cam_(NULL) {
    paused_=true;

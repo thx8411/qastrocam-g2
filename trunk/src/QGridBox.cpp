@@ -21,13 +21,15 @@ MA  02110-1301, USA.
 
 
 #include "QGridBox.hpp"
+//Added by qt3to4:
+#include <Qt3Support/Q3GridLayout>
 #include <iostream>
 
 using namespace std;
 
-QGridBoxLayout::QGridBoxLayout(QWidget * parent , Orientation ori, int size,
+QGridBoxLayout::QGridBoxLayout(QWidget * parent , Qt::Orientation ori, int size,
                                const char * name) :
-   QGridLayout(parent,(ori==Vertical)?size:1, (ori==Vertical)?1:size , /*margin*/ 0, /* space*/ -1, name),
+   Q3GridLayout(parent,(ori==Qt::Vertical)?size:1, (ori==Qt::Vertical)?1:size , /*margin*/ 0, /* space*/ -1, name),
    size_(size),
    nbElements_(0),
    orientation_(ori) {
@@ -36,7 +38,7 @@ QGridBoxLayout::QGridBoxLayout(QWidget * parent , Orientation ori, int size,
 
 void QGridBoxLayout::addItem(QLayoutItem * item ) {
    int col,row;
-   if (orientation_==Vertical) {
+   if (orientation_==Qt::Vertical) {
       col=nbElements_%size_;
       row=nbElements_/size_;
    } else {
@@ -44,14 +46,14 @@ void QGridBoxLayout::addItem(QLayoutItem * item ) {
       col=nbElements_/size_;
    }
    ++nbElements_;
-   QGridLayout::addItem(item, row, col);
+   Q3GridLayout::addItem(item, row, col);
 }
 
 QLayoutIterator QGridBoxLayout::iterator () {
-   return QGridLayout::iterator();
+   return Q3GridLayout::iterator();
 }
 
-QGridBox::QGridBox(QWidget * parent , Orientation ori, int size,
+QGridBox::QGridBox(QWidget * parent , Qt::Orientation ori, int size,
                    const char * name) :
    QWidget(parent,name),
    layout_(this, ori, size , name) {

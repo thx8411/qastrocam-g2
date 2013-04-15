@@ -30,14 +30,14 @@ MA  02110-1301, USA.
 #include <unistd.h>
 #include <math.h>
 
-#include <qwidget.h>
-#include <qvgroupbox.h>
-#include <qpushbutton.h>
-#include <qprogressbar.h>
-#include <qlabel.h>
-#include <qhgroupbox.h>
-#include <qhbox.h>
-#include <qtooltip.h>
+#include <Qt/qwidget.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt/qpushbutton.h>
+#include <Qt3Support/q3progressbar.h>
+#include <Qt/qlabel.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qtooltip.h>
 
 #include "QCam.hpp"
 #include "QHistogram.hpp"
@@ -45,7 +45,7 @@ MA  02110-1301, USA.
 
 CamHistogram::CamHistogram(QCam & theCam) :
    QCamClient(theCam) {
-   mainWindow_ = new QHGroupBox(tr("Analyse"));
+   mainWindow_ = new Q3HGroupBox(tr("Analyse"));
 
    QCamUtilities::registerWidget(mainWindow_);
 
@@ -64,7 +64,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    sizePolicyMin.setHorData(QSizePolicy::Minimum);
    mainWindow_->setSizePolicy(sizePolicyMin);
 
-   focusGroup_ = new QVGroupBox(tr("Focus & Seeing"), mainWindow_);
+   focusGroup_ = new Q3VGroupBox(tr("Focus & Seeing"), mainWindow_);
    focusArea_ = new QHistogram(focusGroup_);
    focusArea_->setDataSize(focusHistorySize_);
    focusArea_->setAutoShift(true);
@@ -76,15 +76,15 @@ CamHistogram::CamHistogram(QCam & theCam) :
    focusGroup_->setSizePolicy(sizePolicyMin);
    focusArea_->setSizePolicy(sizePolicyMax);
 
-   seeingGroup_= new QHBox(focusGroup_);
+   seeingGroup_= new Q3HBox(focusGroup_);
    seeingLabel_= new QLabel(tr("Seeing: "),seeingGroup_);
-   seeingLevel_=  new QProgressBar(seeingGroup_);
+   seeingLevel_=  new Q3ProgressBar(seeingGroup_);
    seeingLevel_->setCenterIndicator(true);
    seeingLevel_->setTotalSteps(100);
    QToolTip::add(seeingLevel_,tr("Shown an evaluation of the seeing by looking how\nthe contrast changes between frames."));
 
    connect(resetFocus_,SIGNAL(pressed()),focusArea_,SLOT(reset()));
-   histoGroup_ = new QVGroupBox(tr("Histogram"), mainWindow_);
+   histoGroup_ = new Q3VGroupBox(tr("Histogram"), mainWindow_);
    histogramArea_ = new QHistogram(histoGroup_);
    histogramArea_->setDataSize(256);
    histogramArea_->setAverage(5);

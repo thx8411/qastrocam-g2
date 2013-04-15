@@ -21,28 +21,32 @@ MA  02110-1301, USA.
 
 
 #include "QCam.hpp"
-#include <iostream>
-
-#include <qvbox.h>
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <iostream>
 
-#include <qimage.h>
-#include <qvbox.h>
-#include <qhbox.h>
-#include <qhgroupbox.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qlcdnumber.h>
-#include <qlineedit.h>
-#include <qtimer.h>
-#include <qtooltip.h>
-#include <qiconset.h>
-#include <qstringlist.h>
+//Added by qt3to4:
+#include <Qt/qpixmap.h>
+#include <Qt/qimagewriter.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt3Support/q3vbox.h>
+
+#include <Qt/qpushbutton.h>
+#include <Qt/qlabel.h>
+#include <Qt/qlcdnumber.h>
+#include <Qt/qlineedit.h>
+#include <Qt/qtimer.h>
+#include <Qt/qtooltip.h>
+#include <Qt/qicon.h>
+#include <Qt/qstringlist.h>
+
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
 #include "QCamUtilities.hpp"
@@ -142,7 +146,7 @@ bool QCam::saveFrame(const string& file) const {
 #endif
       return yuvFrame().colorImage().save((file
                                            +"."
-                                           +QString(fileFormat).lower().latin1()).c_str(),
+                                           +QString(fileFormat.c_str()).lower().latin1()).c_str(),
                                           fileFormat.c_str(), quality);
 }
 
@@ -308,7 +312,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    sizePolicyMin.setVerData(QSizePolicy::Minimum);
    sizePolicyMin.setHorData(QSizePolicy::Minimum);
 
-   remoteCTRL_= new QVBox(parent);
+   remoteCTRL_= new Q3VBox(parent);
 
    remoteCTRL_->setSizePolicy(sizePolicyMin);
 
@@ -343,7 +347,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    if(hideButtons_)
       buttonBox_->hide();
 
-   QStringList formatList =QImage::outputFormatList();
+   //QStringList formatList=QImage::outputFormatList();
+   QList<QByteArray> formatList=QImageWriter::supportedImageFormats();
 
    int size=0;
    int tmpTab[16];
@@ -415,9 +420,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       }
    }
 
-   QVGroupBox * saveGroup = new QVGroupBox("Save Images",remoteCTRL_);
+   Q3VGroupBox * saveGroup = new Q3VGroupBox("Save Images",remoteCTRL_);
    saveGroup->setMaximumHeight(158);
-   buttons_=new QHBox(saveGroup);
+   buttons_=new Q3HBox(saveGroup);
 
    new QLabel("Prefix:",buttons_);
    fileNameW_ = new  QLineEdit(buttons_);
@@ -438,7 +443,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
            this,SLOT(updateFileFormat(int)));
    imgFormatBox_->update(fileFormatCurrent_);
 
-   QHBox * buttons2=new QHBox(saveGroup);
+   Q3HBox * buttons2=new Q3HBox(saveGroup);
    snapshot_=new QPushButton("snapshot",buttons2);
    tmpIcon=QCamUtilities::getIcon("snapshot.png");
    if(tmpIcon!=NULL) snapshot_->setPixmap(*tmpIcon);
@@ -490,7 +495,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    setCaptureFile(captureFile_.c_str());
 
    /* periodic capture */
-   QHGroupBox * savePeriodicGroup = new QHGroupBox("Periodic capture",
+   Q3HGroupBox * savePeriodicGroup = new Q3HGroupBox("Periodic capture",
                                                    saveGroup);
    int valueList[]={0,1,2};
    const char* labelList[] = {"none","snap.","sequ."};
@@ -522,8 +527,8 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       saveGroup->hide();
 
    if (sizeTable && !sizeTable[0].isEmpty()) {
-      sourceGroup= new QVGroupBox("Source",remoteCTRL_);
-      QHBox* sizeGroup=new QHBox(sourceGroup);
+      sourceGroup= new Q3VGroupBox("Source",remoteCTRL_);
+      Q3HBox* sizeGroup=new Q3HBox(sourceGroup);
 
       int size=0;
       while (!sizeTable[size].isEmpty())

@@ -17,10 +17,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qhbox.h>
-#include <qimage.h>
-#include <qmessagebox.h>
-#include <qtooltip.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qimage.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qtooltip.h>
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 
 #include "yuv.hpp"
 
@@ -61,7 +63,7 @@ FrameDark::FrameDark(QCamTrans* cam) {
    timeString="1.0";
 }
 
-FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QHBox(parent) {
+FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): Q3HBox(parent) {
    padding1=new QWidget(this);
    activate=new QCheckBox("Activate",this);
    padding2=new QWidget(this);
@@ -90,7 +92,7 @@ FrameDark::Widget::~Widget() {
 }
 
 void FrameDark::activatedChange(int s) {
-   if(s==QButton::On) {
+   if(s==QCheckBox::On) {
       int depth;
       int width;
       int height;

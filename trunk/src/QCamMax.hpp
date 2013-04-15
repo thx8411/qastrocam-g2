@@ -23,11 +23,11 @@ MA  02110-1301, USA.
 #ifndef _QCamMax_hpp_
 #define _QCamMax_hpp_
 
-#include <qobject.h>
+#include <Qt/qobject.h>
 
 
 #include "QCam.hpp"
-#include <qsize.h>
+#include <Qt/qsize.h>
 
 class QImage;
 

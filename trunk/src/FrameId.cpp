@@ -19,7 +19,7 @@ MA  02110-1301, USA.
 
 
 #include "FrameId.hpp"
-#include <qhbox.h>
+#include <Qt3Support/q3hbox.h>
 
 bool FrameId::transform(const QCamFrame in, QCamFrame & out) {
    if (in.empty())
@@ -41,7 +41,7 @@ FrameId::FrameId(QCamTrans* cam) {
    cam_->mode(QCamTrans::Copy);
 }
 
-FrameId::Widget::Widget(QWidget * parent,const FrameId * algo): QHBox(parent) {
+FrameId::Widget::Widget(QWidget * parent,const FrameId * algo): Q3HBox(parent) {
 }
 
 FrameId::Widget::~Widget() {

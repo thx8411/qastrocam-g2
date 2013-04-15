@@ -25,7 +25,7 @@ MA  02110-1301, USA.
 
 #include <stdlib.h>
 
-#include <qsize.h>
+#include <Qt/qsize.h>
 
 #include <iostream>
 #include <assert.h>

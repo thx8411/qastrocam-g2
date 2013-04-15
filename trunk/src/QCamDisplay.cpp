@@ -21,19 +21,24 @@ MA  02110-1301, USA.
 
 
 #include "QCamDisplay.hpp"
+#include "QCamDisplayImplSDL.hpp"
 
 #include "QCam.hpp"
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QMouseEvent>
 #include <math.h>
-#include <qcolor.h>
-#include <qpen.h>
-#include <qpainter.h>
+#include <Qt/qcolor.h>
+#include <Qt/qpen.h>
+#include <Qt/qpainter.h>
 #include "QCamUtilities.hpp"
-#include <qvbox.h>
-#include <qhbox.h>
-#include <qlabel.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qlabel.h>
 #include "QCamSlider.hpp"
 #include "QCamComboBox.hpp"
-#include <qtooltip.h>
+#include <Qt/qtooltip.h>
 #include <math.h>
 
 const int QCamDisplay::defaultLum_=255;
@@ -81,9 +86,9 @@ void QCamDisplay::setCaption() {
 }
 
 void QCamDisplay::commonInit(QWidget * parent) {
-   mainWidget_=new QVBox(parent);
+   mainWidget_=new Q3VBox(parent);
 
-   buttonsContainer_ = new QHBox(mainWidget_);
+   buttonsContainer_ = new Q3HBox(mainWidget_);
 
    int displayValues[]={Color,Gray,Negate,FalseColor};
    const char * displayValuesLabel[]={"RGB","Gray","Negated", "False Color"};
@@ -93,7 +98,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
    connect(displayModeButton_,SIGNAL(change(int)),this,SLOT(setDisplayMode(int)));
 
    crossLabel_= new QLabel("Reticle : ",buttonsContainer_);
-   crossLabel_->setAlignment(AlignRight|AlignVCenter);
+   crossLabel_->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
    int crossValues[]={None,Cross,Circle};
    const char * crossValuesLabel[]={"none","cross","circle"};
@@ -125,8 +130,8 @@ void QCamDisplay::commonInit(QWidget * parent) {
    //policy.setVerStretch(100);
    widget_->setSizePolicy(policy);
 
-   view_ = new QScrollView(parent);
-   view_->setResizePolicy(QScrollView::AutoOne);
+   view_ = new Q3ScrollView(parent);
+   view_->setResizePolicy(Q3ScrollView::AutoOne);
    view_->addChild(mainWidget_);
 
    QCamUtilities::setQastrocamIcon(view_);
@@ -212,7 +217,7 @@ QCamDisplayImpl::QCamDisplayImpl(QCamDisplay & camClient,QWidget * parent):
    QToolTip::add(this,tr("double click to move center of the reticul"));
    painter_ = new QPainter();
    pen_=new QPen();
-   pen_->setStyle(DotLine);
+   pen_->setStyle(Qt::DotLine);
    pen_->setColor(QColor(QCamDisplay::defaultLum_,0,0));
    displayMode_=QCamDisplay::Color;
 }
@@ -265,7 +270,7 @@ void QCamDisplayImpl::setCrossLum(int l) {
  */
 QCamDisplayImplQT::QCamDisplayImplQT(QCamDisplay & camClient,QWidget * parent):
    QCamDisplayImpl(camClient,parent) {
-   setWFlags(WRepaintNoErase);
+   setWindowFlags(Qt::WNoAutoErase);
 }
 
 void QCamDisplayImplQT::paintEvent(QPaintEvent * ev) {

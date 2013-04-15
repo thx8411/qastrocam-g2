@@ -23,14 +23,14 @@ MA  02110-1301, USA.
 
 #include "QCamSlider.hpp"
 #include <stdio.h>
-#include <qpushbutton.h>
-#include <qprogressbar.h>
-#include <qcheckbox.h>
-#include <qvgroupbox.h>
-#include <qhgroupbox.h>
-#include <qradiobutton.h>
-#include <qmessagebox.h>
-#include <qtooltip.h>
+#include <Qt/qpushbutton.h>
+#include <Qt3Support/q3progressbar.h>
+#include <Qt/qcheckbox.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt/qradiobutton.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qtooltip.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -662,7 +662,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
    // method gui
-   methodWidget_ = new QButtonGroup(3,Qt::Horizontal,tr("Method"), remoteCTRL);
+   methodWidget_ = new Q3ButtonGroup(3,Qt::Horizontal,tr("Method"), remoteCTRL);
    QRadioButton* frameSum= new QRadioButton(tr("Sum"),methodWidget_);
    QRadioButton* frameAverage= new QRadioButton(tr("Average"),methodWidget_);
    QRadioButton* frameMedian= new QRadioButton(tr("Median"),methodWidget_);
@@ -673,7 +673,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QToolTip::add(frameAverage,tr("Produce a 'mean' frame for calibration"));
    QToolTip::add(frameMedian,tr("Produce a 'median' frame for calibration\n(uses a huge amount of memory)"));
 
-   accumulationWidget_ = new QHGroupBox(tr("Num of Buffers"),remoteCTRL);
+   accumulationWidget_ = new Q3HGroupBox(tr("Num of Buffers"),remoteCTRL);
    accumulationWidget_->setMaximumHeight(56);
    int ActiveBufferList[]={4,8,16,32,64,128,256};
    remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,7,ActiveBufferList,NULL);
@@ -682,7 +682,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
 
    QToolTip::add(remoteCTRLnumOfActiveBuffer_,tr("Number of frames to stack"));
 
-   bufferFill_= new QProgressBar(accumulationWidget_);
+   bufferFill_= new Q3ProgressBar(accumulationWidget_);
    bufferFill_->setCenterIndicator(true);
    resetBufferFill_= new QPushButton(tr("reset"),accumulationWidget_);
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(resetBufferFill()));
@@ -690,7 +690,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QToolTip::add(bufferFill_,tr("Frame stack progress"));
    QToolTip::add(resetBufferFill_,tr("Resets the frame stack"));
 
-   displayOptions_=new QVGroupBox(tr("Display Options"),remoteCTRL);
+   displayOptions_=new Q3VGroupBox(tr("Display Options"),remoteCTRL);
    displayOptions_->setMaximumHeight(192);
    remoteCTRLmaxYvalue_=new QCamSlider(tr("max Lum."),true,displayOptions_,
                                        2,numOfBuffers_*255);

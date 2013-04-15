@@ -17,12 +17,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <qtimer.h>
-#include <qvgroupbox.h>
-#include <qhgroupbox.h>
-#include <qhbox.h>
-#include <qtooltip.h>
-#include <qpixmap.h>
+#include <Qt/qtimer.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qtooltip.h>
+#include <Qt/qpixmap.h>
 
 #include "SettingsBackup.hpp"
 #include "QCamUtilities.hpp"
@@ -86,10 +86,10 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    QPixmap* tmpIcon;
 
    QWidget* remoteCTRL=QCam::buildGUI(parent);
-   QVGroupBox* settingsBox=new QVGroupBox(QString("Settings"),remoteCTRL);
+   Q3VGroupBox* settingsBox=new Q3VGroupBox(QString("Settings"),remoteCTRL);
 
    // RA zone
-   QHGroupBox* raZone=new QHGroupBox(QString("RA"),settingsBox);
+   Q3HGroupBox* raZone=new Q3HGroupBox(QString("RA"),settingsBox);
    raSpeedSlider_=new QCamSlider(QString("Speed : "),false,raZone,0,20,false,false);
    raLeft_=new QPushButton(raZone,"L");
    tmpIcon=QCamUtilities::getIcon("left.png");
@@ -111,7 +111,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    delete tmpIcon;
 
    // DEC zone
-   QHGroupBox* decZone=new QHGroupBox(QString("DEC"),settingsBox);
+   Q3HGroupBox* decZone=new Q3HGroupBox(QString("DEC"),settingsBox);
    decSpeedSlider_=new QCamSlider(QString("Speed : "),false,decZone,0,20,false,false);
    decUp_=new QPushButton(decZone,"U");
    tmpIcon=QCamUtilities::getIcon("up.png");
@@ -210,7 +210,7 @@ bool QCamSimulator::updateFrame() {
 //
 
 void QCamSimulator::moveLeft(int s) {
-   if(s==QButton::On) {
+   if(s==QCheckBox::On) {
       raRight_->setOn(false);
       raMove_=_SIMULATOR_LEFT_;
    } else
@@ -218,7 +218,7 @@ void QCamSimulator::moveLeft(int s) {
 }
 
 void QCamSimulator::moveRight(int s) {
-   if(s==QButton::On) {
+   if(s==QCheckBox::On) {
       raLeft_->setOn(false);
       raMove_=_SIMULATOR_RIGHT_;
    } else
@@ -232,7 +232,7 @@ void QCamSimulator::stopRa() {
 }
 
 void QCamSimulator::moveUp(int s) {
-   if(s==QButton::On) {
+   if(s==QCheckBox::On) {
       decDown_->setOn(false);
       decMove_=_SIMULATOR_UP_;
    } else
@@ -240,7 +240,7 @@ void QCamSimulator::moveUp(int s) {
 }
 
 void QCamSimulator::moveDown(int s) {
-   if(s==QButton::On) {
+   if(s==QCheckBox::On) {
       decUp_->setOn(false);
       decMove_=_SIMULATOR_DOWN_;
    } else

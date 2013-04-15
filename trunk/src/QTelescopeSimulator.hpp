@@ -23,8 +23,8 @@ MA  02110-1301, USA.
 
 #include <string>
 
-#include <qlabel.h>
-#include <qvgroupbox.h>
+#include <Qt/qlabel.h>
+#include <Qt3Support/q3vgroupbox.h>
 
 #include "QTelescope.hpp"
 
@@ -38,7 +38,7 @@ public:
    virtual int telescopeType() { return(TELESCOPE_SIMULATOR); }
    void buildGUI(QWidget * parent);
 private:
-   QVGroupBox* simulatorWidget_;
+   Q3VGroupBox* simulatorWidget_;
    QLabel* speedLabel_;
    QLabel* buttonUp_;
    QLabel* buttonDown_;

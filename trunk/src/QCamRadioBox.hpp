@@ -23,17 +23,17 @@ MA  02110-1301, USA.
 #ifndef _QCamRadioBox_hpp_
 #define _QCamRadioBox_hpp_
 
-#include <qvgroupbox.h>
+#include <Qt3Support/q3vgroupbox.h>
 
 class QRadioButton;
-class QVGroupBox;
-class QButtonGroup;
-class QHBox;
+class Q3VGroupBox;
+class Q3ButtonGroup;
+class Q3HBox;
 
 /** Handle some radiobox buttons in a
     QButtonGroup.
 */
-class QCamRadioBox: public QVGroupBox {
+class QCamRadioBox: public Q3VGroupBox {
    Q_OBJECT
 public:
    QCamRadioBox(const char * label /** label of the box */,
@@ -57,8 +57,8 @@ signals:
 protected slots:
    void buttonClicked(int id);
 private:
-   QButtonGroup *bg_;
-   QHBox ** rowTable_;
+   Q3ButtonGroup *bg_;
+   Q3HBox ** rowTable_;
    QRadioButton **  buttonTable_;
    int * valueList_;
    int numOfButton_;

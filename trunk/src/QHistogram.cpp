@@ -21,11 +21,13 @@ MA  02110-1301, USA.
 
 
 #include "QHistogram.hpp"
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
 #include <string.h>
 #include <iostream>
-#include <qpen.h>
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <Qt/qpen.h>
+#include <Qt/qpainter.h>
+#include <Qt/qpixmap.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -37,7 +39,7 @@ using namespace std;
 #define DOUBLE_MIN (-1e38)
 #define DOUBLE_MAX 1e38
 
-QHistogram::QHistogram(QWidget * parent, const char * name, WFlags f):
+QHistogram::QHistogram(QWidget * parent, const char * name, Qt::WFlags f):
    QWidget(parent,name,f) {
    dataSize_=0;
    dataTable_=NULL;
@@ -50,7 +52,7 @@ QHistogram::QHistogram(QWidget * parent, const char * name, WFlags f):
    averagePen_->setColor(QColor(255,0,0));
    max_=DOUBLE_MIN;
    min_=DOUBLE_MAX;
-   setWFlags(WRepaintNoErase);
+   setWindowFlags(Qt::WNoAutoErase);
    dispMode_=NormalDisplay;
    setDataSize(20);
 }

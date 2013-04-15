@@ -29,6 +29,8 @@ MA  02110-1301, USA.
 #include "qastrocamVersion.hpp"
 #include "QCamAdd.hpp"
 #include "QCamMax.hpp"
+//Added by qt3to4:
+#include <Qt/qpixmap.h>
 #include "FrameMirror.hpp"
 #include "FrameBias.hpp"
 #include "FrameDark.hpp"
@@ -38,12 +40,12 @@ MA  02110-1301, USA.
 #include "QCamTrans.hpp"
 #include "CamHistogram.hpp"
 
-#include <qapplication.h>
-#include <qtabwidget.h>
-#include <qvbox.h>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qpalette.h>
+#include <Qt/qapplication.h>
+#include <Qt/qtabwidget.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qpalette.h>
 
 #include "QCamUtilities.hpp"
 #include "QCamFindShift_barycentre.hpp"
@@ -389,7 +391,7 @@ int main(int argc, char ** argv) {
 
    // for log trace
    cout << qastrocamName << " " << qastroCamVersion
-        << " (build "<<qastrocamBuild<<")"<<endl;
+        << " (build "<< qastrocamBuild << ")" <<endl;
    cout << "* " << qastrocamWeb << endl;
    cout << "* " << qastrocamMail << endl;
 
@@ -426,7 +428,7 @@ int main(int argc, char ** argv) {
    // main window setting
    QString caption;
    QPixmap* tmpIcon;
-   QVBox mainWindow;
+   Q3VBox mainWindow;
    caption=qastrocamName;
    caption+=" ";
    caption+=qastroCamVersion;

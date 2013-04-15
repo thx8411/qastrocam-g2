@@ -43,8 +43,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130412")
-set(BUILD_VERSION "171")
+set(PATCH_VERSION "beta20130415")
+set(BUILD_VERSION "172")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -64,7 +64,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 ##########################
 
 #
-# QT3 needed
+# QT4 needed
 #
 find_package(Qt4 REQUIRED)
 if(NOT QT_FOUND)
@@ -179,9 +179,23 @@ if(NOT SDL_FOUND)
    list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamDisplayImplSDL.hpp")
 endif(NOT SDL_FOUND)
 
-
+#
 # wrap to moc
-QT_WRAP_CPP(qastrocam-g2 qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS})
+#
+set(qastrocam-g2_MOC_DEFINITIONS "")
+
+# we use usb
+if(USB_FOUND)
+set(qastrocam-g2_MOC_DEFINITIONS ${qastrocam-g2_MOC_DEFINITIONS} " -DHAVE_USB_H=1")
+endif(USB_FOUND)
+
+# we use SDL
+if(SDL_FOUND)
+set(qastrocam-g2_MOC_DEFINITIONS ${qastrocam-g2_MOC_DEFINITIONS} " -DHAVE_SDL_H=1")
+endif(SDL_FOUND)
+
+# wrap
+QT4_WRAP_CPP(qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS} OPTIONS -DHAVE_USB_H=1 -DHAVE_SDL_H=1)
 
 
 ############################
@@ -189,11 +203,12 @@ QT_WRAP_CPP(qastrocam-g2 qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS})
 ############################
 
 #
-# we use Qt3
+# we use Qt4
 #
 include_directories(${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH})
 set(QT_DEFINITIONS "${QT_DEFINITIONS} -D QT3_SUPPORT")
 add_definitions(${QT_DEFINITIONS})
+set(QT_LIBRARIES "${QT_LIBRARIES}Qt3Support")
 set(LIBRARIES_LIST ${QT_LIBRARIES})
 
 #

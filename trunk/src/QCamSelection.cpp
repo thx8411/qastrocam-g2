@@ -23,16 +23,20 @@ MA  02110-1301, USA.
 #include "QCamSelection.hpp"
 
 #include "QCam.hpp"
+//Added by qt3to4:
+#include <QtGui/QPaintEvent>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QMouseEvent>
 #include <math.h>
-#include <qcolor.h>
-#include <qpen.h>
-#include <qpainter.h>
+#include <Qt/qcolor.h>
+#include <Qt/qpen.h>
+#include <Qt/qpainter.h>
 #include "QCamUtilities.hpp"
-#include <qvbox.h>
-#include <qhbox.h>
-#include <qlabel.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt/qlabel.h>
 #include "QCamComboBox.hpp"
-#include <qtooltip.h>
+#include <Qt/qtooltip.h>
 #include <math.h>
 
 QCamSelection::QCamSelection(QWidget * parent) : QCamClient(), yuvFrame_() {
@@ -64,11 +68,11 @@ void QCamSelection::setCaption() {
 }
 
 void QCamSelection::commonInit(QWidget * parent) {
-   mainWidget_=new QVBox(parent);
+   mainWidget_=new Q3VBox(parent);
 
    QCamUtilities::registerWidget(mainWidget_);
 
-   buttonsContainer_ = new QHBox(mainWidget_);
+   buttonsContainer_ = new Q3HBox(mainWidget_);
 
    QWidget* padding1=new QWidget(buttonsContainer_);
    QLabel* label1=new QLabel(buttonsContainer_);
@@ -194,10 +198,10 @@ QCamSelectionImpl::QCamSelectionImpl(QCamSelection & camClient,QWidget * parent)
    QToolTip::add(this,tr("double click to move center of the selection"));
    painter_ = new QPainter();
    pen_=new QPen();
-   pen_->setStyle(SolidLine);
+   pen_->setStyle(Qt::SolidLine);
    pen_->setColor(Qt::red);
    displayMode_=QCamSelection::Gray;
-   setWFlags(WRepaintNoErase);
+   setWindowFlags(Qt::WNoAutoErase);
 }
 
 QCamSelectionImpl::~QCamSelectionImpl() {

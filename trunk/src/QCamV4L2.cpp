@@ -19,6 +19,8 @@ MA  02110-1301, USA.
 
 
 #include "QCamV4L2.hpp"
+//Added by qt3to4:
+#include <Qt/qlabel.h>
 #include <iostream>
 #include <sstream>
 
@@ -33,11 +35,11 @@ MA  02110-1301, USA.
 #include <sys/mman.h>
 #include <string>
 
-#include <qtabwidget.h>
-#include <qsocketnotifier.h>
-#include <qtimer.h>
-#include <qtooltip.h>
-#include <qmessagebox.h>
+#include <Qt/qtabwidget.h>
+#include <Qt/qsocketnotifier.h>
+#include <Qt/qtimer.h>
+#include <Qt/qtooltip.h>
+#include <Qt/qmessagebox.h>
 
 #include "QCamSlider.hpp"
 #include "yuv.hpp"
@@ -1030,7 +1032,7 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
    // source box
-   infoBox=new QHBox(sourceGroup);
+   infoBox=new Q3HBox(sourceGroup);
 
    // palette and input display
    QWidget* padding1=new QWidget(infoBox);
@@ -1078,8 +1080,8 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    QToolTip::add(frameModeB,"Frame mode");
 
    // controls
-   QHGroupBox* ctrlBox=new QHGroupBox(tr("Controls"),remoteCTRL);
-   VctrlBox=new QVBox(ctrlBox);
+   Q3HGroupBox* ctrlBox=new Q3HGroupBox(tr("Controls"),remoteCTRL);
+   VctrlBox=new Q3VBox(ctrlBox);
    QGridBox * hbox= new QGridBox(VctrlBox,Qt::Vertical,3);
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);
@@ -1152,7 +1154,7 @@ void QCamV4L2::setSource(int val) {
 
 // changing palette
 void QCamV4L2::setPalette(int val) {
-   palette=getSupportedPaletteIndex(paletteB->text(val));
+   palette=getSupportedPaletteIndex(paletteB->text(val).toStdString().c_str());
    updatePalette();
    allocBuffers();
    // updating mmap
@@ -1176,7 +1178,7 @@ void  QCamV4L2::setMode(int  val) {
    QString value=frameModeB->text(val);
    string keyName("COLOR_MODE_");
    keyName+=(char*)v4l2_cap_.card;
-   settings.setKey(keyName.c_str(),value.data());
+   settings.setKey(keyName.c_str(),value.toStdString().c_str());
    setMode((ImageMode)val);
 }
 

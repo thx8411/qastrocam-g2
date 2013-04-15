@@ -21,8 +21,8 @@ MA  02110-1301, USA.
 #ifndef _QFileChooser_hpp_
 #define _QFileChooser_hpp_
 
-#include <qpushbutton.h>
-#include <qobject.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qobject.h>
 
 // files types :
 #define	DEVICE_FILE	0

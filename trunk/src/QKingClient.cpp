@@ -20,8 +20,8 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include <qpushbutton.h>
-#include <qstatusbar.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qstatusbar.h>
 #include <math.h>
 #include "QKingClient.hpp"
 #include "QCam.hpp"
