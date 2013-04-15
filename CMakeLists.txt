@@ -184,18 +184,24 @@ endif(NOT SDL_FOUND)
 #
 set(qastrocam-g2_MOC_DEFINITIONS "")
 
+# kernel 2
+if(KERNEL_VERSION STREQUAL "2")
+   set(qastrocam-g2_MOC_DEFINITIONS "${qastrocam-g2_MOC_DEFINITIONS}-DKERNEL_2=1;")
+endif(KERNEL_VERSION STREQUAL "2")
+
 # we use usb
 if(USB_FOUND)
-set(qastrocam-g2_MOC_DEFINITIONS ${qastrocam-g2_MOC_DEFINITIONS} " -DHAVE_USB_H=1")
+   set(qastrocam-g2_MOC_DEFINITIONS "${qastrocam-g2_MOC_DEFINITIONS}-DHAVE_USB_H=1;")
 endif(USB_FOUND)
 
 # we use SDL
 if(SDL_FOUND)
-set(qastrocam-g2_MOC_DEFINITIONS ${qastrocam-g2_MOC_DEFINITIONS} " -DHAVE_SDL_H=1")
+   set(qastrocam-g2_MOC_DEFINITIONS "${qastrocam-g2_MOC_DEFINITIONS}-DHAVE_SDL_H=1;")
 endif(SDL_FOUND)
 
 # wrap
-QT4_WRAP_CPP(qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS} OPTIONS -DHAVE_USB_H=1 -DHAVE_SDL_H=1)
+message(STATUS ${qastrocam-g2_MOC_DEFINITIONS})
+QT4_WRAP_CPP(qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS} OPTIONS ${qastrocam-g2_MOC_DEFINITIONS})
 
 
 ############################
