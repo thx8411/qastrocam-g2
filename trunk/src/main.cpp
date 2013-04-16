@@ -436,8 +436,10 @@ int main(int argc, char ** argv) {
    QPushButton quit(&mainWindow,"Quit");
    QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
    tmpIcon=QCamUtilities::getIcon("exit.png");
-   quit.setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon) {
+      quit.setPixmap(*tmpIcon);
+      delete tmpIcon;
+   }
    app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
 
