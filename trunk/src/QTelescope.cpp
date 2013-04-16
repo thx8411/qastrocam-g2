@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2012   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -62,19 +62,19 @@ void QTelescope::buildGUI(QWidget * parent) {
    QCamUtilities::setQastrocamIcon(mainWidget_);
    arrows_ = new QWidget(mainWidget_);
    arrowsLayout_=new Q3GridLayout(arrows_,3,3);
-   upButton_=new QPushButton(arrows_,"U");
+   upButton_=new QPushButton("up",arrows_,"U");
    tmpIcon=QCamUtilities::getIcon("up.png");
    if(tmpIcon!=NULL) upButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
-   downButton_=new QPushButton(arrows_,"D");
+   downButton_=new QPushButton("down",arrows_,"D");
    tmpIcon=QCamUtilities::getIcon("down.png");
    if(tmpIcon!=NULL) downButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
-   leftButton_=new QPushButton(arrows_,"L");
+   leftButton_=new QPushButton("left",arrows_,"L");
    tmpIcon=QCamUtilities::getIcon("left.png");
    if(tmpIcon!=NULL) leftButton_->setPixmap(*tmpIcon);
    delete tmpIcon;
-   rightButton_=new QPushButton(arrows_,"R");
+   rightButton_=new QPushButton("right",arrows_,"R");
    tmpIcon=QCamUtilities::getIcon("right.png");
    if(tmpIcon!=NULL) rightButton_->setPixmap(*tmpIcon);
    delete tmpIcon;

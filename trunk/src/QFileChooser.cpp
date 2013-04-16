@@ -34,7 +34,7 @@ MA  02110-1301, USA.
 using namespace std;
 
 QFileChooser::QFileChooser(QWidget * parent, int type):
-   QPushButton(parent) {
+   QPushButton("file...",parent) {
    QPixmap* tmpIcon;
    connect(this,SIGNAL(pressed()),this,SLOT(selectFile()));
    tmpIcon=QCamUtilities::getIcon("choose_directory.png");

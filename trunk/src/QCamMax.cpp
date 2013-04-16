@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2012   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -81,7 +81,7 @@ QWidget* QCamMax::buildGUI(QWidget * parent) {
    QPushButton* resetBufferFill_= new QPushButton("reset",remoteCTRL);
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(clear()));
 
-   QPushButton* pauseBufferFill_= new QPushButton("",remoteCTRL);
+   QPushButton* pauseBufferFill_= new QPushButton("pause",remoteCTRL);
    QPixmap* tmpIcon;
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    pauseBufferFill_->setToggleButton(true);

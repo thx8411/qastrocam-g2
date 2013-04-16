@@ -433,7 +433,7 @@ int main(int argc, char ** argv) {
    caption+=" ";
    caption+=qastroCamVersion;
    mainWindow.setCaption(caption);
-   QPushButton quit(&mainWindow,"Quit");
+   QPushButton quit("quit",&mainWindow,"Quit");
    QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
    tmpIcon=QCamUtilities::getIcon("exit.png");
    if(tmpIcon) {
