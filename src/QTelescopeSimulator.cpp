@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010-2012   Blaise-Florentin Collin
+Copyright (C) 2010-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -57,7 +57,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QWidget* simulatorArrows_=new QWidget(simulatorWidget_);
    Q3GridLayout* simulatorArrowsLayout_=new Q3GridLayout(simulatorArrows_,3,3);
 
-   buttonUp_=new QLabel(simulatorArrows_,"U");
+   buttonUp_=new QLabel("up",simulatorArrows_,"U");
    tmpIcon=QCamUtilities::getIcon("north.png");
    if(tmpIcon!=NULL) buttonUp_->setPixmap(*tmpIcon);
    buttonUp_->setDisabled(true);
@@ -65,7 +65,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonUp_,0,1);
 
-   buttonDown_=new QLabel(simulatorArrows_,"D");
+   buttonDown_=new QLabel("down",simulatorArrows_,"D");
    tmpIcon=QCamUtilities::getIcon("south.png");
    if(tmpIcon!=NULL) buttonDown_->setPixmap(*tmpIcon);
    buttonDown_->setDisabled(true);
@@ -73,14 +73,14 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonDown_,2,1);
 
-   buttonLeft_=new QLabel(simulatorArrows_,"L");
+   buttonLeft_=new QLabel("left",simulatorArrows_,"L");
    tmpIcon=QCamUtilities::getIcon("east.png");
    if(tmpIcon!=NULL) buttonLeft_->setPixmap(*tmpIcon);
    buttonLeft_->setDisabled(true);
    delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonLeft_,1,0);
 
-   buttonRight_=new QLabel(simulatorArrows_,"R");
+   buttonRight_=new QLabel("right",simulatorArrows_,"R");
    tmpIcon=QCamUtilities::getIcon("west.png");
    if(tmpIcon!=NULL) buttonRight_->setPixmap(*tmpIcon);
    buttonRight_->setDisabled(true);
