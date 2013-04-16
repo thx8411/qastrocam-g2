@@ -49,7 +49,7 @@ set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
 #
-# destir for binary packages
+# destdir for binary packages
 #
 set($ENV{DESTDIR} "${CMAKE_BINARY_DIR}/fakeinstall")
 
@@ -425,12 +425,9 @@ if(DEBIAN_FOUND)
    set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libgcc1")
    set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libstdc++6")
    set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libx11-6")
+   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqtcore4, libqtgui4, libqt4-qt3support")
 
-   # required dependencies
-   if(QT_FOUND)
-      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt3-mt")
-   endif(QT_FOUND)
-
+   # recommended dependencies
    if(JPEG_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libjpeg62")
    endif(JPEG_FOUND)
@@ -439,7 +436,6 @@ if(DEBIAN_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libusb-0.1-4")
    endif(USB_FOUND)
 
-   # recommended dependencies
    if(CFITSIO_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libcfitsio3")
    endif(CFITSIO_FOUND)
@@ -506,39 +502,35 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
    #-----------------------------------------#
    if(ARCHITECURE STREQUAL "x86_64")
       # base dependencies
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}libc6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libgcc1")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libstdc++6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libx11-6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}lib64c6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64gcc1")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64stdc++6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64x11-6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64qtcore4, lib64qtgui4, lib64qt4-qt3support")
 
-      # required dependencies
-      if(QT_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqt3-mt")
-      endif(QT_FOUND)
-
+      # recommended dependencies
       if(JPEG_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64jpeg62")
       endif(JPEG_FOUND)
 
       if(USB_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-0.1-4")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64usb-0.1-4")
       endif(USB_FOUND)
 
-      # recommended dependencies
       if(CFITSIO_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio3")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64cfitsio3")
       endif(CFITSIO_FOUND)
 
       if(LIBAV_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavformat, libavcodec")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avformat, lib64avcodec")
       endif(LIBAV_FOUND)
 
       if(AVIFILE_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avifile-0.7c2")
       endif(AVIFILE_FOUND)
 
       if(SDL_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libsdl1.2debian")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64sdl1.2debian")
       endif(SDL_FOUND)
 
    else(ARCHITECURE STREQUAL "x86_64")
@@ -548,12 +540,9 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libgcc1")
       set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libstdc++6")
       set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libx11-6")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqtcore4, libqtgui4, libqt4-qt3support")
 
-      # required dependencies
-      if(QT_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqt3-mt")
-      endif(QT_FOUND)
-
+      # recommended dependencies
       if(JPEG_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
       endif(JPEG_FOUND)
@@ -562,7 +551,6 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-0.1-4")
       endif(USB_FOUND)
 
-      # recommended dependencies
       if(CFITSIO_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio3")
       endif(CFITSIO_FOUND)
