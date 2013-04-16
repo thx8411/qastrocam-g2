@@ -43,8 +43,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130415")
-set(BUILD_VERSION "172")
+set(PATCH_VERSION "beta20130416")
+set(BUILD_VERSION "173")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -66,7 +66,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #
 # QT4 needed
 #
-find_package(Qt4 REQUIRED)
+find_package(Qt4 REQUIRED QtCore QtGui Qt3Support)
 if(NOT QT_FOUND)
    message(FATAL_ERROR "Qt4 not found, generation stopped")
 endif(NOT QT_FOUND)
@@ -200,7 +200,6 @@ if(SDL_FOUND)
 endif(SDL_FOUND)
 
 # wrap
-message(STATUS ${qastrocam-g2_MOC_DEFINITIONS})
 QT4_WRAP_CPP(qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS} OPTIONS ${qastrocam-g2_MOC_DEFINITIONS})
 
 
@@ -211,10 +210,7 @@ QT4_WRAP_CPP(qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS} OPTIONS ${qastroca
 #
 # we use Qt4
 #
-include_directories(${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH})
-set(QT_DEFINITIONS "${QT_DEFINITIONS} -D QT3_SUPPORT")
-add_definitions(${QT_DEFINITIONS})
-set(QT_LIBRARIES "${QT_LIBRARIES}Qt3Support")
+include(${QT_USE_FILE})
 set(LIBRARIES_LIST ${QT_LIBRARIES})
 
 #
@@ -329,7 +325,7 @@ install(FILES sounds/bell.wav DESTINATION /usr/share/qastrocam-g2/sounds)
 install(FILES doc/qastrocam-g2-help.html DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/BUGS DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/TODO DESTINATION /usr/share/qastrocam-g2)
-install(FILES doc/Contributors DESTINATION /usr/share/qastrocamg-2)
+install(FILES doc/Contributors DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/ChangeLog DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/License.txt DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/README DESTINATION /usr/share/qastrocam-g2)
