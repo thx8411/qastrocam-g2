@@ -79,6 +79,9 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
 
    setWindowFlags(Qt::WNoAutoErase);
 
+   setAttribute(Qt::WA_PaintOnScreen);
+   setAttribute(Qt::WA_NoSystemBackground);
+
    SDL_Init(SDL_INIT_VIDEO);
 }
 
