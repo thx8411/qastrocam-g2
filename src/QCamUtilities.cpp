@@ -85,7 +85,8 @@ QPixmap * QCamUtilities::getIcon(const char * pixmapBaseName) {
 
 void QCamUtilities::setQastrocamIcon(QWidget *widget) {
    static QPixmap * iconNb=QCamUtilities::getIcon("qastrocam-icon-nb.png");
-   widget->setIcon(*iconNb);
+   if(iconNb)
+      widget->setIcon(*iconNb);
 }
 
 void QCamUtilities::setLocale(QApplication & app) {
