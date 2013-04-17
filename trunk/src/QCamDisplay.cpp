@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,27 +19,30 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCamDisplay.hpp"
-#include "QCamDisplayImplSDL.hpp"
-
-#include "QCam.hpp"
-//Added by qt3to4:
-#include <QtGui/QPaintEvent>
-#include <QtGui/QResizeEvent>
-#include <QtGui/QMouseEvent>
 #include <math.h>
+
 #include <Qt/qcolor.h>
 #include <Qt/qpen.h>
 #include <Qt/qpainter.h>
-#include "QCamUtilities.hpp"
+#include <Qt/qlabel.h>
+#include <Qt/qtooltip.h>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QMouseEvent>
+
 #include <Qt3Support/q3vbox.h>
 #include <Qt3Support/q3hbox.h>
-#include <Qt/qlabel.h>
+
+#include "QCamUtilities.hpp"
+#include "QCam.hpp"
 #include "QCamSlider.hpp"
 #include "QCamComboBox.hpp"
-#include <Qt/qtooltip.h>
-#include <math.h>
+#include "QCamDisplay.hpp"
+#include "QCamDisplayImplSDL.hpp"
+
+
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#define min(a,b) (((a) < (b)) ? (a) : (b))
 
 const int QCamDisplay::defaultLum_=255;
 
@@ -311,9 +314,6 @@ void QCamDisplayImpl::annotate(QPainter & painter) {
       crossCenterX_=size().width()/2;
       crossCenterY_=size().height()/2;
    }
-
-   //int sx=(size().width()-frame.size().width())/2;
-   //int sy=(size().height()-frame.size().height())/2;
 
    switch (currentCross_) {
    case QCamDisplay::Cross:
