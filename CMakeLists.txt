@@ -43,8 +43,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130416")
-set(BUILD_VERSION "173")
+set(PATCH_VERSION "beta20130417")
+set(BUILD_VERSION "174")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -119,7 +119,14 @@ find_package(SDL)
 if(NOT SDL_FOUND)
    message(STATUS "SDL library not found, binary won't handle SDL...")
 else(NOT SDL_FOUND)
-   message(STATUS "Found SDL: ${SDL_LIBRARY}")
+   # X11 needed for Xsync
+   find_package(X11)
+   if(X11_FOUND)
+      message(STATUS "Found SDL: ${SDL_LIBRARY}")
+   else(X11_FOUND)
+      set(SDL_FOUND "")
+      message(STATUS "X11 not found, binary won't handle SDL...")
+   endif(X11_FOUND)
 endif(NOT SDL_FOUND)
 
 
@@ -268,10 +275,14 @@ endif(AVIFILE_FOUND)
 # we use SDL
 #
 if(SDL_FOUND)
+   # SDL stuff
    include_directories(${SDL_INCLUDE_DIR})
    set(SDL_DEFINITIONS "${SDL_DEFINITIONS} -D HAVE_SDL_H=1")
    add_definitions(${SDL_DEFINITIONS})
    set(LIBRARIES_LIST ${LIBRARIES_LIST} ${SDL_LIBRARY})
+   # X11 stuff
+   include_directories(${X11_INCLUDE_DIR})
+   set(LIBRARIES_LIST ${LIBRARIES_LIST} ${X11_LIBRARIES})
 endif(SDL_FOUND)
 
 
