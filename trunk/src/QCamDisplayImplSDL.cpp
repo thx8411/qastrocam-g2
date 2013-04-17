@@ -39,9 +39,6 @@ MA  02110-1301, USA.
 #include <X11/Xlib.h>
 #endif
 
-//inline int min(int a, int b) {
-//   return (a<=b?a:b);
-//}
 
 QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent):
          QCamDisplayImpl(camClient,parent),
