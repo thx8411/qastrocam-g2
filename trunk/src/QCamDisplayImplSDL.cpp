@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,32 +19,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCamDisplay.hpp"
-
+// do we have the SDL library ?
 #if HAVE_SDL_H
 
-#include "QCamDisplayImplSDL.hpp"
 #include <Qt/qpainter.h>
 #include <Qt/qpen.h>
 #include <Qt/qmessagebox.h>
-//Added by qt3to4:
 #include <QtGui/QResizeEvent>
 #include <QtGui/QPaintEvent>
 
 #include "yuv.hpp"
 
-/*
- * SDL
- */
+#include "QCamDisplay.hpp"
+#include "QCamDisplayImplSDL.hpp"
 
+
+// needed for Xsync
 #if defined(Q_WS_X11)
 #include <X11/Xlib.h>
 #endif
 
-inline int min(int a, int b) {
-   return (a<=b?a:b);
-}
+//inline int min(int a, int b) {
+//   return (a<=b?a:b);
+//}
 
 QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent):
          QCamDisplayImpl(camClient,parent),
@@ -52,6 +49,7 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
          RGBImage_(NULL),
          GreyImage_(NULL) {
 
+   // filling the grey and nagtive palettes
    for(int i=0;i<256;i++) {
       greyPalette[i].r=i;
       greyPalette[i].g=i;
@@ -60,6 +58,8 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
       negatePalette[255-i].g=i;
       negatePalette[255-i].b=i;
    }
+
+   // filling the false color palette
    for (int i=0;i<256;i+=4) {
       falsePalette[i/4].r=0;
       falsePalette[i/4].g=i;
@@ -75,35 +75,46 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
       falsePalette[i/4+192].b=0;
    }
 
+   // default is grey palette
    colors=greyPalette;
 
+   // disable Qt4 double buffering
    setWindowFlags(Qt::WNoAutoErase);
-
    setAttribute(Qt::WA_PaintOnScreen);
    setAttribute(Qt::WA_NoSystemBackground);
 
+   // init SDL
    SDL_Init(SDL_INIT_VIDEO);
 }
 
 QCamDisplayImplSDL::~QCamDisplayImplSDL() {
+   // SDL_WINDOWID trick
    static char variable[64];
    sprintf(variable, "SDL_WINDOWID=0x%lx", winId());
    putenv(variable);
+
+   // release SDL stuff
    SDL_FreeSurface(GreyImage_);
    SDL_FreeSurface(RGBImage_);
    SDL_FreeSurface(screen_);
    SDL_QuitSubSystem(SDL_INIT_VIDEO);
    SDL_Quit();
+
+   // unset SDL_WINDOWID trick
    unsetenv("SDL_WINDOWID");
 
+   // SDL is off
    QCamDisplay::SDL_on_=false;
 }
 
 void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
    QCamDisplayImpl::resizeEvent(ev);
+
+   // size changed, release SDL surfaces
    if (RGBImage_) {
       SDL_FreeSurface(RGBImage_);
       RGBImage_=NULL;
+
    }
    if (GreyImage_) {
       SDL_FreeSurface(GreyImage_);
@@ -113,12 +124,16 @@ void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
       SDL_FreeSurface(screen_);
       screen_ = NULL;
    }
+
    // Set the new video mode with the new window size
+
+   // SDL_WINDOWID trick
    static char variable[64];
    sprintf(variable, "SDL_WINDOWID=0x%lx", winId());
    putenv(variable);
-   SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
+   // reset SDL
+   SDL_QuitSubSystem(SDL_INIT_VIDEO);
    if ( SDL_InitSubSystem(SDL_INIT_VIDEO) < 0 ) {
       QMessageBox::information(0,"Qastrocam-g2","Unable to init SDL\nLeaving...");
       fprintf(stdout, "Unable to init SDL: %s\n", SDL_GetError());
@@ -142,28 +157,32 @@ void QCamDisplayImplSDL::setPalette() {
       return;
    }
    switch (displayMode_) {
-   case QCamDisplay::Color:
+      case QCamDisplay::Color:
       //falling back in grey mode
-   case QCamDisplay::Gray:
-      colors=greyPalette;
-      break;
-   case QCamDisplay::Negate:
-      colors=negatePalette;
-      break;
-   case QCamDisplay::FalseColor:
-      colors=falsePalette;
-      break;
+      case QCamDisplay::Gray:
+         colors=greyPalette;
+         break;
+      case QCamDisplay::Negate:
+         colors=negatePalette;
+         break;
+      case QCamDisplay::FalseColor:
+         colors=falsePalette;
+         break;
    }
    /* Set palette */
    SDL_SetPalette(GreyImage_, SDL_LOGPAL|SDL_PHYSPAL, colors, 0, 256);
 }
 
 void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
-
+   // get the frame
    QCamFrame frame=camClient_.yuvFrame();
+
+   // sanity check
    if (frame.empty() || screen_==NULL) {
       return;
    }
+
+   // SDL clip zone
    SDL_Rect dst;
    dst.x = 0;
    dst.y = 0;
@@ -175,6 +194,7 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
    XSync(QPaintDevice::x11Display(), FALSE);
 #endif
 
+   // build SDL surfaces depending on video mode
    ImageMode mode=frame.getMode();
    if (displayMode_ != QCamDisplay::Color) {
       mode=GreyFrame;
@@ -224,12 +244,15 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
       yuv444_to_bgr32(RGBImage_->w,RGBImage_->h,frame.Y(),frame.U(),frame.V(),(unsigned char*)RGBImage_->pixels);
       SDL_BlitSurface(RGBImage_, NULL, screen_, &dst);
    }
+   // display the frame
    SDL_Flip(screen_);
 
+   // draw the other QTWidget's stuff
    painter_->begin(this);
    painter_->setPen(*pen_);
    painter_->setClipRegion(ev->region());
    annotate(*painter_);
    painter_->end();
 }
+
 #endif
