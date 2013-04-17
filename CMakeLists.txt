@@ -460,7 +460,7 @@ if(DEBIAN_FOUND)
    endif(AVIFILE_FOUND)
 
    if(SDL_FOUND)
-      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libsdl1.2debian")
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libsdl1.2debian, libX11-6")
    endif(SDL_FOUND)
 
    # other recommended dependencies (not needed for build)
@@ -541,7 +541,7 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       endif(AVIFILE_FOUND)
 
       if(SDL_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64sdl1.2debian")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64sdl1.2_0, lib64x11_6")
       endif(SDL_FOUND)
 
    else(ARCHITECURE STREQUAL "x86_64")
@@ -571,11 +571,11 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       endif(LIBAV_FOUND)
 
       if(AVIFILE_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7")
       endif(AVIFILE_FOUND)
 
       if(SDL_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libsdl1.2debian")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libSDL1.2_0, libx11-6")
       endif(SDL_FOUND)
 
    endif(ARCHITECURE STREQUAL "x86_64")
