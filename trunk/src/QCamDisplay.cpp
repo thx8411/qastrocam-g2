@@ -220,7 +220,7 @@ QCamDisplayImpl::QCamDisplayImpl(QCamDisplay & camClient,QWidget * parent):
    QToolTip::add(this,tr("double click to move center of the reticul"));
    painter_ = new QPainter();
    pen_=new QPen();
-   pen_->setStyle(Qt::DotLine);
+   pen_->setStyle(Qt::SolidLine);
    pen_->setColor(QColor(QCamDisplay::defaultLum_,0,0));
    displayMode_=QCamDisplay::Color;
 }

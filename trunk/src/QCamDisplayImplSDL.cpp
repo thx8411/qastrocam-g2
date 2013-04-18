@@ -40,6 +40,12 @@ MA  02110-1301, USA.
 #endif
 
 
+// helper for SDL drawing
+// CAUTION : it doesn't check borders !!
+void SDL_DrawPixel(uint32_t* surface, int w, int h, int x, int y, uint32_t color) {
+   surface[x+y*w*2]=color;
+}
+
 QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent):
          QCamDisplayImpl(camClient,parent),
          screen_(NULL),
@@ -241,15 +247,49 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
       yuv444_to_bgr32(RGBImage_->w,RGBImage_->h,frame.Y(),frame.U(),frame.V(),(unsigned char*)RGBImage_->pixels);
       SDL_BlitSurface(RGBImage_, NULL, screen_, &dst);
    }
+
+   // annotates the surface
+   // we annotate directly on the SDL surface. When Qt draws on the
+   // surface, we get frame flickering
+   uint32_t* plan;
+   plan=(uint32_t*)screen_->pixels;
+   SDL_LockSurface(screen_);
+
+   if (crossCenterX_== -1000) {
+      crossCenterX_=size().width()/2;
+      crossCenterY_=size().height()/2;
+   }
+
+   switch (currentCross_) {
+      // cross display
+      case QCamDisplay::Cross:
+         for(int i=0; i<width(); i++)
+            SDL_DrawPixel(plan, width(), height(), i, crossCenterY_, 0x00FF0000);
+         for(int j=0; j<height(); j++)
+            SDL_DrawPixel(plan, width(), height(), crossCenterX_, j, 0x00FF0000);
+         break;
+      // sight display
+      case QCamDisplay::Circle: {
+            int step=height()/10;
+            int max=min(min(crossCenterX_,width()-crossCenterX_),min(crossCenterY_,height()-crossCenterY_));
+            for (int i=step/2;i<max;i+=step) {
+               //painter.drawEllipse(crossCenterX_-i,crossCenterY_-i,2*i,2*i);
+            }
+         }
+         break;
+   }
+
+   SDL_UnlockSurface(screen_);
+
    // display the frame
    SDL_Flip(screen_);
 
    // draw the other QTWidget's stuff
-   painter_->begin(this);
-   painter_->setPen(*pen_);
-   painter_->setClipRegion(ev->region());
-   annotate(*painter_);
-   painter_->end();
+   //painter_->begin(this);
+   //painter_->setPen(*pen_);
+   //painter_->setClipRegion(ev->region());
+   //annotate(*painter_);
+   //painter_->end();
 }
 
 #endif
