@@ -168,6 +168,11 @@ int main(int argc, char ** argv) {
    string settingsFileName(".qastrocam-g2.conf");
    string logFileName("/dev/null");
 
+#if HAVE_SDL_H
+   // SDL init
+   //SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO);
+#endif
+
    // getting the kernel version
    utsname kernel_info;
    int kernel_version,kernel_revision,kernel_patch;
@@ -738,6 +743,10 @@ int main(int argc, char ** argv) {
    delete cam;
 
    QCamUtilities::removeWidget(&mainWindow);
+
+#if HAVE_SDL_H
+   SDL_Quit();
+#endif
 
 #ifndef _DEBUG_
    fclose(logFile);
