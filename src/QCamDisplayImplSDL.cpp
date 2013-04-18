@@ -40,49 +40,89 @@ MA  02110-1301, USA.
 #endif
 
 //
-// helper for SDL drawing
+// helpers for SDL drawing
 //
 
+// sets a pixel
 // CAUTION : it doesn't check borders !!
-void SDL_DrawPixel(SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B)
-{
-    Uint32 color = SDL_MapRGB(screen->format, R, G, B);
+void SDL_DrawPixel(SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B) {
+   Uint32 color = SDL_MapRGB(screen->format, R, G, B);
 
-    switch (screen->format->BytesPerPixel) {
-        case 1: { /* Assuming 8-bpp */
+   switch (screen->format->BytesPerPixel) {
+      case 1: { /* Assuming 8-bpp */
             Uint8 *bufp;
-
             bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
             *bufp = color;
-        }
-        break;
+         }
+         break;
 
-        case 2: { /* Probably 15-bpp or 16-bpp */
+      case 2: { /* Probably 15-bpp or 16-bpp */
             Uint16 *bufp;
-
             bufp = (Uint16 *)screen->pixels + y*screen->pitch/2 + x;
             *bufp = color;
-        }
-        break;
+         }
+         break;
 
-        case 3: { /* Slow 24-bpp mode, usually not used */
+      case 3: { /* Slow 24-bpp mode, usually not used */
             Uint8 *bufp;
-
             bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
             *(bufp+screen->format->Rshift/8) = R;
             *(bufp+screen->format->Gshift/8) = G;
             *(bufp+screen->format->Bshift/8) = B;
-        }
-        break;
+         }
+         break;
 
-        case 4: { /* Probably 32-bpp */
+      case 4: { /* Probably 32-bpp */
             Uint32 *bufp;
-
             bufp = (Uint32 *)screen->pixels + y*screen->pitch/4 + x;
             *bufp = color;
-        }
-        break;
-    }
+          }
+          break;
+   }
+}
+
+// draws a circle
+void SDL_DrawCircle(SDL_Surface *surface, int n_cx, int n_cy, int radius, Uint8 R, Uint8 G, Uint8 B) {
+
+   // if the first pixel in the screen is represented by (0,0) (which is in sdl)
+   // remember that the beginning of the circle is not in the middle of the pixel
+   // but to the left-top from it:
+
+   double error = (double)-radius;
+   double x = (double)radius -0.5;
+   double y = (double)0.5;
+   double cx = n_cx - 0.5;
+   double cy = n_cy - 0.5;
+
+   while (x >= y) {
+      SDL_DrawPixel(surface, (int)(cx + x), (int)(cy + y), R, G, B);
+      SDL_DrawPixel(surface, (int)(cx + y), (int)(cy + x), R, G, B);
+
+      if (x != 0) {
+         SDL_DrawPixel(surface, (int)(cx - x), (int)(cy + y), R, G, B);
+         SDL_DrawPixel(surface, (int)(cx + y), (int)(cy - x), R, G, B);
+      }
+
+      if (y != 0) {
+         SDL_DrawPixel(surface, (int)(cx + x), (int)(cy - y), R, G, B);
+         SDL_DrawPixel(surface, (int)(cx - y), (int)(cy + x), R, G, B);
+      }
+
+      if (x != 0 && y != 0) {
+         SDL_DrawPixel(surface, (int)(cx - x), (int)(cy - y), R, G, B);
+         SDL_DrawPixel(surface, (int)(cx - y), (int)(cy - x), R, G, B);
+      }
+
+      error += y;
+      ++y;
+      error += y;
+
+      if (error >= 0) {
+         --x;
+         error -= x;
+         error -= x;
+      }
+   }
 }
 
 //
@@ -297,15 +337,17 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
    // annotates the surface
    // we annotate directly on the SDL surface. When Qt draws on the
    // surface, we get frame flickering
-   uint32_t* plan;
-   plan=(uint32_t*)screen_->pixels;
+
+   // lock the surface
    SDL_LockSurface(screen_);
 
+   // default center
    if (crossCenterX_== -1000) {
       crossCenterX_=size().width()/2;
       crossCenterY_=size().height()/2;
    }
 
+   // draw the sight
    switch (currentCross_) {
       // cross display
       case QCamDisplay::Cross:
@@ -318,13 +360,13 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
       case QCamDisplay::Circle: {
             int step=height()/10;
             int max=min(min(crossCenterX_,width()-crossCenterX_),min(crossCenterY_,height()-crossCenterY_));
-            for (int i=step/2;i<max;i+=step) {
-               //painter.drawEllipse(crossCenterX_-i,crossCenterY_-i,2*i,2*i);
-            }
+            for (int i=step/2;i<max;i+=step)
+               SDL_DrawCircle(screen_, crossCenterX_, crossCenterY_, i, (Uint8)crossLum_, 0x00, 0x00);
          }
          break;
    }
 
+   // unlock the surface
    SDL_UnlockSurface(screen_);
 
    // display the frame
