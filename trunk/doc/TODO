@@ -4,7 +4,6 @@ TODO IN NEXT RELEASE
 
 5.0 - migrates to QT4
 
-   * fix : snapshots formats list (BMP and PNG missing)
    * fix : the night vision mode
    * fix : ugly widgets
    * migrates : remove the all the Q3Support classes

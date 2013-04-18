@@ -3,11 +3,14 @@
   - builds now with cmake
   - useless philips cameras controls on kernel 3 disabled
   - forbidden libjpeg detection during build added
+  - forbidden libX11 detection during build added
   - some source code cleaning
   - libcfitsio not required any more for building, just recommended
   - libjpeg not required any more for building, just recommended
   - libusb not required any more for building, just recommended
   - uses libav by default for avi output, instead of libavifile
+  - migration from Qt3 to Qt4
+  - better image quality for png snapshots
 
 4.9
 

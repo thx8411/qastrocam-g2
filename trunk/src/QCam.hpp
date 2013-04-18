@@ -23,15 +23,16 @@ MA  02110-1301, USA.
 #ifndef _QCam_hpp_
 #define _QCam_hpp_
 
-#include <Qt/qobject.h>
-#include <Qt3Support/q3vgroupbox.h>
-//Added by qt3to4:
-#include <Qt/qlabel.h>
-
-#include <string>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <string>
 #include <map>
+
+#include <Qt/qobject.h>
+#include <Qt/qlabel.h>
+
+#include <Qt3Support/q3vgroupbox.h>
 
 #include "QCamFrame.hpp"
 #include "Vector2D.hpp"
