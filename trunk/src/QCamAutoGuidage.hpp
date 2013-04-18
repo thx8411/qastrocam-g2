@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -27,6 +27,10 @@ MA  02110-1301, USA.
 #include <Qt/qsound.h>
 #include <Qt/qlabel.h>
 #include <Qt/qcheckbox.h>
+
+#if HAVE_SDL_H
+#include <SDL.h>
+#endif
 
 class QCam;
 class QCamFindShift;
@@ -109,7 +113,16 @@ private:
    QCam * cam_;
    QCamFindShift * tracker_;
    // alert sound
+#if HAVE_SDL_H
+   friend void SDL_AudioCallback(void *userdata, Uint8 *stream, int len);
+   SDL_AudioSpec reqSpec;
+   SDL_AudioSpec wavSpec;
+   Uint32 wavLength;
+   Uint32 wavPosition;
+   Uint8* wavBuffer;
+#else
    QSound* bell_;
+#endif /* HAVE_SDL_H */
    // current state
    bool isGuiding_;
    // tracking state

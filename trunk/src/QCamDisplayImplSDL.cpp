@@ -172,8 +172,9 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
    // init attribute
    crossLum_=0xFF;
 
-   // init SDL
-   SDL_Init(SDL_INIT_VIDEO);
+   // SDL init
+   if(SDL_WasInit(SDL_INIT_VIDEO)==0)
+      SDL_InitSubSystem(SDL_INIT_VIDEO);
 }
 
 QCamDisplayImplSDL::~QCamDisplayImplSDL() {
@@ -186,14 +187,14 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
    SDL_FreeSurface(GreyImage_);
    SDL_FreeSurface(RGBImage_);
    SDL_FreeSurface(screen_);
-   SDL_QuitSubSystem(SDL_INIT_VIDEO);
-   SDL_Quit();
 
    // unset SDL_WINDOWID trick
    unsetenv("SDL_WINDOWID");
 
    // SDL is off
    QCamDisplay::SDL_on_=false;
+
+   SDL_QuitSubSystem(SDL_INIT_VIDEO);
 }
 
 void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {

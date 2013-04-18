@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,29 +19,56 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <Qt/qlabel.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qmessagebox.h>
+
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3vbox.h>
 
 #include "QCamAutoGuidage.hpp"
-
 #include "QCam.hpp"
 #include "QTelescope.hpp"
 #include "QCamFindShift.hpp"
 #include "QCamUtilities.hpp"
-//Added by qt3to4:
-#include <Qt/qlabel.h>
 #include "SettingsBackup.hpp"
 
-#include <Qt/qpushbutton.h>
-#include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3vbox.h>
-#include <Qt/qmessagebox.h>
 
 extern settingsBackup settings;
+
+//
+// SDL audio callback
+//
+
+// TODO :
+// ugly, but close to work...
+void SDL_AudioCallback(void* userdata, Uint8* stream, int len) {
+   if(userdata) {
+      QCamAutoGuidage* parent=(QCamAutoGuidage*)userdata;
+      if(len < (parent->wavLength - parent->wavPosition)) {
+         memcpy(stream, parent->wavBuffer + parent->wavPosition, len);
+         parent->wavPosition += len;
+      } else {
+         memcpy(stream, parent->wavBuffer + parent->wavPosition, len - (parent->wavLength - parent->wavPosition));
+         memcpy(stream + (len - (parent->wavLength - parent->wavPosition)), parent->wavBuffer, len - (len - (parent->wavLength - parent->wavPosition)));
+         parent->wavPosition =  len - (len - (parent->wavLength - parent->wavPosition));
+      }
+   }
+}
+
+//
+// class implementation
+//
 
 QCamAutoGuidage::QCamAutoGuidage() {
    cam_=NULL;
    tracker_=NULL;
    telescope_=NULL;
+#if HAVE_SDL_H
+#else
    bell_=NULL;
+   wavPosition=0;
+#endif /* HAVE_SDL_H */
    alert_=NULL;
    isTracking_=false;
    isGuiding_=false;
@@ -50,8 +77,29 @@ QCamAutoGuidage::QCamAutoGuidage() {
    soundAlertOn_=false;
    bellOn_=false;
 
+#if HAVE_SDL_H
+   static char variable[64];
+   sprintf(variable,"SDL_AUDIODRIVER=alsa");
+   putenv(variable);
+
+   if(SDL_WasInit(SDL_INIT_AUDIO)==0)
+      SDL_InitSubSystem(SDL_INIT_AUDIO);
+
+   reqSpec.freq=22050;
+   reqSpec.format=AUDIO_U16SYS;
+   reqSpec.channels=1;
+   reqSpec.samples=4096;
+   reqSpec.callback=SDL_AudioCallback;
+   reqSpec.userdata=(void*)this;
+
+   SDL_OpenAudio(&reqSpec,NULL);
+
+   if(SDL_LoadWAV("/usr/share/qastrocam-g2/sounds/bell.wav", &wavSpec, &wavBuffer, &wavLength)==NULL) {
+      cerr << "Unable to load the bell.wav sound." << endl;
+   }
+#else
    // test for audio device
-   if(!(QSound::available()||QSound::isAvailable())) {
+   if(!QSound::isAvailable()) {
       cout << "Unable to use the audio device" << endl;
       if(!settings.haveKey("GUI_NAS_MESSAGE")||(settings.haveKey("GUI_NAS_MESSAGE")&&(strcasecmp(settings.getKey("GUI_NAS_MESSAGE"),"yes")==0))) {
          QMessageBox::information(0,"Qastrocam-g2","Unable to reach the audio device\nNo sound alerts for guiding.\nIs NAS installed ?");
@@ -62,12 +110,20 @@ QCamAutoGuidage::QCamAutoGuidage() {
       bell_=new QSound("/usr/share/qastrocam-g2/sounds/bell.wav");
       bell_->setLoops(-1);
    }
+#endif /* HAVE_SDL_H */
 }
 
 QCamAutoGuidage::~QCamAutoGuidage() {
+#if HAVE_SDL_H
+   SDL_PauseAudio(1);
+   SDL_CloseAudio();
+   SDL_FreeWAV(wavBuffer);
+   SDL_QuitSubSystem(SDL_INIT_AUDIO);
+#else
    // release the bell (really needed ?)
    if(bell_)
       delete bell_;
+#endif
 }
 
 void QCamAutoGuidage::setCam(QCam * cam) {
@@ -201,19 +257,23 @@ void QCamAutoGuidage::moveAlt(MoveDir NSmove) {
 
 void QCamAutoGuidage::startAlert(int d) {
    if(!(alertAscOn_||alertAltOn_)) {
+
       // visual alert
       if(alert_) {
          alert_->setText("Star Lost !");
          alert_->setPaletteBackgroundColor(Qt::red);
       }
+
       // sound alert
-      if(bell_) {
-         if(soundAlertOn_) {
-            cerr << "bell" << endl;
+      if(soundAlertOn_) {
+#if HAVE_SDL_H
+         SDL_PauseAudio(0);
+#else
+         if(bell_)
             bell_->play();
+#endif /* HAVE_SDL_H */
          }
          bellOn_=true;
-      }
    }
 
    if(d==GUIDE_ASC)
@@ -229,6 +289,7 @@ void QCamAutoGuidage::stopAlert(int d) {
       alertAltOn_=false;
 
    if(!(alertAscOn_||alertAltOn_)) {
+
       // visual alert
       if(alert_) {
          if(isGuiding_) {
@@ -241,29 +302,39 @@ void QCamAutoGuidage::stopAlert(int d) {
       }
 
       // sound alert
-      if(bell_) {
-         if(soundAlertOn_) {
-            cerr << "bell stop" << endl;
+      if(soundAlertOn_) {
+#if HAVE_SDL_H
+         SDL_PauseAudio(1);
+#else
+         if(bell_)
             bell_->stop();
-         }
-         bellOn_=false;
+#endif /* HAVE_SDL_H */
       }
+      bellOn_=false;
    }
 }
 
 void QCamAutoGuidage::soundAlertChanged(bool s) {
    if(s) {
       soundAlertOn_=true;
-      if(bell_&&bellOn_) {
-         cerr << "bell" << endl;
-         bell_->play();
+      if(bellOn_) {
+#if HAVE_SDL_H
+         SDL_PauseAudio(0);
+#else
+         if(bell_)
+            bell_->play();
+#endif /* HAVE_SDL_H */
       }
       settings.setKey("GUIDE_ALERT","yes");
    } else {
       soundAlertOn_=false;
-      if(bell_&&bellOn_) {
-         cerr << "bell stop" << endl;
-         bell_->stop();
+      if(bellOn_) {
+#if HAVE_SDL_H
+         SDL_PauseAudio(1);
+#else
+         if(bell_)
+            bell_->stop();
+#endif /* HAVE_SDL_H */
       }
       settings.setKey("GUIDE_ALERT","no");
    }
