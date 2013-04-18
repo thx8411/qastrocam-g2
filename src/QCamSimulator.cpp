@@ -133,10 +133,10 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    delete tmpIcon;
 
    // connexions
-   connect(raLeft_,SIGNAL(stateChanged(int)),this,SLOT(moveLeft(int)));
-   connect(raRight_,SIGNAL(stateChanged(int)),this,SLOT(moveRight(int)));
-   connect(decUp_,SIGNAL(stateChanged(int)),this,SLOT(moveUp(int)));
-   connect(decDown_,SIGNAL(stateChanged(int)),this,SLOT(moveDown(int)));
+   connect(raLeft_,SIGNAL(toggled(bool)),this,SLOT(moveLeft(bool)));
+   connect(raRight_,SIGNAL(toggled(bool)),this,SLOT(moveRight(bool)));
+   connect(decUp_,SIGNAL(toggled(bool)),this,SLOT(moveUp(bool)));
+   connect(decDown_,SIGNAL(toggled(bool)),this,SLOT(moveDown(bool)));
    connect(raSpeedSlider_,SIGNAL(valueChange(int)),this,SLOT(setRaSpeed(int)));
    connect(decSpeedSlider_,SIGNAL(valueChange(int)),this,SLOT(setDecSpeed(int)));
    connect(raStop_,SIGNAL(pressed()),this,SLOT(stopRa()));
@@ -209,16 +209,16 @@ bool QCamSimulator::updateFrame() {
 // private slots
 //
 
-void QCamSimulator::moveLeft(int s) {
-   if(s==QCheckBox::On) {
+void QCamSimulator::moveLeft(bool s) {
+   if(s) {
       raRight_->setOn(false);
       raMove_=_SIMULATOR_LEFT_;
    } else
       raMove_=_SIMULATOR_STOP_;
 }
 
-void QCamSimulator::moveRight(int s) {
-   if(s==QCheckBox::On) {
+void QCamSimulator::moveRight(bool s) {
+   if(s) {
       raLeft_->setOn(false);
       raMove_=_SIMULATOR_RIGHT_;
    } else
@@ -231,16 +231,16 @@ void QCamSimulator::stopRa() {
    raMove_=_SIMULATOR_STOP_;
 }
 
-void QCamSimulator::moveUp(int s) {
-   if(s==QCheckBox::On) {
+void QCamSimulator::moveUp(bool s) {
+   if(s) {
       decDown_->setOn(false);
       decMove_=_SIMULATOR_UP_;
    } else
       decMove_=_SIMULATOR_STOP_;
 }
 
-void QCamSimulator::moveDown(int s) {
-   if(s==QCheckBox::On) {
+void QCamSimulator::moveDown(bool s) {
+   if(s) {
       decUp_->setOn(false);
       decMove_=_SIMULATOR_DOWN_;
    } else
