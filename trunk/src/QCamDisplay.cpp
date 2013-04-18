@@ -265,6 +265,7 @@ void QCamDisplayImpl::resizeEvent(QResizeEvent*ev) {
 }
 
 void QCamDisplayImpl::setCrossLum(int l) {
+   crossLum_=l;
    pen_->setColor(QColor(l,0,0));
 }
 
