@@ -19,25 +19,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCam.hpp"
-
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+
 #include <iostream>
 
-//Added by qt3to4:
 #include <Qt/qpixmap.h>
 #include <Qt/qimagewriter.h>
-#include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3hgroupbox.h>
-#include <Qt3Support/q3vbox.h>
-
 #include <Qt/qpushbutton.h>
 #include <Qt/qlabel.h>
 #include <Qt/qlcdnumber.h>
@@ -47,15 +40,22 @@ MA  02110-1301, USA.
 #include <Qt/qicon.h>
 #include <Qt/qstringlist.h>
 
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+
+#include "QCam.hpp"
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
 #include "QCamUtilities.hpp"
 #include "QDirectoryChooser.hpp"
 #include "QCamDisplay.hpp"
 #include "CamHistogram.hpp"
-#include <stdio.h>
 #include "QGridBox.hpp"
 #include "FitsImage.hpp"
+#include "QCamMovieSeq.hpp"
+#include "QCamMovieSer.hpp"
+#include "SettingsBackup.hpp"
 
 #if HAVE_AVIFILE_H
 #include "QCamMovieAvi_avifile.hpp"
@@ -65,12 +65,6 @@ MA  02110-1301, USA.
 #if HAVE_LIBAV_H
 #include "QCamMovieAvi_libav.hpp"
 #endif
-
-#include "QCamMovieSeq.hpp"
-#include "QCamMovieSer.hpp"
-#include "SettingsBackup.hpp"
-
-#include <sys/time.h>
 
 // external settings
 extern settingsBackup settings;
@@ -137,7 +131,7 @@ bool QCam::saveFrame(const string& file) const {
    writeProperties(file+".properties");
 
    string fileFormat=getSaveFormat();
-   int quality=-1;
+   int quality=100;
 #if HAVE_CFITSIO_H
    if (fileFormat=="FITS") {
       FitsImageCFITSIO fit(file+".fit");
@@ -347,8 +341,12 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    if(hideButtons_)
       buttonBox_->hide();
 
-   //QStringList formatList=QImage::outputFormatList();
    QList<QByteArray> formatList=QImageWriter::supportedImageFormats();
+
+   //for(QList<QByteArray>::iterator it = formatList.begin(); it != formatList.end(); it++) {
+   //   QString format(*it);
+   //   cerr << format.toStdString().c_str() << endl;
+   //}
 
    int size=0;
    int tmpTab[16];
@@ -382,13 +380,13 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    tmpTab[size]=size;
    ++size;
    // adds bmp format
-   if(formatList.findIndex("BMP")!=-1) {
+   if(formatList.indexOf("bmp")!=-1) {
       fileFormatList_[size]="BMP";
       tmpTab[size]=size;
       ++size;
    }
    // adds png format
-   if(formatList.findIndex("PNG")!=-1) {
+   if(formatList.indexOf("png")!=-1) {
       fileFormatList_[size]="PNG";
       tmpTab[size]=size;
       ++size;
