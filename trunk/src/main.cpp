@@ -20,6 +20,17 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 #include <stdlib.h>
+// for kernel detection
+#include <sys/utsname.h>
+
+#include <Qt/qpixmap.h>
+#include <Qt/qapplication.h>
+#include <Qt/qtabwidget.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qmessagebox.h>
+#include <Qt/qpalette.h>
+
+#include <Qt3Support/q3vbox.h>
 
 #include "QCamSlider.hpp"
 #include "QCamSimulator.hpp"
@@ -29,8 +40,6 @@ MA  02110-1301, USA.
 #include "qastrocamVersion.hpp"
 #include "QCamAdd.hpp"
 #include "QCamMax.hpp"
-//Added by qt3to4:
-#include <Qt/qpixmap.h>
 #include "FrameMirror.hpp"
 #include "FrameBias.hpp"
 #include "FrameDark.hpp"
@@ -39,14 +48,6 @@ MA  02110-1301, USA.
 #include "FrameId.hpp"
 #include "QCamTrans.hpp"
 #include "CamHistogram.hpp"
-
-#include <Qt/qapplication.h>
-#include <Qt/qtabwidget.h>
-#include <Qt3Support/q3vbox.h>
-#include <Qt/qpushbutton.h>
-#include <Qt/qmessagebox.h>
-#include <Qt/qpalette.h>
-
 #include "QCamUtilities.hpp"
 #include "QCamFindShift_barycentre.hpp"
 #include "QCamFindShift_hotSpot.hpp"
@@ -72,8 +73,6 @@ MA  02110-1301, USA.
 #include "QCamStack.hpp"
 #include "QCamFocus.hpp"
 
-// for kernel detection
-#include <sys/utsname.h>
 
 // options strings
 const string AccumOptionString("-a");
@@ -446,6 +445,7 @@ int main(int argc, char ** argv) {
    // std palette
    QPalette tmpPalette=mainWindow.palette();
    QCamUtilities::stdPalette=&tmpPalette;
+
    // night palette
    QColorGroup nightActive;
    QColorGroup nightDisabled;

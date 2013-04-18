@@ -19,15 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCamUtilities.hpp"
-
-#include <Qt/qpixmap.h>
-#include <Qt/qwidget.h>
-#include <Qt/qtranslator.h>
-#include <Qt/qtextcodec.h>
-#include <Qt/qapplication.h>
-
 #include <libgen.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -35,6 +26,14 @@ MA  02110-1301, USA.
 #include <dirent.h>
 
 #include <iostream>
+
+#include <Qt/qpixmap.h>
+#include <Qt/qwidget.h>
+#include <Qt/qtranslator.h>
+#include <Qt/qtextcodec.h>
+#include <Qt/qapplication.h>
+
+#include "QCamUtilities.hpp"
 
 string QCamUtilities::basePath_="/usr/share/qastrocam-g2/";
 bool QCamUtilities::useSDL_=false;
@@ -95,7 +94,9 @@ void QCamUtilities::setLocale(QApplication & app) {
 	 app.installTranslator( &translator );
 }
 
+//
 // night vision
+//
 
 void QCamUtilities::registerWidget(QWidget* w) {
    if(nightVision)
