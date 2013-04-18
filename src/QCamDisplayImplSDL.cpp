@@ -129,6 +129,9 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
    setAttribute(Qt::WA_PaintOnScreen);
    setAttribute(Qt::WA_NoSystemBackground);
 
+   // init attribute
+   crossLum_=0xFF;
+
    // init SDL
    SDL_Init(SDL_INIT_VIDEO);
 }
@@ -307,9 +310,9 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
       // cross display
       case QCamDisplay::Cross:
          for(int i=0; i<width(); i++)
-            SDL_DrawPixel(screen_, i, crossCenterY_, 0xFF, 0x00, 0x00);
+            SDL_DrawPixel(screen_, i, crossCenterY_, (Uint8)crossLum_, 0x00, 0x00);
          for(int j=0; j<height(); j++)
-            SDL_DrawPixel(screen_, crossCenterX_, j, 0xFF, 0x00, 0x00);
+            SDL_DrawPixel(screen_, crossCenterX_, j, (Uint8)crossLum_, 0x00, 0x00);
          break;
       // sight display
       case QCamDisplay::Circle: {

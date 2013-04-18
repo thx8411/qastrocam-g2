@@ -122,6 +122,7 @@ protected:
 
    QPainter * painter_;
    QPen * pen_;
+   int crossLum_;
    bool firtsFrameReceived_;
 
    friend class QCamDisplay;
