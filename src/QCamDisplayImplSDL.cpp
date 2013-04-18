@@ -39,12 +39,55 @@ MA  02110-1301, USA.
 #include <X11/Xlib.h>
 #endif
 
-
+//
 // helper for SDL drawing
+//
+
 // CAUTION : it doesn't check borders !!
-void SDL_DrawPixel(uint32_t* surface, int w, int h, int x, int y, uint32_t color) {
-   surface[x+y*w*2]=color;
+void SDL_DrawPixel(SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B)
+{
+    Uint32 color = SDL_MapRGB(screen->format, R, G, B);
+
+    switch (screen->format->BytesPerPixel) {
+        case 1: { /* Assuming 8-bpp */
+            Uint8 *bufp;
+
+            bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
+            *bufp = color;
+        }
+        break;
+
+        case 2: { /* Probably 15-bpp or 16-bpp */
+            Uint16 *bufp;
+
+            bufp = (Uint16 *)screen->pixels + y*screen->pitch/2 + x;
+            *bufp = color;
+        }
+        break;
+
+        case 3: { /* Slow 24-bpp mode, usually not used */
+            Uint8 *bufp;
+
+            bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
+            *(bufp+screen->format->Rshift/8) = R;
+            *(bufp+screen->format->Gshift/8) = G;
+            *(bufp+screen->format->Bshift/8) = B;
+        }
+        break;
+
+        case 4: { /* Probably 32-bpp */
+            Uint32 *bufp;
+
+            bufp = (Uint32 *)screen->pixels + y*screen->pitch/4 + x;
+            *bufp = color;
+        }
+        break;
+    }
 }
+
+//
+// class implementation
+//
 
 QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent):
          QCamDisplayImpl(camClient,parent),
@@ -264,9 +307,9 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
       // cross display
       case QCamDisplay::Cross:
          for(int i=0; i<width(); i++)
-            SDL_DrawPixel(plan, width(), height(), i, crossCenterY_, 0x00FF0000);
+            SDL_DrawPixel(screen_, i, crossCenterY_, 0xFF, 0x00, 0x00);
          for(int j=0; j<height(); j++)
-            SDL_DrawPixel(plan, width(), height(), crossCenterX_, j, 0x00FF0000);
+            SDL_DrawPixel(screen_, crossCenterX_, j, 0xFF, 0x00, 0x00);
          break;
       // sight display
       case QCamDisplay::Circle: {
@@ -283,13 +326,6 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
 
    // display the frame
    SDL_Flip(screen_);
-
-   // draw the other QTWidget's stuff
-   //painter_->begin(this);
-   //painter_->setPen(*pen_);
-   //painter_->setClipRegion(ev->region());
-   //annotate(*painter_);
-   //painter_->end();
 }
 
 #endif
