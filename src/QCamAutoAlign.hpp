@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,10 +23,12 @@ MA  02110-1301, USA.
 #ifndef _QCamAutoAlign_hpp_
 #define _QCamAutoAlign_hpp_
 
+#include <stdio.h>
+
+#include <string>
+
 #include "QCam.hpp"
 #include "ShiftInfo.hpp"
-#include <stdio.h>
-#include <string>
 
 class QPushButton;
 class QCamFindShift;
@@ -34,7 +36,6 @@ class ShiftInfo;
 class QHistogram;
 class QVectorMap;
 class QCamSlider;
-class QFrameDisplay;
 class Q3HGroupBox;
 class QCheckBox;
 
@@ -43,7 +44,6 @@ class QCheckBox;
 */
 class QCamAutoAlign : public QCam {
    Q_OBJECT
-
 public:
    QCamAutoAlign();
    QCamFrame yuvFrame() const;

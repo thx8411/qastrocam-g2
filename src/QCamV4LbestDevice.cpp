@@ -19,12 +19,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <linux/videodev2.h>
+
+#include "SettingsBackup.hpp"
 #include "QCamV4L2.hpp"
 #include "QCamV4L2lx.hpp"
 #include "QCamV4L2fi.hpp"
 #include "QCamOV511.hpp"
 #include "QCamDC60.hpp"
-
 
 #if KERNEL_2
 #include "QCamVestaK2.hpp"
@@ -32,15 +39,6 @@ MA  02110-1301, USA.
 #else
 #include "QCamVestaK3.hpp"
 #endif /* KERNEL_2 */
-
-
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <linux/videodev2.h>
-#include "SettingsBackup.hpp"
 
 #define CRITICAL_INTEGRATION_TIME	5.0
 
@@ -71,7 +69,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
 
       if (strcmp((char*)vcap.card, "AstroEasyCap") == 0) {
          cout << "AstroEasyCap driver detected" << endl;
-         close(cam_fd);
+         ::close(cam_fd);
          camFound = new QCamDC60(devpath);
          return(camFound);
       }
@@ -86,7 +84,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
          IsPhilips = true;
       }
       if (IsPhilips) {
-         close(cam_fd);
+         ::close(cam_fd);
 
          // temp, just act as a standard V4L2 device, to avoid bus error
          // QCamVesta has to be rewritten
@@ -99,7 +97,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
       // looking for an OV511 device
       if (strncmp((char*)vcap.card,"OV511",5)==0) {
          cout << "webcam " << vcap.card << " detected." << endl;
-         close(cam_fd);
+         ::close(cam_fd);
          camFound = new QCamOV511(devpath);
          return(camFound);
       }
@@ -107,7 +105,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
       // looking for an OV519 device
       if (strncmp((char*)vcap.card,"OV519",5)==0) {
          cout << "webcam " << vcap.card << " detected (jpeg mode)." << endl;
-         close(cam_fd);
+         ::close(cam_fd);
          camFound = new QCamOV519(devpath);
          return(camFound);
       }
@@ -131,7 +129,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
       if(res!=0) {
          // size enum not supported, so frame interval certainly not supported
          cout << "using V4L2 generic" << endl;
-         close(cam_fd);
+         ::close(cam_fd);
          camFound= new QCamV4L2(devpath);
          return(camFound);
       }
@@ -183,20 +181,20 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
             // we use frame intervals for lx
             cout << "Using frame intervals for lx mode" << endl;
             // temp
-            close(cam_fd);
+            ::close(cam_fd);
             camFound= new QCamV4L2fi(devpath);
             return(camFound);
          } else {
             // we use generic V4L2
             cout << "using V4L2 generic" << endl;
-            close(cam_fd);
+            ::close(cam_fd);
             camFound= new QCamV4L2lx(devpath);
             return(camFound);
          }
       } else {
          // frame intervals not supported
          cout << "using V4L2 generic" << endl;
-         close(cam_fd);
+         ::close(cam_fd);
          camFound= new QCamV4L2lx(devpath);
          return(camFound);
       }
@@ -205,7 +203,7 @@ QCam * QCamV4L2::openBestDevice(const char * devpath) {
 #if KERNEL_2
    // else using V4L generic
    cout << "Using generic V4L" << endl;
-   close(cam_fd);
+   ::close(cam_fd);
    camFound = new QCamV4L(devpath);
    return(camFound);
 #else
