@@ -6,7 +6,6 @@ TODO IN NEXT RELEASE
 
    * fix : snapshots formats list (BMP and PNG missing)
    * fix : the night vision mode
-   * fix : QPushButton::stateChanged(int) in cam simulator
    * fix : ugly widgets
    * migrates : remove the all the Q3Support classes
    * ...

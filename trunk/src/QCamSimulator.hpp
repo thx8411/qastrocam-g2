@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010   Blaise-Florentin Collin
+Copyright (C) 2010-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -20,11 +20,13 @@ MA  02110-1301, USA.
 #ifndef _QCamSimulator_hpp_
 #define _QCamSimulator_hpp_
 
-#include <Qt/qobject.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <Qt/qobject.h>
 #include <Qt/qlabel.h>
 #include <Qt/qpushbutton.h>
+
 #include "QCamSlider.hpp"
 #include "QCam.hpp"
 
@@ -68,11 +70,11 @@ private:
    QCamSlider* raSpeedSlider_;
    QCamSlider* decSpeedSlider_;
 private slots :
-   void moveLeft(int s);
-   void moveRight(int s);
+   void moveLeft(bool s);
+   void moveRight(bool s);
    void stopRa();
-   void moveUp(int s);
-   void moveDown(int s);
+   void moveUp(bool s);
+   void moveDown(bool s);
    void stopDec();
    void setRaSpeed(int s);
    void setDecSpeed(int s);
