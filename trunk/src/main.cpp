@@ -32,6 +32,10 @@ MA  02110-1301, USA.
 
 #include <Qt3Support/q3vbox.h>
 
+#if HAVE_SDL_H
+#include <SDL.h>
+#endif
+
 #include "QCamSlider.hpp"
 #include "QCamSimulator.hpp"
 #include "QCamQHY5.hpp"

@@ -28,7 +28,9 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qcheckbox.h>
 
-#if HAVE_SDL_H
+#define USE_SDL_AUDIO   0
+
+#if HAVE_SDL_H && USE_SDL_AUDIO
 #include <SDL.h>
 #endif
 
@@ -113,7 +115,7 @@ private:
    QCam * cam_;
    QCamFindShift * tracker_;
    // alert sound
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
    friend void SDL_AudioCallback(void *userdata, Uint8 *stream, int len);
    SDL_AudioSpec reqSpec;
    SDL_AudioSpec wavSpec;

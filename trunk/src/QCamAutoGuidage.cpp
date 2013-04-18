@@ -36,6 +36,8 @@ MA  02110-1301, USA.
 
 extern settingsBackup settings;
 
+
+#if HAVE_SDL_H && USE_SDL_AUDIO
 //
 // SDL audio callback
 //
@@ -55,6 +57,7 @@ void SDL_AudioCallback(void* userdata, Uint8* stream, int len) {
       }
    }
 }
+#endif /* HAVE_SDL_H */
 
 //
 // class implementation
@@ -64,10 +67,10 @@ QCamAutoGuidage::QCamAutoGuidage() {
    cam_=NULL;
    tracker_=NULL;
    telescope_=NULL;
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
+   wavPosition=0;
 #else
    bell_=NULL;
-   wavPosition=0;
 #endif /* HAVE_SDL_H */
    alert_=NULL;
    isTracking_=false;
@@ -77,7 +80,7 @@ QCamAutoGuidage::QCamAutoGuidage() {
    soundAlertOn_=false;
    bellOn_=false;
 
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
    static char variable[64];
    sprintf(variable,"SDL_AUDIODRIVER=alsa");
    putenv(variable);
@@ -114,7 +117,7 @@ QCamAutoGuidage::QCamAutoGuidage() {
 }
 
 QCamAutoGuidage::~QCamAutoGuidage() {
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
    SDL_PauseAudio(1);
    SDL_CloseAudio();
    SDL_FreeWAV(wavBuffer);
@@ -266,7 +269,7 @@ void QCamAutoGuidage::startAlert(int d) {
 
       // sound alert
       if(soundAlertOn_) {
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
          SDL_PauseAudio(0);
 #else
          if(bell_)
@@ -303,7 +306,7 @@ void QCamAutoGuidage::stopAlert(int d) {
 
       // sound alert
       if(soundAlertOn_) {
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
          SDL_PauseAudio(1);
 #else
          if(bell_)
@@ -318,7 +321,7 @@ void QCamAutoGuidage::soundAlertChanged(bool s) {
    if(s) {
       soundAlertOn_=true;
       if(bellOn_) {
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
          SDL_PauseAudio(0);
 #else
          if(bell_)
@@ -329,7 +332,7 @@ void QCamAutoGuidage::soundAlertChanged(bool s) {
    } else {
       soundAlertOn_=false;
       if(bellOn_) {
-#if HAVE_SDL_H
+#if HAVE_SDL_H && USE_SDL_AUDIO
          SDL_PauseAudio(1);
 #else
          if(bell_)
