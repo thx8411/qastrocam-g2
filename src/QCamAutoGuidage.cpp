@@ -89,13 +89,13 @@ QCamAutoGuidage::QCamAutoGuidage() {
       SDL_InitSubSystem(SDL_INIT_AUDIO);
 
    reqSpec.freq=22050;
-   reqSpec.format=AUDIO_U16SYS;
+   reqSpec.format=AUDIO_S16;
    reqSpec.channels=1;
    reqSpec.samples=4096;
    reqSpec.callback=SDL_AudioCallback;
    reqSpec.userdata=(void*)this;
 
-   SDL_OpenAudio(&reqSpec,NULL);
+   SDL_OpenAudio(&reqSpec,&devSpec);
 
    if(SDL_LoadWAV("/usr/share/qastrocam-g2/sounds/bell.wav", &wavSpec, &wavBuffer, &wavLength)==NULL) {
       cerr << "Unable to load the bell.wav sound." << endl;
