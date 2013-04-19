@@ -23,12 +23,14 @@ MA  02110-1301, USA.
 /* only available if have usb */
 #if HAVE_USB_H
 
-#include <Qt/qobject.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <Qt/qslider.h>
 #include <Qt/qlabel.h>
-#include <Qt3Support/q3progressbar.h>
+#include <Qt/qobject.h>
+#include <Qt/qprogressbar.h>
+
 #include "QCamSlider.hpp"
 #include "QCam.hpp"
 #include "QHY5cam.hpp"
@@ -86,7 +88,7 @@ private:
    QCamSlider* gainSliderG2;
    QSlider* exposureSlider;
    QLabel* exposureValue;
-   Q3ProgressBar* progressBar;
+   QProgressBar* progressBar;
    QCheckBox* denoiseBox;
    // exposure tab
    static const int exposureTable[QHY5_EXPOSURE_TABLE_SIZE];

@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,10 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "CamHistogram.hpp"
-#include <iostream>
-
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,15 +26,19 @@ MA  02110-1301, USA.
 #include <unistd.h>
 #include <math.h>
 
+#include <iostream>
+
 #include <Qt/qwidget.h>
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt/qpushbutton.h>
-#include <Qt3Support/q3progressbar.h>
 #include <Qt/qlabel.h>
+#include <Qt/qtooltip.h>
+#include <Qt/qprogressbar.h>
+
+#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hgroupbox.h>
 #include <Qt3Support/q3hbox.h>
-#include <Qt/qtooltip.h>
 
+#include "CamHistogram.hpp"
 #include "QCam.hpp"
 #include "QHistogram.hpp"
 #include "QCamUtilities.hpp"
@@ -78,9 +78,9 @@ CamHistogram::CamHistogram(QCam & theCam) :
 
    seeingGroup_= new Q3HBox(focusGroup_);
    seeingLabel_= new QLabel(tr("Seeing: "),seeingGroup_);
-   seeingLevel_=  new Q3ProgressBar(seeingGroup_);
-   seeingLevel_->setCenterIndicator(true);
-   seeingLevel_->setTotalSteps(100);
+   seeingLevel_=  new QProgressBar(seeingGroup_);
+   seeingLevel_->setMinimum(0);
+   seeingLevel_->setMaximum(100);
    QToolTip::add(seeingLevel_,tr("Shown an evaluation of the seeing by looking how\nthe contrast changes between frames."));
 
    connect(resetFocus_,SIGNAL(pressed()),focusArea_,SLOT(reset()));
@@ -155,7 +155,7 @@ void CamHistogram::newFrame() {
       seeing+=fabs(focusArea_->value(i-5,i+5)-focusArea_->value(i));
    }
    seeing/=maxForSeeing;
-   seeingLevel_->setProgress(100-((((int)(1000*seeing)-1))/10));
+   seeingLevel_->setValue(100-((((int)(1000*seeing)-1))/10));
 }
 
 double CamHistogram::getDistFromNeibourg(int x,int y) const {

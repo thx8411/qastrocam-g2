@@ -27,26 +27,29 @@ MA  02110-1301, USA.
 /* only available for kernel 2 */
 #if KERNEL_2
 
-#include "QCamVestaK2.hpp"
-#include <iostream>
 #include <math.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+
+#include <iostream>
+
 #include <Qt/qradiobutton.h>
-#include <Qt3Support/q3buttongroup.h>
-#include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qlcdnumber.h>
-#include <Qt3Support/q3progressbar.h>
+#include <Qt/qprogressbar.h>
 #include <Qt/qtooltip.h>
-#include <Qt3Support/q3hgroupbox.h>
 #include <Qt/qpushbutton.h>
 #include <Qt/qmessagebox.h>
 #include <Qt/qlineedit.h>
 
+#include <Qt3Support/q3buttongroup.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hbox.h>
+
+#include "QCamVestaK2.hpp"
 #include "QGridBox.hpp"
 #include "QCamSlider.hpp"
 #include "QCamRadioBox.hpp"
@@ -113,7 +116,7 @@ bool QCamVesta::updateFrame() {
       }
       if (QCamV4L2::dropFrame()) {
          skippedFrame_++;
-         exposureTimeLeft_->setProgress(skippedFrame_);
+         exposureTimeLeft_->setValue(skippedFrame_);
          tmp=0;
       }
       return false;
@@ -500,8 +503,11 @@ void QCamVesta::setFrameRateMultiplicateur(int val) {
       stopAccumulation();
    }
    multiplicateur_=val;
-   if (guiBuild()) remoteCTRLexposure_->setDisabled(multiplicateur_>1);
-   if (guiBuild()) exposureTimeLeft_->setTotalSteps(multiplicateur_-1);
+   if (guiBuild()) {
+      remoteCTRLexposure_->setDisabled(multiplicateur_>1);
+      exposureTimeLeft_->setMinimum(0);
+      exposureTimeLeft_->setMaximum(multiplicateur_-1);
+   }
    emit exposureTime(multiplicateur_/(double)getFrameRate());
 }
 
@@ -581,9 +587,8 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
      connect(this,SIGNAL(frameRateMultiplicateurChange(int)),
      remoteCTRLframeRateMultiplicateur_,SLOT(update(int)));
    */
-   exposureTimeLeft_=new Q3ProgressBar(remoteCTRL);
+   exposureTimeLeft_=new QProgressBar(remoteCTRL);
    exposureTimeLeft_->hide();
-   exposureTimeLeft_->setCenterIndicator(true);
    QToolTip::add(exposureTimeLeft_,tr("Integration progress"));
 
    exposureTime_=new QLCDNumber(5,remoteCTRL);

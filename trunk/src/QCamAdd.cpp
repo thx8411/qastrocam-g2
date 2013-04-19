@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,22 +19,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include "QCamAdd.hpp"
-
-#include "QCamSlider.hpp"
+#include <stdlib.h>
+#include <math.h>
 #include <stdio.h>
+
 #include <Qt/qpushbutton.h>
-#include <Qt3Support/q3progressbar.h>
+#include <Qt/qprogressbar.h>
 #include <Qt/qcheckbox.h>
-#include <Qt3Support/q3vgroupbox.h>
-#include <Qt3Support/q3hgroupbox.h>
 #include <Qt/qradiobutton.h>
 #include <Qt/qmessagebox.h>
 #include <Qt/qtooltip.h>
 
-#include <stdlib.h>
-#include <math.h>
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt3Support/q3hgroupbox.h>
 
+#include "QCamSlider.hpp"
+#include "QCamAdd.hpp"
 #include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
 
@@ -613,7 +613,7 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    }
    if (curBuff_ >= numOfActiveBuffers_) {
       numOfActiveBuffers_=curBuff_+1;
-      bufferFill_->setProgress(numOfActiveBuffers_);
+      bufferFill_->setValue(numOfActiveBuffers_);
    }
    newIntegrationBuff_=true;
    newFrameAvaible();
@@ -682,8 +682,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
 
    QToolTip::add(remoteCTRLnumOfActiveBuffer_,tr("Number of frames to stack"));
 
-   bufferFill_= new Q3ProgressBar(accumulationWidget_);
-   bufferFill_->setCenterIndicator(true);
+   bufferFill_= new QProgressBar(accumulationWidget_);
    resetBufferFill_= new QPushButton(tr("reset"),accumulationWidget_);
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(resetBufferFill()));
 
@@ -754,7 +753,8 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
 void QCamAdd::resetBufferFill() {
    curBuff_=0;
    numOfActiveBuffers_=1;
-   bufferFill_->setTotalSteps(numOfActivatedBuffers_);
+   bufferFill_->setMinimum(0);
+   bufferFill_->setMaximum(numOfActivatedBuffers_);
    bufferFill_->reset();
    zeroBuff(size());
 }

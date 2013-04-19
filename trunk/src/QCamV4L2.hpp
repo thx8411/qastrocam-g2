@@ -23,25 +23,25 @@ MA  02110-1301, USA.
 #ifndef _QCamV4L2_hpp_
 #define _QCamV4L2_hpp_
 
-#include <Qt/qobject.h>
-#include <Qt/qimage.h>
-#include <Qt3Support/q3hgroupbox.h>
-#include <Qt/qlineedit.h>
-#include <Qt3Support/q3progressbar.h>
-#include <Qt/qpushbutton.h>
-#include <Qt/qwidget.h>
-#include <Qt3Support/q3vbox.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/videodev2.h>
 
-#if HAVE_JPEG_H
-#include "jmemsrc.hpp"
-#endif
+#include <Qt/qobject.h>
+#include <Qt/qimage.h>
+#include <Qt/qlineedit.h>
+#include <Qt/qpushbutton.h>
+#include <Qt/qwidget.h>
+
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hgroupbox.h>
 
 #include "QCam.hpp"
 #include "SCmod.hpp"
+
+#if HAVE_JPEG_H
+#include "jmemsrc.hpp"
+#endif
 
 class QCamSlider;
 class QSocketNotifier;

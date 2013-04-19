@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,20 +23,19 @@ MA  02110-1301, USA.
 #ifndef _CamHistogram_hpp_
 #define _CamHistogram_hpp_
 
-#include <Qt/qpainter.h>
-#include <Qt/qimage.h>
-//Added by qt3to4:
-#include <Qt/qlabel.h>
-
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <Qt/qpainter.h>
+#include <Qt/qimage.h>
+#include <Qt/qlabel.h>
+#include <Qt/qprogressbar.h>
 
 #include "QCamClient.hpp"
 
 class QPushButton;
 class QWidget;
 class Q3VGroupBox;
-class Q3ProgressBar;
 class QLCDNumber;
 class Q3HBox;
 class Q3HGroupBox;
@@ -66,7 +65,7 @@ private:
    QHistogram * focusArea_;
    Q3HBox * seeingGroup_;
    QLabel * seeingLabel_;
-   Q3ProgressBar * seeingLevel_;
+   QProgressBar * seeingLevel_;
    //QLCDNumber * seeingValue_;
    void init();
    //QCam * cam_;

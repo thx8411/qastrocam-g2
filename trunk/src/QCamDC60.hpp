@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,8 +24,10 @@ MA  02110-1301, USA.
 #include <Qt/qcheckbox.h>
 #include <Qt/qlabel.h>
 #include <Qt/qtimer.h>
+#include <Qt/qprogressbar.h>
 
 #include "QCamV4L2.hpp"
+
 /* enhance QCamV4L2 to handle specifities of the AstroEasyCap device driver. */
 
 class QCamDC60 : public QCamV4L2 {
@@ -47,7 +49,7 @@ private:
    QLabel* lxLabel;
    QLineEdit* lxEntry;
    QPushButton* lxSet;
-   Q3ProgressBar* lxProgress;
+   QProgressBar* lxProgress;
    // extras
    QCheckBox* extraPreamp;
    QCheckBox* extraAntialias;

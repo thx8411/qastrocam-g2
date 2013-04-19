@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,15 +23,17 @@ MA  02110-1301, USA.
 #ifndef _QCamAdd_hpp_
 #define _QCamAdd_hpp_
 
-#include <Qt/qobject.h>
-
-#include "QCam.hpp"
-#include <Qt/qsize.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
+#include <Qt/qobject.h>
+#include <Qt/qsize.h>
+#include <Qt/qprogressbar.h>
+
 #include <Qt3Support/q3buttongroup.h>
+
+#include "QCam.hpp"
 
 #define QCAM_ADD_COLOR
 
@@ -45,7 +47,6 @@ class QImage;
 class Q3HBox;
 class QPushButton;
 class elementaryFrame;
-class Q3ProgressBar;
 class QCamRadioBox;
 class QCamComboBox;
 class QCheckBox;
@@ -116,7 +117,7 @@ class QCamAdd : public QCam {
    Q3ButtonGroup* methodWidget_;
    Q3HGroupBox * accumulationWidget_;
    QCamComboBox *remoteCTRLnumOfActiveBuffer_;
-   Q3ProgressBar * bufferFill_;
+   QProgressBar * bufferFill_;
    QPushButton * resetBufferFill_;
    Q3VGroupBox * displayOptions_;
    QCamSlider *remoteCTRLmaxYvalue_;
