@@ -17,13 +17,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCamV4L2.hpp"
-//Added by qt3to4:
-#include <Qt/qlabel.h>
-#include <iostream>
-#include <sstream>
-
 #include <sys/time.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -33,20 +26,24 @@ MA  02110-1301, USA.
 #include <stdio.h>
 #include <math.h>
 #include <sys/mman.h>
+
+#include <iostream>
+#include <sstream>
 #include <string>
 
+#include <Qt/qlabel.h>
 #include <Qt/qtabwidget.h>
 #include <Qt/qsocketnotifier.h>
 #include <Qt/qtimer.h>
 #include <Qt/qtooltip.h>
 #include <Qt/qmessagebox.h>
 
+#include "QCamV4L2.hpp"
 #include "QCamSlider.hpp"
 #include "yuv.hpp"
 #include "QGridBox.hpp"
 #include "QCamComboBox.hpp"
 #include "SettingsBackup.hpp"
-
 #include "SCmodParPortPPdev.hpp"
 
 #define SIZE_TABLE_SLOTS	32

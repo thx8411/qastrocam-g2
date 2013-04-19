@@ -26,15 +26,15 @@ MA  02110-1301, USA.
 /* only available for kernel 2 */
 #if KERNEL_2
 
-#include <Qt/qobject.h>
-#include <Qt/qimage.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/videodev.h>
 
-#include "pwc-ioctl.h"
+#include <Qt/qobject.h>
+#include <Qt/qimage.h>
+#include <Qt/qprogressbar.h>
 
+#include "pwc-ioctl.h"
 #include "QCamV4L2.hpp"
 
 class QCamSlider;
@@ -42,7 +42,6 @@ class Q3HGroupBox;
 class QCamRadioBox;
 class QLCDNumber;
 class QCheckBox;
-class Q3ProgressBar;
 class QLineEdit;
 class SCmod;
 class SCmodTucLed;
@@ -105,7 +104,7 @@ private:
    enum SCmodType { SCmodNone,SCmodPPort,SCmodLed,SCmodSerial, SCmodPPort2};
    QCamComboBox * SCmodSelector_;
    QLineEdit * longExposureTime_;
-   Q3ProgressBar * exposureTimeLeft_;
+   QProgressBar * exposureTimeLeft_;
    QLCDNumber * exposureTime_;
    int multiplicateur_;
    int skippedFrame_;

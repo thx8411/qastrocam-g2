@@ -24,14 +24,14 @@ MA  02110-1301, USA.
 
 #include <Qt/qmessagebox.h>
 #include <Qt/qtimer.h>
+#include <Qt/qtooltip.h>
+#include <Qt/qlabel.h>
+#include <Qt/qprogressbar.h>
+
 #include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hbox.h>
-#include <Qt/qtooltip.h>
-//Added by qt3to4:
-#include <Qt/qlabel.h>
 
 #include "SettingsBackup.hpp"
-
 #include "QCamQHY5.hpp"
 
 // camera's pixel rate (per ms)
@@ -258,7 +258,8 @@ void QCamQHY5::setExposure() {
    // disable progress bar for short time
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progressBar->setEnabled(true);
-      progressBar->setTotalSteps((int)((float)(frameExposure_+30)/PROGRESS_TIME));
+      progressBar->setMinimum(0);
+      progressBar->setMaximum((int)((float)(frameExposure_+30)/PROGRESS_TIME));
       progressBar->reset();
       progress_=0;
    } else {
@@ -398,10 +399,11 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    // progress bar
    Q3HBox* progressBox=new Q3HBox(settingsBox);
    QLabel* label3=new QLabel(QString("Progress"),progressBox);
-   progressBar=new Q3ProgressBar(progressBox);
+   progressBar=new QProgressBar(progressBox);
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progressBar->setEnabled(true);
-      progressBar->setTotalSteps((int)((float)(frameExposure_+30)/PROGRESS_TIME));
+      progressBar->setMinimum(0);
+      progressBar->setMaximum((int)((float)(frameExposure_+30)/PROGRESS_TIME));
       progress_=0;
    } else {
       progressBar->setEnabled(false);
@@ -447,7 +449,7 @@ void QCamQHY5::progressUpdate() {
    // update progress bar (only if needed)
    if(frameExposure_>(3*PROGRESS_TIME)) {
       progress_++;
-      progressBar->setProgress(progress_);
+      progressBar->setValue(progress_);
    }
 }
 

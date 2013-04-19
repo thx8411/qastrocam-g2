@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,11 +19,10 @@ MA  02110-1301, USA.
 
 #include <math.h>
 
-#include "SCmodParPortPPdev.hpp"
-
-#include "QCamV4L2lx.hpp"
-//Added by qt3to4:
 #include <Qt/qlabel.h>
+
+#include "SCmodParPortPPdev.hpp"
+#include "QCamV4L2lx.hpp"
 
 QCamV4L2lx::QCamV4L2lx(const char * devpath):
    QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
@@ -54,7 +53,7 @@ bool QCamV4L2lx::updateFrame() {
          // we still drop frames
          lxFrameCounter++;
          // update progress bar
-         if(lxBar) lxBar->setProgress(lxFrameCounter);
+         if(lxBar) lxBar->setValue(lxFrameCounter);
          dropFrame();
          return(true);
       } else if (lxFramesToDrop==1) {
@@ -62,7 +61,7 @@ bool QCamV4L2lx::updateFrame() {
          lxFramesToDrop--;
          lxFrameCounter++;
          // update progress bar
-         if(lxBar) lxBar->setProgress(lxFrameCounter);
+         if(lxBar) lxBar->setValue(lxFrameCounter);
          dropFrame();
          return(true);
       } else {
@@ -104,9 +103,9 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
    // progress bar
-   lxBar=new Q3ProgressBar(remoteCTRLlx);
-   lxBar->setCenterIndicator(true);
-   lxBar->setTotalSteps(0);
+   lxBar=new QProgressBar(remoteCTRLlx);
+   lxBar->setMinimum(0);
+   lxBar->setMaximum(0);
    lxBar->reset();
    // blink
    padding=new QWidget(remoteCTRL);
@@ -141,7 +140,8 @@ void QCamV4L2lx::setLXmode(int value) {
          lxTime->setText(QString().sprintf("%4.2f",1.0/(double)frameRate_));
          lxTime->setEnabled(false);
          lxSet->setEnabled(false);
-         lxBar->setTotalSteps(0);
+         lxBar->setMinimum(0);
+         lxBar->setMaximum(0);
          lxBar->reset();
          setProperty("FrameRateSecond",frameRate_);
          lxEnabled=false;
@@ -196,7 +196,8 @@ void QCamV4L2lx::setLXtime() {
    val=round(val*5)/5;
    lxDelay=val;
    // progress bar update
-   lxBar->setTotalSteps((int)(lxDelay*frameRate_));
+   lxBar->setMinimum(0);
+   lxBar->setMaximum((int)(lxDelay*frameRate_));
    lxBar->reset();
    // lx time update
    lxTimer->stop();

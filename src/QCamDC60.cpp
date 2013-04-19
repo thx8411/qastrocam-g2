@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,13 +23,11 @@ MA  02110-1301, USA.
 #include <linux/videodev2.h>
 
 #include <Qt/qtooltip.h>
-
-#include "QCamDC60.hpp"
-//Added by qt3to4:
 #include <Qt/qlabel.h>
+#include <Qt/qprogressbar.h>
 
 #include "dc60_private_ioctls.h"
-
+#include "QCamDC60.hpp"
 #include "SettingsBackup.hpp"
 
 extern settingsBackup settings;
@@ -120,7 +118,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    lxSet->setMaximumWidth(32);
    lxSet->setEnabled(false);
    QWidget* padding3=new QWidget(lxCtrl);
-   lxProgress= new Q3ProgressBar(lxCtrl);
+   lxProgress= new QProgressBar(lxCtrl);
    lxProgress->setEnabled(false);
    QWidget* padding4=new QWidget(lxCtrl);
 
@@ -214,7 +212,8 @@ void QCamDC60::lxSetPushed() {
    val=round(val);
    lxDelay=val;
    // progress bar update
-   lxProgress->setTotalSteps((int)(lxDelay));
+   lxProgress->setMinimum(0);
+   lxProgress->setMaximum((int)(lxDelay));
 
    lxProgress->reset();
    // progress timer
@@ -227,12 +226,12 @@ void QCamDC60::lxSetPushed() {
 }
 
 void QCamDC60::lxProgressStep() {
-   if(progress==lxProgress->totalSteps()) {
+   if(progress==lxProgress->maximum()) {
       progress=0;
       lxProgress->reset();
    } else {
       progress++;
-      lxProgress->setProgress(progress);
+      lxProgress->setValue(progress);
    }
 }
 
