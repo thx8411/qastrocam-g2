@@ -42,19 +42,15 @@ extern settingsBackup settings;
 // SDL audio callback
 //
 
-// TODO :
-// ugly, but close to work...
 void SDL_AudioCallback(void* userdata, Uint8* stream, int len) {
    if(userdata) {
+      memset(stream, 0, len);
       QCamAutoGuidage* parent=(QCamAutoGuidage*)userdata;
       if(len < (parent->wavLength - parent->wavPosition)) {
          memcpy(stream, parent->wavBuffer + parent->wavPosition, len);
          parent->wavPosition += len;
-      } else {
-         memcpy(stream, parent->wavBuffer + parent->wavPosition, len - (parent->wavLength - parent->wavPosition));
-         memcpy(stream + (len - (parent->wavLength - parent->wavPosition)), parent->wavBuffer, len - (len - (parent->wavLength - parent->wavPosition)));
-         parent->wavPosition =  len - (len - (parent->wavLength - parent->wavPosition));
-      }
+      } else
+         parent->wavPosition = 0;
    }
 }
 #endif /* HAVE_SDL_H */
