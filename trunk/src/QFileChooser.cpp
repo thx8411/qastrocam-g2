@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2012   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -17,18 +17,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include "QFileChooser.hpp"
-
-#include <Qt3Support/q3filedialog.h>
-#include <Qt/qtooltip.h>
-//Added by qt3to4:
-#include <Qt/qpixmap.h>
-
 #include <stdlib.h>
 #include <unistd.h>
 
 #include <iostream>
 
+#include <Qt/qfiledialog.h>
+#include <Qt/qtooltip.h>
+#include <Qt/qpixmap.h>
+
+#include "QFileChooser.hpp"
 #include "QCamUtilities.hpp"
 
 using namespace std;
@@ -56,7 +54,7 @@ void QFileChooser::selectFile() {
 
    // device dialog box
    if(fileType==DEVICE_FILE) {
-      newFile  = Q3FileDialog::getOpenFileName(
+      newFile  = QFileDialog::getOpenFileName(
          "/dev/",
          "Devices (*)",
          this,
@@ -64,14 +62,14 @@ void QFileChooser::selectFile() {
          "Choose a device");
    // file dialog box
    } else if(fileType==REGULAR_FILE) {
-      newFile  = Q3FileDialog::getSaveFileName(
+      newFile  = QFileDialog::getSaveFileName(
          get_current_dir_name(),
          "Files (*)",
          this,
          "get a file name",
          "Choose a file");
    } else {
-      newFile  = Q3FileDialog::getOpenFileName(
+      newFile  = QFileDialog::getOpenFileName(
          get_current_dir_name(),
          "Pictures (*.bmp *.BMP *.png *.PNG)",
          this,
