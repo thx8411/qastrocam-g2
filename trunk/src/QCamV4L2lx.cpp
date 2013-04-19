@@ -105,7 +105,7 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
    // progress bar
    lxBar=new QProgressBar(remoteCTRLlx);
    lxBar->setMinimum(0);
-   lxBar->setMaximum(0);
+   lxBar->setMaximum(1);
    lxBar->reset();
    // blink
    padding=new QWidget(remoteCTRL);
@@ -141,7 +141,7 @@ void QCamV4L2lx::setLXmode(int value) {
          lxTime->setEnabled(false);
          lxSet->setEnabled(false);
          lxBar->setMinimum(0);
-         lxBar->setMaximum(0);
+         lxBar->setMaximum(1);
          lxBar->reset();
          setProperty("FrameRateSecond",frameRate_);
          lxEnabled=false;
