@@ -28,7 +28,7 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qcheckbox.h>
 
-#define USE_SDL_AUDIO   0
+#define USE_SDL_AUDIO   1
 
 #if HAVE_SDL_H && USE_SDL_AUDIO
 #include <SDL.h>
@@ -118,6 +118,7 @@ private:
 #if HAVE_SDL_H && USE_SDL_AUDIO
    friend void SDL_AudioCallback(void *userdata, Uint8 *stream, int len);
    SDL_AudioSpec reqSpec;
+   SDL_AudioSpec devSpec;
    SDL_AudioSpec wavSpec;
    Uint32 wavLength;
    Uint32 wavPosition;
