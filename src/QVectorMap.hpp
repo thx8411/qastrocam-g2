@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,10 +24,12 @@ MA  02110-1301, USA.
 #define _QVectorMap_hpp_
 
 #include <Qt/qwidget.h>
-#include <Qt3Support/q3valuelist.h>
-//Added by qt3to4:
 #include <QtGui/QPaintEvent>
+
+#include <Qt/qlist.h>
+
 #include "Vector2D.hpp"
+
 class QPaintEvent;
 
 enum DrawMode {
@@ -48,7 +50,7 @@ public:
 protected:
    void paintEvent( QPaintEvent * ev);
 private:
-   typedef Q3ValueList<Vector2D> VectorList;
+   typedef QList<Vector2D> VectorList;
    VectorList vectorList_;
    DrawMode mode_;
    int scale_;
