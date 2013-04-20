@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,10 +24,11 @@ MA  02110-1301, USA.
 #define _QCamSilder_h_
 
 #include <Qt/qobject.h>
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qlabel.h>
 #include <Qt/qcheckbox.h>
 #include <Qt/qslider.h>
+
+#include <Qt3Support/q3hbox.h>
 
 class QCamSlider : public Q3HBox {
    Q_OBJECT
