@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,12 +19,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <iostream>
+
+#include <Qt/qlabel.h>
+#include <Qt/qframe.h>
 
 #include "QCamSlider.hpp"
-//Added by qt3to4:
-#include <Qt/qlabel.h>
-#include <Qt3Support/Q3Frame>
-#include <iostream>
 
 QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
                        QWidget * parent,int minVal, int maxVal,
@@ -60,7 +60,7 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
    connect(slider_,SIGNAL(valueChanged(int)),this,SLOT(sliderMoveKey(int)));
    connect(slider_,SIGNAL(sliderReleased()),this,SLOT(sliderRelease()));
    valueLabel_= new QLabel(this);
-   valueLabel_->setFrameShadow(Q3Frame::Sunken);
+   valueLabel_->setFrameShadow(QFrame::Sunken);
    valueLabel_->show();
    lastEmit_=maxVal+1;
 
