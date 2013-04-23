@@ -178,14 +178,14 @@ void QCamDisplay::camConnected() {
    widget_->firtsFrameReceived_=false;
    widget_->resize(cam().size());
    widget_->updateGeometry();
-   if(yuvFrame_.size().height()>DISPLAY_BASE_HEIGHT)
+   if(cam().size().height()>DISPLAY_BASE_HEIGHT)
       h=DISPLAY_BASE_HEIGHT;
    else
-      h=yuvFrame_.size().height();
-   if(yuvFrame_.size().width()>DISPLAY_BASE_WIDTH)
+      h=cam().size().height();
+   if(cam().size().width()>DISPLAY_BASE_WIDTH)
       w=DISPLAY_BASE_WIDTH;
    else
-      w=yuvFrame_.size().width();
+      w=cam().size().width();
    view_->setMinimumSize(QSize(w+16,h+16));
    view_->updateGeometry();
    mainWidget_->adjustSize();
