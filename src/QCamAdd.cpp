@@ -29,6 +29,7 @@ MA  02110-1301, USA.
 #include <Qt/qradiobutton.h>
 #include <Qt/qmessagebox.h>
 #include <Qt/qtooltip.h>
+#include <Qt/qboxlayout.h>
 
 #include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hgroupbox.h>
@@ -661,20 +662,35 @@ void QCamAdd::setMinYvalue(int val) {
 QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
+   //
    // method gui
-   methodWidget_ = new Q3ButtonGroup(3,Qt::Horizontal,tr("Method"), remoteCTRL);
-   QRadioButton* frameSum= new QRadioButton(tr("Sum"),methodWidget_);
-   QRadioButton* frameAverage= new QRadioButton(tr("Average"),methodWidget_);
-   QRadioButton* frameMedian= new QRadioButton(tr("Median"),methodWidget_);
-   methodWidget_->setButton(0);
-   methodWidget_->setMaximumHeight(52);
-   connect(methodWidget_,SIGNAL(clicked(int)),this,SLOT(methodChanged(int)));
+   //
+   methodWidget_ =new QGroupBox(tr("Method"), remoteCTRL);
+   QHBoxLayout* methodWidget_layout=new QHBoxLayout;
+
+   frameSum=new QRadioButton(tr("Sum"),methodWidget_);
+   frameAverage=new QRadioButton(tr("Average"),methodWidget_);
+   frameMedian=new QRadioButton(tr("Median"),methodWidget_);
+
+   methodWidget_layout->addWidget(frameSum);
+   methodWidget_layout->addWidget(frameAverage);
+   methodWidget_layout->addWidget(frameMedian);
+   methodWidget_->setLayout(methodWidget_layout);
+
+   frameSum->setChecked(true);
+
+   connect(frameSum,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
+   connect(frameAverage,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
+   connect(frameMedian,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
+
    QToolTip::add(frameSum,tr("Adds the frames in live"));
    QToolTip::add(frameAverage,tr("Produce a 'mean' frame for calibration"));
    QToolTip::add(frameMedian,tr("Produce a 'median' frame for calibration\n(uses a huge amount of memory)"));
 
+   //
+   // accumulation gui
+   //
    accumulationWidget_ = new Q3HGroupBox(tr("Num of Buffers"),remoteCTRL);
-   accumulationWidget_->setMaximumHeight(56);
    int ActiveBufferList[]={4,8,16,32,64,128,256};
    remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,7,ActiveBufferList,NULL);
    connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
@@ -690,7 +706,6 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QToolTip::add(resetBufferFill_,tr("Resets the frame stack"));
 
    displayOptions_=new Q3VGroupBox(tr("Display Options"),remoteCTRL);
-   displayOptions_->setMaximumHeight(192);
    remoteCTRLmaxYvalue_=new QCamSlider(tr("max Lum."),true,displayOptions_,
                                        2,numOfBuffers_*255);
    remoteCTRLminYvalue_=new QCamSlider(tr("min Lum."),true,displayOptions_,
@@ -725,15 +740,11 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    invDisplayButton_->show();
    displayOptions_->show();
 
-   connect(this,SIGNAL(maxYValueChange(int)),
-           remoteCTRLmaxYvalue_,SLOT(setValue(int)));
-   connect(remoteCTRLmaxYvalue_,SIGNAL(valueChange(int)),
-           this,SLOT(setMaxYvalue(int)));
+   connect(this,SIGNAL(maxYValueChange(int)),remoteCTRLmaxYvalue_,SLOT(setValue(int)));
+   connect(remoteCTRLmaxYvalue_,SIGNAL(valueChange(int)),this,SLOT(setMaxYvalue(int)));
 
-   connect(this,SIGNAL(minYValueChange(int)),
-           remoteCTRLminYvalue_,SLOT(setValue(int)));
-   connect(remoteCTRLminYvalue_,SIGNAL(valueChange(int)),
-           this,SLOT(setMinYvalue(int)));
+   connect(this,SIGNAL(minYValueChange(int)),remoteCTRLminYvalue_,SLOT(setValue(int)));
+   connect(remoteCTRLminYvalue_,SIGNAL(valueChange(int)),this,SLOT(setMinYvalue(int)));
 
    //remoteCTRLnumOfActiveBuffer_->setCurrentItem(4);
 
@@ -796,12 +807,18 @@ void QCamAdd::modeDisplay(int val) {
 }
 
 // method change slot
-void QCamAdd::methodChanged(int b) {
-   method_=b;
+void QCamAdd::methodChanged(bool b) {
+   if(frameSum->isChecked())
+      method_=QCAM_ADD_ADD;
+   else if(frameAverage->isChecked())
+      method_=QCAM_ADD_AVERAGE;
+   else if(frameMedian->isChecked())
+      method_=QCAM_ADD_MEDIAN;
    allocBuff(cam_->size());
    resetBufferFill();
    if(method_!=0)
       displayOptions_->setEnabled(false);
    else
       displayOptions_->setEnabled(true);
+
 }
