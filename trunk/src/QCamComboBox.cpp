@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,14 +19,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCamComboBox.hpp"
-#include <Qt/qradiobutton.h>
-#include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3buttongroup.h>
-#include <iostream>
 #include <stdlib.h>
 #include <string.h>
+
+#include <iostream>
+
+#include "QCamComboBox.hpp"
 
 using namespace std;
 
