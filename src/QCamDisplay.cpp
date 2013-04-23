@@ -44,11 +44,20 @@ MA  02110-1301, USA.
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
+// default minimum display size
+#define	DISPLAY_BASE_WIDTH	352
+#define	DISPLAY_BASE_HEIGHT	288
+
 const int QCamDisplay::defaultLum_=255;
 
 #if HAVE_SDL_H
 bool QCamDisplay::SDL_on_=false;
 #endif
+
+
+//
+// class QCamDisplay
+//
 
 QCamDisplay::QCamDisplay(QWidget * parent) :
    QCamClient(),
@@ -57,9 +66,9 @@ QCamDisplay::QCamDisplay(QWidget * parent) :
 }
 
 QCamDisplay::~QCamDisplay() {
-   view_->hide();
+   mainWidget_->hide();
 
-   QCamUtilities::removeWidget(view_);
+   QCamUtilities::removeWidget(mainWidget_);
 
    delete widget_;
 }
@@ -68,7 +77,6 @@ QCamDisplay::QCamDisplay(QCam &theCam,QWidget * parent) :
    QCamClient(theCam),
    yuvFrame_() {
    commonInit(parent);
-   //widget_->resize(theCam.size());
    setCaption();
 }
 
@@ -129,36 +137,36 @@ void QCamDisplay::commonInit(QWidget * parent) {
    crossLumSlider_->setValue(QCamDisplay::defaultLum_);
 
    QSizePolicy policy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-   //policy.setHorStretch(100);
-   //policy.setVerStretch(100);
    widget_->setSizePolicy(policy);
 
-   view_ = new Q3ScrollView(parent);
-   view_->setResizePolicy(Q3ScrollView::AutoOne);
-   view_->addChild(mainWidget_);
+   view_ = new QScrollArea(mainWidget_);
+   view_->setWidgetResizable(FALSE);
+   view_->setAlignment(Qt::AlignCenter);
+   view_->setWidget(widget_);
 
-   QCamUtilities::setQastrocamIcon(view_);
-   QCamUtilities::registerWidget(view_);
+   QCamUtilities::setQastrocamIcon(mainWidget_);
+   QCamUtilities::registerWidget(mainWidget_);
 
-   view_->show();
+   mainWidget_->show();
 }
 
 void QCamDisplay::newFrame() {
    yuvFrame_=cam().yuvFrame();
-   if (yuvFrame_.size() != widget_->size()) {
-      QSize viewSize;
-      //widget_->setMinimumSize(yuvFrame_.size());
-      //widget_->setMaximumSize(yuvFrame_.size());
-      //cout << "newFrame resize()\n";
+   if(yuvFrame_.size() != widget_->size()) {
+      int h,w;
       widget_->resize(yuvFrame_.size());
       widget_->updateGeometry();
-      crossButton_->updateGeometry();
+      if(yuvFrame_.size().height()>DISPLAY_BASE_HEIGHT)
+         h=DISPLAY_BASE_HEIGHT;
+      else
+         h=yuvFrame_.size().height();
+      if(yuvFrame_.size().width()>DISPLAY_BASE_WIDTH)
+         w=DISPLAY_BASE_WIDTH;
+      else
+         w=yuvFrame_.size().width();
+      view_->setMinimumSize(QSize(w+16,h+16));
+      view_->updateGeometry();
       mainWidget_->adjustSize();
-      view_->adjustSize();
-      viewSize=mainWidget_->sizeHint();
-      viewSize=QSize(viewSize.width()+view_->horizontalScrollBar()->sizeHint().width(),viewSize.height()+view_->verticalScrollBar()->sizeHint().height());
-      //view_->setGeometry(0,0,viewSize.width(),viewSize.height());
-      view_->setMaximumSize(viewSize);
    } else {
       widget_->firtsFrameReceived_=true;
    }
@@ -166,23 +174,26 @@ void QCamDisplay::newFrame() {
 }
 
 void QCamDisplay::camConnected() {
-   QSize viewSize;
-   //cout << "connected cam : "<< cam().size().width() <<"x"<<cam().size().height()<<"\n";
+   int h,w;
    widget_->firtsFrameReceived_=false;
    widget_->resize(cam().size());
    widget_->updateGeometry();
-   crossButton_->updateGeometry();
+   if(yuvFrame_.size().height()>DISPLAY_BASE_HEIGHT)
+      h=DISPLAY_BASE_HEIGHT;
+   else
+      h=yuvFrame_.size().height();
+   if(yuvFrame_.size().width()>DISPLAY_BASE_WIDTH)
+      w=DISPLAY_BASE_WIDTH;
+   else
+      w=yuvFrame_.size().width();
+   view_->setMinimumSize(QSize(w+16,h+16));
+   view_->updateGeometry();
    mainWidget_->adjustSize();
-   view_->adjustSize();
-   viewSize=mainWidget_->sizeHint();
-   viewSize=QSize(viewSize.width()+view_->horizontalScrollBar()->sizeHint().width(),viewSize.height()+view_->verticalScrollBar()->sizeHint().height());
-   //view_->setGeometry(0,0,viewSize.width(),viewSize.height());
-   view_->setMaximumSize(viewSize);
    setCaption();
 }
 
 QWidget & QCamDisplay::widget() {
-   return *view_;
+   return *mainWidget_;
 }
 
 void QCamDisplay::setDisplayMode(DisplayMode mode) {
@@ -211,6 +222,11 @@ void QCamDisplay::setCrossLum(int l) {
    crossLum_=l;
    widget_->setCrossLum(l);
 }
+
+
+//
+// class QCamDisplayImpl
+//
 
 QCamDisplayImpl::QCamDisplayImpl(QCamDisplay & camClient,QWidget * parent):
    QWidget(parent), camClient_(camClient) {
@@ -252,13 +268,7 @@ void QCamDisplayImpl::setCross(   QCamDisplay::CrossType cross) {
 }
 
 void QCamDisplayImpl::resizeEvent(QResizeEvent*ev) {
-   if (camClient_.isConnected() &&
-        firtsFrameReceived_ ) {
-      //cout << "resize display "<<size().width()<<"x"<<size().height()<<"\n";
-      //cout << "old size was:"<<ev->oldSize().width()<<"x"<<ev->oldSize().height()<<"\n";
-            //cout << "camsize "<< camClient_.cam().size().width()<<"x"<< camClient_.cam().size().height()<<"\n";
-      //resize(camClient_.cam().size());
-      //crossCenterY_=crossCenterX_=-1000;
+   if (camClient_.isConnected() && firtsFrameReceived_ ) {
       if (size()!=camClient_.cam().size())
          resize(camClient_.cam().size());
    }
@@ -269,9 +279,11 @@ void QCamDisplayImpl::setCrossLum(int l) {
    pen_->setColor(QColor(l,0,0));
 }
 
-/*
- * QT
- */
+
+//
+// class QCamDisplayImplQT
+//
+
 QCamDisplayImplQT::QCamDisplayImplQT(QCamDisplay & camClient,QWidget * parent):
    QCamDisplayImpl(camClient,parent) {
    setWindowFlags(Qt::WNoAutoErase);

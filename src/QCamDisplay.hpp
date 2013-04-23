@@ -24,16 +24,14 @@ MA  02110-1301, USA.
 #define _QCamDisplay_hpp_
 
 #include <Qt/qwidget.h>
-#include <Qt3Support/q3scrollview.h>
+#include <Qt/qlabel.h>
+#include <Qt/qscrollarea.h>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QResizeEvent>
 
 #include "QCamClient.hpp"
 #include "QCamFrame.hpp"
-//Added by qt3to4:
-#include <QtGui/QResizeEvent>
-#include <Qt/qlabel.h>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPaintEvent>
-
 
 class QCam;
 class QPainter;
@@ -80,7 +78,7 @@ protected slots:
 private:
    void setCaption();
    Q3VBox * mainWidget_;
-   Q3ScrollView * view_;
+   QScrollArea * view_;
    QCamDisplayImpl * widget_;
    Q3HBox * buttonsContainer_;
    QLabel * crossLabel_;
