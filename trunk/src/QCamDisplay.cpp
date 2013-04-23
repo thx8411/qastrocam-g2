@@ -45,8 +45,8 @@ MA  02110-1301, USA.
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
 // default minimum display size
-#define	DISPLAY_BASE_WIDTH	352
-#define	DISPLAY_BASE_HEIGHT	288
+#define	DISPLAY_BASE_WIDTH	480
+#define	DISPLAY_BASE_HEIGHT	360
 
 const int QCamDisplay::defaultLum_=255;
 
