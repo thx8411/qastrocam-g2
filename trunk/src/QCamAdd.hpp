@@ -30,8 +30,8 @@ MA  02110-1301, USA.
 #include <Qt/qobject.h>
 #include <Qt/qsize.h>
 #include <Qt/qprogressbar.h>
-
-#include <Qt3Support/q3buttongroup.h>
+#include <Qt/qgroupbox.h>
+#include <Qt/qradiobutton.h>
 
 #include "QCam.hpp"
 
@@ -114,7 +114,11 @@ class QCamAdd : public QCam {
                   int & maxCrValue,
                   const bool adding);
    /* for remote control */
-   Q3ButtonGroup* methodWidget_;
+   QGroupBox* methodWidget_;
+   QRadioButton* frameSum;
+   QRadioButton* frameAverage;
+   QRadioButton* frameMedian;
+
    Q3HGroupBox * accumulationWidget_;
    QCamComboBox *remoteCTRLnumOfActiveBuffer_;
    QProgressBar * bufferFill_;
@@ -155,7 +159,7 @@ public slots:
    void minYValueChange(int);
  private slots:
    void addNewFrame();
-   void methodChanged(int b);
+   void methodChanged(bool b);
 };
 
 #endif
