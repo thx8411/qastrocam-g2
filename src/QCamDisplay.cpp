@@ -139,23 +139,32 @@ void QCamDisplay::commonInit(QWidget * parent) {
    QSizePolicy policy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    widget_->setSizePolicy(policy);
 
+   // scroll area
    view_ = new QScrollArea(mainWidget_);
+   // frames aren't resisable
    view_->setWidgetResizable(FALSE);
+   // center the frame
    view_->setAlignment(Qt::AlignCenter);
+   // frames are in the scroll area
    view_->setWidget(widget_);
 
+   // registering widget for night vision mode
    QCamUtilities::setQastrocamIcon(mainWidget_);
    QCamUtilities::registerWidget(mainWidget_);
 
+   // display
    mainWidget_->show();
 }
 
 void QCamDisplay::newFrame() {
    yuvFrame_=cam().yuvFrame();
+   // size changed ?
    if(yuvFrame_.size() != widget_->size()) {
       int h,w;
+      // resize the frame and informs parents
       widget_->resize(yuvFrame_.size());
       widget_->updateGeometry();
+      // size is limited (screen can be small)
       if(yuvFrame_.size().height()>DISPLAY_BASE_HEIGHT)
          h=DISPLAY_BASE_HEIGHT;
       else
@@ -164,8 +173,13 @@ void QCamDisplay::newFrame() {
          w=DISPLAY_BASE_WIDTH;
       else
          w=yuvFrame_.size().width();
+      // update the scroll area
       view_->setMinimumSize(QSize(w+16,h+16));
+      // center the scroll if needed
+      view_->ensureVisible(yuvFrame_.size().width()/2,yuvFrame_.size().height()/2,w/2,h/2);
+      // informs parents
       view_->updateGeometry();
+      // adjust parent's size
       mainWidget_->adjustSize();
    } else {
       widget_->firtsFrameReceived_=true;
@@ -176,8 +190,10 @@ void QCamDisplay::newFrame() {
 void QCamDisplay::camConnected() {
    int h,w;
    widget_->firtsFrameReceived_=false;
+   // update the frame and informs parents
    widget_->resize(cam().size());
    widget_->updateGeometry();
+   //  size is limited (screen can be small)
    if(cam().size().height()>DISPLAY_BASE_HEIGHT)
       h=DISPLAY_BASE_HEIGHT;
    else
@@ -186,9 +202,15 @@ void QCamDisplay::camConnected() {
       w=DISPLAY_BASE_WIDTH;
    else
       w=cam().size().width();
+   // update the scroll area
    view_->setMinimumSize(QSize(w+16,h+16));
+   // center the frame if needed
+   view_->ensureVisible(cam().size().width()/2,cam().size().height()/2,w/2,h/2);
+   // informs parents
    view_->updateGeometry();
+   // adjuste parent's size
    mainWidget_->adjustSize();
+
    setCaption();
 }
 
