@@ -311,7 +311,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    remoteCTRL_->setSizePolicy(sizePolicyMin);
 
    buttonBox_= new QGridBox(remoteCTRL_,Qt::Vertical,2);
-   buttonBox_->setMaximumHeight(32);
 
    displayFramesButton_ = new QPushButton("display",buttonBox_);
    QToolTip::add(displayFramesButton_,"display frames");
@@ -419,12 +418,10 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    }
 
    Q3VGroupBox * saveGroup = new Q3VGroupBox("Save Images",remoteCTRL_);
-   saveGroup->setMaximumHeight(158);
    buttons_=new Q3HBox(saveGroup);
 
    new QLabel("Prefix:",buttons_);
    fileNameW_ = new  QLineEdit(buttons_);
-   //fileNameW_->setMaxLength(10);
    fileNameW_->setText(captureFile_.c_str());
    connect(fileNameW_,SIGNAL(textChanged(const QString&)),
            this,SLOT(setCaptureFile(const QString&)));
