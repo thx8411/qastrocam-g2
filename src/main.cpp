@@ -418,6 +418,7 @@ int main(int argc, char ** argv) {
 
    // QT app settings
    QApplication app(argc,argv);
+   QApplication::setStyle("Cleanlooks");
    QCamUtilities::setLocale(app);
    appPointer=&app;
 
