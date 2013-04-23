@@ -36,6 +36,7 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
    label_=new QLabel(labelTxt_,this);
    if (needCheckBox) {
       checkBox_=new QCheckBox(this);
+      checkBox_->setChecked(true);
       checkBox_->show();
       connect(checkBox_,SIGNAL(toggled(bool)),this,SLOT(buttonToggled(bool)));
       noSliderMove_=noSliderMove;
