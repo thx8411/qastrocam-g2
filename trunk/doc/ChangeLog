@@ -12,6 +12,7 @@
   - migration from Qt3 to Qt4
   - better image quality for png snapshots
   - use SDL for sound alert by default
+  - better frame display management
 
 4.9
 
