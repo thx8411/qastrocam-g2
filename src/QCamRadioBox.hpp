@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,17 +23,16 @@ MA  02110-1301, USA.
 #ifndef _QCamRadioBox_hpp_
 #define _QCamRadioBox_hpp_
 
-#include <Qt3Support/q3vgroupbox.h>
+#include <Qt/qgroupbox.h>
+#include <Qt/qgridlayout.h>
+#include <Qt/qboxlayout.h>
 
 class QRadioButton;
-class Q3VGroupBox;
-class Q3ButtonGroup;
-class Q3HBox;
 
 /** Handle some radiobox buttons in a
     QButtonGroup.
 */
-class QCamRadioBox: public Q3VGroupBox {
+class QCamRadioBox: public QGroupBox {
    Q_OBJECT
 public:
    QCamRadioBox(const char * label /** label of the box */,
@@ -41,7 +40,7 @@ public:
                 int numOfbutton /** num of buttons */,
                 int valueList[] /** value assossiated to the button by signal change() */,
                 const char *  labelList[]=NULL /** labels of the buttons */,
-                int maxPerRow=100 /** max number of checkbox by row */);
+                int maxPerRow=10 /** max number of checkbox by row */);
    ~QCamRadioBox();
    int value() const { return currentValue_; }
 public slots:
@@ -55,11 +54,12 @@ signals:
     */
    void change(int value);
 protected slots:
-   void buttonClicked(int id);
+   void buttonClicked(bool d);
 private:
-   Q3ButtonGroup *bg_;
-   Q3HBox ** rowTable_;
-   QRadioButton **  buttonTable_;
+   QGridLayout* rowTable_;
+   QVBoxLayout* globalLayout_;
+   QGroupBox* bg_;
+   QRadioButton**  buttonTable_;
    int * valueList_;
    int numOfButton_;
    int currentValue_;

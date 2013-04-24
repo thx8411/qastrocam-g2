@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,13 +19,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <math.h>
 
 #include "QCamTrans.hpp"
 #include "QCam.hpp"
 #include "FrameAlgo.hpp"
 #include "QCamRadioBox.hpp"
-
-#include <math.h>
 
 QCamTrans::QCamTrans():
    cam_(NULL),
@@ -123,11 +122,8 @@ QWidget * QCamTrans::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
    int modeTable[]={Off,Copy,On};
    const char * modeLabel[]={"Off","Copy","On"};
-   QCamRadioBox * modeWidget
-      =new QCamRadioBox("Mode",
-                        remoteCTRL,
-                        3,modeTable,
-                        modeLabel,3);
+   QCamRadioBox * modeWidget=new QCamRadioBox("Mode",remoteCTRL,
+                        3,modeTable,modeLabel,3);
    connect(this,SIGNAL(modeChanged(int)),modeWidget,SLOT(update(int)));
    connect(modeWidget,SIGNAL(change(int)),this,SLOT(mode(int)));
    emit(modeChanged(mode_));
