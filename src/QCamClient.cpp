@@ -21,12 +21,11 @@ MA  02110-1301, USA.
 
 #include <Qt/qpushbutton.h>
 #include <Qt/qtooltip.h>
+#include <Qt/qpixmap.h>
 
 #include "QCamClient.hpp"
 #include "QCam.hpp"
 #include "QCamUtilities.hpp"
-//Added by qt3to4:
-#include <Qt/qpixmap.h>
 
 QCamClient::QCamClient(): cam_(NULL) {
    paused_=true;
@@ -79,12 +78,15 @@ void QCamClient::resume() {
 
 QWidget * QCamClient::buildGUI(QWidget *parent) {
    QPixmap* tmpIcon;
-   QPushButton * pauseCapture_=new QPushButton("pause",parent);
+   QPushButton * pauseCapture_=new QPushButton(parent);
    QToolTip::add(pauseCapture_,"Suspend the current capture");
    pauseCapture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   if(tmpIcon!=NULL) pauseCapture_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      pauseCapture_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      pauseCapture_->setText("Pause");
    connect(pauseCapture_,SIGNAL(toggled(bool)),this,SLOT(disable(bool)));
    return parent;
 }

@@ -36,15 +36,18 @@ MA  02110-1301, USA.
 using namespace std;
 
 QDirectoryChooser::QDirectoryChooser(QWidget * parent):
-   QPushButton("path...",parent) {
+   QPushButton(parent) {
    QPixmap* tmpIcon;
    char * curDir=get_current_dir_name();
    connect(this,SIGNAL(pressed()),this,SLOT(selectDirectory()));
    setDirectory(curDir);
    free(curDir);
    tmpIcon=QCamUtilities::getIcon("choose_directory.png");
-   if(tmpIcon!=NULL) setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      setText("Path...");
 }
 
 QDirectoryChooser::~QDirectoryChooser() {

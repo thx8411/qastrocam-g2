@@ -442,13 +442,14 @@ int main(int argc, char ** argv) {
    caption+=" ";
    caption+=qastroCamVersion;
    mainWindow.setCaption(caption);
-   QPushButton quit("quit",&mainWindow,"Quit");
+   QPushButton quit(&mainWindow);
    QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
    tmpIcon=QCamUtilities::getIcon("exit.png");
    if(tmpIcon) {
       quit.setPixmap(*tmpIcon);
       delete tmpIcon;
-   }
+   } else
+      quit.setText("Quit");
    app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
 

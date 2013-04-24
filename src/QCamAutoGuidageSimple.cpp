@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2012 Blaise-Florentin Collin
+Copyright (C) 2009-2013 Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,18 +19,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCamAutoGuidageSimple.hpp"
-//Added by qt3to4:
-#include <Qt/qpixmap.h>
-
 #include <iostream>
 
-#include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3vbox.h>
+#include <Qt/qpixmap.h>
 #include <Qt/qpushbutton.h>
 #include <Qt/qcheckbox.h>
 
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3vbox.h>
+
+#include "QCamAutoGuidageSimple.hpp"
 #include "QTelescope.hpp"
 #include "QCam.hpp"
 #include "ShiftInfo.hpp"
@@ -79,8 +77,11 @@ maxShift_(this)
 
    QPixmap* tmpIcon;
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
-   delete(tmpIcon);
+   if(tmpIcon!=NULL) {
+      arrow_.setPixmap(*tmpIcon);
+      delete(tmpIcon);
+   } else
+      arrow_.setText("Pause");
 
    label_.setMinimumWidth(30);
 }
@@ -138,27 +139,45 @@ void TrackingControl::setMoveDir(MoveDir move) {
    switch(move) {
    case MovedNorth:
       tmpIcon=QCamUtilities::getIcon("up.png");
-      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
+      if(tmpIcon!=NULL) {
+         arrow_.setPixmap(*tmpIcon);
+         delete(tmpIcon);
+      } else
+         arrow_.setText("North");
       break;
    case MovedSouth:
       tmpIcon=QCamUtilities::getIcon("down.png");
-      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
+      if(tmpIcon!=NULL) {
+         arrow_.setPixmap(*tmpIcon);
+         delete(tmpIcon);
+      } else
+         arrow_.setText("South");
       break;
    case MovedEast:
       tmpIcon=QCamUtilities::getIcon("left.png");
-      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
+      if(tmpIcon!=NULL) {
+         arrow_.setPixmap(*tmpIcon);
+         delete(tmpIcon);
+      } else
+         arrow_.setText("West");
       break;
    case MovedWest:
       tmpIcon=QCamUtilities::getIcon("right.png");
-      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
+      if(tmpIcon!=NULL) {
+         arrow_.setPixmap(*tmpIcon);
+         delete(tmpIcon);
+      } else
+         arrow_.setText("East");
       break;
    case NotMoved:
       tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-      if(tmpIcon!=NULL) arrow_.setPixmap(*tmpIcon);
+      if(tmpIcon!=NULL) {
+         arrow_.setPixmap(*tmpIcon);
+         delete(tmpIcon);
+      } else
+         arrow_.setText("Pause");
       break;
    }
-   delete(tmpIcon);
-   //arrow_.setDisabled(move == NotMoved);
 }
 
 //
