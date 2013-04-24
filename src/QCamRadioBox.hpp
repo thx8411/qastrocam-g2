@@ -29,9 +29,10 @@ MA  02110-1301, USA.
 
 class QRadioButton;
 
-/** Handle some radiobox buttons in a
-    QButtonGroup.
-*/
+//
+// Handle some radiobox buttons in a QGroupBox.
+//
+
 class QCamRadioBox: public QGroupBox {
    Q_OBJECT
 public:
