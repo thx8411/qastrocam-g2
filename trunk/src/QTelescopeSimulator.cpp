@@ -17,18 +17,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <Qt/qlabel.h>
 #include <Qt/qmessagebox.h>
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt/qlayout.h>
 #include <Qt/qwidget.h>
 #include <Qt/qpixmap.h>
 
-#include "QTelescopeSimulator.hpp"
-
-#include "QCamUtilities.hpp"
-//Added by qt3to4:
 #include <Qt3Support/Q3GridLayout>
-#include <Qt/qlabel.h>
+#include <Qt3Support/q3vgroupbox.h>
+
+#include "QTelescopeSimulator.hpp"
+#include "QCamUtilities.hpp"
 
 using namespace std;
 
@@ -57,40 +56,58 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QWidget* simulatorArrows_=new QWidget(simulatorWidget_);
    Q3GridLayout* simulatorArrowsLayout_=new Q3GridLayout(simulatorArrows_,3,3);
 
-   buttonUp_=new QLabel("up",simulatorArrows_,"U");
+   // up label
+   buttonUp_=new QLabel(simulatorArrows_);
    tmpIcon=QCamUtilities::getIcon("north.png");
-   if(tmpIcon!=NULL) buttonUp_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) {
+      buttonUp_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      buttonUp_->setText("North");
    buttonUp_->setDisabled(true);
    buttonUp_->setAlignment(Qt::AlignHCenter);
-   delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonUp_,0,1);
 
-   buttonDown_=new QLabel("down",simulatorArrows_,"D");
+   // down label
+   buttonDown_=new QLabel(simulatorArrows_);
    tmpIcon=QCamUtilities::getIcon("south.png");
-   if(tmpIcon!=NULL) buttonDown_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) {
+      buttonDown_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      buttonDown_->setText("South");
    buttonDown_->setDisabled(true);
    buttonDown_->setAlignment(Qt::AlignHCenter);
-   delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonDown_,2,1);
 
-   buttonLeft_=new QLabel("left",simulatorArrows_,"L");
+   // left label
+   buttonLeft_=new QLabel(simulatorArrows_);
    tmpIcon=QCamUtilities::getIcon("east.png");
-   if(tmpIcon!=NULL) buttonLeft_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) {
+      buttonLeft_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      buttonLeft_->setText("East");
    buttonLeft_->setDisabled(true);
-   delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonLeft_,1,0);
 
-   buttonRight_=new QLabel("right",simulatorArrows_,"R");
+   // right label
+   buttonRight_=new QLabel(simulatorArrows_);
    tmpIcon=QCamUtilities::getIcon("west.png");
-   if(tmpIcon!=NULL) buttonRight_->setPixmap(*tmpIcon);
+   if(tmpIcon!=NULL) {
+      buttonRight_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      buttonRight_->setText("West");
    buttonRight_->setDisabled(true);
-   delete tmpIcon;
    simulatorArrowsLayout_->addWidget(buttonRight_,1,2);
 
-   buttonCenter_=new QLabel(simulatorArrows_,"C");
+   buttonCenter_=new QLabel(simulatorArrows_);
    tmpIcon=QCamUtilities::getIcon("directions.png");
-   if(tmpIcon!=NULL) buttonCenter_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      buttonCenter_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   }
    simulatorArrowsLayout_->addWidget(buttonCenter_,1,1);
 
    speedLabel_=new QLabel(simulatorWidget_);

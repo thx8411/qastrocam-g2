@@ -78,15 +78,21 @@ void QCamMax::addNewFrame() {
 
 QWidget* QCamMax::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
-   QPushButton* resetBufferFill_= new QPushButton("reset",remoteCTRL);
+
+   // reset button
+   QPushButton* resetBufferFill_= new QPushButton("Reset",remoteCTRL);
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(clear()));
 
-   QPushButton* pauseBufferFill_= new QPushButton("pause",remoteCTRL);
+   // pause button
+   QPushButton* pauseBufferFill_= new QPushButton(remoteCTRL);
    QPixmap* tmpIcon;
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    pauseBufferFill_->setToggleButton(true);
-   if(tmpIcon!=NULL) pauseBufferFill_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      pauseBufferFill_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      pauseBufferFill_->setText("Pause");
    connect(pauseBufferFill_,SIGNAL(pressed()),this,SLOT(pause()));
 
    pauseBufferFill_->show();

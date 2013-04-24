@@ -19,22 +19,20 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QTelescope.hpp"
-//Added by qt3to4:
-#include <Qt3Support/Q3GridLayout>
-
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include <Qt/qlayout.h>
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt/qlabel.h>
 #include <Qt/qpixmap.h>
 #include <Qt/qpushbutton.h>
-#include <Qt3Support/q3hgroupbox.h>
 
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt3Support/Q3GridLayout>
+
+#include "QTelescope.hpp"
 #include "QCamUtilities.hpp"
 #include "SettingsBackup.hpp"
 
@@ -62,22 +60,43 @@ void QTelescope::buildGUI(QWidget * parent) {
    QCamUtilities::setQastrocamIcon(mainWidget_);
    arrows_ = new QWidget(mainWidget_);
    arrowsLayout_=new Q3GridLayout(arrows_,3,3);
-   upButton_=new QPushButton("up",arrows_,"U");
+
+   // up button
+   upButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("up.png");
-   if(tmpIcon!=NULL) upButton_->setPixmap(*tmpIcon);
-   delete tmpIcon;
-   downButton_=new QPushButton("down",arrows_,"D");
+   if(tmpIcon!=NULL) {
+      upButton_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      upButton_->setText("Up");
+
+   // down button
+   downButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("down.png");
-   if(tmpIcon!=NULL) downButton_->setPixmap(*tmpIcon);
-   delete tmpIcon;
-   leftButton_=new QPushButton("left",arrows_,"L");
+   if(tmpIcon!=NULL) {
+      downButton_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      downButton_->setText("Down");
+
+   // left button
+   leftButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("left.png");
-   if(tmpIcon!=NULL) leftButton_->setPixmap(*tmpIcon);
-   delete tmpIcon;
-   rightButton_=new QPushButton("right",arrows_,"R");
+   if(tmpIcon!=NULL) {
+      leftButton_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      leftButton_->setText("Left");
+
+   // right button
+   rightButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("right.png");
-   if(tmpIcon!=NULL) rightButton_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      rightButton_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      rightButton_->setText("Right");
+
    arrowsLayout_->addWidget(upButton_,0,1);
    arrowsLayout_->addWidget(downButton_,2,1);
    arrowsLayout_->addWidget(leftButton_,1,0);

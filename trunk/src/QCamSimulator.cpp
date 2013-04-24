@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010-2012   Blaise-Florentin Collin
+Copyright (C) 2010-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -18,15 +18,15 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 #include <Qt/qtimer.h>
-#include <Qt3Support/q3vgroupbox.h>
-#include <Qt3Support/q3hgroupbox.h>
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qtooltip.h>
 #include <Qt/qpixmap.h>
 
+#include <Qt3Support/q3vgroupbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+#include <Qt3Support/q3hbox.h>
+
 #include "SettingsBackup.hpp"
 #include "QCamUtilities.hpp"
-
 #include "QCamSimulator.hpp"
 
 // settings object, needed everywhere
@@ -91,46 +91,86 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    // RA zone
    Q3HGroupBox* raZone=new Q3HGroupBox(QString("RA"),settingsBox);
    raSpeedSlider_=new QCamSlider(QString("Speed : "),false,raZone,0,20,false,false);
-   raLeft_=new QPushButton("left",raZone,"L");
+
+   // left button
+   raLeft_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("left.png");
-   if(tmpIcon!=NULL) raLeft_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      raLeft_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      raLeft_->setText("Left");
    raLeft_->setToggleButton(true);
-   raRight_=new QPushButton("right",raZone,"R");
+
+   // right button
+   raRight_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("right.png");
-   if(tmpIcon!=NULL) raRight_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      raRight_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      raRight_->setText("Right");
    raRight_->setToggleButton(true);
-   raStop_=new QPushButton("pause",raZone,"S");
+
+   // pause button
+   raStop_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   if(tmpIcon!=NULL) raStop_->setPixmap(*tmpIcon);
-   delete tmpIcon;
-   raCenter_=new QPushButton("center",raZone,"C");
+   if(tmpIcon!=NULL) {
+      raStop_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      raStop_->setText("Pause");
+
+   // center button
+   raCenter_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("target_icon.png");
-   if(tmpIcon!=NULL) raCenter_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      raCenter_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      raCenter_->setText("Center");
 
    // DEC zone
    Q3HGroupBox* decZone=new Q3HGroupBox(QString("DEC"),settingsBox);
    decSpeedSlider_=new QCamSlider(QString("Speed : "),false,decZone,0,20,false,false);
-   decUp_=new QPushButton("up",decZone,"U");
+
+   // up button
+   decUp_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("up.png");
-   if(tmpIcon!=NULL) decUp_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      decUp_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      decUp_->setText("Up");
    decUp_->setToggleButton(true);
-   decDown_=new QPushButton("down",decZone,"D");
+
+   // down button
+   decDown_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("down.png");
-   if(tmpIcon!=NULL) decDown_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      decDown_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      decDown_->setText("Down");
    decDown_->setToggleButton(true);
-   decStop_=new QPushButton("pause",decZone,"S");
+
+   // stop button
+   decStop_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   if(tmpIcon!=NULL) decStop_->setPixmap(*tmpIcon);
-   delete tmpIcon;
-   decCenter_=new QPushButton("center",decZone,"C");
+   if(tmpIcon!=NULL) {
+      decStop_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      decStop_->setText("Pause");
+
+   // center button
+   decCenter_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("target_icon.png");
-   if(tmpIcon!=NULL) decCenter_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      decCenter_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      decCenter_->setText("Center");
 
    // connexions
    connect(raLeft_,SIGNAL(toggled(bool)),this,SLOT(moveLeft(bool)));

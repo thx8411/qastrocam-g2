@@ -312,24 +312,32 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    buttonBox_= new QGridBox(remoteCTRL_,Qt::Vertical,2);
 
-   displayFramesButton_ = new QPushButton("display",buttonBox_);
+   // frames button
+   displayFramesButton_ = new QPushButton(buttonBox_);
    QToolTip::add(displayFramesButton_,"display frames");
    displayFramesButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayFrames.png");
-   if(tmpIcon!=NULL) displayFramesButton_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      displayFramesButton_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      displayFramesButton_->setText("Display");
    if (displayWindow_ && displayWindow_->isActive()) {
       cout << "set displayFramesButton_ on\n";
       displayFramesButton_->setOn(true);
    }
    connect(displayFramesButton_,SIGNAL(toggled(bool)),this,SLOT(displayFrames(bool)));
 
-   displayHistogramButton_ = new QPushButton("histo",buttonBox_);
+   // histogram button
+   displayHistogramButton_ = new QPushButton(buttonBox_);
    QToolTip::add(displayHistogramButton_,"display frames histograms,\nand focus information");
    displayHistogramButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayHistogram.png");
-   if(tmpIcon!=NULL) displayHistogramButton_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      displayHistogramButton_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      displayHistogramButton_->setText("Histogram");
    displayHistogramButton_->setMinimumHeight(28);
    if (displayHistogramWindow_ && displayHistogramWindow_->isActive()) {
       cout << "set displayHistogramButton_ on\n";
@@ -341,11 +349,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       buttonBox_->hide();
 
    QList<QByteArray> formatList=QImageWriter::supportedImageFormats();
-
-   //for(QList<QByteArray>::iterator it = formatList.begin(); it != formatList.end(); it++) {
-   //   QString format(*it);
-   //   cerr << format.toStdString().c_str() << endl;
-   //}
 
    int size=0;
    int tmpTab[16];
@@ -439,23 +442,38 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    imgFormatBox_->update(fileFormatCurrent_);
 
    Q3HBox * buttons2=new Q3HBox(saveGroup);
-   snapshot_=new QPushButton("snapshot",buttons2);
+
+   // snapshot button
+   snapshot_=new QPushButton(buttons2);
    tmpIcon=QCamUtilities::getIcon("snapshot.png");
-   if(tmpIcon!=NULL) snapshot_->setPixmap(*tmpIcon);
-   delete tmpIcon;
-   capture_=new QPushButton("capture",buttons2);
+   if(tmpIcon!=NULL) {
+      snapshot_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      snapshot_->setText("Snapshot");
+
+   // capture button
+   capture_=new QPushButton(buttons2);
    capture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie.png");
-   if(tmpIcon!=NULL) capture_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      capture_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      capture_->setText("Capture");
 
-   pauseCapture_=new QPushButton("pause",buttons2);
-   QToolTip::add(pauseCapture_,
-                 "Suspend the current capture");
+   // pause button
+   pauseCapture_=new QPushButton(buttons2);
+   QToolTip::add(pauseCapture_,"Suspend the current capture");
    pauseCapture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   if(tmpIcon!=NULL) pauseCapture_->setPixmap(*tmpIcon);
-   delete tmpIcon;
+   if(tmpIcon!=NULL) {
+      pauseCapture_->setPixmap(*tmpIcon);
+      delete tmpIcon;
+   } else
+      pauseCapture_->setText("Pause");
+
+   // frame counter
    capturedFrame_=new QLCDNumber(buttons2);
    capturedFrame_->setSegmentStyle(QLCDNumber::Flat);
    capturedFrame_->setNumDigits(2);
