@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -21,69 +21,80 @@ MA  02110-1301, USA.
 
 #include <stdlib.h>
 
-#include "QCamRadioBox.hpp"
-#include <Qt/qradiobutton.h>
-#include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3buttongroup.h>
 #include <iostream>
+
+#include <Qt/qradiobutton.h>
+
+#include "QCamRadioBox.hpp"
 
 using namespace std;
 
-QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,
-                           int numOfbutton, int valueList[],
-                           const char * labelList[],
-                           int maxPerRow ):
-   Q3VGroupBox(label,parent) {
+QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,int numOfbutton, int valueList[],
+                           const char * labelList[],int maxPerRow ):QGroupBox(label,parent) {
+
    valueList_=(int*)malloc(numOfbutton*sizeof(int));
    buttonTable_=(QRadioButton**)malloc(sizeof(QRadioButton*)*numOfbutton);
    numOfButton_=numOfbutton;
-   rowTable_=(Q3HBox**)malloc((numOfbutton/maxPerRow+1)*sizeof(Q3HBox*));
-   for (int i=0;i<=numOfbutton/maxPerRow;++i) {
-      rowTable_[i]=new Q3HBox(this);
-   }
-   bg_=new Q3ButtonGroup(this);
-   bg_->hide();
+
+   globalLayout_=new QVBoxLayout();
+   this->setLayout(globalLayout_);
+
+   // sub group
+   bg_=new QGroupBox(this);
+   globalLayout_->addWidget(bg_);
+   rowTable_=new QGridLayout(bg_);
+
+   // Filling with radio buttons
    for (int i=0;i<numOfButton_;++i) {
       valueList_[i]=valueList[i];
-      buttonTable_[i]
-         =new QRadioButton(labelList?QString(labelList[i]):QString("%1").arg(valueList_[i]),
-                           rowTable_[i/maxPerRow]);
+      buttonTable_[i]=new QRadioButton(labelList?QString(labelList[i]):QString("%1").arg(valueList_[i]),bg_);
       buttonTable_[i]->show();
-      bg_->insert(buttonTable_[i]);
+      rowTable_->addWidget(buttonTable_[i],i/maxPerRow,i%maxPerRow);
    }
-   for (int i=0;i<=numOfbutton/maxPerRow;++i) {
-      rowTable_[i]->show();
+
+   // connecting radio buttons
+   for(int i=0; i<numOfButton_; i++) {
+      connect( buttonTable_[i],SIGNAL(toggled(bool)),this,SLOT(buttonClicked(bool)));
    }
-   connect(bg_,SIGNAL(clicked(int)),this,SLOT(buttonClicked(int)));
-   currentValue_=valueList[0];
-   //update(currentValue_);
+
+   if(numOfButton_>0) {
+      currentValue_=valueList[0];
+      buttonTable_[0]->setChecked(true);
+   }
 }
 
 QCamRadioBox::~QCamRadioBox() {
+   // deleting radio buttons
    while (numOfButton_-- > 0) {
       buttonTable_[numOfButton_]->hide();
       delete buttonTable_[numOfButton_];
    }
+   delete rowTable_;
+   delete bg_;
+   delete globalLayout_;
+
+   // free tables
    free(buttonTable_);
    free(valueList_);
-   free(rowTable_);
 }
-
 
 void QCamRadioBox::update(int value) {
    for (int i=0;i<numOfButton_;++i) {
       if (valueList_[i]==value) {
          buttonTable_[i]->setChecked(true);
          currentValue_=value;
-         //emit(change(value));
          return;
       }
    }
-   cout << "invalid value "<<value
-        <<" for widget QCamRadioBox::"
-        << name()<<endl;
+   cout << "invalid value "<<value<<" for widget QCamRadioBox::"<< name()<<endl;
 }
 
-void QCamRadioBox::buttonClicked(int id) {
+void QCamRadioBox::buttonClicked(bool d) {
+   int id;
+
+   for(int i=0; i<numOfButton_;i++) {
+      if(buttonTable_[i]->isChecked())
+         id=i;
+   }
    emit(change(currentValue_=valueList_[id]));
 };

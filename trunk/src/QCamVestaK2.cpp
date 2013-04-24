@@ -663,25 +663,29 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
    remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),VctrlBox,5,wbValue,wbLabel,5);
 
+   QWidget* whiteBalanceGroup=new QWidget();
+   QHBoxLayout* whiteBalanceGroup_layout= new QHBoxLayout();
+   whiteBalanceGroup->setLayout(whiteBalanceGroup_layout);
+
    connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),this,SLOT(setWhiteBalanceMode(int)));
    connect(this,SIGNAL(whiteBalanceModeChange(int)),remoteCTRLWhiteBalance_,SLOT(update(int)));
 
-   Q3HBox * whiteBalanceSliders = new Q3HBox(remoteCTRLWhiteBalance_);
    QCheckBox * liveWBupdateB = new QCheckBox(tr("live"),whiteBalanceSliders);
-
    connect(liveWBupdateB,SIGNAL(toggled(bool)),this,SLOT(setLiveWhiteBalance(bool)));
-
    QToolTip::add(liveWBupdateB,tr("Live Update of red/blue value in automatic mode"));
+   whiteBalanceGroup_layout->addWidget(liveWBupdateB);
 
    remoteCTRLWBred_ = new QCamSlider(tr("red bal."),false,whiteBalanceSliders,0,65535);
-
+   whiteBalanceGroup_layout->addWidget(remoteCTRLWBred_);
    connect(this,SIGNAL(whiteBalanceRedChange(int)),remoteCTRLWBred_,SLOT(setValue(int)));
    connect(remoteCTRLWBred_,SIGNAL(valueChange(int)),this,SLOT(setWhiteBalanceRed(int)));
 
    remoteCTRLWBblue_ = new QCamSlider(tr("blue bal."),false,whiteBalanceSliders,0,65535);
-
+   whiteBalanceGroup_layout->addWidget(remoteCTRLWBblue_);
    connect(this,SIGNAL(whiteBalanceBlueChange(int)),remoteCTRLWBblue_,SLOT(setValue(int)));
    connect(remoteCTRLWBblue_,SIGNAL(valueChange(int)),this,SLOT(setWhiteBalanceBlue(int)));
+
+   remoteCTRLWhiteBalance_->layout()->addWidget(whiteBalanceGroup);
 
    remoteCTRLWBred_->setEnabled(false);
    remoteCTRLWBblue_->setEnabled(false);

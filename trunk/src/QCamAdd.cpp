@@ -712,15 +712,15 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
                                        1,numOfBuffers_*255-1);
    int valueList[]={0,1,2,3,4,5,6,7};
    const char * labelList[]={"none","log10","log","sqrt","^2","^3","^4","^5"};
-   modeDisplayButton_= new QCamRadioBox(tr("Lum. conversion"),displayOptions_,
-                                       8,valueList,labelList,4);
+   modeDisplayButton_= new QCamRadioBox(tr("Lum. conversion"),displayOptions_,8,valueList,labelList,4);
    connect(modeDisplayButton_,SIGNAL(change(int)),this,SLOT(modeDisplay(int)));
    modeDisplay(0);
    modeDisplayButton_->update(0);
 
    QToolTip::add(displayOptions_,tr("Resulting frame tuning"));
 
-   invDisplayButton_ = new QCheckBox(tr("negate"),modeDisplayButton_);
+   invDisplayButton_ = new QCheckBox(tr("negate"));
+   modeDisplayButton_->layout()->addWidget(invDisplayButton_);
    connect(invDisplayButton_,SIGNAL(toggled(bool)),this,SLOT(negateDisplay(bool)));
 #ifdef MultiSatMode
    int saturationValueList[]={0,1,2,3,4};

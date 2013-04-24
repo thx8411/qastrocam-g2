@@ -45,7 +45,6 @@ MA  02110-1301, USA.
 #include <Qt3Support/q3hgroupbox.h>
 
 #include "QCam.hpp"
-#include "QCamRadioBox.hpp"
 #include "QCamComboBox.hpp"
 #include "QCamUtilities.hpp"
 #include "QDirectoryChooser.hpp"
