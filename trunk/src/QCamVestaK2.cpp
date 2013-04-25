@@ -44,7 +44,6 @@ MA  02110-1301, USA.
 #include <Qt/qmessagebox.h>
 #include <Qt/qlineedit.h>
 
-#include <Qt3Support/q3vbox.h>
 #include <Qt3Support/q3hbox.h>
 
 #include "QCamVestaK2.hpp"
