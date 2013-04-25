@@ -31,9 +31,9 @@ MA  02110-1301, USA.
 
 #include <Qt3Support/q3hbox.h>
 #include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hgroupbox.h>
 
 #include "QCamVGroupBox.hpp"
+#include "QCamHGroupBox.hpp"
 #include "QDirectoryChooser.hpp"
 #include "QFileChooser.hpp"
 #include "QCamComboBox.hpp"
@@ -69,7 +69,7 @@ private :
    // gui
    Q3VBox* remoteCTRL_;
    QString label_;
-   Q3HGroupBox* videoBox;
+   QCamHGroupBox* videoBox;
    QLabel* camLabel;
    QCamComboBox* cameraList;
    QLabel* videoDeviceLabel;
@@ -95,7 +95,7 @@ private :
    QWidget* padding8;
    QWidget* padding9;
    QCheckBox* telescopeLevels;
-   Q3HGroupBox* lxBox;
+   QCamHGroupBox* lxBox;
    QLabel* lxDeviceLabel;
    QLineEdit* lxDeviceEntry;
    QFileChooser* lxDeviceChooser;

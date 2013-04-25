@@ -33,6 +33,7 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 
 #include "QCamVGroupBox.hpp"
+#include "QCamHGroupBox.hpp"
 #include "QCamFrame.hpp"
 #include "Vector2D.hpp"
 

@@ -34,7 +34,6 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qprogressbar.h>
 
-#include <Qt3Support/q3hgroupbox.h>
 #include <Qt3Support/q3hbox.h>
 
 #include "CamHistogram.hpp"
@@ -44,7 +43,7 @@ MA  02110-1301, USA.
 
 CamHistogram::CamHistogram(QCam & theCam) :
    QCamClient(theCam) {
-   mainWindow_ = new Q3HGroupBox(tr("Analyse"));
+   mainWindow_ = new QCamHGroupBox(tr("Analyse"));
 
    QCamUtilities::registerWidget(mainWindow_);
 

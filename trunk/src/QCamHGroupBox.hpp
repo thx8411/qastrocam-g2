@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2013   Blaise-Florentin Collin
+Copyright (C) 2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -17,38 +17,26 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include "QCamStack.hpp"
+#ifndef _QCAMHGROUPBOX_HPP_
+#define _QCAMHGROUPBOX_HPP_
 
+#include <Qt/qgroupbox.h>
+#include <Qt/qboxlayout.h>
+#include <QtCore/qcoreevent.h>
 
-QCamStack::QCamStack() {
-   label_=QString("Pre-Process");
-   camIndex=0;
-}
+//
+// Replacement for Q3HGroupBox
+//
 
-QCamStack::~QCamStack() {
-}
+class QCamHGroupBox: public QGroupBox {
+   Q_OBJECT
+   public:
+      QCamHGroupBox(const QString& title, QWidget* parent = NULL);
+      ~QCamHGroupBox();
+      // for children detection
+      bool event(QEvent *event);
+   private:
+      QHBoxLayout* widgetLayout;
+};
 
-void QCamStack::addCam(QCam* cam, QString name) {
-   // add the cam if we have room left
-   if(camIndex<CAMSTACK_SIZE) {
-      nameTab[camIndex]=name;
-      camTab[camIndex]=cam;
-      camIndex++;
-   }
-}
-
-QWidget *QCamStack::buildGUI(QWidget * parent) {
-   remoteCTRL_= new Q3VBox(parent);
-   // for each cam, create a group
-   // and biuld cam gui
-   for(int i=0;i<camIndex;i++) {
-      groupTab[i]=new QCamHGroupBox(nameTab[i],remoteCTRL_);
-      camTab[i]->buildGUI(groupTab[i]);
-   }
-   return(remoteCTRL_);
-}
-
-const QString & QCamStack::label() const {
-   return label_;
-}
-
+#endif

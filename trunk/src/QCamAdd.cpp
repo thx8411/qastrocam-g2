@@ -31,8 +31,6 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qboxlayout.h>
 
-#include <Qt3Support/q3hgroupbox.h>
-
 #include "QCamSlider.hpp"
 #include "QCamAdd.hpp"
 #include "QCamRadioBox.hpp"
@@ -689,7 +687,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    //
    // accumulation gui
    //
-   accumulationWidget_ = new Q3HGroupBox(tr("Num of Buffers"),remoteCTRL);
+   accumulationWidget_ = new QCamHGroupBox(tr("Num of Buffers"),remoteCTRL);
    int ActiveBufferList[]={4,8,16,32,64,128,256};
    remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,7,ActiveBufferList,NULL);
    connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));

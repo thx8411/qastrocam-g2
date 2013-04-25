@@ -47,7 +47,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding3=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding3,5);
    // video device box
-   videoBox=new Q3HGroupBox("Camera",remoteCTRL_);
+   videoBox=new QCamHGroupBox("Camera",remoteCTRL_);
    remoteCTRL_->setStretchFactor(videoBox,0);
    camLabel=new QLabel("Camera : ",videoBox);
 #if HAVE_USB_H
@@ -104,7 +104,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding7=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding7,5);
    // long exposure box
-   lxBox=new Q3HGroupBox("Long exposure",remoteCTRL_);
+   lxBox=new QCamHGroupBox("Long exposure",remoteCTRL_);
    remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);

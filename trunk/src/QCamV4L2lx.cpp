@@ -82,7 +82,7 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
 
    // V4L generic long exposure
    // container
-   remoteCTRLlx= new Q3HGroupBox(tr("long exposure"),remoteCTRL);
+   remoteCTRLlx= new QCamHGroupBox(tr("long exposure"),remoteCTRL);
    // frame rate display
    lxLabel1= new QLabel("fps :",remoteCTRLlx);
    lxRate= new QLabel(QString().sprintf("%i",frameRate_),remoteCTRLlx);
