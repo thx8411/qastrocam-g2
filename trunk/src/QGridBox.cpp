@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,17 +19,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <iostream>
 
 #include "QGridBox.hpp"
-//Added by qt3to4:
-#include <Qt3Support/Q3GridLayout>
-#include <iostream>
 
 using namespace std;
 
-QGridBoxLayout::QGridBoxLayout(QWidget * parent , Qt::Orientation ori, int size,
-                               const char * name) :
-   Q3GridLayout(parent,(ori==Qt::Vertical)?size:1, (ori==Qt::Vertical)?1:size , /*margin*/ 0, /* space*/ -1, name),
+QGridBoxLayout::QGridBoxLayout(QWidget* parent , Qt::Orientation ori, int size,const char* name) :
+   QGridLayout(parent,(ori==Qt::Vertical)?size:1, (ori==Qt::Vertical)?1:size , /*margin*/ 0, /* space*/ -1, name),
    size_(size),
    nbElements_(0),
    orientation_(ori) {
@@ -46,15 +43,14 @@ void QGridBoxLayout::addItem(QLayoutItem * item ) {
       col=nbElements_/size_;
    }
    ++nbElements_;
-   Q3GridLayout::addItem(item, row, col);
+   QGridLayout::addItem(item, row, col);
 }
 
 QLayoutIterator QGridBoxLayout::iterator () {
-   return Q3GridLayout::iterator();
+   return QGridLayout::iterator();
 }
 
-QGridBox::QGridBox(QWidget * parent , Qt::Orientation ori, int size,
-                   const char * name) :
+QGridBox::QGridBox(QWidget* parent , Qt::Orientation ori, int size, const char* name) :
    QWidget(parent,name),
    layout_(this, ori, size , name) {
 }

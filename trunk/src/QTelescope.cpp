@@ -28,8 +28,6 @@ MA  02110-1301, USA.
 #include <Qt/qpixmap.h>
 #include <Qt/qpushbutton.h>
 
-#include <Qt3Support/Q3GridLayout>
-
 #include "QCamHGroupBox.hpp"
 #include "QTelescope.hpp"
 #include "QCamUtilities.hpp"
@@ -58,7 +56,7 @@ void QTelescope::buildGUI(QWidget * parent) {
 
    QCamUtilities::setQastrocamIcon(mainWidget_);
    arrows_ = new QWidget(mainWidget_);
-   arrowsLayout_=new Q3GridLayout(arrows_,3,3);
+   arrowsLayout_=new QGridLayout(arrows_,3,3);
 
    // up button
    upButton_=new QPushButton(arrows_);

@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,21 +19,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
 #ifndef _QGridBox_h_
 #define _QGridBox_h_
 
-#include <Qt/qlayout.h>
+//#include <Qt/qlayout.h>
 #include <Qt/qwidget.h>
-//Added by qt3to4:
-#include <Qt3Support/Q3GridLayout>
+#include <Qt/qgridlayout.h>
 
-class QGridBoxLayout : public Q3GridLayout {
+class QGridBoxLayout : public QGridLayout {
 public:
-   QGridBoxLayout(QWidget * parent , Qt::Orientation, int size,
-                  const char * name = 0 );
-   virtual void addItem ( QLayoutItem * item );
-   virtual QLayoutIterator iterator ();
+   QGridBoxLayout(QWidget* parent , Qt::Orientation, int size, const char * name = 0 );
+   virtual void addItem (QLayoutItem* item);
+   virtual QLayoutIterator iterator();
 private:
    // max width or height (depending of the Orientation)
    const int size_;
@@ -46,8 +43,7 @@ private:
 class QGridBox : public QWidget {
    Q_OBJECT
 public:
-   QGridBox(QWidget * parent , Qt::Orientation, int size,
-            const char * name = 0 );
+   QGridBox(QWidget* parent , Qt::Orientation, int size, const char* name = 0 );
    // the grid layout
    QGridBoxLayout layout_;
 };
