@@ -1079,7 +1079,7 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
 
    // controls
    QCamHGroupBox* ctrlBox=new QCamHGroupBox(tr("Controls"),remoteCTRL);
-   VctrlBox=new Q3VBox(ctrlBox);
+   VctrlBox=new QCamVBox(ctrlBox);
    QGridBox * hbox= new QGridBox(VctrlBox,Qt::Vertical,3);
    if (options_ & haveContrast) {
       remoteCTRLcontrast_=new QCamSlider("Cont.",false,hbox);

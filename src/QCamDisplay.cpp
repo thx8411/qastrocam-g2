@@ -30,9 +30,9 @@ MA  02110-1301, USA.
 #include <QtGui/QResizeEvent>
 #include <QtGui/QMouseEvent>
 
-#include <Qt3Support/q3vbox.h>
 #include <Qt3Support/q3hbox.h>
 
+#include "QCamVBox.hpp"
 #include "QCamUtilities.hpp"
 #include "QCam.hpp"
 #include "QCamSlider.hpp"
@@ -97,7 +97,7 @@ void QCamDisplay::setCaption() {
 }
 
 void QCamDisplay::commonInit(QWidget * parent) {
-   mainWidget_=new Q3VBox(parent);
+   mainWidget_=new QCamVBox(parent);
 
    buttonsContainer_ = new Q3HBox(mainWidget_);
 

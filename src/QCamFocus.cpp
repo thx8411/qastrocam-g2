@@ -45,7 +45,7 @@ QWidget *QCamFocus::buildGUI(QWidget * parent) {
    //FocusPlot* plot;
 //
 
-   remoteCTRL_= new Q3VBox(parent);
+   remoteCTRL_= new QCamVBox(parent);
 
 
 //

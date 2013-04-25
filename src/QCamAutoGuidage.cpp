@@ -24,8 +24,8 @@ MA  02110-1301, USA.
 #include <Qt/qmessagebox.h>
 
 #include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3vbox.h>
 
+#include "QCamVBox.hpp"
 #include "QCamAutoGuidage.hpp"
 #include "QCam.hpp"
 #include "QTelescope.hpp"
@@ -171,7 +171,7 @@ void QCamAutoGuidage::track(bool mode) {
 }
 
 QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
-   Q3VBox * mainBox = new Q3VBox(parent);
+   QCamVBox * mainBox = new QCamVBox(parent);
 
    QCamUtilities::registerWidget(mainBox);
 

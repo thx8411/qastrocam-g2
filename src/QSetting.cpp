@@ -21,8 +21,6 @@ MA  02110-1301, USA.
 #include <Qt/qmessagebox.h>
 #include <Qt/qtooltip.h>
 
-#include <Qt3Support/q3vbox.h>
-
 #include "QCamVGroupBox.hpp"
 #include "QSetting.hpp"
 #include "QCamUtilities.hpp"
@@ -41,14 +39,14 @@ QSetting::~QSetting() {
 QWidget *QSetting::buildGUI(QWidget * parent) {
    int cameraNumber;
    int telescopeNumber;
-   remoteCTRL_= new Q3VBox(parent);
-   remoteCTRL_->setSpacing(4);
+   remoteCTRL_= new QCamVBox(parent);
+   //remoteCTRL_->setSpacing(4);
 
    padding3=new QWidget(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(padding3,5);
+   //remoteCTRL_->setStretchFactor(padding3,5);
    // video device box
    videoBox=new QCamHGroupBox("Camera",remoteCTRL_);
-   remoteCTRL_->setStretchFactor(videoBox,0);
+   //remoteCTRL_->setStretchFactor(videoBox,0);
    camLabel=new QLabel("Camera : ",videoBox);
 #if HAVE_USB_H
    cameraNumber=4;
@@ -68,10 +66,10 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    QToolTip::add(videoDeviceChooser,tr("Selects video device"));
 
    padding6=new QWidget(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(padding6,5);
+   //remoteCTRL_->setStretchFactor(padding6,5);
    // telescope box
    telescopeBox=new QCamVGroupBox("Telescope control",remoteCTRL_);
-   remoteCTRL_->setStretchFactor(telescopeBox,0);
+   //remoteCTRL_->setStretchFactor(telescopeBox,0);
    lineOne=new Q3HBox(telescopeBox);
    padding0=new QWidget(lineOne);
    lineOne->setStretchFactor(padding0,5);
@@ -102,10 +100,10 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    telescopeDeviceChooser=new QFileChooser(lineTwo);
 
    padding7=new QWidget(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(padding7,5);
+   //remoteCTRL_->setStretchFactor(padding7,5);
    // long exposure box
    lxBox=new QCamHGroupBox("Long exposure",remoteCTRL_);
-   remoteCTRL_->setStretchFactor(lxBox,0);
+   //remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
    lxDeviceEntry->setMinimumWidth(72);
@@ -116,11 +114,11 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    QToolTip::add(lxLevels,tr("Shale we invert TTL levels ? (applies to 'toucam led' also)"));
 
    padding9=new QWidget(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(padding9,5);
+   //remoteCTRL_->setStretchFactor(padding9,5);
    // modules box
    modulesBox=new QCamVGroupBox("Modules",remoteCTRL_);
    QToolTip::add(modulesBox,tr("Modules to activate"));
-   remoteCTRL_->setStretchFactor(modulesBox,0);
+   //remoteCTRL_->setStretchFactor(modulesBox,0);
    lineFive=new Q3HBox(modulesBox);
    modulesAdd=new QCheckBox("Frame stacking module",lineFive);
    modulesAlign=new QCheckBox("Align frames",lineFive);
@@ -129,11 +127,11 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    modulesKing=new QCheckBox("King method module",lineSix);
 
    padding8=new QWidget(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(padding8,5);
+   //remoteCTRL_->setStretchFactor(padding8,5);
    // options box
    optionsBox=new QCamVGroupBox("Options",remoteCTRL_);
    QToolTip::add(optionsBox,tr("Options to activate"));
-   remoteCTRL_->setStretchFactor(optionsBox,0);
+   //remoteCTRL_->setStretchFactor(optionsBox,0);
    lineThree=new Q3HBox(optionsBox);
 #if HAVE_SDL_H
    optionsSdl=new QCheckBox("Use SDL",lineThree);
@@ -150,10 +148,10 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    libpathChooser=new QDirectoryChooser(libBox);
 
    padding4=new QWidget(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(padding4,5);
+   //remoteCTRL_->setStretchFactor(padding4,5);
    // buttons
    buttonsBox=new Q3HBox(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(buttonsBox,5);
+   //remoteCTRL_->setStretchFactor(buttonsBox,5);
    save=new QPushButton("Save",buttonsBox);
    save->setEnabled(false);
    restore= new QPushButton("Restore",buttonsBox);
@@ -161,7 +159,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 
    // padding
    padding5=new QWidget(remoteCTRL_);
-   remoteCTRL_->setStretchFactor(padding5,5);
+   //remoteCTRL_->setStretchFactor(padding5,5);
 
    // fill all the fields
    fillFields();
