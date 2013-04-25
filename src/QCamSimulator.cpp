@@ -21,10 +21,10 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qpixmap.h>
 
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hgroupbox.h>
 #include <Qt3Support/q3hbox.h>
 
+#include "QCamVGroupBox.hpp"
 #include "SettingsBackup.hpp"
 #include "QCamUtilities.hpp"
 #include "QCamSimulator.hpp"
@@ -86,7 +86,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    QPixmap* tmpIcon;
 
    QWidget* remoteCTRL=QCam::buildGUI(parent);
-   Q3VGroupBox* settingsBox=new Q3VGroupBox(QString("Settings"),remoteCTRL);
+   QCamVGroupBox* settingsBox=new QCamVGroupBox(QString("Settings"),remoteCTRL);
 
    // RA zone
    Q3HGroupBox* raZone=new Q3HGroupBox(QString("RA"),settingsBox);

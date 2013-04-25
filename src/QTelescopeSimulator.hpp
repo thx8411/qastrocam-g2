@@ -24,8 +24,8 @@ MA  02110-1301, USA.
 #include <string>
 
 #include <Qt/qlabel.h>
-#include <Qt3Support/q3vgroupbox.h>
 
+#include "QCamVGroupBox.hpp"
 #include "QTelescope.hpp"
 
 using namespace std;
@@ -38,7 +38,7 @@ public:
    virtual int telescopeType() { return(TELESCOPE_SIMULATOR); }
    void buildGUI(QWidget * parent);
 private:
-   Q3VGroupBox* simulatorWidget_;
+   QCamVGroupBox* simulatorWidget_;
    QLabel* speedLabel_;
    QLabel* buttonUp_;
    QLabel* buttonDown_;

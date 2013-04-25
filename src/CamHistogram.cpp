@@ -34,7 +34,6 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qprogressbar.h>
 
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hgroupbox.h>
 #include <Qt3Support/q3hbox.h>
 
@@ -64,7 +63,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    sizePolicyMin.setHorData(QSizePolicy::Minimum);
    mainWindow_->setSizePolicy(sizePolicyMin);
 
-   focusGroup_ = new Q3VGroupBox(tr("Focus & Seeing"), mainWindow_);
+   focusGroup_ = new QCamVGroupBox(tr("Focus - Seeing"), mainWindow_);
    focusArea_ = new QHistogram(focusGroup_);
    focusArea_->setDataSize(focusHistorySize_);
    focusArea_->setAutoShift(true);
@@ -84,7 +83,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    QToolTip::add(seeingLevel_,tr("Shown an evaluation of the seeing by looking how\nthe contrast changes between frames."));
 
    connect(resetFocus_,SIGNAL(pressed()),focusArea_,SLOT(reset()));
-   histoGroup_ = new Q3VGroupBox(tr("Histogram"), mainWindow_);
+   histoGroup_ = new QCamVGroupBox(tr("Histogram"), mainWindow_);
    histogramArea_ = new QHistogram(histoGroup_);
    histogramArea_->setDataSize(256);
    histogramArea_->setAverage(5);

@@ -31,11 +31,11 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qprogressbar.h>
 
+#include "QCamVGroupBox.hpp"
 #include "QCamClient.hpp"
 
 class QPushButton;
 class QWidget;
-class Q3VGroupBox;
 class QLCDNumber;
 class Q3HBox;
 class Q3HGroupBox;
@@ -57,9 +57,9 @@ protected slots:
    void newFrame();
 private:
    Q3HGroupBox * mainWindow_;
-   Q3VGroupBox * histoGroup_;
+   QCamVGroupBox * histoGroup_;
    QHistogram * histogramArea_;
-   Q3VGroupBox * focusGroup_;
+   QCamVGroupBox * focusGroup_;
    QPushButton * resetFocus_;
    QWidget * focusLevel_;
    QHistogram * focusArea_;

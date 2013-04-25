@@ -24,7 +24,6 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qtooltip.h>
 
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hbox.h>
 #include <Qt3Support/q3vbox.h>
 
@@ -212,7 +211,7 @@ bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
 }
 
 QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
-   mainBox_= new Q3VGroupBox("Hot Spot",parent);
+   mainBox_= new QCamVGroupBox("Hot Spot",parent);
 
    QCamUtilities::registerWidget(mainBox_);
 

@@ -28,7 +28,6 @@ MA  02110-1301, USA.
 #include <Qt/qpixmap.h>
 #include <Qt/qpushbutton.h>
 
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hgroupbox.h>
 #include <Qt3Support/Q3GridLayout>
 
@@ -53,7 +52,7 @@ QTelescope::QTelescope() {
 
 void QTelescope::buildGUI(QWidget * parent) {
    QPixmap* tmpIcon;
-   mainWidget_=new Q3VGroupBox("Telescope CTRL",parent);
+   mainWidget_=new QCamVGroupBox("Telescope CTRL",parent);
 
    QCamUtilities::registerWidget(mainWidget_);
 

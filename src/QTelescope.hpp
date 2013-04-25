@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2010   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -27,8 +27,10 @@ MA  02110-1301, USA.
 #include <Qt/qslider.h>
 #include <Qt/qlabel.h>
 #include <Qt/qcheckbox.h>
-//Added by qt3to4:
+
 #include <Qt3Support/Q3GridLayout>
+
+#include "QCamVGroupBox.hpp"
 
 // telescope types
 #define TELESCOPE_VIRTUAL	0
@@ -44,7 +46,6 @@ MA  02110-1301, USA.
 #define TELESCOPE_SIMULATOR	10
 #define TELESCOPE_QHY6		11
 
-class Q3VGroupBox;
 class QPushButton;
 class Q3GridLayout;
 class QWidget;
@@ -70,7 +71,7 @@ protected:
    QWidget * widget();
    double currentSpeed;
 private:
-   Q3VGroupBox * mainWidget_;
+   QCamVGroupBox * mainWidget_;
    Q3GridLayout * arrowsLayout_;
    QWidget * arrows_;
    // speed stuff

@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qprogressbar.h>
 
+#include "QCamVGroupBox.hpp"
 #include "dc60_private_ioctls.h"
 #include "QCamDC60.hpp"
 #include "SettingsBackup.hpp"
@@ -66,7 +67,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    struct v4l2_control ctrl;
 
    // extra controls
-   Q3VGroupBox* extraCtrl=new Q3VGroupBox("Extra controls",remoteCTRL);
+   QCamVGroupBox* extraCtrl=new QCamVGroupBox("Extra controls",remoteCTRL);
    Q3HBox* line1=new Q3HBox(extraCtrl);
    QWidget* padding5=new QWidget(line1);
    extraPreamp=new QCheckBox("Pre-amp",line1);
