@@ -30,12 +30,11 @@ MA  02110-1301, USA.
 #include <Qt/qmessagebox.h>
 #include <Qt/qpalette.h>
 
-#include <Qt3Support/q3vbox.h>
-
 #if HAVE_SDL_H
 #include <SDL.h>
 #endif
 
+#include "QCamVBox.hpp"
 #include "QCamSlider.hpp"
 #include "QCamSimulator.hpp"
 #include "QCamQHY5.hpp"
@@ -437,7 +436,7 @@ int main(int argc, char ** argv) {
    // main window setting
    QString caption;
    QPixmap* tmpIcon;
-   Q3VBox mainWindow;
+   QCamVBox mainWindow;
    caption=qastrocamName;
    caption+=" ";
    caption+=qastroCamVersion;

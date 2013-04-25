@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2013   Blaise-Florentin Collin
+Copyright (C) 2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -17,43 +17,26 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#ifndef _QCAMVBOX_HPP_
+#define _QCAMVBOX_HPP_
 
-#ifndef _QCAMSTACK_HPP_
-#define _QCAMSTACK_HPP_
-
-#include <Qt/qobject.h>
-#include <Qt/qstring.h>
 #include <Qt/qwidget.h>
+#include <Qt/qboxlayout.h>
+#include <QtCore/qcoreevent.h>
 
-#include "QCamVBox.hpp"
-#include "QCamHGroupBox.hpp"
-#include "QCam.hpp"
+//
+// Replacement for Q3VBox
+//
 
-#define CAMSTACK_SIZE	8
-
-// for stacking cams
-class QCamStack : public QObject {
+class QCamVBox: public QWidget {
    Q_OBJECT
-public :
-   QCamStack();
-   ~QCamStack();
-   QWidget* buildGUI(QWidget * parent);
-   const QString & label() const;
-   // add a cam with the given name in the stack
-   void addCam(QCam* cam, QString name);
-public slots:
-private :
-   QCamVBox* remoteCTRL_;
-   QString label_;
-   // stack
-   // name list
-   QString nameTab[CAMSTACK_SIZE];
-   // cam list
-   QCam* camTab[CAMSTACK_SIZE];
-   // group box list
-   QCamHGroupBox* groupTab[CAMSTACK_SIZE];
-   // last +1 cam index
-   int camIndex;
+   public:
+      QCamVBox(QWidget* parent = NULL);
+      ~QCamVBox();
+      // for children detection
+      bool event(QEvent *event);
+   private:
+      QVBoxLayout* widgetLayout;
 };
 
 #endif

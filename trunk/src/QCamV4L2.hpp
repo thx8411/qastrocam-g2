@@ -33,8 +33,7 @@ MA  02110-1301, USA.
 #include <Qt/qpushbutton.h>
 #include <Qt/qwidget.h>
 
-#include <Qt3Support/q3vbox.h>
-
+#include "QCamVBox.hpp"
 #include "QCam.hpp"
 #include "SCmod.hpp"
 
@@ -119,7 +118,7 @@ public:
    // gui
    QWidget * buildGUI(QWidget * parent);
 protected:
-    Q3VBox* VctrlBox;
+    QCamVBox* VctrlBox;
    // V4L2 vars
    struct v4l2_cropcap v4l2_crop_;
    struct v4l2_capability v4l2_cap_;

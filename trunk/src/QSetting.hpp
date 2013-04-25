@@ -30,8 +30,8 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 
 #include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3vbox.h>
 
+#include "QCamVBox.hpp"
 #include "QCamVGroupBox.hpp"
 #include "QCamHGroupBox.hpp"
 #include "QDirectoryChooser.hpp"
@@ -67,7 +67,7 @@ private :
    // functions
    void fillFields();
    // gui
-   Q3VBox* remoteCTRL_;
+   QCamVBox* remoteCTRL_;
    QString label_;
    QCamHGroupBox* videoBox;
    QLabel* camLabel;

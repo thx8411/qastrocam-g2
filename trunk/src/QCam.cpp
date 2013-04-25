@@ -40,9 +40,9 @@ MA  02110-1301, USA.
 #include <Qt/qicon.h>
 #include <Qt/qstringlist.h>
 
-#include <Qt3Support/q3vbox.h>
 #include <Qt3Support/q3hbox.h>
 
+#include "QCamVBox.hpp"
 #include "QCam.hpp"
 #include "QCamComboBox.hpp"
 #include "QCamUtilities.hpp"
@@ -304,7 +304,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    sizePolicyMin.setVerData(QSizePolicy::Minimum);
    sizePolicyMin.setHorData(QSizePolicy::Minimum);
 
-   remoteCTRL_= new Q3VBox(parent);
+   remoteCTRL_= new QCamVBox(parent);
 
    remoteCTRL_->setSizePolicy(sizePolicyMin);
 

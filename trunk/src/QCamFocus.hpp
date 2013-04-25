@@ -25,8 +25,7 @@ MA  02110-1301, USA.
 #include <Qt/qstring.h>
 #include <Qt/qwidget.h>
 
-#include <Qt3Support/q3vbox.h>
-
+#include "QCamVBox.hpp"
 #include "QCam.hpp"
 #include "QCamSelection.hpp"
 
@@ -53,7 +52,7 @@ private slots :
 private :
    QCam* cam_;
    QCamSelection* sel_;
-   Q3VBox* remoteCTRL_;
+   QCamVBox* remoteCTRL_;
    QString label_;
 };
 

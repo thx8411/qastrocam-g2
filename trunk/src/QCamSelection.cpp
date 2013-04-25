@@ -19,25 +19,24 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QCamSelection.hpp"
-
-#include "QCam.hpp"
-//Added by qt3to4:
-#include <QtGui/QPaintEvent>
-#include <QtGui/QResizeEvent>
-#include <QtGui/QMouseEvent>
 #include <math.h>
+
 #include <Qt/qcolor.h>
 #include <Qt/qpen.h>
 #include <Qt/qpainter.h>
-#include "QCamUtilities.hpp"
-#include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qlabel.h>
-#include "QCamComboBox.hpp"
 #include <Qt/qtooltip.h>
-#include <math.h>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QMouseEvent>
+
+#include <Qt3Support/q3hbox.h>
+
+#include "QCamVBox.hpp"
+#include "QCam.hpp"
+#include "QCamUtilities.hpp"
+#include "QCamComboBox.hpp"
+#include "QCamSelection.hpp"
 
 QCamSelection::QCamSelection(QWidget * parent) : QCamClient(), yuvFrame_() {
    commonInit(parent);
@@ -68,7 +67,7 @@ void QCamSelection::setCaption() {
 }
 
 void QCamSelection::commonInit(QWidget * parent) {
-   mainWidget_=new Q3VBox(parent);
+   mainWidget_=new QCamVBox(parent);
 
    QCamUtilities::registerWidget(mainWidget_);
 

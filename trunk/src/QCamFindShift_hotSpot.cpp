@@ -25,8 +25,8 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 
 #include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3vbox.h>
 
+#include "QCamVBox.hpp"
 #include "QCamFindShift_hotSpot.hpp"
 #include "QCam.hpp"
 #include "QStreamTranslator.hpp"
@@ -218,7 +218,7 @@ QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    QCamUtilities::setQastrocamIcon(mainBox_);
    Q3HBox * hbox=new Q3HBox(mainBox_);
    dispImgCenter_ = new QFrameDisplay(hbox,tr("center"));
-   Q3VBox * vbox = new Q3VBox (hbox);
+   QCamVBox * vbox = new QCamVBox (hbox);
    seuilSlider_=new QCamSlider("Tresh",false,vbox,0,255,false,false);
    connect(seuilSlider_,SIGNAL(valueChange(int)),this,SLOT(setSeuil(int)));
    connect(this,SIGNAL(seuilChanged(int)),seuilSlider_,SLOT(setValue(int)));

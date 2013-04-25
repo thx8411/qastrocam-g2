@@ -30,12 +30,12 @@ MA  02110-1301, USA.
 #include <QtGui/QPaintEvent>
 #include <QtGui/QResizeEvent>
 
+#include "QCamVBox.hpp"
 #include "QCamClient.hpp"
 #include "QCamFrame.hpp"
 
 class QCam;
 class QPainter;
-class Q3VBox;
 class QCamComboBox;
 class QCamDisplayImpl;
 class QCamSlider;
@@ -46,10 +46,10 @@ class QLabel;
  */
 class QCamDisplay : public QCamClient {
    Q_OBJECT
-   void commonInit(QWidget * parent);
+   void commonInit(QWidget* parent);
 public:
-   QCamDisplay(QWidget * parent=NULL);
-   QCamDisplay(QCam &, QWidget * parent=NULL);
+   QCamDisplay(QWidget* parent=NULL);
+   QCamDisplay(QCam &, QWidget* parent=NULL);
    virtual ~QCamDisplay();
    QWidget & widget();
    QCamFrame yuvFrame() const { return yuvFrame_;}
@@ -77,14 +77,14 @@ protected slots:
    void setCrossLum(int l);
 private:
    void setCaption();
-   Q3VBox * mainWidget_;
-   QScrollArea * view_;
-   QCamDisplayImpl * widget_;
-   Q3HBox * buttonsContainer_;
-   QLabel * crossLabel_;
-   QCamSlider * crossLumSlider_;
-   QCamComboBox * crossButton_;
-   QCamComboBox * displayModeButton_;
+   QCamVBox* mainWidget_;
+   QScrollArea* view_;
+   QCamDisplayImpl* widget_;
+   Q3HBox* buttonsContainer_;
+   QLabel* crossLabel_;
+   QCamSlider* crossLumSlider_;
+   QCamComboBox* crossButton_;
+   QCamComboBox* displayModeButton_;
    QCamFrame yuvFrame_;
    int crossLum_;
 #if HAVE_SDL_H
@@ -103,12 +103,12 @@ protected slots:
    virtual void setDisplayMode(QCamDisplay::DisplayMode);
    virtual void setCrossLum(int l);
 protected:
-   QCamDisplayImpl(QCamDisplay &, QWidget * parent);
+   QCamDisplayImpl(QCamDisplay &, QWidget* parent);
    ~QCamDisplayImpl();
-   virtual void paintEvent(QPaintEvent * ev)=0;
-   virtual void resizeEvent(QResizeEvent*ev);
+   virtual void paintEvent(QPaintEvent* ev)=0;
+   virtual void resizeEvent(QResizeEvent* ev);
    QSize sizeHint () const;
-   void mouseDoubleClickEvent ( QMouseEvent * e );
+   void mouseDoubleClickEvent ( QMouseEvent* e );
    /** annotate the frame with some symbols */
    void annotate(QPainter &);
 protected:
@@ -118,8 +118,8 @@ protected:
    QCamDisplay::CrossType currentCross_;
    QCamDisplay::DisplayMode displayMode_;
 
-   QPainter * painter_;
-   QPen * pen_;
+   QPainter* painter_;
+   QPen* pen_;
    int crossLum_;
    bool firtsFrameReceived_;
 
@@ -131,13 +131,11 @@ protected:
 class QCamDisplayImplQT : public QCamDisplayImpl {
    Q_OBJECT
 private:
-   QCamDisplayImplQT(QCamDisplay &, QWidget * parent);
+   QCamDisplayImplQT(QCamDisplay &, QWidget* parent);
 protected:
-   void paintEvent(QPaintEvent * ev);
+   void paintEvent(QPaintEvent* ev);
 private:
    friend class QCamDisplay;
 };
-
-//#include "QCamDisplayImplSDL.hpp"
 
 #endif

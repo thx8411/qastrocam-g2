@@ -4,7 +4,8 @@ TODO IN NEXT RELEASE
 
 5.0 - migrates to QT4
 
-   * migrates : remove the all the Q3Support classes
+   * migrates : remove the all the Q3Support classes and API
+   * check all the QSettings padding stuff
    * ...
 
 5.0 - help file in html

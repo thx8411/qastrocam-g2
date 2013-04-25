@@ -38,7 +38,7 @@ void QCamStack::addCam(QCam* cam, QString name) {
 }
 
 QWidget *QCamStack::buildGUI(QWidget * parent) {
-   remoteCTRL_= new Q3VBox(parent);
+   remoteCTRL_= new QCamVBox(parent);
    // for each cam, create a group
    // and biuld cam gui
    for(int i=0;i<camIndex;i++) {

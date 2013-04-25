@@ -26,6 +26,8 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qprogressbar.h>
 
+#include <Qt3Support/q3hbox.h>
+
 #include "QCamVGroupBox.hpp"
 #include "QCamHGroupBox.hpp"
 #include "dc60_private_ioctls.h"
