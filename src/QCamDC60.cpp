@@ -27,6 +27,7 @@ MA  02110-1301, USA.
 #include <Qt/qprogressbar.h>
 
 #include "QCamVGroupBox.hpp"
+#include "QCamHGroupBox.hpp"
 #include "dc60_private_ioctls.h"
 #include "QCamDC60.hpp"
 #include "SettingsBackup.hpp"
@@ -104,7 +105,7 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    connect(extraWhitepeak,SIGNAL(stateChanged(int)),this,SLOT(whitepeakChanged(int)));
 
    // long exposure
-   Q3HGroupBox* lxCtrl=new Q3HGroupBox("Long exposure",remoteCTRL);
+   QCamHGroupBox* lxCtrl=new QCamHGroupBox("Long exposure",remoteCTRL);
    QWidget* padding1=new QWidget(lxCtrl);
    lxCheck=new QCheckBox("Activate",lxCtrl);
    QWidget* padding2=new QWidget(lxCtrl);

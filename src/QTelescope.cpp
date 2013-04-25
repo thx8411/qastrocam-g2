@@ -28,9 +28,9 @@ MA  02110-1301, USA.
 #include <Qt/qpixmap.h>
 #include <Qt/qpushbutton.h>
 
-#include <Qt3Support/q3hgroupbox.h>
 #include <Qt3Support/Q3GridLayout>
 
+#include "QCamHGroupBox.hpp"
 #include "QTelescope.hpp"
 #include "QCamUtilities.hpp"
 #include "SettingsBackup.hpp"
@@ -140,8 +140,8 @@ void QTelescope::buildGUI(QWidget * parent) {
 
    // speed slider
    double speed;
-   Q3HGroupBox* speedBox;
-   speedBox=new Q3HGroupBox(QString("Speed"),mainWidget_);
+   QCamHGroupBox* speedBox;
+   speedBox=new QCamHGroupBox(QString("Speed"),mainWidget_);
    speedSlider_=new QSlider(1,100,1,100,Qt::Horizontal,speedBox);
    speedValue_=new QLabel(speedBox);
    speed=setSpeed(100/100);

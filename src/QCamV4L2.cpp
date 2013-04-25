@@ -38,6 +38,7 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qmessagebox.h>
 
+#include "QCamHGroupBox.hpp"
 #include "QCamV4L2.hpp"
 #include "QCamSlider.hpp"
 #include "yuv.hpp"
@@ -1077,7 +1078,7 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    QToolTip::add(frameModeB,"Frame mode");
 
    // controls
-   Q3HGroupBox* ctrlBox=new Q3HGroupBox(tr("Controls"),remoteCTRL);
+   QCamHGroupBox* ctrlBox=new QCamHGroupBox(tr("Controls"),remoteCTRL);
    VctrlBox=new Q3VBox(ctrlBox);
    QGridBox * hbox= new QGridBox(VctrlBox,Qt::Vertical,3);
    if (options_ & haveContrast) {

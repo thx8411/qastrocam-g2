@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,9 +24,10 @@ MA  02110-1301, USA.
 #include <Qt/qobject.h>
 #include <Qt/qstring.h>
 #include <Qt/qwidget.h>
-#include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hgroupbox.h>
 
+#include <Qt3Support/q3vbox.h>
+
+#include "QCamHGroupBox.hpp"
 #include "QCam.hpp"
 
 #define CAMSTACK_SIZE	8
@@ -51,7 +52,7 @@ private :
    // cam list
    QCam* camTab[CAMSTACK_SIZE];
    // group box list
-   Q3HGroupBox* groupTab[CAMSTACK_SIZE];
+   QCamHGroupBox* groupTab[CAMSTACK_SIZE];
    // last +1 cam index
    int camIndex;
 };

@@ -35,10 +35,10 @@ MA  02110-1301, USA.
 #include <Qt/qprogressbar.h>
 
 #include "pwc-ioctl.h"
+#include "QCamHGroupBox.hpp"
 #include "QCamV4L2.hpp"
 
 class QCamSlider;
-class Q3HGroupBox;
 class QCamRadioBox;
 class QLCDNumber;
 class QCheckBox;
@@ -52,7 +52,7 @@ class SCmodTucLed;
 class QCamVesta : public QCamV4L2 {
    Q_OBJECT
 public:
-   QCamVesta(const char * devpath="/dev/video0");
+   QCamVesta(const char* devpath="/dev/video0");
    ~QCamVesta();
    int getGain() const;
    int getExposure() const;
@@ -64,18 +64,18 @@ public:
    int getGama() const;
    int getFrameRate() const;
    int getType() const {return type_;}
-   void setSCmodImpl(SCmod *impl) {SCmodCtrl_=impl;}
-   const QSize * getAllowedSize() const;
+   void setSCmodImpl(SCmod* impl) {SCmodCtrl_=impl;}
+   const QSize* getAllowedSize() const;
 protected:
    struct video_window window_;
-   QWidget *  buildGUI(QWidget * parent);
+   QWidget*  buildGUI(QWidget* parent);
    virtual void refreshPictureSettings();
    friend class SCmodTucLed;
    friend class SCmoduSC2Led;
 
 private:
    void init();
-   void initRemoteControlLongExposure(QWidget * remoteCTRL);
+   void initRemoteControlLongExposure(QWidget* remoteCTRL);
    void getWhiteBalance();
    void setWhiteBalance();
    void setLed(int on, int off) const;
@@ -90,26 +90,26 @@ private:
    int whiteBalanceBlue_;
    mutable int lastGain_;
    /* for remote controle */
-   QCamSlider * remoteCTRLgama_;
-   QCamSlider * remoteCTRLgain_;
-   QCamRadioBox * remoteCTRLWhiteBalance_;
-   QCamSlider * remoteCTRLWBred_;
-   QCamSlider * remoteCTRLWBblue_;
-   QCamSlider * remoteCTRLexposure_;
-   QCamSlider * remoteCTRLcompression_;
-   QCamSlider * remoteCTRLnoiseRemoval_;
-   QCamSlider * remoteCTRLsharpness_;
-   Q3HGroupBox * remoteCTRLframeRate_;
-   QCamComboBox * remoteCTRLframeRate2_;
+   QCamSlider* remoteCTRLgama_;
+   QCamSlider* remoteCTRLgain_;
+   QCamRadioBox* remoteCTRLWhiteBalance_;
+   QCamSlider* remoteCTRLWBred_;
+   QCamSlider* remoteCTRLWBblue_;
+   QCamSlider* remoteCTRLexposure_;
+   QCamSlider* remoteCTRLcompression_;
+   QCamSlider* remoteCTRLnoiseRemoval_;
+   QCamSlider* remoteCTRLsharpness_;
+   QCamHGroupBox* remoteCTRLframeRate_;
+   QCamComboBox* remoteCTRLframeRate2_;
    enum SCmodType { SCmodNone,SCmodPPort,SCmodLed,SCmodSerial, SCmodPPort2};
-   QCamComboBox * SCmodSelector_;
-   QLineEdit * longExposureTime_;
-   QProgressBar * exposureTimeLeft_;
-   QLCDNumber * exposureTime_;
+   QCamComboBox* SCmodSelector_;
+   QLineEdit* longExposureTime_;
+   QProgressBar* exposureTimeLeft_;
+   QLCDNumber* exposureTime_;
    int multiplicateur_;
    int skippedFrame_;
    int type_;
-   SCmod * SCmodCtrl_;
+   SCmod* SCmodCtrl_;
    //bool rawBayerMode_;
    uchar* mmapCapture();
 

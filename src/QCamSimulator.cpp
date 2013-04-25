@@ -21,10 +21,10 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qpixmap.h>
 
-#include <Qt3Support/q3hgroupbox.h>
 #include <Qt3Support/q3hbox.h>
 
 #include "QCamVGroupBox.hpp"
+#include "QCamHGroupBox.hpp"
 #include "SettingsBackup.hpp"
 #include "QCamUtilities.hpp"
 #include "QCamSimulator.hpp"
@@ -89,7 +89,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    QCamVGroupBox* settingsBox=new QCamVGroupBox(QString("Settings"),remoteCTRL);
 
    // RA zone
-   Q3HGroupBox* raZone=new Q3HGroupBox(QString("RA"),settingsBox);
+   QCamHGroupBox* raZone=new QCamHGroupBox(QString("RA"),settingsBox);
    raSpeedSlider_=new QCamSlider(QString("Speed : "),false,raZone,0,20,false,false);
 
    // left button
@@ -131,7 +131,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
       raCenter_->setText("Center");
 
    // DEC zone
-   Q3HGroupBox* decZone=new Q3HGroupBox(QString("DEC"),settingsBox);
+   QCamHGroupBox* decZone=new QCamHGroupBox(QString("DEC"),settingsBox);
    decSpeedSlider_=new QCamSlider(QString("Speed : "),false,decZone,0,20,false,false);
 
    // up button

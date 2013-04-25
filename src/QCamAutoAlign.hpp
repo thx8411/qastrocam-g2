@@ -27,6 +27,7 @@ MA  02110-1301, USA.
 
 #include <string>
 
+#include "QCamHGroupBox.hpp"
 #include "QCam.hpp"
 #include "ShiftInfo.hpp"
 
@@ -36,7 +37,6 @@ class ShiftInfo;
 class QHistogram;
 class QVectorMap;
 class QCamSlider;
-class Q3HGroupBox;
 class QCheckBox;
 
 /** realign the frames of an other QCam object.
@@ -71,7 +71,7 @@ private:
    QCamFindShift * tracker_;
    ShiftInfo currentShift_;
    QCamFrame yuvFrame_;
-   Q3HGroupBox * findShiftWidget_;
+   QCamHGroupBox * findShiftWidget_;
    QWidget * findShiftCtrl_;
 #define ONE_MAP 1
 #if ONE_MAP

@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qprogressbar.h>
 
+#include "QCamHGroupBox.hpp"
 #include "QCamComboBox.hpp"
 #include "QCamV4L2.hpp"
 
@@ -43,7 +44,7 @@ public:
    QWidget * buildGUI(QWidget * parent);
 private:
    // gui
-   Q3HGroupBox* remoteCTRLlx;
+   QCamHGroupBox* remoteCTRLlx;
    // lx mode widgets
    QLabel * lxLabel1;
    QLabel * lxRate;

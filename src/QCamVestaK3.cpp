@@ -48,7 +48,6 @@ MA  02110-1301, USA.
 
 #include <Qt3Support/q3vbox.h>
 #include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3hgroupbox.h>
 
 #include "QCamVestaK3.hpp"
 #include "QGridBox.hpp"
@@ -810,7 +809,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    QToolTip::add(restoreFactorySettingsB,tr("Restore factory default settings"));
    connect(restoreFactorySettingsB,SIGNAL(released()),this,SLOT(restoreFactorySettings()));
 
-   remoteCTRLframeRate_ =new Q3HGroupBox(tr("fps / long exposure"),remoteCTRL);
+   remoteCTRLframeRate_ =new QCamHGroupBox(tr("fps / long exposure"),remoteCTRL);
    int frameRate[]={5,10,15,20,25,30};
    remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
    QToolTip::add(remoteCTRLframeRate2_,tr("Camera frame rate"));

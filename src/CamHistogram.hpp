@@ -32,13 +32,13 @@ MA  02110-1301, USA.
 #include <Qt/qprogressbar.h>
 
 #include "QCamVGroupBox.hpp"
+#include "QCamHGroupBox.hpp"
 #include "QCamClient.hpp"
 
 class QPushButton;
 class QWidget;
 class QLCDNumber;
 class Q3HBox;
-class Q3HGroupBox;
 class QLabel;
 class QHistogram;
 class QCam;
@@ -56,7 +56,7 @@ public:
 protected slots:
    void newFrame();
 private:
-   Q3HGroupBox * mainWindow_;
+   QCamHGroupBox * mainWindow_;
    QCamVGroupBox * histoGroup_;
    QHistogram * histogramArea_;
    QCamVGroupBox * focusGroup_;

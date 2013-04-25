@@ -42,7 +42,6 @@ MA  02110-1301, USA.
 
 #include <Qt3Support/q3vbox.h>
 #include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3hgroupbox.h>
 
 #include "QCam.hpp"
 #include "QCamComboBox.hpp"
@@ -507,7 +506,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    setCaptureFile(captureFile_.c_str());
 
    /* periodic capture */
-   Q3HGroupBox * savePeriodicGroup = new Q3HGroupBox("Periodic capture",
+   QCamHGroupBox * savePeriodicGroup = new QCamHGroupBox("Periodic capture",
                                                    saveGroup);
    int valueList[]={0,1,2};
    const char* labelList[] = {"none","snap.","sequ."};

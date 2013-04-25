@@ -34,6 +34,7 @@ MA  02110-1301, USA.
 #include <Qt/qradiobutton.h>
 
 #include "QCamVGroupBox.hpp"
+#include "QCamHGroupBox.hpp"
 #include "QCam.hpp"
 
 #define QCAM_ADD_COLOR
@@ -51,7 +52,6 @@ class elementaryFrame;
 class QCamRadioBox;
 class QCamComboBox;
 class QCheckBox;
-class Q3HGroupBox;
 
 #define MultiSatMode
 
@@ -119,7 +119,7 @@ class QCamAdd : public QCam {
    QRadioButton* frameAverage;
    QRadioButton* frameMedian;
 
-   Q3HGroupBox* accumulationWidget_;
+   QCamHGroupBox* accumulationWidget_;
    QCamComboBox* remoteCTRLnumOfActiveBuffer_;
    QProgressBar* bufferFill_;
    QPushButton* resetBufferFill_;
