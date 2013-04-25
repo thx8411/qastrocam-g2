@@ -26,7 +26,6 @@ MA  02110-1301, USA.
 #include <Qt/qcheckbox.h>
 
 #include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3vbox.h>
 
 #include "QCamAutoGuidageSimple.hpp"
 #include "QTelescope.hpp"
