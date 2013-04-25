@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2012   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -24,10 +24,8 @@ MA  02110-1301, USA.
 #include <Qt/qobject.h>
 #include <Qt/qstring.h>
 #include <Qt/qwidget.h>
-#include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hgroupbox.h>
 
-//#include <Qt/qwtplot3d-qt3/qwt3d_surfaceplot.h>
+#include <Qt3Support/q3vbox.h>
 
 #include "QCam.hpp"
 #include "QCamSelection.hpp"

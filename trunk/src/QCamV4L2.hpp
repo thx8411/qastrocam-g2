@@ -34,7 +34,6 @@ MA  02110-1301, USA.
 #include <Qt/qwidget.h>
 
 #include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hgroupbox.h>
 
 #include "QCam.hpp"
 #include "SCmod.hpp"
