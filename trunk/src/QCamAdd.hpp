@@ -33,6 +33,7 @@ MA  02110-1301, USA.
 #include <Qt/qgroupbox.h>
 #include <Qt/qradiobutton.h>
 
+#include "QCamVGroupBox.hpp"
 #include "QCam.hpp"
 
 #define QCAM_ADD_COLOR
@@ -50,7 +51,6 @@ class elementaryFrame;
 class QCamRadioBox;
 class QCamComboBox;
 class QCheckBox;
-class Q3VGroupBox;
 class Q3HGroupBox;
 
 #define MultiSatMode
@@ -58,7 +58,7 @@ class Q3HGroupBox;
 /** Stacks a serie of frame from an other QCam object.*/
 class QCamAdd : public QCam {
    Q_OBJECT
-   QCam * cam_;
+   QCam* cam_;
    /** num total of buffer currently activated (they can
        not be all in use) */
    int numOfActivatedBuffers_;
@@ -68,7 +68,7 @@ class QCamAdd : public QCam {
    int curBuff_;
    void* integrationBuff_;
 
-   QCamFrame * frameHistory_;
+   QCamFrame* frameHistory_;
    mutable QCamFrame computedFrame_;
    QSize curSize_;
    int maxYValue_;
@@ -119,19 +119,19 @@ class QCamAdd : public QCam {
    QRadioButton* frameAverage;
    QRadioButton* frameMedian;
 
-   Q3HGroupBox * accumulationWidget_;
-   QCamComboBox *remoteCTRLnumOfActiveBuffer_;
-   QProgressBar * bufferFill_;
-   QPushButton * resetBufferFill_;
-   Q3VGroupBox * displayOptions_;
-   QCamSlider *remoteCTRLmaxYvalue_;
-   QCamSlider *remoteCTRLminYvalue_;
-   QCamRadioBox * modeDisplayButton_;
-   QCheckBox * invDisplayButton_;
+   Q3HGroupBox* accumulationWidget_;
+   QCamComboBox* remoteCTRLnumOfActiveBuffer_;
+   QProgressBar* bufferFill_;
+   QPushButton* resetBufferFill_;
+   QCamVGroupBox* displayOptions_;
+   QCamSlider* remoteCTRLmaxYvalue_;
+   QCamSlider* remoteCTRLminYvalue_;
+   QCamRadioBox* modeDisplayButton_;
+   QCheckBox* invDisplayButton_;
 #ifdef MultiSatMode
-   QCamRadioBox * maxCrSaturatedButton_;
+   QCamRadioBox* maxCrSaturatedButton_;
 #else
-   QCheckBox * maxCrSaturatedButton_;
+   QCheckBox* maxCrSaturatedButton_;
 #endif
 public:
    QCamAdd(QCam* cam);
@@ -139,7 +139,7 @@ public:
    void resize(const QSize & s) {cam_->resize(s);}
    virtual const QSize * getAllowedSize() const { return QCam::getAllowedSize();}
    ~QCamAdd();
-   QWidget * buildGUI(QWidget * parent);
+   QWidget* buildGUI(QWidget * parent);
    QCamFrame yuvFrame() const;
 public slots:
    void setNumOfBuffer(int nbuf);

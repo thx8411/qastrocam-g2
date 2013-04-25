@@ -17,16 +17,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <Qt3Support/q3vbox.h>
+#include <Qt/qlabel.h>
 #include <Qt/qmessagebox.h>
 #include <Qt/qtooltip.h>
 
+#include <Qt3Support/q3vbox.h>
+
+#include "QCamVGroupBox.hpp"
 #include "QSetting.hpp"
-
-
 #include "QCamUtilities.hpp"
-//Added by qt3to4:
-#include <Qt/qlabel.h>
 #include "SettingsBackup.hpp"
 
 // settings object, needed everywhere
@@ -71,7 +70,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding6=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding6,5);
    // telescope box
-   telescopeBox=new Q3VGroupBox("Telescope control",remoteCTRL_);
+   telescopeBox=new QCamVGroupBox("Telescope control",remoteCTRL_);
    remoteCTRL_->setStretchFactor(telescopeBox,0);
    lineOne=new Q3HBox(telescopeBox);
    padding0=new QWidget(lineOne);
@@ -119,7 +118,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding9=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding9,5);
    // modules box
-   modulesBox=new Q3VGroupBox("Modules",remoteCTRL_);
+   modulesBox=new QCamVGroupBox("Modules",remoteCTRL_);
    QToolTip::add(modulesBox,tr("Modules to activate"));
    remoteCTRL_->setStretchFactor(modulesBox,0);
    lineFive=new Q3HBox(modulesBox);
@@ -132,7 +131,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    padding8=new QWidget(remoteCTRL_);
    remoteCTRL_->setStretchFactor(padding8,5);
    // options box
-   optionsBox=new Q3VGroupBox("Options",remoteCTRL_);
+   optionsBox=new QCamVGroupBox("Options",remoteCTRL_);
    QToolTip::add(optionsBox,tr("Options to activate"));
    remoteCTRL_->setStretchFactor(optionsBox,0);
    lineThree=new Q3HBox(optionsBox);

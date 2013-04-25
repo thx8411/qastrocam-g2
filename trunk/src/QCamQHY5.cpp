@@ -28,9 +28,9 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qprogressbar.h>
 
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hbox.h>
 
+#include "QCamVGroupBox.hpp"
 #include "SettingsBackup.hpp"
 #include "QCamQHY5.hpp"
 
@@ -329,7 +329,7 @@ const QSize & QCamQHY5::size() const {
 
 QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
-   Q3VGroupBox* settingsBox=new Q3VGroupBox(QString("Settings"),remoteCTRL);
+   QCamVGroupBox* settingsBox=new QCamVGroupBox(QString("Settings"),remoteCTRL);
 
    Q3HBox* filtersBox=new Q3HBox(settingsBox);
    // denoise

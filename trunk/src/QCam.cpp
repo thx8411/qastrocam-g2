@@ -419,7 +419,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       }
    }
 
-   Q3VGroupBox * saveGroup = new Q3VGroupBox("Save Images",remoteCTRL_);
+   QCamVGroupBox* saveGroup = new QCamVGroupBox("Save Images",remoteCTRL_);
    buttons_=new Q3HBox(saveGroup);
 
    new QLabel("Prefix:",buttons_);
@@ -539,7 +539,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       saveGroup->hide();
 
    if (sizeTable && !sizeTable[0].isEmpty()) {
-      sourceGroup= new Q3VGroupBox("Source",remoteCTRL_);
+      sourceGroup= new QCamVGroupBox("Source",remoteCTRL_);
       Q3HBox* sizeGroup=new Q3HBox(sourceGroup);
 
       int size=0;

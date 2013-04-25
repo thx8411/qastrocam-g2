@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,11 +23,11 @@ MA  02110-1301, USA.
 #ifndef _QCamFindShift_hotSpot_hpp_
 #define _QCamFindShift_hotSpot_hpp_
 
+#include "QCamVGroupBox.hpp"
 #include "QCamFindShift.hpp"
 #include "Vector2D.hpp"
 #include "QTelescope.hpp"
 
-class Q3VGroupBox;
 class QCamSlider;
 class QFrameDisplay;
 
@@ -94,10 +94,10 @@ private:
    QCamFrame centerImg_;
 
    /* GUI data */
-   Q3VGroupBox * mainBox_;
-   QCamSlider * seuilSlider_;
-   QCamSlider * bigBoxSlider_;
-   QFrameDisplay * dispImgCenter_;
+   QCamVGroupBox* mainBox_;
+   QCamSlider* seuilSlider_;
+   QCamSlider* bigBoxSlider_;
+   QFrameDisplay* dispImgCenter_;
    bool autoSeuil_;
 };
 

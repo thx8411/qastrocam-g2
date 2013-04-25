@@ -23,16 +23,17 @@ MA  02110-1301, USA.
 
 #include <Qt/qobject.h>
 #include <Qt/qwidget.h>
-#include <Qt3Support/q3hbox.h>
-#include <Qt3Support/q3vbox.h>
-#include <Qt3Support/q3hgroupbox.h>
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt/qpushbutton.h>
 #include <Qt/qlineedit.h>
 #include <Qt/qcheckbox.h>
 #include <Qt/qlayout.h>
 #include <Qt/qlabel.h>
 
+#include <Qt3Support/q3hbox.h>
+#include <Qt3Support/q3vbox.h>
+#include <Qt3Support/q3hgroupbox.h>
+
+#include "QCamVGroupBox.hpp"
 #include "QDirectoryChooser.hpp"
 #include "QFileChooser.hpp"
 #include "QCamComboBox.hpp"
@@ -74,7 +75,7 @@ private :
    QLabel* videoDeviceLabel;
    QLineEdit* videoDeviceEntry;
    QFileChooser* videoDeviceChooser;
-   Q3VGroupBox* telescopeBox;
+   QCamVGroupBox* telescopeBox;
    Q3HBox* lineOne;
    Q3HBox* lineTwo;
    QLabel* telescopeListLabel;
@@ -99,14 +100,14 @@ private :
    QLineEdit* lxDeviceEntry;
    QFileChooser* lxDeviceChooser;
    QCheckBox* lxLevels;
-   Q3VGroupBox* modulesBox;
+   QCamVGroupBox* modulesBox;
    Q3HBox* lineFive;
    Q3HBox* lineSix;
    QCheckBox* modulesAdd;
    QCheckBox* modulesMax;
    QCheckBox* modulesKing;
    QCheckBox* modulesAlign;
-   Q3VGroupBox* optionsBox;
+   QCamVGroupBox* optionsBox;
    Q3HBox* lineThree;
    Q3HBox* lineFour;
    Q3HBox* lineSeven;

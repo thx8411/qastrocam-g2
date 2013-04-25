@@ -32,8 +32,7 @@ MA  02110-1301, USA.
 #include <Qt/qobject.h>
 #include <Qt/qlabel.h>
 
-#include <Qt3Support/q3vgroupbox.h>
-
+#include "QCamVGroupBox.hpp"
 #include "QCamFrame.hpp"
 #include "Vector2D.hpp"
 
@@ -151,7 +150,7 @@ protected:
    // allowed sizes table
    const QSize* sizeTable;
    // gui
-   Q3VGroupBox* sourceGroup;
+   QCamVGroupBox* sourceGroup;
 private:
    // hide bool
    bool hideButtons_;

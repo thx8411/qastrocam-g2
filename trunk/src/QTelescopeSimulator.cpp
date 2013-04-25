@@ -24,7 +24,6 @@ MA  02110-1301, USA.
 #include <Qt/qpixmap.h>
 
 #include <Qt3Support/Q3GridLayout>
-#include <Qt3Support/q3vgroupbox.h>
 
 #include "QTelescopeSimulator.hpp"
 #include "QCamUtilities.hpp"
@@ -48,7 +47,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QString speed_="Speed : ";
    widget()->setCaption("Simulator");
 
-   simulatorWidget_=new Q3VGroupBox("Telescope Simulator",NULL);
+   simulatorWidget_=new QCamVGroupBox("Telescope Simulator",NULL);
 
    QCamUtilities::registerWidget(simulatorWidget_);
    QCamUtilities::setQastrocamIcon(simulatorWidget_);

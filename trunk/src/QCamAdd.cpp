@@ -31,7 +31,6 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qboxlayout.h>
 
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hgroupbox.h>
 
 #include "QCamSlider.hpp"
@@ -705,7 +704,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    QToolTip::add(bufferFill_,tr("Frame stack progress"));
    QToolTip::add(resetBufferFill_,tr("Resets the frame stack"));
 
-   displayOptions_=new Q3VGroupBox(tr("Display Options"),remoteCTRL);
+   displayOptions_=new QCamVGroupBox(tr("Display Options"),remoteCTRL);
    remoteCTRLmaxYvalue_=new QCamSlider(tr("max Lum."),true,displayOptions_,
                                        2,numOfBuffers_*255);
    remoteCTRLminYvalue_=new QCamSlider(tr("min Lum."),true,displayOptions_,

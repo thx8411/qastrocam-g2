@@ -27,9 +27,9 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qlabel.h>
 
-#include <Qt3Support/q3vgroupbox.h>
 #include <Qt3Support/q3hbox.h>
 
+#include "QCamVGroupBox.hpp"
 #include "SettingsBackup.hpp"
 #include "QCamQHY6.hpp"
 
@@ -268,7 +268,7 @@ const QSize & QCamQHY6::size() const {
 
 QWidget * QCamQHY6::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
-   Q3VGroupBox* settingsBox=new Q3VGroupBox(QString("Settings"),remoteCTRL);
+   QCamVGroupBox* settingsBox=new QCamVGroupBox(QString("Settings"),remoteCTRL);
 
    // gain
    gainSlider=new QCamSlider("Gain",false,settingsBox,0,63,false,false);
