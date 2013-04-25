@@ -27,8 +27,7 @@ MA  02110-1301, USA.
 #include <Qt/qslider.h>
 #include <Qt/qlabel.h>
 #include <Qt/qcheckbox.h>
-
-#include <Qt3Support/Q3GridLayout>
+#include <Qt/qgridlayout.h>
 
 #include "QCamVGroupBox.hpp"
 
@@ -47,7 +46,6 @@ MA  02110-1301, USA.
 #define TELESCOPE_QHY6		11
 
 class QPushButton;
-class Q3GridLayout;
 class QWidget;
 
 /** Base class to command a telescope.
@@ -59,7 +57,7 @@ public:
    /** build the gui of the QTelescope widget.
        if it is overloaded, parents buildGUI should be called
        by new version. */
-   virtual void buildGUI(QWidget * parent=0);
+   virtual void buildGUI(QWidget* parent=0);
    // update shifts when a new frame comes
    virtual void Update(double, double) {};
    // reset telescope when tracker reseted
@@ -68,20 +66,20 @@ public:
    virtual ~QTelescope();
    virtual int telescopeType() { return(TELESCOPE_VIRTUAL); }
 protected:
-   QWidget * widget();
+   QWidget* widget();
    double currentSpeed;
 private:
-   QCamVGroupBox * mainWidget_;
-   Q3GridLayout * arrowsLayout_;
-   QWidget * arrows_;
+   QCamVGroupBox* mainWidget_;
+   QGridLayout* arrowsLayout_;
+   QWidget* arrows_;
    // speed stuff
    QSlider* speedSlider_;
    QLabel* speedValue_;
    // move buttons
-   QPushButton * upButton_;
-   QPushButton * downButton_;
-   QPushButton * leftButton_;
-   QPushButton * rightButton_;
+   QPushButton* upButton_;
+   QPushButton* downButton_;
+   QPushButton* leftButton_;
+   QPushButton* rightButton_;
    // swap box
    QCheckBox* raSwap_;
    QCheckBox* decSwap_;

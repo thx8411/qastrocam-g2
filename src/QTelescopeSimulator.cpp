@@ -22,8 +22,7 @@ MA  02110-1301, USA.
 #include <Qt/qlayout.h>
 #include <Qt/qwidget.h>
 #include <Qt/qpixmap.h>
-
-#include <Qt3Support/Q3GridLayout>
+#include <Qt/qgridlayout.h>
 
 #include "QTelescopeSimulator.hpp"
 #include "QCamUtilities.hpp"
@@ -53,7 +52,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QCamUtilities::setQastrocamIcon(simulatorWidget_);
 
    QWidget* simulatorArrows_=new QWidget(simulatorWidget_);
-   Q3GridLayout* simulatorArrowsLayout_=new Q3GridLayout(simulatorArrows_,3,3);
+   QGridLayout* simulatorArrowsLayout_=new QGridLayout(simulatorArrows_,3,3);
 
    // up label
    buttonUp_=new QLabel(simulatorArrows_);
