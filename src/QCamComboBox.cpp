@@ -29,14 +29,14 @@ MA  02110-1301, USA.
 using namespace std;
 
 QCamComboBox::QCamComboBox(const char* label,QWidget* parent, int numOfbutton, int valueList[],
-                           const char* labelList[]):QComboBox(false, parent, label) {
+                           const char* labelList[]):QComboBox(parent) {
 
    valueList_=(int*)malloc(numOfbutton*sizeof(int));
    numOfButton_=numOfbutton;
 
    for (int i=0;i<numOfButton_;++i) {
       valueList_[i]=valueList[i];
-      insertItem(labelList?QString(labelList[i]):QString("%1").arg(valueList_[i]));
+      addItem(labelList?QString(labelList[i]):QString("%1").arg(valueList_[i]));
    }
    connect(this,SIGNAL(activated(int)),this,SLOT(buttonClicked(int)));
    currentValue_=valueList[0];
@@ -49,7 +49,7 @@ QCamComboBox::~QCamComboBox() {
 
 int QCamComboBox::getPosition(const char* item) {
    for(int i=0; i<numOfButton_;i++)
-	if(QString(item)==text(i)) return(i);
+	if(QString(item)==QString::number(i)) return(i);
    return(-1);
 }
 
@@ -60,15 +60,13 @@ void QCamComboBox::updateSignal(int value) {
 void QCamComboBox::update(int value) {
    for (int i=0;i<numOfButton_;++i) {
       if (valueList_[i]==value) {
-         setCurrentItem(i);
+         setCurrentIndex(i);
          currentValue_=value;
          //emit(change(value));
          return;
       }
    }
-   cout << "invalid value "<<value
-        <<" for widget QCamComboBox::"
-        << name()<<endl;
+   cout << "invalid value " << value <<" for widget QCamComboBox" << endl;
 }
 
 void QCamComboBox::buttonClicked(int id) {

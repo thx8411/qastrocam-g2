@@ -55,8 +55,8 @@ maxShift_(this)
    /*keyMin_="GUIDE_";
    keyMin_+=label;
    keyMin_+="_MIN";
-   if(settings.haveKey(keyMin_.ascii())) {
-      setMin(QString(settings.getKey(keyMin_.ascii())));
+   if(settings.haveKey(keyMin_.toAscii())) {
+      setMin(QString(settings.getKey(keyMin_.toAscii())));
    } else
       setMin(2);*/
 
@@ -64,8 +64,8 @@ maxShift_(this)
    /*keyMax_="GUIDE_";
    keyMax_+=label;
    keyMax_+="_MAX";
-   if(settings.haveKey(keyMax_.ascii())) {
-      setMax(QString(settings.getKey(keyMax_.ascii())));
+   if(settings.haveKey(keyMax_.toAscii())) {
+      setMax(QString(settings.getKey(keyMax_.toAscii())));
    } else
       setMax(10);*/
 
@@ -88,8 +88,8 @@ void TrackingControl::init() {
    keyMin_="GUIDE_";
    keyMin_+=label_.text();
    keyMin_+="_MIN";
-   if(settings.haveKey(keyMin_.ascii())) {
-      setMin(QString(settings.getKey(keyMin_.ascii())));
+   if(settings.haveKey(keyMin_.toAscii())) {
+      setMin(QString(settings.getKey(keyMin_.toAscii())));
    } else
       setMin(2);
 
@@ -97,8 +97,8 @@ void TrackingControl::init() {
    keyMax_="GUIDE_";
    keyMax_+=label_.text();
    keyMax_+="_MAX";
-   if(settings.haveKey(keyMax_.ascii())) {
-      setMax(QString(settings.getKey(keyMax_.ascii())));
+   if(settings.haveKey(keyMax_.toAscii())) {
+      setMax(QString(settings.getKey(keyMax_.toAscii())));
    } else
       setMax(10);
 }
@@ -112,7 +112,7 @@ void TrackingControl::setMin(int min) {
    emit(minChanged((double)min_));
 
    // save the value
-   settings.setKey(keyMin_.ascii(),minShift_.text().ascii());
+   settings.setKey(keyMin_.toAscii(),minShift_.text().toAscii());
 }
 void TrackingControl::setMax(int max) {
    max_=max;
@@ -120,15 +120,15 @@ void TrackingControl::setMax(int max) {
    emit(maxChanged((double)max_));
 
    // save the value
-   settings.setKey(keyMax_.ascii(),maxShift_.text().ascii());
+   settings.setKey(keyMax_.toAscii(),maxShift_.text().toAscii());
 }
 
 void TrackingControl::setMin(const QString & val) {
-    setMin(atoi(val.ascii()));
+    setMin(atoi(val.toAscii()));
 }
 
 void TrackingControl::setMax(const QString & val) {
-   setMax(atoi(val.ascii()));
+   setMax(atoi(val.toAscii()));
 }
 
 void TrackingControl::setMoveDir(MoveDir move) {
