@@ -79,8 +79,8 @@ void QCamClient::resume() {
 QWidget * QCamClient::buildGUI(QWidget *parent) {
    QIcon* tmpIcon;
    QPushButton* pauseCapture_=new QPushButton(parent);
-   QToolTip::add(pauseCapture_,"Suspend the current capture");
-   pauseCapture_->setToggleButton(true);
+   pauseCapture_->setToolTip("Suspend the current capture");
+   pauseCapture_->setCheckable(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    if(tmpIcon!=NULL) {
       pauseCapture_->setIcon(*tmpIcon);

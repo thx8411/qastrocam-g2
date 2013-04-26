@@ -202,17 +202,12 @@ void QCam::setCaptureFile(const QString & afile) {
    if (file.size() !=0) {
       captureFile_=file;
       if (guiBuild()) {
-         QToolTip::add(snapshot_,
-                       (string("Save snapshot image in file '")
-                        + captureFile_ +"-<date>.<type>'").c_str());
+         snapshot_->setToolTip((string("Save snapshot image in file '") + captureFile_ +"-<date>.<type>'").c_str());
 #if HAVE_AVIFILE_H || HAVE_LIBAV_H
-         QToolTip::add(capture_,
-                       (string("Save sequence in raw/lossless AVI file or picture sequence '")
+         capture_->setToolTip((string("Save sequence in raw/lossless AVI file or picture sequence '")
                         + captureFile_ +"-<date>.<type>'").c_str());
 #else
-         QToolTip::add(capture_,
-                       (string("Save sequence in directory '")
-                        + captureFile_ +"-<date>'").c_str());
+         capture_->setToolTip((string("Save sequence in directory '") + captureFile_ +"-<date>'").c_str());
 #endif
       }
       if (guiBuild()&&fileNameW_->text()=="qcam") {
@@ -311,7 +306,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    // frames button
    displayFramesButton_ = new QPushButton(buttonBox_);
-   QToolTip::add(displayFramesButton_,"display frames");
+   displayFramesButton_->setToolTip("display frames");
    displayFramesButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayFrames.png");
    if(tmpIcon!=NULL) {
@@ -327,7 +322,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    // histogram button
    displayHistogramButton_ = new QPushButton(buttonBox_);
-   QToolTip::add(displayHistogramButton_,"display frames histograms,\nand focus information");
+   displayHistogramButton_->setToolTip("display frames histograms,\nand focus information");
    displayHistogramButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayHistogram.png");
    if(tmpIcon!=NULL) {
@@ -425,15 +420,14 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    fileNameW_->setText(captureFile_.c_str());
    connect(fileNameW_,SIGNAL(textChanged(const QString&)),
            this,SLOT(setCaptureFile(const QString&)));
-   QToolTip::add(fileNameW_,
-                 "prefix used for saved images");
+   fileNameW_->setToolTip("prefix used for saved images");
    dirChooser_ = new QDirectoryChooser(buttons_);
    connect(dirChooser_,SIGNAL(directoryChanged(const QString &)),this,SLOT(setDirectory(const QString &)));
 
    imgFormatBox_ = new QCamComboBox("Save Format",buttons_,
                                     size,tmpTab,
                                     fileFormatList_);
-   QToolTip::add(imgFormatBox_,tr("Output format"));
+   imgFormatBox_->setToolTip(tr("Output format"));
    connect(imgFormatBox_,SIGNAL(change(int)),
            this,SLOT(updateFileFormat(int)));
    imgFormatBox_->update(fileFormatCurrent_);
@@ -461,7 +455,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    // pause button
    pauseCapture_=new QPushButton(buttons2);
-   QToolTip::add(pauseCapture_,"Suspend the current capture");
+   pauseCapture_->setToolTip("Suspend the current capture");
    pauseCapture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    if(tmpIcon!=NULL) {
@@ -476,7 +470,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    capturedFrame_->setNumDigits(2);
    capturedFrame_->show();
    capturedFrame_->setDisabled(true);
-   QToolTip::add(capturedFrame_,tr("Number of frames allready captured"));
+   capturedFrame_->setToolTip(tr("Number of frames allready captured"));
 
    maxCaptureInSequenceW_=new QLineEdit(buttons2);
    maxCaptureInSequenceW_->setMaxLength(4);
@@ -484,7 +478,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       setText(QString().sprintf("%d",maxCaptureInSequence_));
    connect(maxCaptureInSequenceW_,SIGNAL(textChanged(const QString&)),
            this,SLOT(maxCaptureInSequenceUpdated(const QString&)));
-   QToolTip::add(maxCaptureInSequenceW_,"Number of frames to capture");
+   maxCaptureInSequenceW_->setToolTip("Number of frames to capture");
 
    maxCaptureInSequenceW_->show();
 
@@ -509,17 +503,14 @@ QWidget * QCam::buildGUI(QWidget * parent) {
                                                    saveGroup);
    int valueList[]={0,1,2};
    const char* labelList[] = {"none","snap.","sequ."};
-   periodicCaptureW_ =
-      new QCamComboBox("Periodic capture",savePeriodicGroup,3,valueList,
-                       labelList);
-   QToolTip::add(periodicCaptureW_,tr("Kind of periodic capture"));
+   periodicCaptureW_ = new QCamComboBox("Periodic capture",savePeriodicGroup,3,valueList,labelList);
+   periodicCaptureW_->setToolTip(tr("Kind of periodic capture"));
    connect(periodicCaptureW_,SIGNAL(change(int)),
            this,SLOT(periodicCapture(int)));
 
    timebetweenCaptureW_ = new QLineEdit(savePeriodicGroup);
    QToolTip::add(timebetweenCaptureW_,"Time between two automatic capture");
-   timebetweenCaptureW_->
-      setText(QString().sprintf("%d",timebetweenCapture_));
+   timebetweenCaptureW_->setText(QString().sprintf("%d",timebetweenCapture_));
    connect(timebetweenCaptureW_,SIGNAL(textChanged(const QString&)),
            this,SLOT(timebetweenCaptureUpdated(const QString&)));
    timebetweenCaptureW_->setMaxLength(4);
@@ -576,7 +567,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       setSizeFromAllowed(indexOfCurrentSize);
       connect(sizeCombo,SIGNAL(change(int)),this,SLOT(setSizeFromAllowed(int)));
       QWidget* padding2=new QWidget(sizeGroup);
-      QToolTip::add(sizeCombo,"Frame size");
+      sizeCombo->setToolTip("Frame size");
       if(size==1) sizeCombo->setEnabled(false);
 
       // resizing mode combo
@@ -585,7 +576,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       int valueList2[]={SCALING,CROPPING,BINNING};
       cropCombo=new QCamComboBox("Cropping mode",sizeGroup,3,valueList2,labelList2);
       QWidget* padding3=new QWidget(sizeGroup);
-      QToolTip::add(cropCombo,"Resizing mode");
+      cropCombo->setToolTip("Resizing mode");
 
       // read previous scale mode
       if(settings.haveKey("FRAME_MODE")) {
