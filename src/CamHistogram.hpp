@@ -31,6 +31,7 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qprogressbar.h>
 
+#include "QCamHBox.hpp"
 #include "QCamVGroupBox.hpp"
 #include "QCamHGroupBox.hpp"
 #include "QCamClient.hpp"
@@ -38,7 +39,6 @@ MA  02110-1301, USA.
 class QPushButton;
 class QWidget;
 class QLCDNumber;
-class Q3HBox;
 class QLabel;
 class QHistogram;
 class QCam;
@@ -56,19 +56,19 @@ public:
 protected slots:
    void newFrame();
 private:
-   QCamHGroupBox * mainWindow_;
-   QCamVGroupBox * histoGroup_;
-   QHistogram * histogramArea_;
-   QCamVGroupBox * focusGroup_;
-   QPushButton * resetFocus_;
-   QWidget * focusLevel_;
-   QHistogram * focusArea_;
-   Q3HBox * seeingGroup_;
-   QLabel * seeingLabel_;
-   QProgressBar * seeingLevel_;
-   //QLCDNumber * seeingValue_;
+   QCamHGroupBox* mainWindow_;
+   QCamVGroupBox* histoGroup_;
+   QHistogram* histogramArea_;
+   QCamVGroupBox* focusGroup_;
+   QPushButton* resetFocus_;
+   QWidget* focusLevel_;
+   QHistogram* focusArea_;
+   QCamHBox* seeingGroup_;
+   QLabel* seeingLabel_;
+   QProgressBar* seeingLevel_;
+   //QLCDNumber* seeingValue_;
    void init();
-   //QCam * cam_;
+   //QCam* cam_;
    int histogram_[256];
    int focusIndexValue_;
    double getDistFromNeibourg(int x,int y) const;

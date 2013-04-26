@@ -40,8 +40,6 @@ MA  02110-1301, USA.
 #include <Qt/qicon.h>
 #include <Qt/qstringlist.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVBox.hpp"
 #include "QCam.hpp"
 #include "QCamComboBox.hpp"
@@ -419,7 +417,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    }
 
    QCamVGroupBox* saveGroup = new QCamVGroupBox("Save Images",remoteCTRL_);
-   buttons_=new Q3HBox(saveGroup);
+   buttons_=new QCamHBox(saveGroup);
 
    new QLabel("Prefix:",buttons_);
    fileNameW_ = new  QLineEdit(buttons_);
@@ -439,7 +437,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
            this,SLOT(updateFileFormat(int)));
    imgFormatBox_->update(fileFormatCurrent_);
 
-   Q3HBox * buttons2=new Q3HBox(saveGroup);
+   QCamHBox * buttons2=new QCamHBox(saveGroup);
 
    // snapshot button
    snapshot_=new QPushButton(buttons2);
@@ -539,7 +537,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    if (sizeTable && !sizeTable[0].isEmpty()) {
       sourceGroup= new QCamVGroupBox("Source",remoteCTRL_);
-      Q3HBox* sizeGroup=new Q3HBox(sourceGroup);
+      QCamHBox* sizeGroup=new QCamHBox(sourceGroup);
 
       int size=0;
       while (!sizeTable[size].isEmpty())

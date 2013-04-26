@@ -24,19 +24,19 @@ MA  02110-1301, USA.
 
 #include <Qt/qobject.h>
 #include <Qt/qstring.h>
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qcheckbox.h>
 #include <Qt/qwidget.h>
 #include <Qt/qlineedit.h>
 #include <Qt/qlabel.h>
 
+#include "QCamHBox.hpp"
 #include "FrameAlgo.hpp"
 #include "QFileChooser.hpp"
 
 class FrameDark :  public FrameAlgo {
    Q_OBJECT
 private:
-    class Widget : public Q3HBox {
+    class Widget : public QCamHBox {
    public:
       ~Widget();
       Widget(QWidget * parent,const FrameDark * algo);

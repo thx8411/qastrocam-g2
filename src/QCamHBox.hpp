@@ -25,13 +25,13 @@ MA  02110-1301, USA.
 #include <QtCore/qcoreevent.h>
 
 //
-// Replacement for Q3HBox
+// Replacement for QCamHBox
 //
 
 class QCamHBox: public QWidget {
    Q_OBJECT
    public:
-      QCamHBox(QWidget* parent = NULL);
+      QCamHBox(QWidget* parent = NULL, const char* name = NULL, Qt::WFlags f = 0);
       ~QCamHBox();
       // for children detection
       bool event(QEvent *event);

@@ -30,8 +30,6 @@ MA  02110-1301, USA.
 #include <QtGui/QResizeEvent>
 #include <QtGui/QMouseEvent>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVBox.hpp"
 #include "QCam.hpp"
 #include "QCamUtilities.hpp"
@@ -71,34 +69,34 @@ void QCamSelection::commonInit(QWidget * parent) {
 
    QCamUtilities::registerWidget(mainWidget_);
 
-   buttonsContainer_ = new Q3HBox(mainWidget_);
+   buttonsContainer_ = new QCamHBox(mainWidget_);
 
    QWidget* padding1=new QWidget(buttonsContainer_);
    QLabel* label1=new QLabel(buttonsContainer_);
    label1->setText("Palette : ");
    label1->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-   buttonsContainer_->setStretchFactor(label1,0);
+   //buttonsContainer_->setStretchFactor(label1,0);
 
    int displayValues[]={Gray,Negate,FalseColor};
    const char * displayValuesLabel[]={"Gray","Negated", "False Color"};
    displayModeButton_ = new QCamComboBox(tr("Display type"),buttonsContainer_,3,
                                          displayValues,
                                          displayValuesLabel);
-   buttonsContainer_->setStretchFactor(displayModeButton_,0);
+   //buttonsContainer_->setStretchFactor(displayModeButton_,0);
 
    QWidget* padding2=new QWidget(buttonsContainer_);
 
    QLabel* label2=new QLabel(buttonsContainer_);
    label2->setText("Size : ");
    label2->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-   buttonsContainer_->setStretchFactor(label2,0);
+   //buttonsContainer_->setStretchFactor(label2,0);
 
    int sizeValues[]={0,1,2};
    const char * sizeValuesLabel[]={"32","64", "128"};
    sizeModeButton_ = new QCamComboBox(tr("Selection size"),buttonsContainer_,3,
                                          sizeValues,
                                          sizeValuesLabel);
-   buttonsContainer_->setStretchFactor(sizeModeButton_,0);
+   //buttonsContainer_->setStretchFactor(sizeModeButton_,0);
 
    QWidget* padding3=new QWidget(buttonsContainer_);
 

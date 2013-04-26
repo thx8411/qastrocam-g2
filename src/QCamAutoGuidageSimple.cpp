@@ -25,8 +25,6 @@ MA  02110-1301, USA.
 #include <Qt/qpushbutton.h>
 #include <Qt/qcheckbox.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamAutoGuidageSimple.hpp"
 #include "QTelescope.hpp"
 #include "QCam.hpp"
@@ -42,7 +40,7 @@ extern settingsBackup settings;
 //
 
 TrackingControl::TrackingControl(QString label, QWidget * parent, const char * name, Qt::WFlags f ) :
-Q3HBox(parent,name,f),
+QCamHBox(parent,name,f),
 label_(label,this),
 arrow_(this),
 currentShift_(4,this),
@@ -228,7 +226,7 @@ void QCamAutoGuidageSimple::setCenter(bool center) {
 QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    QWidget * mainBox = QCamAutoGuidage::buildGUI(parent);
 
-   Q3HBox * buttons=new Q3HBox(mainBox);
+   QCamHBox * buttons=new QCamHBox(mainBox);
 
    // RA inversion checkbutton
    QCheckBox * swapEWb = new QCheckBox(tr("swap E/W"),buttons);

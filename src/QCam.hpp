@@ -32,6 +32,7 @@ MA  02110-1301, USA.
 #include <Qt/qobject.h>
 #include <Qt/qlabel.h>
 
+#include "QCamHBox.hpp"
 #include "QCamVGroupBox.hpp"
 #include "QCamHGroupBox.hpp"
 #include "QCamFrame.hpp"
@@ -40,7 +41,6 @@ MA  02110-1301, USA.
 
 class QWidget;
 class QPushButton;
-class Q3HBox;
 class QImage;
 class QLabel;
 class QCamComboBox;
@@ -185,7 +185,7 @@ private:
    int timebetweenCapture_;
    QLineEdit * timebetweenCaptureW_;
    QTimer * periodicCaptureT_;
-   Q3HBox * buttons_;
+   QCamHBox * buttons_;
    mutable string oldFileName_;
    mutable int fileSeqenceNumber_;
    string directory_;

@@ -30,8 +30,6 @@ MA  02110-1301, USA.
 #include <QtGui/QResizeEvent>
 #include <QtGui/QMouseEvent>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVBox.hpp"
 #include "QCamUtilities.hpp"
 #include "QCam.hpp"
@@ -99,7 +97,7 @@ void QCamDisplay::setCaption() {
 void QCamDisplay::commonInit(QWidget * parent) {
    mainWidget_=new QCamVBox(parent);
 
-   buttonsContainer_ = new Q3HBox(mainWidget_);
+   buttonsContainer_ = new QCamHBox(mainWidget_);
 
    int displayValues[]={Color,Gray,Negate,FalseColor};
    const char * displayValuesLabel[]={"RGB","Gray","Negated", "False Color"};

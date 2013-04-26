@@ -44,8 +44,6 @@ MA  02110-1301, USA.
 #include <Qt/qmessagebox.h>
 #include <Qt/qlineedit.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVestaK2.hpp"
 #include "QGridBox.hpp"
 #include "QCamSlider.hpp"
@@ -700,7 +698,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    connect(this,SIGNAL(gamaChange(int)),remoteCTRLgama_,SLOT(setValue(int)));
    connect(remoteCTRLgama_,SIGNAL(valueChange(int)),this,SLOT(setGama(int)));
 
-   Q3HBox * settings=new Q3HBox(VctrlBox);
+   QCamHBox * settings=new QCamHBox(VctrlBox);
    QToolTip::add(settings,tr("save/restore settings of gain,exposure & white balance"));
 
    QPushButton *saveSettingsB =new QPushButton(tr("save"),settings);

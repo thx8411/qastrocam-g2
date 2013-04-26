@@ -29,7 +29,7 @@ MA  02110-1301, USA.
 QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
                        QWidget * parent,int minVal, int maxVal,
                        bool noSliderMove,bool displayPercent):
-   Q3HBox(parent),
+   QCamHBox(parent),
    labelTxt_(label) {
    percent_=displayPercent;
    slider_=NULL;
@@ -68,7 +68,7 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
 }
 
 void QCamSlider::polish() {
-   Q3HBox::polish();
+   QCamHBox::polish();
    if (checkBox_) {
       checkBox_->setChecked(true);
    }

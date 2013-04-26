@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,12 +19,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "FrameMirror.hpp"
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qpushbutton.h>
 #include <Qt/qtooltip.h>
 
+#include "FrameMirror.hpp"
 #include "QCamTrans.hpp"
 
 bool FrameMirror::transform(const QCamFrame in, QCamFrame & out) {
@@ -71,7 +69,7 @@ void FrameMirror::swapUpDown(bool val) {
 }
 
 FrameMirror::Widget::Widget(QWidget * parent,const FrameMirror * algo):
-   Q3HBox(parent) {
+   QCamHBox(parent) {
    upDown_ = new QPushButton(tr("swap Up/Down"),this);
    upDown_->setToggleButton(true);
    connect(upDown_,SIGNAL(toggled(bool)),algo,SLOT(swapUpDown(bool)));

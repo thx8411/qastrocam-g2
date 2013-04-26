@@ -28,9 +28,9 @@ MA  02110-1301, USA.
 #include <Qt/qcheckbox.h>
 #include <Qt/qslider.h>
 
-#include <Qt3Support/q3hbox.h>
+#include "QCamHBox.hpp"
 
-class QCamSlider : public Q3HBox {
+class QCamSlider : public QCamHBox {
    Q_OBJECT
 public:
    QCamSlider(const QString & label,
