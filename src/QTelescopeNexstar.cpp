@@ -75,7 +75,7 @@ QTelescopeNexstar::~QTelescopeNexstar() {
 void QTelescopeNexstar::buildGUI(QWidget * parent) {
    // build the window
    QTelescope::buildGUI(parent);
-   widget()->setCaption("Nexstar");
+   widget()->setWindowTitle("Nexstar");
 }
 
 void QTelescopeNexstar::goE(float shift) {

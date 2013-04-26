@@ -84,7 +84,7 @@ QTelescopeMCU::~QTelescopeMCU() {
 
 void QTelescopeMCU::buildGUI(QWidget * parent) {
    QTelescope::buildGUI(parent);
-   widget()->setCaption(version(versionFull).c_str());
+   widget()->setWindowTitle(version(versionFull).c_str());
 }
 
 string QTelescopeMCU::sendCommand(CommandType com,const string & param) {

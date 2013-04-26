@@ -66,7 +66,7 @@ QTelescopeLX200::~QTelescopeLX200() {
 
 void QTelescopeLX200::buildGUI(QWidget* parent) {
    QTelescope::buildGUI(parent);
-   widget()->setCaption("LX200 generic");
+   widget()->setWindowTitle("LX200 generic");
 }
 
 void QTelescopeLX200::sendCommand(CommandType c) {

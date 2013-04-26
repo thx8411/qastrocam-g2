@@ -127,7 +127,7 @@ void usage(const char * progName) {
 
 // tab widget
 QTabWidget* getAllRemoteCTRL(QWidget* parent=0) {
-   static QTabWidget* allRemote = new QTabWidget(parent,"allRemoteCTRL");
+   static QTabWidget* allRemote = new QTabWidget(parent);
    return allRemote;
 }
 
@@ -435,21 +435,22 @@ int main(int argc, char ** argv) {
 
    // main window setting
    QString caption;
-   QPixmap* tmpIcon;
+   QIcon* tmpIcon;
    QCamVBox mainWindow;
    caption=qastrocamName;
    caption+=" ";
    caption+=qastroCamVersion;
-   mainWindow.setCaption(caption);
+   mainWindow.setWindowTitle(caption);
    QPushButton quit(&mainWindow);
-   QObject::connect( &quit, SIGNAL(released()), &app, SLOT(quit()) );
+   QObject::connect(&quit, SIGNAL(released()), &app, SLOT(quit()) );
+   QObject::connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
    tmpIcon=QCamUtilities::getIcon("exit.png");
    if(tmpIcon) {
-      quit.setPixmap(*tmpIcon);
+      quit.setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       quit.setText("Quit");
-   app.setMainWidget(&mainWindow);
+   //app.setMainWidget(&mainWindow);
    getAllRemoteCTRL(&mainWindow);
 
    // std palette

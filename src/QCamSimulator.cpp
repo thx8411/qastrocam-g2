@@ -81,7 +81,7 @@ const QSize& QCamSimulator::size() const {
 }
 
 QWidget* QCamSimulator::buildGUI(QWidget * parent) {
-   QPixmap* tmpIcon;
+   QIcon* tmpIcon;
 
    QWidget* remoteCTRL=QCam::buildGUI(parent);
    QCamVGroupBox* settingsBox=new QCamVGroupBox(QString("Settings"),remoteCTRL);
@@ -94,7 +94,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    raLeft_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("left.png");
    if(tmpIcon!=NULL) {
-      raLeft_->setPixmap(*tmpIcon);
+      raLeft_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       raLeft_->setText("Left");
@@ -104,7 +104,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    raRight_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("right.png");
    if(tmpIcon!=NULL) {
-      raRight_->setPixmap(*tmpIcon);
+      raRight_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       raRight_->setText("Right");
@@ -114,7 +114,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    raStop_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    if(tmpIcon!=NULL) {
-      raStop_->setPixmap(*tmpIcon);
+      raStop_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       raStop_->setText("Pause");
@@ -123,7 +123,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    raCenter_=new QPushButton(raZone);
    tmpIcon=QCamUtilities::getIcon("target_icon.png");
    if(tmpIcon!=NULL) {
-      raCenter_->setPixmap(*tmpIcon);
+      raCenter_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       raCenter_->setText("Center");
@@ -136,7 +136,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    decUp_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("up.png");
    if(tmpIcon!=NULL) {
-      decUp_->setPixmap(*tmpIcon);
+      decUp_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       decUp_->setText("Up");
@@ -146,7 +146,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    decDown_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("down.png");
    if(tmpIcon!=NULL) {
-      decDown_->setPixmap(*tmpIcon);
+      decDown_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       decDown_->setText("Down");
@@ -156,7 +156,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    decStop_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    if(tmpIcon!=NULL) {
-      decStop_->setPixmap(*tmpIcon);
+      decStop_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       decStop_->setText("Pause");
@@ -165,7 +165,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    decCenter_=new QPushButton(decZone);
    tmpIcon=QCamUtilities::getIcon("target_icon.png");
    if(tmpIcon!=NULL) {
-      decCenter_->setPixmap(*tmpIcon);
+      decCenter_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       decCenter_->setText("Center");

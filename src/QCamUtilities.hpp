@@ -28,6 +28,7 @@ MA  02110-1301, USA.
 #include <Qt/qpalette.h>
 #include <Qt/qpixmap.h>
 #include <Qt/qlabel.h>
+#include <Qt/qicon.h>
 
 using namespace std;
 
@@ -43,7 +44,8 @@ struct widgetItem {
 
 class QCamUtilities {
 public:
-   static QPixmap * getIcon(const char * pixmapBaseName);
+   static QIcon* getIcon(const char * pixmapBaseName);
+   static QPixmap* getPixmap(const char * pixmapBaseName);
    static void computePathName(const char * pathToBinary);
    static const string & basePathName() { return basePath_;}
    static void setQastrocamIcon(QWidget *);

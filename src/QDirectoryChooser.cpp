@@ -37,14 +37,14 @@ using namespace std;
 
 QDirectoryChooser::QDirectoryChooser(QWidget * parent):
    QPushButton(parent) {
-   QPixmap* tmpIcon;
+   QIcon* tmpIcon;
    char * curDir=get_current_dir_name();
    connect(this,SIGNAL(pressed()),this,SLOT(selectDirectory()));
    setDirectory(curDir);
    free(curDir);
    tmpIcon=QCamUtilities::getIcon("choose_directory.png");
    if(tmpIcon!=NULL) {
-      setPixmap(*tmpIcon);
+      setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       setText("Path...");
@@ -69,7 +69,7 @@ void QDirectoryChooser::selectDirectory() {
 
 void QDirectoryChooser::setDirectory(const QString & dirName) {
    currentDir_=dirName;
-   char * tmpStr=strdup(dirName.latin1());
+   char * tmpStr=strdup(dirName.toLatin1());
    //setText(basename(tmpStr));
    free(tmpStr);
    QToolTip::add(this, currentDir_);

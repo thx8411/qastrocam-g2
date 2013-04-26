@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <iostream>
 
@@ -116,7 +117,7 @@ const QSize * QCam::getAllowedSize() const {
 }
 
 void QCam::setDirectory(const QString & dir) {
-   directory_=dir.latin1();
+   directory_=(string)dir.toLatin1();
 }
 
 const char * QCam::getSaveFormat() const {
@@ -136,7 +137,7 @@ bool QCam::saveFrame(const string& file) const {
 #endif
       return yuvFrame().colorImage().save((file
                                            +"."
-                                           +QString(fileFormat.c_str()).lower().latin1()).c_str(),
+                                           +(string)QString(fileFormat.c_str()).lower().toLatin1()).c_str(),
                                           fileFormat.c_str(), quality);
 }
 
@@ -197,7 +198,7 @@ void QCam::setPauseCapture(bool capturePaused) const {
 }
 
 void QCam::setCaptureFile(const QString & afile) {
-   string file=afile.latin1();
+   string file=(string)afile.toLatin1();
    if (file.size() !=0) {
       captureFile_=file;
       if (guiBuild()) {
@@ -283,7 +284,7 @@ void QCam::displayHistogram(bool val) {
    }
    if (displayHistogramWindow_ == NULL) {
       displayHistogramWindow_ = new CamHistogram(*this);
-      displayHistogramWindow_->widget().setCaption(label());
+      displayHistogramWindow_->widget().setWindowTitle(label());
    }
    if (val) {
       displayHistogramWindow_->resume();
@@ -296,11 +297,11 @@ void QCam::displayHistogram(bool val) {
 
 QWidget * QCam::buildGUI(QWidget * parent) {
    struct stat fileInfos;
-   QPixmap* tmpIcon;
+   QIcon* tmpIcon;
 
    QSizePolicy sizePolicyMin;
-   sizePolicyMin.setVerData(QSizePolicy::Minimum);
-   sizePolicyMin.setHorData(QSizePolicy::Minimum);
+   sizePolicyMin.setVerticalPolicy(QSizePolicy::Minimum);
+   sizePolicyMin.setHorizontalPolicy(QSizePolicy::Minimum);
 
    remoteCTRL_= new QCamVBox(parent);
 
@@ -314,7 +315,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    displayFramesButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayFrames.png");
    if(tmpIcon!=NULL) {
-      displayFramesButton_->setPixmap(*tmpIcon);
+      displayFramesButton_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       displayFramesButton_->setText("Display");
@@ -330,7 +331,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    displayHistogramButton_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("displayHistogram.png");
    if(tmpIcon!=NULL) {
-      displayHistogramButton_->setPixmap(*tmpIcon);
+      displayHistogramButton_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       displayHistogramButton_->setText("Histogram");
@@ -443,7 +444,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    snapshot_=new QPushButton(buttons2);
    tmpIcon=QCamUtilities::getIcon("snapshot.png");
    if(tmpIcon!=NULL) {
-      snapshot_->setPixmap(*tmpIcon);
+      snapshot_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       snapshot_->setText("Snapshot");
@@ -453,7 +454,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    capture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie.png");
    if(tmpIcon!=NULL) {
-      capture_->setPixmap(*tmpIcon);
+      capture_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       capture_->setText("Capture");
@@ -464,7 +465,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    pauseCapture_->setToggleButton(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    if(tmpIcon!=NULL) {
-      pauseCapture_->setPixmap(*tmpIcon);
+      pauseCapture_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       pauseCapture_->setText("Pause");

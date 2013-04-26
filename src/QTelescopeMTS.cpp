@@ -78,7 +78,7 @@ QTelescopeMTS::~QTelescopeMTS() {
 
 void QTelescopeMTS::buildGUI(QWidget * parent) {
    QTelescope::buildGUI(parent);
-   widget()->setCaption("PowerFlex MTS");
+   widget()->setWindowTitle("PowerFlex MTS");
 }
 
 /** Send command to telescope controller

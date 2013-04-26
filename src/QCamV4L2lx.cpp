@@ -185,7 +185,7 @@ void QCamV4L2lx::setLXtime() {
    float val;
    // reading edit line and converts
    QString str=lxTime->text();
-   if (sscanf(str.latin1(),"%f",&val)!=1) {
+   if (sscanf(str.toLatin1(),"%f",&val)!=1) {
       // default delay
       val=0.2;
    }

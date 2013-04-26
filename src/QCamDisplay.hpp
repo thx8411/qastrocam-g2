@@ -76,7 +76,7 @@ protected slots:
    void setDisplayMode(int t);
    void setCrossLum(int l);
 private:
-   void setCaption();
+   void setWindowTitle();
    QCamVBox* mainWidget_;
    QScrollArea* view_;
    QCamDisplayImpl* widget_;

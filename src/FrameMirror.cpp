@@ -71,16 +71,16 @@ void FrameMirror::swapUpDown(bool val) {
 FrameMirror::Widget::Widget(QWidget * parent,const FrameMirror * algo):
    QCamHBox(parent) {
    upDown_ = new QPushButton(tr("swap Up/Down"),this);
-   upDown_->setToggleButton(true);
+   upDown_->setCheckable(true);
    connect(upDown_,SIGNAL(toggled(bool)),algo,SLOT(swapUpDown(bool)));
    connect(algo,SIGNAL(upDownSwapped(bool)),upDown_,SLOT(setOn(bool)));
 
    leftRight_ = new QPushButton(tr("swap Left/Right"),this);
-   leftRight_->setToggleButton(true);
+   leftRight_->setCheckable(true);
    connect(leftRight_,SIGNAL(toggled(bool)),algo,SLOT(swapLeftRight(bool)));
    connect(algo,SIGNAL(leftRightSwapped(bool)),leftRight_,SLOT(setOn(bool)));
-   QToolTip::add(upDown_,tr("Swaps frame up/down"));
-   QToolTip::add(leftRight_,tr("Swaps frame left/right"));
+   upDown_->setToolTip(tr("Swaps frame up/down"));
+   leftRight_->setToolTip(tr("Swaps frame left/right"));
 }
 
 FrameMirror::Widget::~Widget() {

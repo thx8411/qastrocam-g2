@@ -71,16 +71,16 @@ FrameFlat::Widget::Widget(QWidget * parent,const FrameFlat * algo): QCamHBox(par
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),algo,SLOT(fileChanged(const QString &)));
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),fileEntry,SLOT(setText(const QString &)));
    connect(algo,SIGNAL(desactivated(bool)),activate,SLOT(setChecked(bool)));
-   QToolTip::add(activate,tr("Activate or not the 'flat calibration' filter"));
-   QToolTip::add(fileEntry,tr("Picture file to use as 'flat' frame"));
-   QToolTip::add(fileChooser,tr("Selects the file to use as 'flat' frame"));
+   activate->setToolTip(tr("Activate or not the 'flat calibration' filter"));
+   fileEntry->setToolTip(tr("Picture file to use as 'flat' frame"));
+   fileChooser->setToolTip(tr("Selects the file to use as 'flat' frame"));
 }
 
 FrameFlat::Widget::~Widget() {
 }
 
 void FrameFlat::activatedChange(int s) {
-   if(s==QCheckBox::On) {
+   if(s==Qt::Checked) {
       int depth;
       int width;
       int height;

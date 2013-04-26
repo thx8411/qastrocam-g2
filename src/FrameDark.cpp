@@ -79,17 +79,17 @@ FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QCamHBox(par
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),fileEntry,SLOT(setText(const QString &)));
    connect(timeEntry,SIGNAL(textChanged(const QString &)),algo,SLOT(timeChanged(const QString&)));
    connect(algo,SIGNAL(desactivated(bool)),activate,SLOT(setChecked(bool)));
-   QToolTip::add(activate,tr("Activate or not the 'dark substraction' filter"));
-   QToolTip::add(fileEntry,tr("Picture file to use as 'dark' frame"));
-   QToolTip::add(fileChooser,tr("Selects the file to use as 'dark' frame"));
-   QToolTip::add(timeEntry,tr("Sets the time factor to apply to your 'dark' frame"));
+   activate->setToolTip(tr("Activate or not the 'dark substraction' filter"));
+   fileEntry->setToolTip(tr("Picture file to use as 'dark' frame"));
+   fileChooser->setToolTip(tr("Selects the file to use as 'dark' frame"));
+   timeEntry->setToolTip(tr("Sets the time factor to apply to your 'dark' frame"));
 }
 
 FrameDark::Widget::~Widget() {
 }
 
 void FrameDark::activatedChange(int s) {
-   if(s==QCheckBox::On) {
+   if(s==Qt::Checked) {
       int depth;
       int width;
       int height;
@@ -132,7 +132,7 @@ void FrameDark::activatedChange(int s) {
       }
 
       // test time factor
-      if (sscanf(timeString.latin1(),"%lf",&timeFactor)!=1) {
+      if (sscanf(timeString.toLatin1(),"%lf",&timeFactor)!=1) {
          QMessageBox::information(0,"Qastrocam-g2","Wrong time factor");
          emit(desactivated(false));
          return;

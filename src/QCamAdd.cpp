@@ -752,7 +752,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    remoteCTRLmaxYvalue_->show();
    remoteCTRLminYvalue_->show();
 
-   //remoteCTRL->setCaption("accumulation");
+   //remoteCTRL->setWindowTitle("accumulation");
 
    return remoteCTRL;
 }

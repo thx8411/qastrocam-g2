@@ -73,7 +73,7 @@ maxShift_(this)
    connect(&maxShift_,SIGNAL(textChanged(const QString&)),this,SLOT(setMax(const QString&)));
 
    QPixmap* tmpIcon;
-   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+   tmpIcon=QCamUtilities::getPixmap("movie_pause.png");
    if(tmpIcon!=NULL) {
       arrow_.setPixmap(*tmpIcon);
       delete(tmpIcon);
@@ -135,7 +135,7 @@ void TrackingControl::setMoveDir(MoveDir move) {
    QPixmap* tmpIcon;
    switch(move) {
    case MovedNorth:
-      tmpIcon=QCamUtilities::getIcon("up.png");
+      tmpIcon=QCamUtilities::getPixmap("up.png");
       if(tmpIcon!=NULL) {
          arrow_.setPixmap(*tmpIcon);
          delete(tmpIcon);
@@ -143,7 +143,7 @@ void TrackingControl::setMoveDir(MoveDir move) {
          arrow_.setText("North");
       break;
    case MovedSouth:
-      tmpIcon=QCamUtilities::getIcon("down.png");
+      tmpIcon=QCamUtilities::getPixmap("down.png");
       if(tmpIcon!=NULL) {
          arrow_.setPixmap(*tmpIcon);
          delete(tmpIcon);
@@ -151,7 +151,7 @@ void TrackingControl::setMoveDir(MoveDir move) {
          arrow_.setText("South");
       break;
    case MovedEast:
-      tmpIcon=QCamUtilities::getIcon("left.png");
+      tmpIcon=QCamUtilities::getPixmap("left.png");
       if(tmpIcon!=NULL) {
          arrow_.setPixmap(*tmpIcon);
          delete(tmpIcon);
@@ -159,7 +159,7 @@ void TrackingControl::setMoveDir(MoveDir move) {
          arrow_.setText("West");
       break;
    case MovedWest:
-      tmpIcon=QCamUtilities::getIcon("right.png");
+      tmpIcon=QCamUtilities::getPixmap("right.png");
       if(tmpIcon!=NULL) {
          arrow_.setPixmap(*tmpIcon);
          delete(tmpIcon);
@@ -167,7 +167,7 @@ void TrackingControl::setMoveDir(MoveDir move) {
          arrow_.setText("East");
       break;
    case NotMoved:
-      tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+      tmpIcon=QCamUtilities::getPixmap("movie_pause.png");
       if(tmpIcon!=NULL) {
          arrow_.setPixmap(*tmpIcon);
          delete(tmpIcon);

@@ -77,12 +77,12 @@ QCamAutoAlign::QCamAutoAlign() {
 
 QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    QSizePolicy sizePolicyMax;
-   sizePolicyMax.setVerData(QSizePolicy::Expanding);
-   sizePolicyMax.setHorData(QSizePolicy::Expanding);
+   sizePolicyMax.setVerticalPolicy(QSizePolicy::Expanding);
+   sizePolicyMax.setHorizontalPolicy(QSizePolicy::Expanding);
 
    QSizePolicy sizePolicyMin;
-   sizePolicyMin.setVerData(QSizePolicy::Minimum);
-   sizePolicyMin.setHorData(QSizePolicy::Minimum);
+   sizePolicyMin.setVerticalPolicy(QSizePolicy::Minimum);
+   sizePolicyMin.setHorizontalPolicy(QSizePolicy::Minimum);
 
    QWidget * remoteCTRL= QCam::buildGUI(parent);
 
