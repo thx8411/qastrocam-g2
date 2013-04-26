@@ -71,16 +71,16 @@ FrameBias::Widget::Widget(QWidget * parent,const FrameBias * algo): QCamHBox(par
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),algo,SLOT(fileChanged(const QString &)));
    connect(fileChooser,SIGNAL(fileChanged(const QString &)),fileEntry,SLOT(setText(const QString &)));
    connect(algo,SIGNAL(desactivated(bool)),activate,SLOT(setChecked(bool)));
-   QToolTip::add(activate,tr("Activate or not the 'bias substraction' filter"));
-   QToolTip::add(fileEntry,tr("Picture file to use as 'bias' frame"));
-   QToolTip::add(fileChooser,tr("Selects the file to use as 'bias' frame"));
+   activate->setToolTip(tr("Activate or not the 'bias substraction' filter"));
+   fileEntry->setToolTip(tr("Picture file to use as 'bias' frame"));
+   fileChooser->setToolTip(tr("Selects the file to use as 'bias' frame"));
 }
 
 FrameBias::Widget::~Widget() {
 }
 
 void FrameBias::activatedChange(int s) {
-   if(s==QCheckBox::On) {
+   if(s==Qt::Checked) {
       int depth;
       int width;
       int height;

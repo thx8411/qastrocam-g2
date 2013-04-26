@@ -44,7 +44,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QPixmap* tmpIcon;
 
    QString speed_="Speed : ";
-   widget()->setCaption("Simulator");
+   widget()->setWindowTitle("Simulator");
 
    simulatorWidget_=new QCamVGroupBox("Telescope Simulator",NULL);
 
@@ -56,7 +56,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    // up label
    buttonUp_=new QLabel(simulatorArrows_);
-   tmpIcon=QCamUtilities::getIcon("north.png");
+   tmpIcon=QCamUtilities::getPixmap("north.png");
    if(tmpIcon!=NULL) {
       buttonUp_->setPixmap(*tmpIcon);
       delete tmpIcon;
@@ -68,7 +68,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    // down label
    buttonDown_=new QLabel(simulatorArrows_);
-   tmpIcon=QCamUtilities::getIcon("south.png");
+   tmpIcon=QCamUtilities::getPixmap("south.png");
    if(tmpIcon!=NULL) {
       buttonDown_->setPixmap(*tmpIcon);
       delete tmpIcon;
@@ -80,7 +80,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    // left label
    buttonLeft_=new QLabel(simulatorArrows_);
-   tmpIcon=QCamUtilities::getIcon("east.png");
+   tmpIcon=QCamUtilities::getPixmap("east.png");
    if(tmpIcon!=NULL) {
       buttonLeft_->setPixmap(*tmpIcon);
       delete tmpIcon;
@@ -91,7 +91,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    // right label
    buttonRight_=new QLabel(simulatorArrows_);
-   tmpIcon=QCamUtilities::getIcon("west.png");
+   tmpIcon=QCamUtilities::getPixmap("west.png");
    if(tmpIcon!=NULL) {
       buttonRight_->setPixmap(*tmpIcon);
       delete tmpIcon;
@@ -101,7 +101,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    simulatorArrowsLayout_->addWidget(buttonRight_,1,2);
 
    buttonCenter_=new QLabel(simulatorArrows_);
-   tmpIcon=QCamUtilities::getIcon("directions.png");
+   tmpIcon=QCamUtilities::getPixmap("directions.png");
    if(tmpIcon!=NULL) {
       buttonCenter_->setPixmap(*tmpIcon);
       delete tmpIcon;

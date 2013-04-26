@@ -52,15 +52,15 @@ QCamSelection::QCamSelection(QCam &theCam,QWidget * parent) :
    QCamClient(theCam),
    yuvFrame_() {
    commonInit(parent);
-   setCaption();
+   setWindowTitle();
 }
 
-void QCamSelection::setCaption() {
+void QCamSelection::setWindowTitle() {
    QString labelPrefix;
    labelPrefix="Focus ";
 
    if (isConnected() && mainWidget_) {
-      mainWidget_->setCaption(labelPrefix+cam().label());
+      mainWidget_->setWindowTitle(labelPrefix+cam().label());
    }
 }
 
@@ -132,7 +132,7 @@ void QCamSelection::camConnected() {
    widget_->resize(cam().size());
    widget_->updateGeometry();
    mainWidget_->adjustSize();
-   setCaption();
+   setWindowTitle();
 }
 
 QWidget & QCamSelection::widget() {

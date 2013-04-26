@@ -67,11 +67,26 @@ void QCamUtilities::computePathName(const char * path) {
    //cout <<"pass 3: "<<basePath_<<"\n";
 }
 
-QPixmap * QCamUtilities::getIcon(const char * pixmapBaseName) {
+QIcon* QCamUtilities::getIcon(const char * pixmapBaseName) {
    string fullPath=basePathName()
                    +"/icons/"
                    +pixmapBaseName;
-   QPixmap * pixmap=new QPixmap(fullPath.c_str());
+   QIcon* pixmap=new QIcon(fullPath.c_str());
+   if (pixmap->isNull()) {
+      cerr << "QCamUtilities::getIcon() :"
+           << fullPath
+           << " is not a valid file for pixmap"<<endl;
+      delete pixmap;
+      pixmap=NULL;
+   }
+   return pixmap;
+}
+
+QPixmap* QCamUtilities::getPixmap(const char * pixmapBaseName) {
+   string fullPath=basePathName()
+                   +"/icons/"
+                   +pixmapBaseName;
+   QPixmap* pixmap=new QPixmap(fullPath.c_str());
    if (pixmap->isNull()) {
       cerr << "QCamUtilities::getIcon() :"
            << fullPath
@@ -83,7 +98,7 @@ QPixmap * QCamUtilities::getIcon(const char * pixmapBaseName) {
 }
 
 void QCamUtilities::setQastrocamIcon(QWidget *widget) {
-   static QPixmap * iconNb=QCamUtilities::getIcon("qastrocam-icon-nb.png");
+   static QPixmap * iconNb=QCamUtilities::getPixmap("qastrocam-icon-nb.png");
    if(iconNb)
       widget->setIcon(*iconNb);
 }

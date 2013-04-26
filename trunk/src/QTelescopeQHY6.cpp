@@ -62,7 +62,7 @@ QTelescopeQHY6::~QTelescopeQHY6() {
 
 void QTelescopeQHY6::buildGUI(QWidget * parent) {
    QTelescope::buildGUI(parent);
-   widget()->setCaption("QHY5 Autoguide");
+   widget()->setWindowTitle("QHY5 Autoguide");
 }
 
 void QTelescopeQHY6::goE(float shift) {

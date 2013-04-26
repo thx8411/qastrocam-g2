@@ -84,7 +84,7 @@ QTelescopeAutostar::~QTelescopeAutostar() {
 
 void QTelescopeAutostar::buildGUI(QWidget * parent) {
    QTelescope::buildGUI(parent);
-   widget()->setCaption(version(versionFull).c_str());
+   widget()->setWindowTitle(version(versionFull).c_str());
 }
 
 string QTelescopeAutostar::sendCommand(CommandType com,const string & param) {

@@ -70,7 +70,7 @@ protected slots:
    void setDisplayMode(int t);
    void setSizeMode(int t);
 private:
-   void setCaption();
+   void setWindowTitle();
    QCamVBox* mainWidget_;
    QCamSelectionImpl* widget_;
    QCamHBox* buttonsContainer_;

@@ -49,7 +49,7 @@ QTelescope::QTelescope() {
 }
 
 void QTelescope::buildGUI(QWidget * parent) {
-   QPixmap* tmpIcon;
+   QIcon* tmpIcon;
    mainWidget_=new QCamVGroupBox("Telescope CTRL",parent);
 
    QCamUtilities::registerWidget(mainWidget_);
@@ -62,7 +62,7 @@ void QTelescope::buildGUI(QWidget * parent) {
    upButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("up.png");
    if(tmpIcon!=NULL) {
-      upButton_->setPixmap(*tmpIcon);
+      upButton_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       upButton_->setText("Up");
@@ -71,7 +71,7 @@ void QTelescope::buildGUI(QWidget * parent) {
    downButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("down.png");
    if(tmpIcon!=NULL) {
-      downButton_->setPixmap(*tmpIcon);
+      downButton_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       downButton_->setText("Down");
@@ -80,7 +80,7 @@ void QTelescope::buildGUI(QWidget * parent) {
    leftButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("left.png");
    if(tmpIcon!=NULL) {
-      leftButton_->setPixmap(*tmpIcon);
+      leftButton_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       leftButton_->setText("Left");
@@ -89,7 +89,7 @@ void QTelescope::buildGUI(QWidget * parent) {
    rightButton_=new QPushButton(arrows_);
    tmpIcon=QCamUtilities::getIcon("right.png");
    if(tmpIcon!=NULL) {
-      rightButton_->setPixmap(*tmpIcon);
+      rightButton_->setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       rightButton_->setText("Right");

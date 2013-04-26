@@ -551,7 +551,7 @@ void QCamVesta::setSCmod(int value) {
 
 void QCamVesta::setLongExposureTime(const QString& str) {
    float val;
-   if (sscanf(str.latin1(),"%f",&val)!=1) {
+   if (sscanf(str.toLatin1(),"%f",&val)!=1) {
       val=0.0;
    }
    int mult=(int)round(val*getFrameRate());

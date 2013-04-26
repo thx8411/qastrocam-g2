@@ -144,11 +144,11 @@ void QCamDC60::preampChanged(int b) {
    struct v4l2_control ctrl;
 
    ctrl.id=V4L2_CID_PREAMP;
-   ctrl.value=(b==QCheckBox::On);
+   ctrl.value=(b==Qt::Checked);
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       extraPreamp->setEnabled(false);
 
-   if(b==QCheckBox::On)
+   if(b==Qt::Checked)
       extraAntialias->setEnabled(true);
    else {
       extraAntialias->setEnabled(false);
@@ -160,7 +160,7 @@ void QCamDC60::antialiasChanged(int b) {
    struct v4l2_control ctrl;
 
    ctrl.id=V4L2_CID_ANTIALIAS;
-   ctrl.value=(b==QCheckBox::On);
+   ctrl.value=(b==Qt::Checked);
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       extraAntialias->setEnabled(false);
 }
@@ -169,7 +169,7 @@ void QCamDC60::whitepeakChanged(int b) {
    struct v4l2_control ctrl;
 
    ctrl.id=V4L2_CID_WHITEPEAK;
-   ctrl.value=(b==QCheckBox::On);
+   ctrl.value=(b==Qt::Checked);
    if(ioctl(device_,VIDIOC_S_CTRL,&ctrl)!=0)
       extraAntialias->setEnabled(false);
 }
@@ -177,7 +177,7 @@ void QCamDC60::whitepeakChanged(int b) {
 // lx slots
 
 void QCamDC60::lxActivated(int b) {
-   if(b==QCheckBox::On) {
+   if(b==Qt::Checked) {
       lxLabel->setEnabled(true);
       lxEntry->setEnabled(true);
       lxSet->setEnabled(true);
@@ -203,7 +203,7 @@ void QCamDC60::lxSetPushed() {
    float val;
    // reading edit line and converts
    QString str=lxEntry->text();
-   if (sscanf(str.latin1(),"%f",&val)!=1) {
+   if (sscanf(str.toLatin1(),"%f",&val)!=1) {
       // default delay
       val=1;
    }

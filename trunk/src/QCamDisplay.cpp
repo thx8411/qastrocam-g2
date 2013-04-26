@@ -75,10 +75,10 @@ QCamDisplay::QCamDisplay(QCam &theCam,QWidget * parent) :
    QCamClient(theCam),
    yuvFrame_() {
    commonInit(parent);
-   setCaption();
+   setWindowTitle();
 }
 
-void QCamDisplay::setCaption() {
+void QCamDisplay::setWindowTitle() {
    QString labelPrefix;
 #if HAVE_SDL_H
    if (use_SDL_) {
@@ -90,7 +90,7 @@ void QCamDisplay::setCaption() {
    }
 
    if (isConnected() && view_) {
-      view_->setCaption(labelPrefix+cam().label());
+      view_->setWindowTitle(labelPrefix+cam().label());
    }
 }
 
@@ -209,7 +209,7 @@ void QCamDisplay::camConnected() {
    // adjuste parent's size
    mainWidget_->adjustSize();
 
-   setCaption();
+   setWindowTitle();
 }
 
 QWidget & QCamDisplay::widget() {

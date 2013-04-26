@@ -52,12 +52,12 @@ CamHistogram::CamHistogram(QCam & theCam) :
    }
 
    QSizePolicy sizePolicyMax;
-   sizePolicyMax.setVerData(QSizePolicy::Expanding);
-   sizePolicyMax.setHorData(QSizePolicy::Expanding);
+   sizePolicyMax.setVerticalPolicy(QSizePolicy::Expanding);
+   sizePolicyMax.setHorizontalPolicy(QSizePolicy::Expanding);
 
    QSizePolicy sizePolicyMin;
-   sizePolicyMin.setVerData(QSizePolicy::Minimum);
-   sizePolicyMin.setHorData(QSizePolicy::Minimum);
+   sizePolicyMin.setVerticalPolicy(QSizePolicy::Minimum);
+   sizePolicyMin.setHorizontalPolicy(QSizePolicy::Minimum);
    mainWindow_->setSizePolicy(sizePolicyMin);
 
    focusGroup_ = new QCamVGroupBox(tr("Focus - Seeing"), mainWindow_);
@@ -65,7 +65,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    focusArea_->setDataSize(focusHistorySize_);
    focusArea_->setAutoShift(true);
    focusArea_->setAverage(3);
-   QToolTip::add(focusArea_,tr("Help to focus. High value implies:\nHigh contrast (sharper image)"));
+   focusArea_->setToolTip(tr("Help to focus. High value implies:\nHigh contrast (sharper image)"));
 
    focusArea_->setMinimumSize(focusHistorySize_,80);
    resetFocus_ = new QPushButton(tr("reset"),focusGroup_);
@@ -77,7 +77,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    seeingLevel_=  new QProgressBar(seeingGroup_);
    seeingLevel_->setMinimum(0);
    seeingLevel_->setMaximum(100);
-   QToolTip::add(seeingLevel_,tr("Shown an evaluation of the seeing by looking how\nthe contrast changes between frames."));
+   seeingLevel_->setToolTip(tr("Shown an evaluation of the seeing by looking how\nthe contrast changes between frames."));
 
    connect(resetFocus_,SIGNAL(pressed()),focusArea_,SLOT(reset()));
    histoGroup_ = new QCamVGroupBox(tr("Histogram"), mainWindow_);
@@ -88,9 +88,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    histogramArea_->setMinimumSize(256,120);
    histoGroup_->setSizePolicy(sizePolicyMin);
    histogramArea_->setSizePolicy(sizePolicyMax);
-   QToolTip::add(histogramArea_,
-                 tr("show an histogram of the image.\n"
-                    "0 on the left, 255 on the right"));
+   histogramArea_->setToolTip(tr("show an histogram of the image.\n0 on the left, 255 on the right"));
    focusGroup_->show();
    histoGroup_->show();
    histogramArea_->show();

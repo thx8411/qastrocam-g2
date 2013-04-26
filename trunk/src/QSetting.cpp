@@ -313,69 +313,69 @@ void QSetting::saveSettings() {
 
    // entries
    if(!videoDeviceEntry->text().isEmpty())
-      settings.setKey("CAMERA_DEVICE",videoDeviceEntry->text().latin1());
+      settings.setKey("CAMERA_DEVICE",videoDeviceEntry->text().toLatin1());
    if(!telescopeDeviceEntry->text().isEmpty())
-      settings.setKey("TELESCOPE_DEVICE",telescopeDeviceEntry->text().latin1());
+      settings.setKey("TELESCOPE_DEVICE",telescopeDeviceEntry->text().toLatin1());
    if(!lxDeviceEntry->text().isEmpty())
-      settings.setKey("LX_DEVICE",lxDeviceEntry->text().latin1());
+      settings.setKey("LX_DEVICE",lxDeviceEntry->text().toLatin1());
    if(!libpathEntry->text().isEmpty())
-      settings.setKey("LIB_PATH",libpathEntry->text().latin1());
+      settings.setKey("LIB_PATH",libpathEntry->text().toLatin1());
    // combo
-   settings.setKey("TELESCOPE",telescopeList->currentText().latin1());
-   settings.setKey("CAMERA",cameraList->currentText().latin1());
+   settings.setKey("TELESCOPE",telescopeList->currentText().toLatin1());
+   settings.setKey("CAMERA",cameraList->currentText().toLatin1());
    // checkboxes
    if(telescopeLevels->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("TS_LEVELS_INVERTED",temp.latin1());
+   settings.setKey("TS_LEVELS_INVERTED",temp.toLatin1());
    if(lxLevels->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("LX_LEVELS_INVERTED",temp.latin1());
+   settings.setKey("LX_LEVELS_INVERTED",temp.toLatin1());
 #if HAVE_SDL_H
    if(optionsSdl->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("SDL",temp.latin1());
+   settings.setKey("SDL",temp.toLatin1());
 #endif
    if(optionsExpert->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("EXPERT",temp.latin1());
+   settings.setKey("EXPERT",temp.toLatin1());
    if(optionsLog->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("LOG",temp.latin1());
+   settings.setKey("LOG",temp.toLatin1());
    if(optionsRegistax->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("REGISTAX_AVI",temp.latin1());
+   settings.setKey("REGISTAX_AVI",temp.toLatin1());
    if(modulesAdd->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("ADD_MODULE",temp.latin1());
+   settings.setKey("ADD_MODULE",temp.toLatin1());
    if(modulesMax->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("MAX_MODULE",temp.latin1());
+   settings.setKey("MAX_MODULE",temp.toLatin1());
    if(modulesAlign->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("ALIGN_MODULE",temp.latin1());
+   settings.setKey("ALIGN_MODULE",temp.toLatin1());
    if(modulesKing->isChecked())
       temp="yes";
    else
       temp="no";
-   settings.setKey("KING_MODULE",temp.latin1());
+   settings.setKey("KING_MODULE",temp.toLatin1());
 
    // message box
    QMessageBox::information(0,"Qastrocam-g2","Please restart Qastrocam-g2\nto get the new settings");
@@ -479,7 +479,7 @@ void QSetting::setNightVision(bool state) {
       temp="yes";
    else
       temp="no";
-   settings.setKey("NIGHT_VISION",temp.latin1());
+   settings.setKey("NIGHT_VISION",temp.toLatin1());
 }
 
 // global slot

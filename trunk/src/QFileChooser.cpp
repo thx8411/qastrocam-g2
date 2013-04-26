@@ -33,11 +33,11 @@ using namespace std;
 
 QFileChooser::QFileChooser(QWidget * parent, int type):
    QPushButton(parent) {
-   QPixmap* tmpIcon;
+   QIcon* tmpIcon;
    connect(this,SIGNAL(pressed()),this,SLOT(selectFile()));
    tmpIcon=QCamUtilities::getIcon("choose_directory.png");
    if(tmpIcon!=NULL) {
-      setPixmap(*tmpIcon);
+      setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       setText("File...");

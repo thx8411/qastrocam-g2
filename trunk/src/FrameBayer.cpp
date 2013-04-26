@@ -105,8 +105,8 @@ BayerWidget::BayerWidget(QWidget * parent, const FrameBayer * algo): QCamHBox(pa
    // else use default
    } else algorithm->update(0);
    // tooltips
-   QToolTip::add(pattern,tr("Selects the sensor bayer pattern"));
-   QToolTip::add(algorithm,tr("Selects the algorithm to use for de-mosaic"));
+   pattern->setToolTip(tr("Selects the sensor bayer pattern"));
+   algorithm->setToolTip(tr("Selects the algorithm to use for de-mosaic"));
 }
 
 BayerWidget::~BayerWidget() {
