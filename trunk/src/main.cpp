@@ -458,18 +458,23 @@ int main(int argc, char ** argv) {
    QCamUtilities::stdPalette=&tmpPalette;
 
    // night palette
-   QColorGroup nightActive;
-   QColorGroup nightDisabled;
-   QColorGroup nightInactive;
+   QPalette* nightPalette=new QPalette();
+   nightPalette->setColor(QPalette::Active,QPalette::Background,Qt::darkRed);
+   nightPalette->setColor(QPalette::Active,QPalette::Base,QColor(176,0,0));
+   nightPalette->setColor(QPalette::Active,QPalette::Button,QColor(160,0,0));
+   nightPalette->setColor(QPalette::Active,QPalette::HighlightedText,Qt::red);
 
-   nightActive.setColor(QColorGroup::Background,Qt::darkRed);
-   nightActive.setColor(QColorGroup::Base,QColor(176,0,0));
-   nightActive.setColor(QColorGroup::Button,QColor(160,0,0));
-   nightActive.setColor(QColorGroup::HighlightedText,Qt::red);
-   nightInactive=nightActive;
-   nightDisabled=nightActive;
-   nightDisabled.setColor(QColorGroup::Text,QColor(160,0,0));
-   QCamUtilities::nightPalette=new QPalette(nightActive,nightDisabled,nightInactive);
+   nightPalette->setColor(QPalette::Inactive,QPalette::Background,Qt::darkRed);
+   nightPalette->setColor(QPalette::Inactive,QPalette::Base,QColor(176,0,0));
+   nightPalette->setColor(QPalette::Inactive,QPalette::Button,QColor(160,0,0));
+   nightPalette->setColor(QPalette::Inactive,QPalette::HighlightedText,Qt::red);
+
+   nightPalette->setColor(QPalette::Disabled,QPalette::Background,Qt::darkRed);
+   nightPalette->setColor(QPalette::Disabled,QPalette::Base,QColor(176,0,0));
+   nightPalette->setColor(QPalette::Disabled,QPalette::Button,QColor(160,0,0));
+   nightPalette->setColor(QPalette::Disabled,QPalette::HighlightedText,Qt::red);
+   nightPalette->setColor(QPalette::Disabled,QPalette::Text,QColor(160,0,0));
+   QCamUtilities::nightPalette=nightPalette;
 
    QCamUtilities::registerWidget(&mainWindow);
 
