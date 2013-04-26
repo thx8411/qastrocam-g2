@@ -23,15 +23,15 @@ MA  02110-1301, USA.
 
 #include <Qt/qobject.h>
 #include <Qt/qstring.h>
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qlabel.h>
 
+#include "QCamHBox.hpp"
 #include "FrameAlgo.hpp"
 #include "QCamComboBox.hpp"
 
 class FrameBayer;
 
-class BayerWidget : public Q3HBox {
+class BayerWidget : public QCamHBox {
    Q_OBJECT
    public:
       ~BayerWidget();

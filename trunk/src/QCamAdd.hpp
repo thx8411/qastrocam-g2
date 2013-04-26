@@ -46,7 +46,7 @@ MA  02110-1301, USA.
 
 class QCamSlider;
 class QImage;
-class Q3HBox;
+class QCamHBox;
 class QPushButton;
 class elementaryFrame;
 class QCamRadioBox;

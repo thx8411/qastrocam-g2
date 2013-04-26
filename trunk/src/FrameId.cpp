@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,7 +19,6 @@ MA  02110-1301, USA.
 
 
 #include "FrameId.hpp"
-#include <Qt3Support/q3hbox.h>
 
 bool FrameId::transform(const QCamFrame in, QCamFrame & out) {
    if (in.empty())
@@ -41,7 +40,7 @@ FrameId::FrameId(QCamTrans* cam) {
    cam_->mode(QCamTrans::Copy);
 }
 
-FrameId::Widget::Widget(QWidget * parent,const FrameId * algo): Q3HBox(parent) {
+FrameId::Widget::Widget(QWidget * parent,const FrameId * algo): QCamHBox(parent) {
 }
 
 FrameId::Widget::~Widget() {

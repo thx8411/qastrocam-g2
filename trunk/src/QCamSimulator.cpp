@@ -21,8 +21,6 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qpixmap.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVGroupBox.hpp"
 #include "QCamHGroupBox.hpp"
 #include "SettingsBackup.hpp"

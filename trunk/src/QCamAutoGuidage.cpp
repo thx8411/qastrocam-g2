@@ -23,8 +23,6 @@ MA  02110-1301, USA.
 #include <Qt/qpushbutton.h>
 #include <Qt/qmessagebox.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVBox.hpp"
 #include "QCamAutoGuidage.hpp"
 #include "QCam.hpp"
@@ -178,7 +176,7 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    if (parent == 0) {
       QCamUtilities::setQastrocamIcon(mainBox);
    }
-   Q3HBox * buttons=new Q3HBox(mainBox);
+   QCamHBox * buttons=new QCamHBox(mainBox);
    QPushButton * trackButton = new QPushButton(tr("track"),buttons);
    trackButton->setToggleButton(true);
    connect(trackButton,SIGNAL(toggled(bool)),this,SLOT(track(bool)));
@@ -191,7 +189,7 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    connect(resetButton,SIGNAL(pressed()),tracker_,SLOT(reset()));
 
    // visual alert
-   Q3HBox* state=new Q3HBox(mainBox);
+   QCamHBox* state=new QCamHBox(mainBox);
    //QLabel* label1=new QLabel("State : ",state);
    alert_=new QLabel("Idle",state);
    alert_->setPaletteBackgroundColor(Qt::lightGray);

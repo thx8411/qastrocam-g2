@@ -29,9 +29,8 @@ MA  02110-1301, USA.
 #include <Qt/qlayout.h>
 #include <Qt/qlabel.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVBox.hpp"
+#include "QCamHBox.hpp"
 #include "QCamVGroupBox.hpp"
 #include "QCamHGroupBox.hpp"
 #include "QDirectoryChooser.hpp"
@@ -76,8 +75,8 @@ private :
    QLineEdit* videoDeviceEntry;
    QFileChooser* videoDeviceChooser;
    QCamVGroupBox* telescopeBox;
-   Q3HBox* lineOne;
-   Q3HBox* lineTwo;
+   QCamHBox* lineOne;
+   QCamHBox* lineTwo;
    QLabel* telescopeListLabel;
    QCamComboBox* telescopeList;
    QLabel* telescopeDeviceLabel;
@@ -101,26 +100,26 @@ private :
    QFileChooser* lxDeviceChooser;
    QCheckBox* lxLevels;
    QCamVGroupBox* modulesBox;
-   Q3HBox* lineFive;
-   Q3HBox* lineSix;
+   QCamHBox* lineFive;
+   QCamHBox* lineSix;
    QCheckBox* modulesAdd;
    QCheckBox* modulesMax;
    QCheckBox* modulesKing;
    QCheckBox* modulesAlign;
    QCamVGroupBox* optionsBox;
-   Q3HBox* lineThree;
-   Q3HBox* lineFour;
-   Q3HBox* lineSeven;
+   QCamHBox* lineThree;
+   QCamHBox* lineFour;
+   QCamHBox* lineSeven;
    QCheckBox* optionsSdl;
    QCheckBox* optionsExpert;
    QCheckBox* optionsLog;
    QCheckBox* optionsNightVision;
    QCheckBox* optionsRegistax;
-   Q3HBox* libBox;
+   QCamHBox* libBox;
    QLabel* libpathLabel;
    QLineEdit* libpathEntry;
    QDirectoryChooser* libpathChooser;
-   Q3HBox* buttonsBox;
+   QCamHBox* buttonsBox;
    QPushButton* save;
    QPushButton* restore;
 };

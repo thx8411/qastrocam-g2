@@ -28,8 +28,6 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qprogressbar.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVGroupBox.hpp"
 #include "SettingsBackup.hpp"
 #include "QCamQHY5.hpp"
@@ -331,7 +329,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QWidget* remoteCTRL=QCam::buildGUI(parent);
    QCamVGroupBox* settingsBox=new QCamVGroupBox(QString("Settings"),remoteCTRL);
 
-   Q3HBox* filtersBox=new Q3HBox(settingsBox);
+   QCamHBox* filtersBox=new QCamHBox(settingsBox);
    // denoise
    denoiseBox=new QCheckBox("Horizontal bands filtering",filtersBox);
 
@@ -367,7 +365,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    gainSliderB->hide();
 
    // exposure
-   Q3HBox* exposureBox=new Q3HBox(settingsBox);
+   QCamHBox* exposureBox=new QCamHBox(settingsBox);
    QLabel* label1=new QLabel(QString("Exposure"),exposureBox);
    exposureSlider=new QSlider(Qt::Horizontal,exposureBox);
    exposureSlider->setMinValue(0);
@@ -397,7 +395,7 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    shooting_=TRUE;
 
    // progress bar
-   Q3HBox* progressBox=new Q3HBox(settingsBox);
+   QCamHBox* progressBox=new QCamHBox(settingsBox);
    QLabel* label3=new QLabel(QString("Progress"),progressBox);
    progressBar=new QProgressBar(progressBox);
    if(frameExposure_>(3*PROGRESS_TIME)) {

@@ -39,7 +39,7 @@ class QPainter;
 class QCamComboBox;
 class QCamDisplayImpl;
 class QCamSlider;
-class Q3HBox;
+class QCamHBox;
 class QLabel;
 
 /** display the frame emited by the cam.
@@ -80,7 +80,7 @@ private:
    QCamVBox* mainWidget_;
    QScrollArea* view_;
    QCamDisplayImpl* widget_;
-   Q3HBox* buttonsContainer_;
+   QCamHBox* buttonsContainer_;
    QLabel* crossLabel_;
    QCamSlider* crossLumSlider_;
    QCamComboBox* crossButton_;

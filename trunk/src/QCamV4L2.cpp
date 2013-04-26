@@ -1030,7 +1030,7 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    QWidget * remoteCTRL=QCam::buildGUI(parent);
 
    // source box
-   infoBox=new Q3HBox(sourceGroup);
+   infoBox=new QCamHBox(sourceGroup);
 
    // palette and input display
    QWidget* padding1=new QWidget(infoBox);

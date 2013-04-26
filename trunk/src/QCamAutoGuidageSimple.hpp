@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,15 +23,16 @@ MA  02110-1301, USA.
 #ifndef _QCamAutoGuidageSimple_hpp_
 #define _QCamAutoGuidageSimple_hpp_
 
-#include "QCamAutoGuidage.hpp"
 #include "math.h"
-
-class ShiftInfo;
 
 #include <Qt/qlineedit.h>
 #include <Qt/qlcdnumber.h>
 #include <Qt/qlabel.h>
-#include <Qt3Support/q3hbox.h>
+
+#include "QCamHBox.hpp"
+#include "QCamAutoGuidage.hpp"
+
+class ShiftInfo;
 
 /** basic tracking class.
     Do no prediction, dosn't do any calibration.
@@ -75,7 +76,7 @@ private:
 //
 //
 
-class TrackingControl : public Q3HBox {
+class TrackingControl : public QCamHBox {
    Q_OBJECT
    int min_;
    int max_;

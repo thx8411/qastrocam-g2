@@ -37,7 +37,7 @@ class QCam;
 class QPainter;
 class QCamComboBox;
 class QCamSelectionImpl;
-class Q3HBox;
+class QCamHBox;
 class QLabel;
 
 /* display the frame emited by the cam */
@@ -73,7 +73,7 @@ private:
    void setCaption();
    QCamVBox* mainWidget_;
    QCamSelectionImpl* widget_;
-   Q3HBox* buttonsContainer_;
+   QCamHBox* buttonsContainer_;
    QCamComboBox* displayModeButton_;
    QCamComboBox* sizeModeButton_;
    QCamFrame yuvFrame_;

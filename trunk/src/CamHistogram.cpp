@@ -34,8 +34,6 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 #include <Qt/qprogressbar.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "CamHistogram.hpp"
 #include "QCam.hpp"
 #include "QHistogram.hpp"
@@ -74,7 +72,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    focusGroup_->setSizePolicy(sizePolicyMin);
    focusArea_->setSizePolicy(sizePolicyMax);
 
-   seeingGroup_= new Q3HBox(focusGroup_);
+   seeingGroup_= new QCamHBox(focusGroup_);
    seeingLabel_= new QLabel(tr("Seeing: "),seeingGroup_);
    seeingLevel_=  new QProgressBar(seeingGroup_);
    seeingLevel_->setMinimum(0);

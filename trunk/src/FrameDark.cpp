@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -17,15 +17,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <Qt3Support/q3hbox.h>
 #include <Qt/qimage.h>
 #include <Qt/qmessagebox.h>
 #include <Qt/qtooltip.h>
-//Added by qt3to4:
 #include <Qt/qlabel.h>
 
 #include "yuv.hpp"
-
 #include "FrameDark.hpp"
 
 bool FrameDark::transform(const QCamFrame in, QCamFrame & out) {
@@ -63,7 +60,7 @@ FrameDark::FrameDark(QCamTrans* cam) {
    timeString="1.0";
 }
 
-FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): Q3HBox(parent) {
+FrameDark::Widget::Widget(QWidget * parent,const FrameDark * algo): QCamHBox(parent) {
    padding1=new QWidget(this);
    activate=new QCheckBox("Activate",this);
    padding2=new QWidget(this);

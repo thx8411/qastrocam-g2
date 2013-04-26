@@ -24,8 +24,6 @@ MA  02110-1301, USA.
 #include <Qt/qlabel.h>
 #include <Qt/qtooltip.h>
 
-#include <Qt3Support/q3hbox.h>
-
 #include "QCamVBox.hpp"
 #include "QCamFindShift_hotSpot.hpp"
 #include "QCam.hpp"
@@ -216,14 +214,14 @@ QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    QCamUtilities::registerWidget(mainBox_);
 
    QCamUtilities::setQastrocamIcon(mainBox_);
-   Q3HBox * hbox=new Q3HBox(mainBox_);
+   QCamHBox * hbox=new QCamHBox(mainBox_);
    dispImgCenter_ = new QFrameDisplay(hbox,tr("center"));
    QCamVBox * vbox = new QCamVBox (hbox);
    seuilSlider_=new QCamSlider("Tresh",false,vbox,0,255,false,false);
    connect(seuilSlider_,SIGNAL(valueChange(int)),this,SLOT(setSeuil(int)));
    connect(this,SIGNAL(seuilChanged(int)),seuilSlider_,SLOT(setValue(int)));
 
-   Q3HBox * hbox2 = new Q3HBox(vbox);
+   QCamHBox * hbox2 = new QCamHBox(vbox);
    QCheckBox * autoSeuil = new QCheckBox(tr("auto-tresh"),hbox2);
    connect(autoSeuil,SIGNAL(toggled(bool)),this,SLOT(setAutoSeuil(bool)));
    connect(this,SIGNAL(autoSeuilChanged(bool)),autoSeuil,SLOT(setChecked(bool)));

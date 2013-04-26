@@ -20,7 +20,7 @@ MA  02110-1301, USA.
 #include "QCamHBox.hpp"
 
 // constructor
-QCamHBox::QCamHBox(QWidget* parent):QWidget(parent) {
+QCamHBox::QCamHBox(QWidget* parent, const char* name, Qt::WFlags f):QWidget(parent, f) {
    widgetLayout=new QHBoxLayout();
 
    // setting margin and spacing

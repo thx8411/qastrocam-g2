@@ -210,7 +210,7 @@ private:
    QCamSlider * remoteCTRLcolor_;
    QCamSlider * remoteCTRLwhiteness_;
    // input, palette and frame mode
-   Q3HBox * infoBox;
+   QCamHBox * infoBox;
    QCamComboBox* sourceB;
    QCamComboBox* paletteB;
    QCamComboBox* frameModeB;
