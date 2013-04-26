@@ -136,10 +136,18 @@ void QCamAutoGuidage::setTracker(QCamFindShift * tracker) {
 }
 
 void QCamAutoGuidage::track(bool mode) {
+   QPalette redPalette;
+   QPalette greenPalette;
+   QPalette greyPalette;
+
+   redPalette.setColor(QPalette::Background, Qt::red);
+   greenPalette.setColor(QPalette::Background, Qt::green);
+   greyPalette.setColor(QPalette::Background, Qt::lightGray);
+
    if (!(cam_ && tracker_ && telescope_)) {
       if(alert_) {
          alert_->setText("Not connected");
-         alert_->setPaletteBackgroundColor(Qt::red);
+         alert_->setPalette(redPalette);
       }
       return;
    }
@@ -150,7 +158,7 @@ void QCamAutoGuidage::track(bool mode) {
       isGuiding_=true;
       if(alert_) {
          alert_->setText("Guiding...");
-         alert_->setPaletteBackgroundColor(Qt::green);
+         alert_->setPalette(greenPalette);
       }
    } else {
       tracker_->disconnectCam();
@@ -163,12 +171,15 @@ void QCamAutoGuidage::track(bool mode) {
       isGuiding_=false;
       if(alert_) {
          alert_->setText("Idle");
-         alert_->setPaletteBackgroundColor(Qt::lightGray);
+         alert_->setPalette(greyPalette);
       }
    }
 }
 
 QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
+   QPalette greyPalette;
+   greyPalette.setColor(QPalette::Background, Qt::lightGray);
+
    QCamVBox * mainBox = new QCamVBox(parent);
 
    QCamUtilities::registerWidget(mainBox);
@@ -178,7 +189,7 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    }
    QCamHBox * buttons=new QCamHBox(mainBox);
    QPushButton * trackButton = new QPushButton(tr("track"),buttons);
-   trackButton->setToggleButton(true);
+   trackButton->setCheckable(true);
    connect(trackButton,SIGNAL(toggled(bool)),this,SLOT(track(bool)));
 
    //
@@ -192,7 +203,7 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    QCamHBox* state=new QCamHBox(mainBox);
    //QLabel* label1=new QLabel("State : ",state);
    alert_=new QLabel("Idle",state);
-   alert_->setPaletteBackgroundColor(Qt::lightGray);
+   alert_->setPalette(greyPalette);
    alert_->setAlignment(Qt::AlignHCenter);
 
    // sound alert checkbox
@@ -253,12 +264,16 @@ void QCamAutoGuidage::moveAlt(MoveDir NSmove) {
 }
 
 void QCamAutoGuidage::startAlert(int d) {
+   QPalette redPalette;
+
+   redPalette.setColor(QPalette::Background, Qt::red);
+
    if(!(alertAscOn_||alertAltOn_)) {
 
       // visual alert
       if(alert_) {
          alert_->setText("Star Lost !");
-         alert_->setPaletteBackgroundColor(Qt::red);
+         alert_->setPalette(redPalette);
       }
 
       // sound alert
@@ -280,6 +295,12 @@ void QCamAutoGuidage::startAlert(int d) {
 }
 
 void QCamAutoGuidage::stopAlert(int d) {
+   QPalette greenPalette;
+   QPalette greyPalette;
+
+   greenPalette.setColor(QPalette::Background, Qt::green);
+   greyPalette.setColor(QPalette::Background, Qt::gray);
+
    if(d==GUIDE_ASC)
       alertAscOn_=false;
    else
@@ -291,10 +312,10 @@ void QCamAutoGuidage::stopAlert(int d) {
       if(alert_) {
          if(isGuiding_) {
             alert_->setText("Guiding...");
-            alert_->setPaletteBackgroundColor(Qt::green);
+            alert_->setPalette(greenPalette);
          } else {
             alert_->setText("Idle");
-            alert_->setPaletteBackgroundColor(Qt::gray);
+            alert_->setPalette(greyPalette);
          }
       }
 

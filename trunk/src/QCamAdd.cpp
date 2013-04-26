@@ -680,27 +680,27 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    connect(frameAverage,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
    connect(frameMedian,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
 
-   QToolTip::add(frameSum,tr("Adds the frames in live"));
-   QToolTip::add(frameAverage,tr("Produce a 'mean' frame for calibration"));
-   QToolTip::add(frameMedian,tr("Produce a 'median' frame for calibration\n(uses a huge amount of memory)"));
+   frameSum->setToolTip(tr("Adds the frames in live"));
+   frameAverage->setToolTip(tr("Produce a 'mean' frame for calibration"));
+   frameMedian->setToolTip(tr("Produce a 'median' frame for calibration\n(uses a huge amount of memory)"));
 
    //
    // accumulation gui
    //
    accumulationWidget_ = new QCamHGroupBox(tr("Num of Buffers"),remoteCTRL);
    int ActiveBufferList[]={4,8,16,32,64,128,256};
-   remoteCTRLnumOfActiveBuffer_=new QCamComboBox(tr("Num of Buffers"),accumulationWidget_,7,ActiveBufferList,NULL);
+   remoteCTRLnumOfActiveBuffer_=new QCamComboBox("Num of Buffers",accumulationWidget_,7,ActiveBufferList,NULL);
    connect(this,SIGNAL(numOfBufferChange(int)),remoteCTRLnumOfActiveBuffer_,SLOT(update(int)));
    connect(remoteCTRLnumOfActiveBuffer_,SIGNAL(change(int)),this,SLOT(setNumOfBuffer(int)));
 
-   QToolTip::add(remoteCTRLnumOfActiveBuffer_,tr("Number of frames to stack"));
+   remoteCTRLnumOfActiveBuffer_->setToolTip(tr("Number of frames to stack"));
 
    bufferFill_= new QProgressBar(accumulationWidget_);
    resetBufferFill_= new QPushButton(tr("reset"),accumulationWidget_);
    connect(resetBufferFill_,SIGNAL(pressed()),this,SLOT(resetBufferFill()));
 
-   QToolTip::add(bufferFill_,tr("Frame stack progress"));
-   QToolTip::add(resetBufferFill_,tr("Resets the frame stack"));
+   bufferFill_->setToolTip(tr("Frame stack progress"));
+   resetBufferFill_->setToolTip(tr("Resets the frame stack"));
 
    displayOptions_=new QCamVGroupBox(tr("Display Options"),remoteCTRL);
    remoteCTRLmaxYvalue_=new QCamSlider(tr("max Lum."),true,displayOptions_,
@@ -709,12 +709,12 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
                                        1,numOfBuffers_*255-1);
    int valueList[]={0,1,2,3,4,5,6,7};
    const char * labelList[]={"none","log10","log","sqrt","^2","^3","^4","^5"};
-   modeDisplayButton_= new QCamRadioBox(tr("Lum. conversion"),displayOptions_,8,valueList,labelList,4);
+   modeDisplayButton_= new QCamRadioBox("Lum. conversion",displayOptions_,8,valueList,labelList,4);
    connect(modeDisplayButton_,SIGNAL(change(int)),this,SLOT(modeDisplay(int)));
    modeDisplay(0);
    modeDisplayButton_->update(0);
 
-   QToolTip::add(displayOptions_,tr("Resulting frame tuning"));
+   displayOptions_->setToolTip(tr("Resulting frame tuning"));
 
    invDisplayButton_ = new QCheckBox(tr("negate"));
    modeDisplayButton_->layout()->addWidget(invDisplayButton_);
@@ -722,7 +722,7 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
 #ifdef MultiSatMode
    int saturationValueList[]={0,1,2,3,4};
    const char * saturationLabelList[]={"none","low","norm","high","max"};
-   maxCrSaturatedButton_= new QCamRadioBox(tr("Color saturation"),displayOptions_,
+   maxCrSaturatedButton_= new QCamRadioBox("Color saturation",displayOptions_,
                                        5,saturationValueList,saturationLabelList,5);
    connect(maxCrSaturatedButton_,SIGNAL(change(int)),this,SLOT(maxSaturatedColors(int)));
    maxSaturatedColors(2);

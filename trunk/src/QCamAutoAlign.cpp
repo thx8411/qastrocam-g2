@@ -100,26 +100,23 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    connect(cropSlider_, SIGNAL(valueChange(int)),
            this,SLOT(setCropValue(int)));
    cropSlider_->setValue((int)round(cropValue_*100));
-   QToolTip::add(cropSlider_,tr("% of image to keep when crooping"));
+   cropSlider_->setToolTip(tr("% of image to keep when crooping"));
    centerButton_=new QCheckBox(tr("Center image"),remoteCTRL);
    connect(centerButton_,SIGNAL(toggled(bool)),
            this,SLOT(setImageCenter(bool)));
-   QToolTip::add(centerButton_,
-                 tr("Center shifted images on the center of the frame"));
+   centerButton_->setToolTip(tr("Center shifted images on the center of the frame"));
 
 #if ONE_MAP
    scaleSlider_=new QCamSlider(tr("Display scale"),false,remoteCTRL,1,100);
    scaleSlider_->setSizePolicy(sizePolicyMin);
-   QToolTip::add(scaleSlider_,
-                 tr("Scale of the shift history Map"));
+   scaleSlider_->setToolTip(tr("Scale of the shift history Map"));
 
    shiftMap_= new QVectorMap(remoteCTRL);
    shiftMap_->setSizePolicy(sizePolicyMax);
    shiftMap_->setMode(DrawLine);
    connect(scaleSlider_, SIGNAL(valueChange(int)),
            shiftMap_,SLOT(setScale(int)));
-   QToolTip::add(shiftMap_,
-                 tr("Show the history of the frame shift"));
+   shiftMap_->setToolTip(tr("Show the history of the frame shift"));
 #else
    shiftXhisto_ = new QHistogram(remoteCTRL);
    shiftXhisto_->setDataSize(200);

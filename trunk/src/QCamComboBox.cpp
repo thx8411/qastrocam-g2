@@ -28,10 +28,9 @@ MA  02110-1301, USA.
 
 using namespace std;
 
-QCamComboBox::QCamComboBox(const char * label,QWidget * parent,
-                           int numOfbutton, int valueList[],
-                           const char * labelList[]):
-   QComboBox(false,parent,label) {
+QCamComboBox::QCamComboBox(const char* label,QWidget* parent, int numOfbutton, int valueList[],
+                           const char* labelList[]):QComboBox(false, parent, label) {
+
    valueList_=(int*)malloc(numOfbutton*sizeof(int));
    numOfButton_=numOfbutton;
 

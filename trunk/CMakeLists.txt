@@ -66,8 +66,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #
 # QT4 needed
 #
-find_package(Qt4 REQUIRED QtCore QtGui)
-#find_package(Qt4 REQUIRED QtCore QtGui Qt3Support)
+#find_package(Qt4 REQUIRED QtCore QtGui)
+find_package(Qt4 REQUIRED QtCore QtGui Qt3Support)
 if(NOT QT_FOUND)
    message(FATAL_ERROR "Qt4 not found, generation stopped")
 endif(NOT QT_FOUND)
