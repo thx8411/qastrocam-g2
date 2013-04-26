@@ -437,7 +437,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
            this,SLOT(updateFileFormat(int)));
    imgFormatBox_->update(fileFormatCurrent_);
 
-   QCamHBox * buttons2=new QCamHBox(saveGroup);
+   QCamHBox* buttons2=new QCamHBox(saveGroup);
 
    // snapshot button
    snapshot_=new QPushButton(buttons2);
