@@ -87,7 +87,7 @@ QWidget* QCamMax::buildGUI(QWidget * parent) {
    QPushButton* pauseBufferFill_= new QPushButton(remoteCTRL);
    QIcon* tmpIcon;
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   pauseBufferFill_->setToggleButton(true);
+   pauseBufferFill_->setCheckable(true);
    if(tmpIcon!=NULL) {
       pauseBufferFill_->setIcon(*tmpIcon);
       delete tmpIcon;

@@ -135,10 +135,9 @@ bool QCam::saveFrame(const string& file) const {
             return fit.save(yuvFrame());
    } else
 #endif
-      return yuvFrame().colorImage().save((file
-                                           +"."
-                                           +(string)QString(fileFormat.c_str()).lower().toLatin1()).c_str(),
-                                          fileFormat.c_str(), quality);
+      return yuvFrame().colorImage().save((file + "."
+                    +(string)QString(fileFormat.c_str()).toLower().toLatin1()).c_str(),
+                    fileFormat.c_str(), quality);
 }
 
 void QCam::snapshot() const {
@@ -187,14 +186,14 @@ void QCam::setCapture(bool doCapture) const {
    capturedFrame_->display(fileSeqenceNumber_);
    doCapture_=doCapture;
    capturedFrame_->setDisabled(!doCapture);
-   capture_->setOn(doCapture);
+   capture_->setChecked(doCapture);
    pauseCapture_->setDisabled(!doCapture);
    setPauseCapture(false);
 }
 
 void QCam::setPauseCapture(bool capturePaused) const {
    capturePaused_=capturePaused;
-   pauseCapture_->setOn(capturePaused);
+   pauseCapture_->setChecked(capturePaused);
 }
 
 void QCam::setCaptureFile(const QString & afile) {
@@ -251,8 +250,8 @@ void QCam::label(QString label) {
 }
 
 void QCam::displayFrames(bool val) {
-   if (displayFramesButton_ && displayFramesButton_->isOn() != val) {
-      displayFramesButton_->setOn(val);
+   if (displayFramesButton_ && displayFramesButton_->isChecked() != val) {
+      displayFramesButton_->setChecked(val);
       return;
    }
    if (val) {
@@ -273,8 +272,8 @@ void QCam::displayFrames(bool val) {
 }
 
 void QCam::displayHistogram(bool val) {
-   if (displayHistogramButton_ && displayHistogramButton_->isOn() != val) {
-      displayHistogramButton_->setOn(val);
+   if (displayHistogramButton_ && displayHistogramButton_->isChecked() != val) {
+      displayHistogramButton_->setChecked(val);
       return;
    }
    if (displayHistogramWindow_ == NULL) {
@@ -307,7 +306,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    // frames button
    displayFramesButton_ = new QPushButton(buttonBox_);
    displayFramesButton_->setToolTip("display frames");
-   displayFramesButton_->setToggleButton(true);
+   displayFramesButton_->setCheckable(true);
    tmpIcon=QCamUtilities::getIcon("displayFrames.png");
    if(tmpIcon!=NULL) {
       displayFramesButton_->setIcon(*tmpIcon);
@@ -316,14 +315,14 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       displayFramesButton_->setText("Display");
    if (displayWindow_ && displayWindow_->isActive()) {
       cout << "set displayFramesButton_ on\n";
-      displayFramesButton_->setOn(true);
+      displayFramesButton_->setChecked(true);
    }
    connect(displayFramesButton_,SIGNAL(toggled(bool)),this,SLOT(displayFrames(bool)));
 
    // histogram button
    displayHistogramButton_ = new QPushButton(buttonBox_);
    displayHistogramButton_->setToolTip("display frames histograms,\nand focus information");
-   displayHistogramButton_->setToggleButton(true);
+   displayHistogramButton_->setCheckable(true);
    tmpIcon=QCamUtilities::getIcon("displayHistogram.png");
    if(tmpIcon!=NULL) {
       displayHistogramButton_->setIcon(*tmpIcon);
@@ -333,7 +332,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    displayHistogramButton_->setMinimumHeight(28);
    if (displayHistogramWindow_ && displayHistogramWindow_->isActive()) {
       cout << "set displayHistogramButton_ on\n";
-      displayHistogramButton_->setOn(true);
+      displayHistogramButton_->setChecked(true);
    }
    connect(displayHistogramButton_,SIGNAL(toggled(bool)),this,SLOT(displayHistogram(bool)));
 
@@ -445,7 +444,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
    // capture button
    capture_=new QPushButton(buttons2);
-   capture_->setToggleButton(true);
+   capture_->setCheckable(true);
    tmpIcon=QCamUtilities::getIcon("movie.png");
    if(tmpIcon!=NULL) {
       capture_->setIcon(*tmpIcon);
@@ -456,7 +455,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
    // pause button
    pauseCapture_=new QPushButton(buttons2);
    pauseCapture_->setToolTip("Suspend the current capture");
-   pauseCapture_->setToggleButton(true);
+   pauseCapture_->setCheckable(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
    if(tmpIcon!=NULL) {
       pauseCapture_->setIcon(*tmpIcon);
@@ -509,7 +508,7 @@ QWidget * QCam::buildGUI(QWidget * parent) {
            this,SLOT(periodicCapture(int)));
 
    timebetweenCaptureW_ = new QLineEdit(savePeriodicGroup);
-   QToolTip::add(timebetweenCaptureW_,"Time between two automatic capture");
+   timebetweenCaptureW_->setToolTip("Time between two automatic capture");
    timebetweenCaptureW_->setText(QString().sprintf("%d",timebetweenCapture_));
    connect(timebetweenCaptureW_,SIGNAL(textChanged(const QString&)),
            this,SLOT(timebetweenCaptureUpdated(const QString&)));
@@ -580,9 +579,9 @@ QWidget * QCam::buildGUI(QWidget * parent) {
 
       // read previous scale mode
       if(settings.haveKey("FRAME_MODE")) {
-         if(string(settings.getKey("FRAME_MODE"))=="scaling") { setCropping(0); cropCombo->setCurrentItem(0); }
-         if(string(settings.getKey("FRAME_MODE"))=="cropping") { setCropping(1); cropCombo->setCurrentItem(1); }
-         if(string(settings.getKey("FRAME_MODE"))=="binning") { setCropping(2); cropCombo->setCurrentItem(2); }
+         if(string(settings.getKey("FRAME_MODE"))=="scaling") { setCropping(0); cropCombo->setCurrentIndex(0); }
+         if(string(settings.getKey("FRAME_MODE"))=="cropping") { setCropping(1); cropCombo->setCurrentIndex(1); }
+         if(string(settings.getKey("FRAME_MODE"))=="binning") { setCropping(2); cropCombo->setCurrentIndex(2); }
       }
       connect(cropCombo,SIGNAL(change(int)),this,SLOT(setCropping(int)));
       if(size==1) cropCombo->setEnabled(false);
@@ -690,7 +689,7 @@ void QCam::maxCaptureInSequenceUpdated(const QString &newMaxStr) {
 
    if (mode != 0) {
       //timebetweenCaptureW_->show();
-      periodicCaptureT_->changeInterval(timebetweenCapture_*1000);
+      periodicCaptureT_->setInterval(timebetweenCapture_*1000);
       timebetweenCaptureTimeout();
    } else {
       //timebetweenCaptureW_->hide();
@@ -706,7 +705,7 @@ void QCam::timebetweenCaptureUpdated(const QString &newMaxStr) {
    }
    timebetweenCaptureW_->
       setText(QString().sprintf("%d",timebetweenCapture_));
-   periodicCaptureT_->changeInterval(timebetweenCapture_*1000);
+   periodicCaptureT_->setInterval(timebetweenCapture_*1000);
    //cout << "timebetweenCapture_ changed to "<<timebetweenCapture_<<endl;
 }
 
@@ -747,7 +746,7 @@ void QCam::annotate(const Vector2D & pos) const {
 
 void QCam::setSizeFromAllowed(int index) {
    // saving frame resolution
-   settings.setKey("FRAME_RESOLUTION",sizeCombo->text(index));
+   settings.setKey("FRAME_RESOLUTION",sizeCombo->itemText(index).toStdString ().c_str());
    //if(cropCombo!=NULL)
    //   croppingMode=cropCombo->value();
    resize(sizeTable[index]);

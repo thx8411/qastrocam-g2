@@ -49,7 +49,7 @@ QCamComboBox::~QCamComboBox() {
 
 int QCamComboBox::getPosition(const char* item) {
    for(int i=0; i<numOfButton_;i++)
-	if(QString(item)==QString::number(i)) return(i);
+	if(QString(item)==itemText(i)) return(i);
    return(-1);
 }
 

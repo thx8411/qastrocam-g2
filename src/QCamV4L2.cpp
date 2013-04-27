@@ -1072,9 +1072,12 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    if(settings.haveKey(keyName.c_str())) {
         int index=frameModeB->getPosition(settings.getKey(keyName.c_str()));
         if (index!=-1) setMode(index);
-        frameModeB->setCurrentItem(index);
+        frameModeB->setCurrentIndex(index);
    // else use default
-   } else setMode(0);
+   } else {
+      setMode(0);
+      frameModeB->setCurrentIndex(0);
+   }
    QToolTip::add(frameModeB,"Frame mode");
 
    // controls

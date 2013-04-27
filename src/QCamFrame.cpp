@@ -21,6 +21,7 @@ MA  02110-1301, USA.
 
 #include <assert.h>
 #include <math.h>
+
 #include <Qt/qimage.h>
 
 #include "QCamFrame.hpp"
@@ -48,8 +49,8 @@ bool QCamFrameCommon::empty() const {
    return size_.width()<=0 || size_.height()<=0;
 }
 
-QCamFrameCommon * QCamFrameCommon::clone() {
-   QCamFrameCommon * newFrame=new QCamFrameCommon(getMode());
+QCamFrameCommon* QCamFrameCommon::clone() {
+   QCamFrameCommon* newFrame=new QCamFrameCommon(getMode());
    newFrame->setSize(size_);
    memcpy(newFrame->yFrame_,yFrame_,ySize());
    if (getMode()==YuvFrame) {
@@ -108,11 +109,9 @@ const QImage & QCamFrameCommon::colorImage() const {
    case YuvFrame:
       if (!colorImage_) {
          colorImageBuff_ =(unsigned char*)malloc(size_.width()*size_.height()*4);
-         colorImage_=new QImage(colorImageBuff_,size_.width(),size_.height(),
-                                32,0,0,QImage::BigEndian);
+         colorImage_=new QImage(colorImageBuff_,size_.width(),size_.height(),size_.width()*4,QImage::Format_RGB32);
       }
-      yuv444_to_bgr32(size_.width(),size_.height(),
-                      Y(),U(),V(),(unsigned char*)colorImageBuff_);
+      yuv444_to_bgr32(size_.width(),size_.height(),Y(),U(),V(),(unsigned char*)colorImageBuff_);
       break;
    }
    return *colorImage_;
@@ -120,58 +119,55 @@ const QImage & QCamFrameCommon::colorImage() const {
 
 const QImage & QCamFrameCommon::grayImage() const {
    if (!grayImage_) {
-      static QRgb * grayTable=NULL;
+      static QVector<QRgb>* grayTable=NULL;
       if (grayTable == NULL) {
-         grayTable=new QRgb[256];
+         grayTable=new QVector<QRgb>(256);
          for (int i=0;i<256;++i) {
-            grayTable[i]=qRgb(i,i,i);
+            grayTable->insert(i,qRgb(i,i,i));
          }
       }
-      grayImage_=new QImage(const_cast<uchar *>(Y()),
-                            size_.width(),size_.height(),
-                            8,grayTable,256,QImage::BigEndian);
+      grayImage_=new QImage(const_cast<uchar *>(Y()),size_.width(),size_.height(),size_.width(),QImage::Format_Indexed8);
+      grayImage_->setColorTable(*grayTable);
    }
    return *grayImage_;
 }
 
 const QImage & QCamFrameCommon::grayImageNegated() const {
    if (!grayImage_) {
-      static QRgb * grayTable=NULL;
+      static QVector<QRgb>* grayTable=NULL;
       if (grayTable == NULL) {
-         grayTable=new QRgb[256];
+         grayTable=new QVector<QRgb>(256);
          for (int i=0;i<256;++i) {
-            grayTable[255-i]=qRgb(i,i,i);
+            grayTable->insert(255-i,qRgb(i,i,i));
          }
       }
-      grayImage_=new QImage(const_cast<uchar *>(Y()),
-                            size_.width(),size_.height(),
-                            8,grayTable,256,QImage::BigEndian);
+      grayImage_=new QImage(const_cast<uchar *>(Y()),size_.width(),size_.height(),size_.width(),QImage::Format_Indexed8);
+      grayImage_->setColorTable(*grayTable);
    }
    return *grayImage_;
 }
 
 const QImage & QCamFrameCommon::falseColorImage() const {
    if (!grayImage_) {
-      static QRgb * grayTable=NULL;
+      static QVector<QRgb>* grayTable=NULL;
       if (grayTable == NULL) {
-         grayTable=new QRgb[256];
+         grayTable=new QVector<QRgb>(256);
 
          for (int i=0;i<256;i+=4) {
-            grayTable[i/4]=qRgb(0,i,255);
+            grayTable->insert(i/4,qRgb(0,i,255));
          }
          for (int i=0;i<256;i+=4) {
-            grayTable[i/4+64]=qRgb(0,255,255-i);
+            grayTable->insert(i/4+64,qRgb(0,255,255-i));
          }
          for (int i=0;i<256;i+=4) {
-            grayTable[i/4+128]=qRgb(i,255,0);
+            grayTable->insert(i/4+128,qRgb(i,255,0));
          }
          for (int i=0;i<256;i+=4) {
-            grayTable[i/4+192]=qRgb(255,255-i,0);
+            grayTable->insert(i/4+192,qRgb(255,255-i,0));
          }
       }
-      grayImage_=new QImage(const_cast<uchar *>(Y()),
-                            size_.width(),size_.height(),
-                            8,grayTable,256,QImage::BigEndian);
+      grayImage_=new QImage(const_cast<uchar *>(Y()),size_.width(),size_.height(),size_.width(),QImage::Format_Indexed8);
+      grayImage_->setColorTable(*grayTable);
    }
    return *grayImage_;
 }

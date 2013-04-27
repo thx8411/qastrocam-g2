@@ -46,10 +46,6 @@ void QGridBoxLayout::addItem(QLayoutItem * item ) {
    QGridLayout::addItem(item, row, col);
 }
 
-QLayoutIterator QGridBoxLayout::iterator () {
-   return QGridLayout::iterator();
-}
-
 QGridBox::QGridBox(QWidget* parent , Qt::Orientation ori, int size, const char* name) :
    QWidget(parent,name),
    layout_(this, ori, size , name) {
