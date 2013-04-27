@@ -101,7 +101,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
 
    int displayValues[]={Color,Gray,Negate,FalseColor};
    const char * displayValuesLabel[]={"RGB","Gray","Negated", "False Color"};
-   displayModeButton_ = new QCamComboBox(tr("Display type"),buttonsContainer_,4,
+   displayModeButton_ = new QCamComboBox("Display type",buttonsContainer_,4,
                                          displayValues,
                                          displayValuesLabel);
    connect(displayModeButton_,SIGNAL(change(int)),this,SLOT(setDisplayMode(int)));
@@ -116,7 +116,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
    connect(crossButton_,SIGNAL(change(int)),this,SLOT(setCross(int)));
 
    crossLumSlider_ = new QCamSlider("Lum.",false,mainWidget_,10,255,false,false);
-   QToolTip::add(crossLumSlider_,"set the brightness of the reticule");
+   crossLumSlider_->setToolTip("set the brightness of the reticule");
    crossLumSlider_->setEnabled(false);
 #if HAVE_SDL_H
    if (!SDL_on_ && QCamUtilities::useSDL()) {
@@ -130,7 +130,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
 #else
    widget_= new QCamDisplayImplQT(*this,mainWidget_);
 #endif
-   QToolTip::add(widget_,"Double click to set center of the reticule");
+   widget_->setToolTip("Double click to set center of the reticule");
    connect(crossLumSlider_,SIGNAL(valueChange(int)),this,SLOT(setCrossLum(int)));
    crossLumSlider_->setValue(QCamDisplay::defaultLum_);
 
@@ -253,7 +253,7 @@ QCamDisplayImpl::QCamDisplayImpl(QCamDisplay & camClient,QWidget * parent):
    firtsFrameReceived_=false;
    currentCross_=QCamDisplay::None;
    crossCenterY_=crossCenterX_=-1000;
-   QToolTip::add(this,tr("double click to move center of the reticul"));
+   setToolTip(tr("double click to move center of the reticul"));
    painter_ = new QPainter();
    pen_=new QPen();
    pen_->setStyle(Qt::SolidLine);
@@ -306,7 +306,7 @@ void QCamDisplayImpl::setCrossLum(int l) {
 
 QCamDisplayImplQT::QCamDisplayImplQT(QCamDisplay & camClient,QWidget * parent):
    QCamDisplayImpl(camClient,parent) {
-   setWindowFlags(Qt::WNoAutoErase);
+   setAttribute(Qt::WA_NoBackground);
 }
 
 void QCamDisplayImplQT::paintEvent(QPaintEvent * ev) {

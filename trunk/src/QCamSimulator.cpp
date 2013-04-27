@@ -98,7 +98,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
       delete tmpIcon;
    } else
       raLeft_->setText("Left");
-   raLeft_->setToggleButton(true);
+   raLeft_->setCheckable(true);
 
    // right button
    raRight_=new QPushButton(raZone);
@@ -108,7 +108,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
       delete tmpIcon;
    } else
       raRight_->setText("Right");
-   raRight_->setToggleButton(true);
+   raRight_->setCheckable(true);
 
    // pause button
    raStop_=new QPushButton(raZone);
@@ -140,7 +140,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
       delete tmpIcon;
    } else
       decUp_->setText("Up");
-   decUp_->setToggleButton(true);
+   decUp_->setCheckable(true);
 
    // down button
    decDown_=new QPushButton(decZone);
@@ -150,7 +150,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
       delete tmpIcon;
    } else
       decDown_->setText("Down");
-   decDown_->setToggleButton(true);
+   decDown_->setCheckable(true);
 
    // stop button
    decStop_=new QPushButton(decZone);
@@ -249,7 +249,7 @@ bool QCamSimulator::updateFrame() {
 
 void QCamSimulator::moveLeft(bool s) {
    if(s) {
-      raRight_->setOn(false);
+      raRight_->setChecked(false);
       raMove_=_SIMULATOR_LEFT_;
    } else
       raMove_=_SIMULATOR_STOP_;
@@ -257,21 +257,21 @@ void QCamSimulator::moveLeft(bool s) {
 
 void QCamSimulator::moveRight(bool s) {
    if(s) {
-      raLeft_->setOn(false);
+      raLeft_->setChecked(false);
       raMove_=_SIMULATOR_RIGHT_;
    } else
       raMove_=_SIMULATOR_STOP_;
 }
 
 void QCamSimulator::stopRa() {
-   raLeft_->setOn(false);
-   raRight_->setOn(false);
+   raLeft_->setChecked(false);
+   raRight_->setChecked(false);
    raMove_=_SIMULATOR_STOP_;
 }
 
 void QCamSimulator::moveUp(bool s) {
    if(s) {
-      decDown_->setOn(false);
+      decDown_->setChecked(false);
       decMove_=_SIMULATOR_UP_;
    } else
       decMove_=_SIMULATOR_STOP_;
@@ -279,15 +279,15 @@ void QCamSimulator::moveUp(bool s) {
 
 void QCamSimulator::moveDown(bool s) {
    if(s) {
-      decUp_->setOn(false);
+      decUp_->setChecked(false);
       decMove_=_SIMULATOR_DOWN_;
    } else
       decMove_=_SIMULATOR_STOP_;
 }
 
 void QCamSimulator::stopDec() {
-   decUp_->setOn(false);
-   decDown_->setOn(false);
+   decUp_->setChecked(false);
+   decDown_->setChecked(false);
    decMove_=_SIMULATOR_STOP_;
 }
 

@@ -37,6 +37,7 @@ MA  02110-1301, USA.
 // needed for Xsync
 #if defined(Q_WS_X11)
 #include <X11/Xlib.h>
+#include <QtGui/qx11info_x11.h>
 #endif
 
 //
@@ -165,7 +166,7 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
    colors=greyPalette;
 
    // disable Qt4 double buffering
-   setWindowFlags(Qt::WNoAutoErase);
+   setAttribute(Qt::WA_NoBackground);
    setAttribute(Qt::WA_PaintOnScreen);
    setAttribute(Qt::WA_NoSystemBackground);
 
@@ -281,7 +282,7 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
 
 #if defined(Q_WS_X11)
    // Make sure we're not conflicting with drawing from the Qt library
-   XSync(QPaintDevice::x11Display(), FALSE);
+   XSync(QX11Info::display(), FALSE);
 #endif
 
    // build SDL surfaces depending on video mode

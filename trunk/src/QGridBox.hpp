@@ -30,7 +30,6 @@ class QGridBoxLayout : public QGridLayout {
 public:
    QGridBoxLayout(QWidget* parent , Qt::Orientation, int size, const char * name = 0 );
    virtual void addItem (QLayoutItem* item);
-   virtual QLayoutIterator iterator();
 private:
    // max width or height (depending of the Orientation)
    const int size_;

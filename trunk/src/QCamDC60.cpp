@@ -124,10 +124,10 @@ QWidget *  QCamDC60::buildGUI(QWidget * parent) {
    lxProgress->setEnabled(false);
    QWidget* padding4=new QWidget(lxCtrl);
 
-   QToolTip::add(lxCheck,"Activate long exposure mode");
-   QToolTip::add(lxEntry,"Integration time value");
-   QToolTip::add(lxSet,"Set integration time");
-   QToolTip::add(lxProgress,"Integration progress");
+   lxCheck->setToolTip("Activate long exposure mode");
+   lxEntry->setToolTip("Integration time value");
+   lxSet->setToolTip("Set integration time");
+   lxProgress->setToolTip("Integration progress");
 
    connect(lxCheck,SIGNAL(stateChanged(int)),this,SLOT(lxActivated(int)));
    connect(lxSet,SIGNAL(released()),this,SLOT(lxSetPushed()));

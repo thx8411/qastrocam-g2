@@ -215,7 +215,7 @@ QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
 
    QCamUtilities::setQastrocamIcon(mainBox_);
    QCamHBox * hbox=new QCamHBox(mainBox_);
-   dispImgCenter_ = new QFrameDisplay(hbox,tr("center"));
+   dispImgCenter_ = new QFrameDisplay(hbox,"center");
    QCamVBox * vbox = new QCamVBox (hbox);
    seuilSlider_=new QCamSlider("Tresh",false,vbox,0,255,false,false);
    connect(seuilSlider_,SIGNAL(valueChange(int)),this,SLOT(setSeuil(int)));
@@ -225,17 +225,15 @@ QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    QCheckBox * autoSeuil = new QCheckBox(tr("auto-tresh"),hbox2);
    connect(autoSeuil,SIGNAL(toggled(bool)),this,SLOT(setAutoSeuil(bool)));
    connect(this,SIGNAL(autoSeuilChanged(bool)),autoSeuil,SLOT(setChecked(bool)));
-   QToolTip::add(autoSeuil,tr("automaticaly calculate 'optimal' tresh"));
+   autoSeuil->setToolTip(tr("automaticaly calculate 'optimal' tresh"));
    emit(autoSeuilChanged(autoSeuil_));
 
    QLabel * binningLabel=new QLabel("Binning:",hbox2);
    int binningValues[5]={1,2,3,4,5};
    const char * binningLabels[5]={"1x1","2x2","3x3","4x4","5x5"};
-   QCamComboBox * binning =new QCamComboBox(tr("Binning"),hbox2,4,
-                                            binningValues,binningLabels);
+   QCamComboBox * binning =new QCamComboBox("Binning",hbox2,4,binningValues,binningLabels);
    connect(binning,SIGNAL(change(int)),this,SLOT(setBinning(int)));
-   QToolTip::add(binning,tr("seting a high binning will speedup\n"
-                            "the processing with big box size"));
+   binning->setToolTip(tr("seting a high binning will speedup\nthe processing with big box size"));
 
    bigBoxSlider_=new QCamSlider("Boxsize",false,vbox,1,200,false,false);
    connect(bigBoxSlider_,SIGNAL(valueChange(int)),this,SLOT(setSearchBoxSize(int)));
