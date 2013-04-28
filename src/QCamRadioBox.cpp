@@ -86,7 +86,7 @@ void QCamRadioBox::update(int value) {
          return;
       }
    }
-   cout << "invalid value "<<value<<" for widget QCamRadioBox::"<< name()<<endl;
+   cout << "invalid value " << value << " for widget QCamRadioBox" << endl;
 }
 
 void QCamRadioBox::buttonClicked(bool d) {

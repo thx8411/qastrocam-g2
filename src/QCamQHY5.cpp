@@ -247,7 +247,8 @@ void QCamQHY5::setExposure() {
    // resets the cam
    camera->stop();
    // update vars
-   timer_->start(frameExposure_,true);
+   timer_->setSingleShot(true);
+   timer_->start(frameExposure_);
    // update conf file
    sprintf(value,"%i",frameExposure_);
    settings.setKey("QHY5_EXPOSURE",value);
@@ -368,10 +369,10 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    QCamHBox* exposureBox=new QCamHBox(settingsBox);
    QLabel* label1=new QLabel(QString("Exposure"),exposureBox);
    exposureSlider=new QSlider(Qt::Horizontal,exposureBox);
-   exposureSlider->setMinValue(0);
-   exposureSlider->setMaxValue(QHY5_EXPOSURE_TABLE_SIZE-1);
+   exposureSlider->setMinimum(0);
+   exposureSlider->setMaximum(QHY5_EXPOSURE_TABLE_SIZE-1);
    exposureSlider->setValue(getExposureIndex(frameExposure_));
-   exposureSlider->setTickmarks(QSlider::TicksBelow);
+   exposureSlider->setTickPosition(QSlider::TicksBelow);
    exposureSlider->setTickInterval(1);
    exposureValue=new QLabel(exposureBox);
    exposureValue->setMinimumWidth(80);
@@ -408,10 +409,10 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    }
 
    // tooltips
-   QToolTip::add(denoiseBox,tr("Denoise the horizontal bands using the edge black pixels"));
-   QToolTip::add(gainSlider,tr("Camera's gain, non linear, 0 to 81 , 5 means x1 (patterns after 52)"));
-   QToolTip::add(exposureSlider,tr("Camera's exposure, may be limited by the frame sizes"));
-   QToolTip::add(exposureValue,tr("Exposure time (not a real fps, not very accurate for high rates)"));
+   denoiseBox->setToolTip(tr("Denoise the horizontal bands using the edge black pixels"));
+   gainSlider->setToolTip(tr("Camera's gain, non linear, 0 to 81 , 5 means x1 (patterns after 52)"));
+   exposureSlider->setToolTip(tr("Camera's exposure, may be limited by the frame sizes"));
+   exposureValue->setToolTip(tr("Exposure time (not a real fps, not very accurate for high rates)"));
 
    // connections
    connect(denoiseBox,SIGNAL(toggled(bool)),this,SLOT(denoiseChange(bool)));
@@ -434,7 +435,8 @@ QWidget * QCamQHY5::buildGUI(QWidget * parent) {
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->start(frameExposure_,true);
+   timer_->setSingleShot(true);
+   timer_->start(frameExposure_);
    // progress timer
    progressTimer_=new QTimer(this);
    progressTimer_->start(PROGRESS_TIME);
@@ -474,7 +476,8 @@ bool QCamQHY5::updateFrame() {
       camera->shoot(poseTime,shootMode_);
       shooting_=TRUE;
       // gives a new shot for the timer
-      timer_->start(frameExposure_,true);
+      timer_->setSingleShot(true);
+      timer_->start(frameExposure_);
       // set the output frame
       if((targetWidth_==1280)&&(targetHeight_==1024)) {
           // nothing to resize

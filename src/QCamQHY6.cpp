@@ -213,7 +213,8 @@ void QCamQHY6::setExposure() {
 
    // resets the cam
    camera->stop();
-   timer_->start(frameExposure_,true);
+   timer_->setSingleShot(true);
+   timer_->start(frameExposure_);
    // update conf file
    sprintf(value,"%i",frameExposure_);
    settings.setKey("QHY6_EXPOSURE",value);
@@ -276,10 +277,10 @@ QWidget * QCamQHY6::buildGUI(QWidget * parent) {
    QCamHBox* exposureBox=new QCamHBox(settingsBox);
    QLabel* label1=new QLabel(QString("Exposure"),exposureBox);
    exposureSlider=new QSlider(Qt::Horizontal,exposureBox);
-   exposureSlider->setMinValue(0);
-   exposureSlider->setMaxValue(QHY6_EXPOSURE_TABLE_SIZE-1);
+   exposureSlider->setMinimum(0);
+   exposureSlider->setMaximum(QHY6_EXPOSURE_TABLE_SIZE-1);
    exposureSlider->setValue(getExposureIndex(frameExposure_));
-   exposureSlider->setTickmarks(QSlider::TicksBelow);
+   exposureSlider->setTickPosition(QSlider::TicksBelow);
    exposureSlider->setTickInterval(1);
    exposureValue=new QLabel(exposureBox);
    exposureValue->setMinimumWidth(80);
@@ -316,9 +317,9 @@ QWidget * QCamQHY6::buildGUI(QWidget * parent) {
    }
 
    // tooltips
-   QToolTip::add(gainSlider,tr("Camera's gain"));
-   QToolTip::add(exposureSlider,tr("Camera's exposure"));
-   QToolTip::add(exposureValue,tr("Exposure time"));
+   gainSlider->setToolTip(tr("Camera's gain"));
+   exposureSlider->setToolTip(tr("Camera's exposure"));
+   exposureValue->setToolTip(tr("Exposure time"));
 
    // connections
    connect(gainSlider,SIGNAL(valueChange(int)),this,SLOT(changeGain(int)));
@@ -332,7 +333,8 @@ QWidget * QCamQHY6::buildGUI(QWidget * parent) {
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->start(/*frameRate_*/frameExposure_,true);
+   timer_->setSingleShot(true);
+   timer_->start(frameExposure_);
    // progress timer
    progressTimer_=new QTimer(this);
    progressTimer_->start(PROGRESS_TIME);
@@ -364,7 +366,8 @@ bool QCamQHY6::updateFrame() {
       camera->shoot(poseTime,shootMode_);
       shooting_=TRUE;
       // gives a new shot for the timer
-      timer_->start(frameExposure_,true);
+      timer_->setSingleShot(true);
+      timer_->start(frameExposure_);
       // set the output frame
       if((targetWidth_==796)&&(targetHeight_==596)) {
           // nothing to resize
