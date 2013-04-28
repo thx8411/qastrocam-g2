@@ -79,7 +79,7 @@ void QCamSelection::commonInit(QWidget * parent) {
 
    int displayValues[]={Gray,Negate,FalseColor};
    const char * displayValuesLabel[]={"Gray","Negated", "False Color"};
-   displayModeButton_ = new QCamComboBox(tr("Display type"),buttonsContainer_,3,
+   displayModeButton_ = new QCamComboBox("Display type",buttonsContainer_,3,
                                          displayValues,
                                          displayValuesLabel);
    //buttonsContainer_->setStretchFactor(displayModeButton_,0);
@@ -93,7 +93,7 @@ void QCamSelection::commonInit(QWidget * parent) {
 
    int sizeValues[]={0,1,2};
    const char * sizeValuesLabel[]={"32","64", "128"};
-   sizeModeButton_ = new QCamComboBox(tr("Selection size"),buttonsContainer_,3,
+   sizeModeButton_ = new QCamComboBox("Selection size",buttonsContainer_,3,
                                          sizeValues,
                                          sizeValuesLabel);
    //buttonsContainer_->setStretchFactor(sizeModeButton_,0);
@@ -105,7 +105,7 @@ void QCamSelection::commonInit(QWidget * parent) {
 
    widget_= new QCamSelectionImpl(*this,mainWidget_);
 
-   QToolTip::add(widget_,"Double click to set center of the selection");
+   widget_->setToolTip("Double click to set center of the selection");
 
    QSizePolicy policy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    widget_->setSizePolicy(policy);
@@ -192,13 +192,13 @@ QCamSelectionImpl::QCamSelectionImpl(QCamSelection & camClient,QWidget * parent)
    firtsFrameReceived_=false;
    selectionSize_=32;
    selectionCenterY_=selectionCenterX_=-1000;
-   QToolTip::add(this,tr("double click to move center of the selection"));
+   setToolTip(tr("double click to move center of the selection"));
    painter_ = new QPainter();
    pen_=new QPen();
    pen_->setStyle(Qt::SolidLine);
    pen_->setColor(Qt::red);
    displayMode_=QCamSelection::Gray;
-   setWindowFlags(Qt::WNoAutoErase);
+   setAttribute(Qt::WA_NoBackground);
 }
 
 QCamSelectionImpl::~QCamSelectionImpl() {

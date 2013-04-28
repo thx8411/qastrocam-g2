@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010   Blaise-Florentin Collin
+Copyright (C) 2010-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -20,9 +20,11 @@ MA  02110-1301, USA.
 #ifndef _QCamPhoto2_hpp_
 #define _QCamPhoto2_hpp_
 
-#include <Qt/qobject.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <Qt/qobject.h>
+
 #include "QCam.hpp"
 
 /** QCam implementation to access libgphoto2 cameras **/
