@@ -189,21 +189,22 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    setDecSpeed(1);
 
    // tooltips
-   QToolTip::add(raSpeedSlider_,tr("RA speed (pixels/frame)"));
-   QToolTip::add(raLeft_,tr("Move left"));
-   QToolTip::add(raRight_,tr("Move right"));
-   QToolTip::add(raStop_,tr("Stop RA moves"));
-   QToolTip::add(raCenter_,tr("Center the star"));
-   QToolTip::add(decSpeedSlider_,tr("DEC speed (pixels/frame)"));
-   QToolTip::add(decUp_,tr("Move up"));
-   QToolTip::add(decDown_,tr("Move down"));
-   QToolTip::add(decStop_,tr("Stop DEC moves"));
-   QToolTip::add(decCenter_,tr("Center the star"));
+   raSpeedSlider_->setToolTip(tr("RA speed (pixels/frame)"));
+   raLeft_->setToolTip(tr("Move left"));
+   raRight_->setToolTip(tr("Move right"));
+   raStop_->setToolTip(tr("Stop RA moves"));
+   raCenter_->setToolTip(tr("Center the star"));
+   decSpeedSlider_->setToolTip(tr("DEC speed (pixels/frame)"));
+   decUp_->setToolTip(tr("Move up"));
+   decDown_->setToolTip(tr("Move down"));
+   decStop_->setToolTip(tr("Stop DEC moves"));
+   decCenter_->setToolTip(tr("Center the star"));
 
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->start(_SIMULATOR_EXPOSURE_,true);
+   timer_->setSingleShot(true);
+   timer_->start(_SIMULATOR_EXPOSURE_);
 
    return remoteCTRL;
 }
@@ -215,7 +216,8 @@ bool QCamSimulator::updateFrame() {
    // read picture datas
    setTime();
    // gives a new shot for the timer
-   timer_->start(_SIMULATOR_EXPOSURE_,true);
+   timer_->setSingleShot(true);
+   timer_->start(_SIMULATOR_EXPOSURE_);
    // fill the frame
    memset(YBuff,0,_SIMULATOR_WIDTH_*_SIMULATOR_HEIGHT_);
    // compute the new star position

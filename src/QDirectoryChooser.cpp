@@ -55,12 +55,7 @@ QDirectoryChooser::~QDirectoryChooser() {
 
 void QDirectoryChooser::selectDirectory() {
    setDisabled(true);
-   QString newDir = QFileDialog::getExistingDirectory(
-      currentDir_,
-      this,
-      "get existing directory",
-      "Choose a directory",
-      TRUE );
+   QString newDir = QFileDialog::getExistingDirectory(this, "Choose a directory", currentDir_);
    setDisabled(false);
    if (!newDir.isEmpty() && !newDir.isNull()) {
       setDirectory(newDir);
@@ -72,6 +67,6 @@ void QDirectoryChooser::setDirectory(const QString & dirName) {
    char * tmpStr=strdup(dirName.toLatin1());
    //setText(basename(tmpStr));
    free(tmpStr);
-   QToolTip::add(this, currentDir_);
+   setToolTip(currentDir_);
    emit(directoryChanged(dirName));
 }

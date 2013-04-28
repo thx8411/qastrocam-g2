@@ -680,18 +680,18 @@ void QCamVesta::initRemoteControlLongExposure(QWidget * remoteCTRL) {
    longExposureTime_->setText(tmp);
    longExposureTime_->setEnabled(false);
    connect(longExposureTime_,SIGNAL(textChanged(const QString&)),this,SLOT(setLongExposureTime(const QString&)));
-   QToolTip::add(longExposureTime_,tr("exposure time in secondes (0 to disable)"));
+   longExposureTime_->setToolTip(tr("exposure time in secondes (0 to disable)"));
 
    exposureTimeLeft_=new QProgressBar(remoteCTRL);
    exposureTimeLeft_->hide();
-   QToolTip::add(exposureTimeLeft_,tr("Integration progress"));
+   exposureTimeLeft_->setToolTip(tr("Integration progress"));
 
    exposureTime_=new QLCDNumber(5,remoteCTRL);
    connect(this,SIGNAL(exposureTime(double)),exposureTime_,SLOT(display(double)));
    exposureTime_->setSmallDecimalPoint(false);
    exposureTime_->setSegmentStyle(QLCDNumber::Flat);
    exposureTime_->show();
-   QToolTip::add(exposureTime_,tr("Integration time"));
+   exposureTime_->setToolTip(tr("Integration time"));
 
    if (SCmodCtrl_) {
       SCmodCtrl_->buildGUI(remoteCTRL);
@@ -705,25 +705,23 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    if (QCamUtilities::expertMode()) {
       QCheckBox * backLight = new QCheckBox(tr("Back Light"),sliders);
       connect(backLight,SIGNAL(toggled(bool)),this,SLOT(setBackLight(bool)));
-      QToolTip::add(backLight,
-                    tr("In case the object you are viewing with the camera is\n"
+      backLight->setToolTip(tr("In case the object you are viewing with the camera is\n"
                        "in front of a bright background (for example, a window\n"
                        "or some bright lights), the automatic exposure unit may\n"
                        "make the image too dark. In that case you can turn the\n"
                        "backlight compensation mode off"));
       QCheckBox * flicker = new QCheckBox(tr("Anti-flicker"),sliders);
       connect(flicker,SIGNAL(toggled(bool)),this,SLOT(setFlicker(bool)));
-      QToolTip::add(flicker,tr("Suppress 'flickering' of the image when light with a fluo tube"));
+      flicker->setToolTip(tr("Suppress 'flickering' of the image when light with a fluo tube"));
    }
    remoteCTRLgama_=new QCamSlider(tr("Gamma"),false,sliders,0,31, false, false);
-   QToolTip::add(remoteCTRLgama_,tr("Low gamma implies less contrasts"));
+   remoteCTRLgama_->setToolTip(tr("Low gamma implies less contrasts"));
    remoteCTRLgain_=new QCamSlider(tr("Gain"),true,sliders,0,63,false,false);
-   QToolTip::add(remoteCTRLgain_,tr("More Gain implies more noise in the images"));
+   remoteCTRLgain_->setToolTip(tr("More Gain implies more noise in the images"));
 
    /* TODO : set the exposure limit depending on camera */
    remoteCTRLexposure_=new QCamSlider(tr("Exp."),true,sliders,0,/*65535*/255,false);
-   QToolTip::add(remoteCTRLexposure_,
-                 tr("More exposure reduce noise in images.\n"
+   remoteCTRLexposure_->setToolTip(tr("More exposure reduce noise in images.\n"
                  "(manual exposure setting don't work on type 740\n"
                  "if automatic gain is activated).")
       );
@@ -737,11 +735,11 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
       connect(this,SIGNAL(noiseRemovalChange(int)),remoteCTRLnoiseRemoval_,SLOT(setValue(int)));
       connect(remoteCTRLnoiseRemoval_,SIGNAL(valueChange(int)),this,SLOT(setNoiseRemoval(int)));
 
-      QToolTip::add(remoteCTRLnoiseRemoval_,tr("Dynamic Noise removal (0=none, 3=high) (0 give brighter image)"));
+      remoteCTRLnoiseRemoval_->setToolTip(tr("Dynamic Noise removal (0=none, 3=high) (0 give brighter image)"));
 
       connect(this,SIGNAL(sharpnessChange(int)),remoteCTRLsharpness_,SLOT(setValue(int)));
       connect(remoteCTRLsharpness_,SIGNAL(valueChange(int)),this,SLOT(setSharpness(int)));
-      QToolTip::add(remoteCTRLsharpness_,tr("Shaprness enhancement (0=none, 65536=high) (low value blurs image)"));
+      remoteCTRLsharpness_->setToolTip(tr("Shaprness enhancement (0=none, 65536=high) (low value blurs image)"));
 
       //
       // TEMP
@@ -754,7 +752,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
 
    int wbValue[]={PWC_WB_AUTO, PWC_WB_INDOOR, PWC_WB_OUTDOOR, PWC_WB_FL, PWC_WB_MANUAL};
    const char *wbLabel[]={"Auto", "In","Out","Neon","Manual"};
-   remoteCTRLWhiteBalance_=new QCamRadioBox(tr("White Balance"),VctrlBox,5,wbValue,wbLabel,5);
+   remoteCTRLWhiteBalance_=new QCamRadioBox("White Balance",VctrlBox,5,wbValue,wbLabel,5);
 
    connect(remoteCTRLWhiteBalance_,SIGNAL(change(int)),this,SLOT(setWhiteBalanceMode(int)));
    connect(this,SIGNAL(whiteBalanceModeChange(int)),remoteCTRLWhiteBalance_,SLOT(update(int)));
@@ -765,7 +763,7 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
 
    QCheckBox* liveWBupdateB = new QCheckBox(tr("live"),whiteBalanceGroup);
    connect(liveWBupdateB,SIGNAL(toggled(bool)),this,SLOT(setLiveWhiteBalance(bool)));
-   QToolTip::add(liveWBupdateB,tr("Live Update of red/blue value in automatic mode"));
+   liveWBupdateB->setToolTip(tr("Live Update of red/blue value in automatic mode"));
    whiteBalanceGroup_layout->addWidget(liveWBupdateB);
 
    remoteCTRLWBred_ = new QCamSlider(tr("red bal."),false,whiteBalanceGroup,0,65535);
@@ -792,32 +790,32 @@ QWidget *  QCamVesta::buildGUI(QWidget * parent) {
    connect(remoteCTRLgama_,SIGNAL(valueChange(int)),this,SLOT(setGama(int)));
 
    QCamHBox * settings=new QCamHBox(VctrlBox);
-   QToolTip::add(settings,tr("save/restore settings of gain,exposure & white balance"));
+   settings->setToolTip(tr("save/restore settings of gain,exposure & white balance"));
 
    QPushButton *saveSettingsB =new QPushButton(tr("save"),settings);
-   QToolTip::add(saveSettingsB,tr("Save User settings (gain,exposure & white balance)"));
+   saveSettingsB->setToolTip(tr("Save User settings (gain,exposure & white balance)"));
    connect(saveSettingsB,SIGNAL(released()),this,SLOT(saveSettings()));
 
    QPushButton *restoreSettingsB =new QPushButton(tr("restore"),settings);
-   QToolTip::add(restoreSettingsB,tr("Restore User settings"));
+   restoreSettingsB->setToolTip(tr("Restore User settings"));
    connect(restoreSettingsB,SIGNAL(released()),this,SLOT(restoreSettings()));
 
    QPushButton *restoreFactorySettingsB =new QPushButton(tr("factory"),settings);
-   QToolTip::add(restoreFactorySettingsB,tr("Restore factory default settings"));
+   restoreFactorySettingsB->setToolTip(tr("Restore factory default settings"));
    connect(restoreFactorySettingsB,SIGNAL(released()),this,SLOT(restoreFactorySettings()));
 
    remoteCTRLframeRate_ =new QCamHGroupBox(tr("fps / long exposure"),remoteCTRL);
    int frameRate[]={5,10,15,20,25,30};
-   remoteCTRLframeRate2_=new QCamComboBox(tr("fps"),remoteCTRLframeRate_,6,frameRate,NULL);
-   QToolTip::add(remoteCTRLframeRate2_,tr("Camera frame rate"));
+   remoteCTRLframeRate2_=new QCamComboBox("fps",remoteCTRLframeRate_,6,frameRate,NULL);
+   remoteCTRLframeRate2_->setToolTip(tr("Camera frame rate"));
    connect(this,SIGNAL(frameRateChange(int)),remoteCTRLframeRate2_,SLOT(update(int)));
    connect(remoteCTRLframeRate2_,SIGNAL(change(int)),this,SLOT(setFrameRate(int)));
    remoteCTRLframeRate2_->show();
 
    int scModeTable[]={SCmodNone,SCmodPPort2,SCmodLed,SCmodSerial};
    const char* scModeLabel[]={"SC mod : None","SC mod : // port","SC mod : TUC led","SC mod : serial"};
-   SCmodSelector_ = new QCamComboBox(tr("SC mod"),remoteCTRLframeRate_,4,scModeTable,scModeLabel);
-   QToolTip::add(SCmodSelector_,tr("Long exposure device"));
+   SCmodSelector_ = new QCamComboBox("SC mod",remoteCTRLframeRate_,4,scModeTable,scModeLabel);
+   SCmodSelector_->setToolTip(tr("Long exposure device"));
    connect(SCmodSelector_,SIGNAL(change(int)),this,SLOT(setSCmod(int)));
 
    initRemoteControlLongExposure(remoteCTRLframeRate_);

@@ -52,7 +52,7 @@ public:
    static void basePathName(const string & path) {basePath_=path;}
    static void useSDL(bool val) { useSDL_=val;}
    static bool useSDL() {return useSDL_;}
-   static void setLocale(QApplication & app);
+   //static void setLocale(QApplication & app);
    static void expertMode(bool val) { expertMode_=val;}
    static bool expertMode() { return expertMode_; }
    static void registerWidget(QWidget* w);

@@ -22,7 +22,7 @@ MA  02110-1301, USA.
 // constructor
 QCamHGroupBox::QCamHGroupBox(const QString& title, QWidget* parent):QGroupBox(title, parent) {
    widgetLayout=new QHBoxLayout();
-   this->setLayout(widgetLayout);
+   setLayout(widgetLayout);
 }
 
 // destructor

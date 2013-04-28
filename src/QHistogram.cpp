@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,19 +19,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QHistogram.hpp"
-//Added by qt3to4:
-#include <QtGui/QPaintEvent>
+#include <stdlib.h>
+#include <math.h>
 #include <string.h>
+
 #include <iostream>
+
 #include <Qt/qpen.h>
 #include <Qt/qpainter.h>
 #include <Qt/qpixmap.h>
+#include <QtGui/QPaintEvent>
 
-#include <stdlib.h>
-#include <math.h>
-
+#include "QHistogram.hpp"
 #include "QCamUtilities.hpp"
 
 using namespace std;
@@ -40,7 +39,7 @@ using namespace std;
 #define DOUBLE_MAX 1e38
 
 QHistogram::QHistogram(QWidget * parent, const char * name, Qt::WFlags f):
-   QWidget(parent,name,f) {
+   QWidget(parent,f) {
    dataSize_=0;
    dataTable_=NULL;
    currentPos_=0;
@@ -52,7 +51,7 @@ QHistogram::QHistogram(QWidget * parent, const char * name, Qt::WFlags f):
    averagePen_->setColor(QColor(255,0,0));
    max_=DOUBLE_MIN;
    min_=DOUBLE_MAX;
-   setWindowFlags(Qt::WNoAutoErase);
+   setAttribute(Qt::WA_NoBackground);
    dispMode_=NormalDisplay;
    setDataSize(20);
 }
@@ -169,13 +168,12 @@ void QHistogram::paintEvent(QPaintEvent * ev) {
       buffer.fill(QColor(176,0,0));
    else
       buffer.fill();
-   p.begin(&buffer,this);
+   p.begin(&buffer);
+   p.initFrom(this);
    p.setPen(*normPen_);
    for(int i=0;i<dataSize_;++i) {
-      p.drawLine(pivot +reverse*i*w/dataSize_,
-                 h-1,
-                 pivot +reverse*i*w/dataSize_,
-                 h-1-((int)round(value(i)*h/max())));
+      p.drawLine(pivot +reverse*i*w/dataSize_,h-1,
+                 pivot +reverse*i*w/dataSize_,h-1-((int)round(value(i)*h/max())));
    }
    p.setPen(*averagePen_);
    if (average()) {
@@ -188,7 +186,8 @@ void QHistogram::paintEvent(QPaintEvent * ev) {
       }
    }
    p.end();
-   bitBlt(this, 0, 0, &buffer);
+   QPainter q(this);
+   q.drawPixmap(0,0,buffer);
 }
 
 void QHistogram::displayMode(DisplayMode mode) {

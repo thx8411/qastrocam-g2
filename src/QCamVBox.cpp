@@ -27,7 +27,7 @@ QCamVBox::QCamVBox(QWidget* parent):QWidget(parent) {
    widgetLayout->setContentsMargins(0,0,0,0);
    widgetLayout->setSpacing(0);
 
-   this->setLayout(widgetLayout);
+   setLayout(widgetLayout);
 }
 
 // destructor

@@ -91,7 +91,7 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
    // lx mode selector
    int lxTable[]={lxNone,lxPar,lxSer};
    const char* lxLabel[]={"lx : none","lx : // port","lx : serial"};
-   lxSelector=new QCamComboBox(tr("lxMode"),remoteCTRLlx,3,lxTable,lxLabel);
+   lxSelector=new QCamComboBox("lxMode",remoteCTRLlx,3,lxTable,lxLabel);
    // integration delay
    lxLabel2=new QLabel("Delay :",remoteCTRLlx);
    lxTime=new QLineEdit(remoteCTRLlx);
@@ -110,11 +110,11 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
    // blink
    padding=new QWidget(remoteCTRL);
    // tips
-   QToolTip::add(lxRate,"Current frame rate");
-   QToolTip::add(lxSelector,"Long exposure mode");
-   QToolTip::add(lxTime,"Integration time in seconds (0.2s steps)");
-   QToolTip::add(lxSet,"Set integration time");
-   QToolTip::add(lxBar,"Integration progress bar");
+   lxRate->setToolTip("Current frame rate");
+   lxSelector->setToolTip("Long exposure mode");
+   lxTime->setToolTip("Integration time in seconds (0.2s steps)");
+   lxSet->setToolTip("Set integration time");
+   lxBar->setToolTip("Integration progress bar");
    // default lx delay, init
    lxDelay=0.2;
    lxControler=NULL;

@@ -23,7 +23,6 @@ MA  02110-1301, USA.
 #include <iostream>
 
 #include <Qt/qfiledialog.h>
-#include <Qt/qtooltip.h>
 #include <Qt/qpixmap.h>
 
 #include "QFileChooser.hpp"
@@ -57,27 +56,12 @@ void QFileChooser::selectFile() {
 
    // device dialog box
    if(fileType==DEVICE_FILE) {
-      newFile  = QFileDialog::getOpenFileName(
-         "/dev/",
-         "Devices (*)",
-         this,
-         "get device",
-         "Choose a device");
+      newFile=QFileDialog::getOpenFileName(this, "Choose a device", "/dev/", "Devices (*)");
    // file dialog box
    } else if(fileType==REGULAR_FILE) {
-      newFile  = QFileDialog::getSaveFileName(
-         get_current_dir_name(),
-         "Files (*)",
-         this,
-         "get a file name",
-         "Choose a file");
+      newFile=QFileDialog::getSaveFileName(this, "Choose a file", get_current_dir_name(), "Files (*)");
    } else {
-      newFile  = QFileDialog::getOpenFileName(
-         get_current_dir_name(),
-         "Pictures (*.bmp *.BMP *.png *.PNG)",
-         this,
-         "get a file name",
-         "Choose a file");
+      newFile=QFileDialog::getOpenFileName(this, "Choose a file", get_current_dir_name(), "Pictures (*.bmp *.BMP *.png *.PNG)");
    }
    setDisabled(false);
    if (!newFile.isEmpty() && !newFile.isNull()) {

@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,22 +19,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QFrameDisplay.hpp"
-#include "QCamFrame.hpp"
 #include <Qt/qcolor.h>
 #include <Qt/qpen.h>
 #include <Qt/qpainter.h>
-//Added by qt3to4:
 #include <QtGui/QPaintEvent>
 
+#include "QFrameDisplay.hpp"
+#include "QCamFrame.hpp"
+
 QFrameDisplay::QFrameDisplay(QWidget * parent,const char * label) :
-   QWidget(parent,label) {
+   QWidget(parent) {
    painter_ = new QPainter();
    pen_=new QPen();
    pen_->setStyle(Qt::DotLine);
    pen_->setColor(QColor(255,0,0));
-   setWindowFlags(Qt::WNoAutoErase);
+   setAttribute(Qt::WA_NoBackground);
 }
 
 QFrameDisplay::~QFrameDisplay() {
