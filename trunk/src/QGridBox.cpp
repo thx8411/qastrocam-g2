@@ -25,15 +25,7 @@ MA  02110-1301, USA.
 
 using namespace std;
 
-QGridBoxLayout::QGridBoxLayout(QWidget* parent , Qt::Orientation ori, int size,const char* name) :
-   QGridLayout(parent,(ori==Qt::Vertical)?size:1, (ori==Qt::Vertical)?1:size , /*margin*/ 0, /* space*/ -1, name),
-   size_(size),
-   nbElements_(0),
-   orientation_(ori) {
-   setAutoAdd(true);
-}
-
-void QGridBoxLayout::addItem(QLayoutItem * item ) {
+void QGridBox::addWidget(QWidget* w) {
    int col,row;
    if (orientation_==Qt::Vertical) {
       col=nbElements_%size_;
@@ -43,10 +35,35 @@ void QGridBoxLayout::addItem(QLayoutItem * item ) {
       col=nbElements_/size_;
    }
    ++nbElements_;
-   QGridLayout::addItem(item, row, col);
+   layout_.addWidget(w, row, col);
 }
 
-QGridBox::QGridBox(QWidget* parent , Qt::Orientation ori, int size, const char* name) :
-   QWidget(parent,name),
-   layout_(this, ori, size , name) {
+QGridBox::QGridBox(QWidget* parent , Qt::Orientation ori, int size, const char* name) : QWidget(parent),
+      size_(size), nbElements_(0), orientation_(ori) {
+
+   // setting margin and spacing
+   layout_.setContentsMargins(0,0,0,0);
+   layout_.setSpacing(0);
+
+   setLayout(&layout_);
+}
+
+// handling children widget add/supp
+bool QGridBox::event(QEvent *event)
+{
+      // if child event
+      if (event->type() == QEvent::ChildAdded) {
+         // casting event
+         QChildEvent *childEvent=static_cast<QChildEvent*>(event);
+         // if this child is a widget
+         if(childEvent->child()->isWidgetType()) {
+            // cast to a widget
+            QWidget* childObject=static_cast<QWidget*>(childEvent->child());
+            // add or remove the widget
+            if(childEvent->added())
+               addWidget(childObject);
+         }
+      }
+      // call the base event handler
+      return QWidget::event(event);
 }

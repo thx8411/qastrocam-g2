@@ -1036,21 +1036,21 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    QWidget* padding1=new QWidget(infoBox);
    QLabel* label1=new QLabel("Input :",infoBox);
    sourceB=new QCamComboBox("source",infoBox,sourceNumber,sourceTable,sourceLabel);
-   sourceB->setCurrentText(QString((char*)input.name));
+   sourceB->setItemText(sourceB->currentIndex(),QString((char*)input.name));
    if(sourceNumber<2)
       sourceB->setEnabled(false);
    connect(sourceB,SIGNAL(change(int)),this,SLOT(setSource(int)));
    QWidget* padding2=new QWidget(infoBox);
    QLabel* label2=new QLabel("Palette :",infoBox);
    paletteB=new QCamComboBox("source",infoBox,paletteNumber,paletteTable,paletteLabel);
-   paletteB->setCurrentText(QString(supported_palettes[palette].name));
+   paletteB->setItemText(paletteB->currentIndex(),QString(supported_palettes[palette].name));
    if(paletteNumber<2)
       paletteB->setEnabled(false);
    connect(paletteB,SIGNAL(change(int)),this,SLOT(setPalette(int)));
    QWidget* padding3=new QWidget(infoBox);
    // tips
-   QToolTip::add(sourceB,"V4L2 input used");
-   QToolTip::add(paletteB,"V4L2 palette used");
+   sourceB->setToolTip("V4L2 input used");
+   paletteB->setToolTip("V4L2 palette used");
 
    QLabel* label3=new QLabel("Mode :",infoBox);
    // frame mode number
@@ -1078,7 +1078,7 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
       setMode(0);
       frameModeB->setCurrentIndex(0);
    }
-   QToolTip::add(frameModeB,"Frame mode");
+   frameModeB->setToolTip("Frame mode");
 
    // controls
    QCamHGroupBox* ctrlBox=new QCamHGroupBox(tr("Controls"),remoteCTRL);
@@ -1149,13 +1149,13 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
 void QCamV4L2::setSource(int val) {
    string keyName("SOURCE_");
    keyName+=(char*)v4l2_cap_.card;
-   settings.setKey(keyName.c_str(),sourceB->text(val).ascii());
+   settings.setKey(keyName.c_str(),sourceB->itemText(val).toAscii());
    QMessageBox::information(0,"Qastrocam-g2","Please restart Qastrocam-g2\nto get the new source");
 }
 
 // changing palette
 void QCamV4L2::setPalette(int val) {
-   palette=getSupportedPaletteIndex(paletteB->text(val).toStdString().c_str());
+   palette=getSupportedPaletteIndex(paletteB->itemText(val).toStdString().c_str());
    updatePalette();
    allocBuffers();
    // updating mmap
@@ -1168,7 +1168,7 @@ void QCamV4L2::setPalette(int val) {
       frameModeB->setEnabled(true);
    else {
       frameModeB->setEnabled(false);
-      frameModeB->setCurrentItem(0);
+      frameModeB->setCurrentIndex(0);
       mode_=GreyFrame;
       inputBuffer_.setMode(mode_);
    }
@@ -1176,7 +1176,7 @@ void QCamV4L2::setPalette(int val) {
 
 // changing raw mode
 void  QCamV4L2::setMode(int  val) {
-   QString value=frameModeB->text(val);
+   QString value=frameModeB->itemText(val);
    string keyName("COLOR_MODE_");
    keyName+=(char*)v4l2_cap_.card;
    settings.setKey(keyName.c_str(),value.toStdString().c_str());

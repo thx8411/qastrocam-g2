@@ -27,7 +27,7 @@ QCamHBox::QCamHBox(QWidget* parent, const char* name, Qt::WFlags f):QWidget(pare
    widgetLayout->setContentsMargins(0,0,0,0);
    widgetLayout->setSpacing(0);
 
-   this->setLayout(widgetLayout);
+   setLayout(widgetLayout);
 }
 
 // destructor

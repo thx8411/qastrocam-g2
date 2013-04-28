@@ -22,29 +22,27 @@ MA  02110-1301, USA.
 #ifndef _QGridBox_h_
 #define _QGridBox_h_
 
-//#include <Qt/qlayout.h>
 #include <Qt/qwidget.h>
 #include <Qt/qgridlayout.h>
+#include <QtCore/qcoreevent.h>
 
-class QGridBoxLayout : public QGridLayout {
-public:
-   QGridBoxLayout(QWidget* parent , Qt::Orientation, int size, const char * name = 0 );
-   virtual void addItem (QLayoutItem* item);
-private:
-   // max width or height (depending of the Orientation)
-   const int size_;
-   // current number of inserted elements
-   int nbElements_;
-   // orientation
-   const Qt::Orientation orientation_;
-};
 
 class QGridBox : public QWidget {
    Q_OBJECT
+private:
+   // max width or height (depending of the Orientation)
+   int size_;
+   // current number of inserted elements
+   int nbElements_;
+   // orientation
+   Qt::Orientation orientation_;
+   // the grid layout
+   QGridLayout layout_;
 public:
    QGridBox(QWidget* parent , Qt::Orientation, int size, const char* name = 0 );
-   // the grid layout
-   QGridBoxLayout layout_;
+   void addWidget(QWidget* w);
+   // for children detection
+   bool event(QEvent *event);
 };
 
 #endif

@@ -45,12 +45,12 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
       noSliderMove_=false;
    }
    slider_=new QSlider(Qt::Horizontal,this);
-   slider_->setMinValue(minVal);
-   slider_->setMaxValue(maxVal);
+   slider_->setMinimum(minVal);
+   slider_->setMaximum(maxVal);
 
-   slider_->setLineStep((maxVal-minVal)/100);
-   if (slider_->lineStep()==0) {
-      slider_->setLineStep(1);
+   slider_->setSingleStep((maxVal-minVal)/100);
+   if (slider_->singleStep()==0) {
+      slider_->setSingleStep(1);
    }
    slider_->setPageStep((maxVal-minVal)/10);
    if (slider_->pageStep()==0) {
@@ -68,7 +68,7 @@ QCamSlider::QCamSlider(const QString & label,bool needCheckBox ,
 }
 
 void QCamSlider::polish() {
-   QCamHBox::polish();
+   QCamHBox::ensurePolished();
    if (checkBox_) {
       checkBox_->setChecked(true);
    }
@@ -79,7 +79,7 @@ void QCamSlider::setValue(int val) {
       lastEmit_=val;
       slider_->setValue(val);
       if (percent_) {
-         valueLabel_->setNum(val*100/slider_->maxValue());
+         valueLabel_->setNum(val*100/slider_->maximum());
       } else {
          valueLabel_->setNum(val);
       }
@@ -129,7 +129,7 @@ void QCamSlider::buttonToggled(bool val) {
          slider_->show();
          valueLabel_->show();
          if (percent_) {
-            valueLabel_->setNum(slider_->value()*100/slider_->maxValue());
+            valueLabel_->setNum(slider_->value()*100/slider_->maximum());
          } else {
             valueLabel_->setNum(slider_->value());
          }
@@ -139,9 +139,9 @@ void QCamSlider::buttonToggled(bool val) {
 }
 
 void QCamSlider::setMinValue(int min) {
-   slider_->setMinValue(min);
+   slider_->setMinimum(min);
 }
 
 void QCamSlider::setMaxValue(int max) {
-   slider_->setMaxValue(max);
+   slider_->setMaximum(max);
 }

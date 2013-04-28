@@ -37,7 +37,7 @@ QCamRadioBox::QCamRadioBox(const char * label,QWidget * parent,int numOfbutton, 
    numOfButton_=numOfbutton;
 
    globalLayout_=new QVBoxLayout();
-   this->setLayout(globalLayout_);
+   setLayout(globalLayout_);
 
    // sub group
    bg_=new QGroupBox(this);

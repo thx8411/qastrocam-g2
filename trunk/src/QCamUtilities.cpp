@@ -100,14 +100,15 @@ QPixmap* QCamUtilities::getPixmap(const char * pixmapBaseName) {
 void QCamUtilities::setQastrocamIcon(QWidget *widget) {
    static QPixmap * iconNb=QCamUtilities::getPixmap("qastrocam-icon-nb.png");
    if(iconNb)
-      widget->setIcon(*iconNb);
+      widget->setWindowIcon(*iconNb);
 }
 
+/*
 void QCamUtilities::setLocale(QApplication & app) {
 	 static QTranslator translator( 0 );
 	 translator.load( QString("qastrocam-") + QTextCodec::locale(), (basePathName()+"/locales/.").c_str());
 	 app.installTranslator( &translator );
-}
+}*/
 
 //
 // night vision
