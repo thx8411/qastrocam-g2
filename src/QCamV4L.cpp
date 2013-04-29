@@ -26,9 +26,6 @@ MA  02110-1301, USA.
 
 #if KERNEL_2
 
-#include "QCamV4L.hpp"
-#include <iostream>
-
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -36,13 +33,16 @@ MA  02110-1301, USA.
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/mman.h>
+
+#include <iostream>
+
 #include <Qt/qtabwidget.h>
 #include <Qt/qsocketnotifier.h>
 #include <Qt/qtimer.h>
 #include <Qt/qtooltip.h>
 
 #include "yuv.hpp"
-
+#include "QCamV4L.hpp"
 #include "QCamSlider.hpp"
 #include "QGridBox.hpp"
 #include "QCamComboBox.hpp"
@@ -374,7 +374,8 @@ bool QCamV4L::updateFrame() {
    int newFrameRate=getFrameRate();
    if (frameRate_ != newFrameRate) {
       frameRate_=newFrameRate;
-      if (timer_) timer_->changeInterval(1000/frameRate_);
+      if (timer_)
+         timer_->setInterval(1000/frameRate_);
    }
    return res;
 }
@@ -468,7 +469,7 @@ QWidget * QCamV4L::buildGUI(QWidget * parent) {
    int frameModeTable[]={YuvFrame,GreyFrame};
    const char* frameModeLabel[]={"RGB","Grey"};
    QCamComboBox * frameModeB= new QCamComboBox("frame type",remoteCTRL,2,frameModeTable,frameModeLabel);
-   QToolTip::add(frameModeB,tr("Frame type"));
+   frameModeB->setToolTip(tr("Frame type"));
    connect(frameModeB,SIGNAL(change(int)),
            this,SLOT(setMode(int)));
    if (options_ & haveContrast) {
