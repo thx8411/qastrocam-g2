@@ -73,7 +73,7 @@ bool QKingClient::findShift(ShiftInfo & shift) {
                       dx,
                       dy,
                       rightPos.x(),rightPos.y());
-         statusBar_->message(stat);
+         statusBar_->showMessage(stat);
       }
       cam().annotate(firstHotSpot_+rightPos);
       return true;
