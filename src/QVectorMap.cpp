@@ -30,8 +30,8 @@ MA  02110-1301, USA.
 #include "QVectorMap.hpp"
 
 QVectorMap::QVectorMap(QWidget * parent, const char * name, Qt::WFlags f):
-   QWidget(parent,name,f) {
-   setWindowFlags(Qt::WNoAutoErase);
+   QWidget(parent,f) {
+   setAttribute(Qt::WA_NoBackground);
    mode_=DrawPoint;
    add(Vector2D(0,0));
    scale_=1;
@@ -68,7 +68,8 @@ void QVectorMap::paintEvent(QPaintEvent * ev) {
    QPixmap buffer(size());
    QPainter p;
    buffer.fill(Qt::black); // erasing buffer
-   p.begin(&buffer,this);
+   p.begin(&buffer);
+   p.initFrom(this);
    // drawing scale
    if (scale_ != 1) {
       int fix=80;
@@ -113,5 +114,6 @@ void QVectorMap::paintEvent(QPaintEvent * ev) {
       }
    }
    p.end();
-   bitBlt(this, 0, 0, &buffer);
+   QPainter q(this);
+   q.drawPixmap(0,0,buffer);
 }

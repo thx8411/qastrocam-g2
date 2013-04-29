@@ -56,7 +56,7 @@ void QTelescope::buildGUI(QWidget * parent) {
 
    QCamUtilities::setQastrocamIcon(mainWidget_);
    arrows_ = new QWidget(mainWidget_);
-   arrowsLayout_=new QGridLayout(arrows_,3,3);
+   arrowsLayout_=new QGridLayout(arrows_);
 
    // up button
    upButton_=new QPushButton(arrows_);
@@ -140,7 +140,11 @@ void QTelescope::buildGUI(QWidget * parent) {
    double speed;
    QCamHGroupBox* speedBox;
    speedBox=new QCamHGroupBox(QString("Speed"),mainWidget_);
-   speedSlider_=new QSlider(1,100,1,100,Qt::Horizontal,speedBox);
+   speedSlider_=new QSlider(Qt::Horizontal,speedBox);
+   speedSlider_->setMinimum(1);
+   speedSlider_->setMaximum(100);
+   speedSlider_->setPageStep(1);
+   speedSlider_->setValue(100);
    speedValue_=new QLabel(speedBox);
    speed=setSpeed(100/100);
    speedValue_->setText(QString().sprintf("%3i%%",(int)(speed*100)));

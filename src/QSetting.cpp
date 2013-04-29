@@ -58,12 +58,12 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    const char* cameraLabel[]={"simulator","v4l(2)"};
 #endif
    cameraList=new QCamComboBox("camera : ",videoBox,cameraNumber,cameraTable,cameraLabel);
-   QToolTip::add(cameraList,tr("Camera to use"));
+   cameraList->setToolTip(tr("Camera to use"));
    videoDeviceLabel=new QLabel("Device : ",videoBox);
    videoDeviceEntry=new QLineEdit(videoBox);
-   QToolTip::add(videoDeviceEntry,tr("Video device to use"));
+   videoDeviceEntry->setToolTip(tr("Video device to use"));
    videoDeviceChooser=new QFileChooser(videoBox,DEVICE_FILE);
-   QToolTip::add(videoDeviceChooser,tr("Selects video device"));
+   videoDeviceChooser->setToolTip(tr("Selects video device"));
 
    padding6=new QWidget(remoteCTRL_);
    //remoteCTRL_->setStretchFactor(padding6,5);
@@ -85,17 +85,17 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    const char* telescopeLabel[]={"none","autostar","lx200","nexstar","mcu","mts","apm","fifo","file","simulator"};
 #endif
    telescopeList=new QCamComboBox("telescope type : ",lineOne,telescopeNumber,telescopeTable,telescopeLabel);
-   QToolTip::add(telescopeList,tr("Telescope protocol to use for guiding"));
+   telescopeList->setToolTip(tr("Telescope protocol to use for guiding"));
    //lineOne->setStretchFactor(telescopeList,10);
    padding1=new QWidget(lineOne);
    //lineOne->setStretchFactor(padding1,5);
    telescopeLevels=new QCheckBox("Invert levels",lineOne);
-   QToolTip::add(telescopeLevels,tr("Shale we invert TTL levels ?"));
+   telescopeLevels->setToolTip(tr("Shale we invert TTL levels ?"));
    padding2=new QWidget(lineOne);
    //lineOne->setStretchFactor(padding2,5);
    lineTwo=new QCamHBox(telescopeBox);
    telescopeDeviceLabel=new QLabel("Telescope device/file : ",lineTwo);
-   QToolTip::add(telescopeDeviceLabel,tr("Device to use for telescope guiding"));
+   telescopeDeviceLabel->setToolTip(tr("Device to use for telescope guiding"));
    telescopeDeviceEntry=new QLineEdit(lineTwo);
    telescopeDeviceChooser=new QFileChooser(lineTwo);
 
@@ -107,17 +107,17 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
    lxDeviceEntry->setMinimumWidth(72);
-   QToolTip::add(lxDeviceEntry,tr("Device to use for long exposure control"));
+   lxDeviceEntry->setToolTip(tr("Device to use for long exposure control"));
    lxDeviceChooser=new QFileChooser(lxBox,DEVICE_FILE);
-   QToolTip::add(lxDeviceChooser,tr("Selects long exposure device"));
+   lxDeviceChooser->setToolTip(tr("Selects long exposure device"));
    lxLevels=new QCheckBox("Invert levels",lxBox);
-   QToolTip::add(lxLevels,tr("Shale we invert TTL levels ? (applies to 'toucam led' also)"));
+   lxLevels->setToolTip(tr("Shale we invert TTL levels ? (applies to 'toucam led' also)"));
 
    padding9=new QWidget(remoteCTRL_);
    //remoteCTRL_->setStretchFactor(padding9,5);
    // modules box
    modulesBox=new QCamVGroupBox("Modules",remoteCTRL_);
-   QToolTip::add(modulesBox,tr("Modules to activate"));
+   modulesBox->setToolTip(tr("Modules to activate"));
    //remoteCTRL_->setStretchFactor(modulesBox,0);
    lineFive=new QCamHBox(modulesBox);
    modulesAdd=new QCheckBox("Frame stacking module",lineFive);
@@ -130,7 +130,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    //remoteCTRL_->setStretchFactor(padding8,5);
    // options box
    optionsBox=new QCamVGroupBox("Options",remoteCTRL_);
-   QToolTip::add(optionsBox,tr("Options to activate"));
+   optionsBox->setToolTip(tr("Options to activate"));
    //remoteCTRL_->setStretchFactor(optionsBox,0);
    lineThree=new QCamHBox(optionsBox);
 #if HAVE_SDL_H
@@ -239,18 +239,18 @@ void QSetting::fillFields() {
 
    // combobox
    if(settings.haveKey("TELESCOPE")) {
-      telescopeList->setCurrentText(settings.getKey("TELESCOPE"));
+      telescopeList->setItemText(telescopeList->currentIndex(),settings.getKey("TELESCOPE"));
       changeTelescope(-1);
    } else {
-      telescopeList->setCurrentText("none");
+      telescopeList->setItemText(telescopeList->currentIndex(),"none");
       changeTelescope(-1);
    }
 
    if(settings.haveKey("CAMERA")) {
-      cameraList->setCurrentText(settings.getKey("CAMERA"));
+      cameraList->setItemText(cameraList->currentIndex(),settings.getKey("CAMERA"));
       changeCamera(-1);
    } else {
-      cameraList->setCurrentText("simulator");
+      cameraList->setItemText(cameraList->currentIndex(),"simulator");
       changeCamera(-1);
    }
 

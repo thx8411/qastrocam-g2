@@ -52,7 +52,7 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QCamUtilities::setQastrocamIcon(simulatorWidget_);
 
    QWidget* simulatorArrows_=new QWidget(simulatorWidget_);
-   QGridLayout* simulatorArrowsLayout_=new QGridLayout(simulatorArrows_,3,3);
+   QGridLayout* simulatorArrowsLayout_=new QGridLayout(simulatorArrows_);
 
    // up label
    buttonUp_=new QLabel(simulatorArrows_);
