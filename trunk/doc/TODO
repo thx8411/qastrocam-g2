@@ -7,6 +7,7 @@ TODO IN NEXT RELEASE
    * check all the QSettings padding stuff
    * QComboBox background is grey on ubuntu 10.04
    * guiding star lost alert background color doesn't change
+   * tooltips backgrounds are white on white
    * ...
 
 5.0 - help file in html
