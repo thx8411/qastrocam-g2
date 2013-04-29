@@ -9,7 +9,7 @@
   - libjpeg not required any more for building, just recommended
   - libusb not required any more for building, just recommended
   - uses libav by default for avi output, instead of libavifile
-  - migration from Qt3 to Qt4
+  - migration from Qt3 to Qt4, qastrocam-g2 is now pure Qt4
   - better image quality for png snapshots
   - use SDL for sound alert by default
   - better frame display management

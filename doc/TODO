@@ -4,8 +4,9 @@ TODO IN NEXT RELEASE
 
 5.0 - migrates to QT4
 
-   * migrates : remove the all the Q3Support classes and API
    * check all the QSettings padding stuff
+   * QComboBox background is grey on ubuntu 10.04
+   * guiding star lost alert background color doesn't change
    * ...
 
 5.0 - help file in html
