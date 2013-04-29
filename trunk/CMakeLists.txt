@@ -515,13 +515,10 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
    #-----------------------------------------#
    #- TODO : package names have to be fixed -#
    #-----------------------------------------#
-   if(ARCHITECURE STREQUAL "x86_64")
+   if(ARCHITECTURE STREQUAL "x86_64")
+
       # base dependencies
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}lib64c6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64gcc1")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64stdc++6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64x11-6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64qtcore4, lib64qtgui4, lib64qt4-qt3support")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}lib64qtcore4, lib64qtgui4")
 
       # recommended dependencies
       if(JPEG_FOUND)
@@ -529,15 +526,15 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       endif(JPEG_FOUND)
 
       if(USB_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64usb-0.1-4")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64usb-compat0.1_4")
       endif(USB_FOUND)
 
       if(CFITSIO_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64cfitsio3")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64cfitsio0")
       endif(CFITSIO_FOUND)
 
       if(LIBAV_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avformat, lib64avcodec")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avformat53, lib64avcodec53, lib64avutil51")
       endif(LIBAV_FOUND)
 
       if(AVIFILE_FOUND)
@@ -545,17 +542,13 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       endif(AVIFILE_FOUND)
 
       if(SDL_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64sdl1.2_0, lib64x11_6")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64SDL1.2_0")
       endif(SDL_FOUND)
 
-   else(ARCHITECURE STREQUAL "x86_64")
+   else(ARCHITECTURE STREQUAL "x86_64")
 
       # base dependencies
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}libc6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libgcc1")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libstdc++6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libx11-6")
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libqtcore4, libqtgui4, libqt4-qt3support")
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}libqtcore4, libqtgui4")
 
       # recommended dependencies
       if(JPEG_FOUND)
@@ -563,26 +556,26 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
       endif(JPEG_FOUND)
 
       if(USB_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-0.1-4")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-compat0.1_4")
       endif(USB_FOUND)
 
       if(CFITSIO_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio3")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio0")
       endif(CFITSIO_FOUND)
 
       if(LIBAV_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavformat, libavcodec")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavformat53, libavcodec53, libavutil51")
       endif(LIBAV_FOUND)
 
       if(AVIFILE_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
       endif(AVIFILE_FOUND)
 
       if(SDL_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libSDL1.2_0, libx11-6")
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libSDL1.2_0")
       endif(SDL_FOUND)
 
-   endif(ARCHITECURE STREQUAL "x86_64")
+   endif(ARCHITECTURE STREQUAL "x86_64")
 
 endif(FEDORA_FOUND OR MAGEIA_FOUND)
 
