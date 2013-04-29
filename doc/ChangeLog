@@ -1,6 +1,7 @@
 5.0
 
   - builds now with cmake
+  - cmake handles the rpm package generation
   - useless philips cameras controls on kernel 3 disabled
   - forbidden libjpeg detection during build added
   - forbidden libX11 detection during build added
