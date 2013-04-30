@@ -757,6 +757,9 @@ bool QCamV4L2::updateFrame() {
       switch (supported_palettes[palette].index) {
          // mem copies
          case V4L2_PIX_FMT_SBGGR8:
+         case V4L2_PIX_FMT_SGBRG8:
+         case V4L2_PIX_FMT_SGRBG8:
+         case V4L2_PIX_FMT_SRGGB8:
          case V4L2_PIX_FMT_GREY:
             memcpy(YBuf,tmpBuffer_,v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             break;
