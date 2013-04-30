@@ -14,6 +14,7 @@
   - better image quality for png snapshots
   - use SDL for sound alert by default
   - better frame display management
+  - more V4L2 palettes supported (GBRG, GRBG, RGGB)
 
 4.9
 
