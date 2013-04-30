@@ -57,6 +57,9 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
+   {V4L2_PIX_FMT_SGBRG8,1,1,"GBRG",GreyFrame},
+   {V4L2_PIX_FMT_SGRBG8,1,1,"GRBG",GreyFrame},
+   {V4L2_PIX_FMT_SRGGB8,1,1,"RGGB",GreyFrame},
 #if HAVE_JPEG_H
    {V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
 #endif
