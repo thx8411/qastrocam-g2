@@ -1036,14 +1036,14 @@ QWidget * QCamV4L2::buildGUI(QWidget * parent) {
    QWidget* padding1=new QWidget(infoBox);
    QLabel* label1=new QLabel("Input :",infoBox);
    sourceB=new QCamComboBox("source",infoBox,sourceNumber,sourceTable,sourceLabel);
-   sourceB->setItemText(sourceB->currentIndex(),QString((char*)input.name));
+   sourceB->setCurrentIndex(sourceB->getPosition((char*)input.name));
    if(sourceNumber<2)
       sourceB->setEnabled(false);
    connect(sourceB,SIGNAL(change(int)),this,SLOT(setSource(int)));
    QWidget* padding2=new QWidget(infoBox);
    QLabel* label2=new QLabel("Palette :",infoBox);
    paletteB=new QCamComboBox("source",infoBox,paletteNumber,paletteTable,paletteLabel);
-   paletteB->setItemText(paletteB->currentIndex(),QString(supported_palettes[palette].name));
+   paletteB->setCurrentIndex(paletteB->getPosition(supported_palettes[palette].name));
    if(paletteNumber<2)
       paletteB->setEnabled(false);
    connect(paletteB,SIGNAL(change(int)),this,SLOT(setPalette(int)));

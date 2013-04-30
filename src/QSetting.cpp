@@ -239,18 +239,18 @@ void QSetting::fillFields() {
 
    // combobox
    if(settings.haveKey("TELESCOPE")) {
-      telescopeList->setItemText(telescopeList->currentIndex(),settings.getKey("TELESCOPE"));
+      telescopeList->setCurrentIndex(telescopeList->getPosition(settings.getKey("TELESCOPE")));
       changeTelescope(-1);
    } else {
-      telescopeList->setItemText(telescopeList->currentIndex(),"none");
+      telescopeList->setCurrentIndex(0);
       changeTelescope(-1);
    }
 
    if(settings.haveKey("CAMERA")) {
-      cameraList->setItemText(cameraList->currentIndex(),settings.getKey("CAMERA"));
+      cameraList->setCurrentIndex(cameraList->getPosition(settings.getKey("CAMERA")));
       changeCamera(-1);
    } else {
-      cameraList->setItemText(cameraList->currentIndex(),"simulator");
+      cameraList->setCurrentIndex(0);
       changeCamera(-1);
    }
 
