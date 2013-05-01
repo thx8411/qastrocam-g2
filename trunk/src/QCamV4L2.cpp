@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include <stdio.h>
 #include <math.h>
 #include <sys/mman.h>
+#include <linux/version.h>
 
 #include <iostream>
 #include <sstream>
@@ -57,9 +58,12 @@ struct palette_datas supported_palettes[]={
    {V4L2_PIX_FMT_YUV420,3,2,"yuv420",YuvFrame},
    {V4L2_PIX_FMT_GREY,1,1,"grey",GreyFrame},
    {V4L2_PIX_FMT_SBGGR8,1,1,"BA81",GreyFrame},
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
+// only available with kernel 2.6.33 and higher
    {V4L2_PIX_FMT_SGBRG8,1,1,"GBRG",GreyFrame},
    {V4L2_PIX_FMT_SGRBG8,1,1,"GRBG",GreyFrame},
    {V4L2_PIX_FMT_SRGGB8,1,1,"RGGB",GreyFrame},
+#endif
 #if HAVE_JPEG_H
    {V4L2_PIX_FMT_JPEG,3,1,"jpeg",YuvFrame},
 #endif
@@ -757,9 +761,14 @@ bool QCamV4L2::updateFrame() {
       switch (supported_palettes[palette].index) {
          // mem copies
          case V4L2_PIX_FMT_SBGGR8:
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION( 2, 6, 33 )
+// only available with kernel 2.6.33 and higher
          case V4L2_PIX_FMT_SGBRG8:
          case V4L2_PIX_FMT_SGRBG8:
          case V4L2_PIX_FMT_SRGGB8:
+#endif
+
          case V4L2_PIX_FMT_GREY:
             memcpy(YBuf,tmpBuffer_,v4l2_fmt_.fmt.pix.width * v4l2_fmt_.fmt.pix.height);
             break;
