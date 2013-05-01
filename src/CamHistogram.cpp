@@ -94,6 +94,8 @@ CamHistogram::CamHistogram(QCam & theCam) :
    histogramArea_->show();
    focusArea_->show();
    mainWindow_->show();
+
+   connect(mainWindow_,SIGNAL(windowClosed()),this,SLOT(childClosed()));
 }
 
 CamHistogram::~CamHistogram() {
@@ -156,4 +158,9 @@ double CamHistogram::getDistFromNeibourg(int x,int y) const {
    int ref = cam().getY(x,y);
    return (abs(ref-cam().getY(x+1,y))
            + abs(ref-cam().getY(x,y+1)))/(double)ref;
+}
+
+// slot
+void CamHistogram::childClosed() {
+   emit(windowClosed());
 }

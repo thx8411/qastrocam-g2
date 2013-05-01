@@ -134,6 +134,8 @@ public slots:
    bool capture() const {return doCapture_;}
    bool capturePaused() const {  return doCapture_ && capturePaused_;}
    void setCaptureFile(const QString & file);
+   void releaseHistogram();
+   void releaseDisplay();
 protected:
    // resizing mode
    QCamComboBox * cropCombo;

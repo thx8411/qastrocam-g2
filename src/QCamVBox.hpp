@@ -23,6 +23,7 @@ MA  02110-1301, USA.
 #include <Qt/qwidget.h>
 #include <Qt/qboxlayout.h>
 #include <QtCore/qcoreevent.h>
+#include <QtGui/qevent.h>
 
 //
 // Replacement for Q3VBox
@@ -35,6 +36,10 @@ class QCamVBox: public QWidget {
       ~QCamVBox();
       // for children detection
       bool event(QEvent *event);
+   signals:
+      void windowClosed();
+   protected:
+      void closeEvent(QCloseEvent *event);
    private:
       QVBoxLayout* widgetLayout;
 };

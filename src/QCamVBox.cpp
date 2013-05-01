@@ -56,3 +56,11 @@ bool QCamVBox::event(QEvent *event)
       // call the base event handler
       return QWidget::event(event);
 }
+
+// close event caption
+void QCamVBox::closeEvent(QCloseEvent *event)
+{
+   emit(windowClosed());
+   event->accept();
+}
+

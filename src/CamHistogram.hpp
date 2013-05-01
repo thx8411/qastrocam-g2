@@ -55,6 +55,10 @@ public:
    const QWidget & widget() const;
 protected slots:
    void newFrame();
+signals:
+   void windowClosed();
+private slots:
+   void childClosed();
 private:
    QCamHGroupBox* mainWindow_;
    QCamVGroupBox* histoGroup_;
