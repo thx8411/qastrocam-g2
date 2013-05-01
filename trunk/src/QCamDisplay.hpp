@@ -70,13 +70,19 @@ public slots:
    void setDisplayMode(DisplayMode t);
 protected:
    void camConnected();
+// signal for children's 'closed window'
+// event forwarding
 signals:
    void windowClosed();
+
 protected slots:
    void newFrame();
    void setCross(int t);
    void setDisplayMode(int t);
    void setCrossLum(int l);
+
+// slot for children's 'closed window'
+// event forwarding
 private slots:
    void childClosed();
 

@@ -29,6 +29,10 @@ MA  02110-1301, USA.
 // Replacement for Q3VGroupBox
 //
 
+// there no 'window closed' signal in QWidget, we have to
+// do it ourself, handling events
+
+
 class QCamVGroupBox: public QGroupBox {
    Q_OBJECT
    public:

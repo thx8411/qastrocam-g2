@@ -258,6 +258,7 @@ void QCam::displayFrames(bool val) {
       if (displayWindow_ == NULL) {
          displayWindow_ = new QCamDisplay();
          displayWindow_->connectCam(*this);
+         // if the window is closed, we release the button
          connect(displayWindow_, SIGNAL(windowClosed()), this, SLOT(releaseDisplay()));
       }
       displayWindow_->resume();
@@ -280,6 +281,7 @@ void QCam::displayHistogram(bool val) {
    if (displayHistogramWindow_ == NULL) {
       displayHistogramWindow_ = new CamHistogram(*this);
       displayHistogramWindow_->widget().setWindowTitle(label());
+      // if the window is closed, we release the button
       connect(displayHistogramWindow_, SIGNAL(windowClosed()), this, SLOT(releaseHistogram()));
    }
    if (val) {
@@ -767,11 +769,13 @@ void QCam::setCropping(int index) {
    }
 }
 
+// slot for histogram button release
 void QCam::releaseHistogram() {
    displayHistogram(false);
    displayHistogramButton_->setChecked(false);
 }
 
+// slot for display button release
 void QCam::releaseDisplay() {
    displayFrames(false);
    displayFramesButton_->setChecked(false);

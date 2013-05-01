@@ -17,6 +17,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+// there no 'window closed' signal in QWidget, we have to
+// do it ourself, handling events
+
 #include "QCamWindow.hpp"
 
 // constructor

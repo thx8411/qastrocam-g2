@@ -24,6 +24,9 @@ MA  02110-1301, USA.
 #include <QtCore/qcoreevent.h>
 #include <QtGui/qevent.h>
 
+// there no 'window closed' signal in QWidget, we have to
+// do it ourself, handling events
+
 class QCamWindow : public QWidget {
    Q_OBJECT
    public:

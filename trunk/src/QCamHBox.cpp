@@ -17,6 +17,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+//
+// Replacement for Q3HBox
+//
+
+// there no 'window closed' signal in QWidget, we have to
+// do it ourself, handling events
+
 #include "QCamHBox.hpp"
 
 // constructor

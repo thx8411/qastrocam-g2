@@ -153,6 +153,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
    // display
    mainWidget_->show();
 
+  // forwarding children's 'closed window' event
   connect(mainWidget_, SIGNAL(windowClosed()), this, SLOT(childClosed()));
 }
 
@@ -245,7 +246,7 @@ void QCamDisplay::setCrossLum(int l) {
    widget_->setCrossLum(l);
 }
 
-// slot
+// forwarding children's 'closed window' event
 void QCamDisplay::childClosed() {
    emit(windowClosed());
 }

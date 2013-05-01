@@ -55,10 +55,14 @@ public:
    const QWidget & widget() const;
 protected slots:
    void newFrame();
+
+// signals and slots to forward
+// children's 'closed window' events
 signals:
    void windowClosed();
 private slots:
    void childClosed();
+
 private:
    QCamHGroupBox* mainWindow_;
    QCamVGroupBox* histoGroup_;
