@@ -34,6 +34,7 @@ MA  02110-1301, USA.
 #include <SDL.h>
 #endif
 
+#include "QCamWindow.hpp"
 #include "QCamVBox.hpp"
 #include "QCamSlider.hpp"
 #include "QCamSimulator.hpp"
@@ -436,25 +437,25 @@ int main(int argc, char ** argv) {
    // main window setting
    QString caption;
    QIcon* tmpIcon;
-   QCamVBox mainWindow;
+   QCamWindow mainWindow;
+   QCamVBox mainWidget(&mainWindow);
    caption=qastrocamName;
    caption+=" ";
    caption+=qastroCamVersion;
-   mainWindow.setWindowTitle(caption);
-   QPushButton quit(&mainWindow);
+   mainWidget.setWindowTitle(caption);
+   QPushButton quit(&mainWidget);
    QObject::connect(&quit, SIGNAL(released()), &app, SLOT(quit()) );
-   QObject::connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
+   QObject::connect(&mainWindow, SIGNAL(windowClosed()), &app, SLOT(quit()));
    tmpIcon=QCamUtilities::getIcon("exit.png");
    if(tmpIcon) {
       quit.setIcon(*tmpIcon);
       delete tmpIcon;
    } else
       quit.setText("Quit");
-   //app.setMainWidget(&mainWindow);
-   getAllRemoteCTRL(&mainWindow);
+   getAllRemoteCTRL(&mainWidget);
 
    // std palette
-   QPalette tmpPalette=mainWindow.palette();
+   QPalette tmpPalette=mainWidget.palette();
    QCamUtilities::stdPalette=&tmpPalette;
 
    // night palette
@@ -476,7 +477,7 @@ int main(int argc, char ** argv) {
    nightPalette->setColor(QPalette::Disabled,QPalette::Text,QColor(160,0,0));
    QCamUtilities::nightPalette=nightPalette;
 
-   QCamUtilities::registerWidget(&mainWindow);
+   QCamUtilities::registerWidget(&mainWidget);
 
    // capture module creation
    QCam* cam = NULL;
@@ -715,11 +716,9 @@ int main(int argc, char ** argv) {
    addRemoteCTRL(settingsTab);
 
    // main window display
-   QCamUtilities::setQastrocamIcon(&mainWindow);
+   QCamUtilities::setQastrocamIcon(&mainWidget);
    mainWindow.show();
-   //mainWindow.adjustSize();
-   //getAllRemoteCTRL()->show();
-   //getAllRemoteCTRL()->adjustSize();
+   mainWindow.adjustSize();
 
    // test settings version
    if(!settings.haveKey("CONF_VERSION")||QString(settings.getKey("CONF_VERSION"))!=_CONF_VERSION_) {
@@ -753,7 +752,7 @@ int main(int argc, char ** argv) {
    delete camStack;
    delete cam;
 
-   QCamUtilities::removeWidget(&mainWindow);
+   QCamUtilities::removeWidget(&mainWidget);
 
 #if HAVE_SDL_H
    SDL_Quit();
