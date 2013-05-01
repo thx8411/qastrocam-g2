@@ -443,7 +443,9 @@ int main(int argc, char ** argv) {
    caption+=qastroCamVersion;
    mainWidget.setWindowTitle(caption);
    QPushButton quit(&mainWidget);
+   // quit button connected to app quit
    QObject::connect(&quit, SIGNAL(released()), &app, SLOT(quit()) );
+   // if the main window is closed, app quit
    QObject::connect(&mainWindow, SIGNAL(windowClosed()), &app, SLOT(quit()));
    tmpIcon=QCamUtilities::getIcon("exit.png");
    if(tmpIcon) {

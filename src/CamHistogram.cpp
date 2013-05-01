@@ -160,7 +160,8 @@ double CamHistogram::getDistFromNeibourg(int x,int y) const {
            + abs(ref-cam().getY(x,y+1)))/(double)ref;
 }
 
-// slot
+// slot for children's 'closed window'
+// event forwarding
 void CamHistogram::childClosed() {
    emit(windowClosed());
 }

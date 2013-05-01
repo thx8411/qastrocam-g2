@@ -29,6 +29,10 @@ MA  02110-1301, USA.
 // Replacement for Q3HGroupBox
 //
 
+// there no 'window closed' signal in QWidget, we have to
+// do it ourself, handling events
+
+
 class QCamHGroupBox: public QGroupBox {
    Q_OBJECT
    public:
