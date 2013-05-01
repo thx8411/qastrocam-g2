@@ -258,6 +258,7 @@ void QCam::displayFrames(bool val) {
       if (displayWindow_ == NULL) {
          displayWindow_ = new QCamDisplay();
          displayWindow_->connectCam(*this);
+         connect(displayWindow_, SIGNAL(windowClosed()), this, SLOT(releaseDisplay()));
       }
       displayWindow_->resume();
       displayWindow_->widget().show();
@@ -279,6 +280,7 @@ void QCam::displayHistogram(bool val) {
    if (displayHistogramWindow_ == NULL) {
       displayHistogramWindow_ = new CamHistogram(*this);
       displayHistogramWindow_->widget().setWindowTitle(label());
+      connect(displayHistogramWindow_, SIGNAL(windowClosed()), this, SLOT(releaseHistogram()));
    }
    if (val) {
       displayHistogramWindow_->resume();
@@ -763,4 +765,14 @@ void QCam::setCropping(int index) {
       case 1 : settings.setKey("FRAME_MODE","cropping"); break;
       case 2 : settings.setKey("FRAME_MODE","binning"); break;
    }
+}
+
+void QCam::releaseHistogram() {
+   displayHistogram(false);
+   displayHistogramButton_->setChecked(false);
+}
+
+void QCam::releaseDisplay() {
+   displayFrames(false);
+   displayFramesButton_->setChecked(false);
 }

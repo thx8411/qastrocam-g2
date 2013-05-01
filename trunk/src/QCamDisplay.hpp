@@ -70,11 +70,16 @@ public slots:
    void setDisplayMode(DisplayMode t);
 protected:
    void camConnected();
+signals:
+   void windowClosed();
 protected slots:
    void newFrame();
    void setCross(int t);
    void setDisplayMode(int t);
    void setCrossLum(int l);
+private slots:
+   void childClosed();
+
 private:
    void setWindowTitle();
    QCamVBox* mainWidget_;

@@ -23,6 +23,7 @@ MA  02110-1301, USA.
 #include <Qt/qgroupbox.h>
 #include <Qt/qboxlayout.h>
 #include <QtCore/qcoreevent.h>
+#include <QtGui/qevent.h>
 
 //
 // Replacement for Q3VGroupBox
@@ -35,6 +36,10 @@ class QCamVGroupBox: public QGroupBox {
       ~QCamVGroupBox();
       // for children detection
       bool event(QEvent *event);
+   signals:
+      void windowClosed();
+   protected:
+      void closeEvent(QCloseEvent *event);
    private:
       QVBoxLayout* widgetLayout;
 };

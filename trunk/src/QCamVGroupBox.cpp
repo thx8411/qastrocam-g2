@@ -51,3 +51,10 @@ bool QCamVGroupBox::event(QEvent *event)
       // call the base event handler
       return QGroupBox::event(event);
 }
+
+// close event caption
+void QCamVGroupBox::closeEvent(QCloseEvent *event)
+{
+   emit(windowClosed());
+   event->accept();
+}

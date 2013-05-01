@@ -152,6 +152,8 @@ void QCamDisplay::commonInit(QWidget * parent) {
 
    // display
    mainWidget_->show();
+
+  connect(mainWidget_, SIGNAL(windowClosed()), this, SLOT(childClosed()));
 }
 
 void QCamDisplay::newFrame() {
@@ -243,6 +245,10 @@ void QCamDisplay::setCrossLum(int l) {
    widget_->setCrossLum(l);
 }
 
+// slot
+void QCamDisplay::childClosed() {
+   emit(windowClosed());
+}
 
 //
 // class QCamDisplayImpl
