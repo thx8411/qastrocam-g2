@@ -457,6 +457,10 @@ int main(int argc, char ** argv) {
 
    // std palette
    QPalette tmpPalette=mainWidget.palette();
+   // setting tooltips text to black
+   tmpPalette.setColor(QPalette::ToolTipText, Qt::black);
+   app.setPalette(tmpPalette);
+   // store the std palette
    QCamUtilities::stdPalette=&tmpPalette;
 
    // night palette
