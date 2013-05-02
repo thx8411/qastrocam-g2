@@ -333,7 +333,6 @@ QWidget * QCam::buildGUI(QWidget * parent) {
       delete tmpIcon;
    } else
       displayHistogramButton_->setText("Histogram");
-   displayHistogramButton_->setMinimumHeight(28);
    if (displayHistogramWindow_ && displayHistogramWindow_->isActive()) {
       cout << "set displayHistogramButton_ on\n";
       displayHistogramButton_->setChecked(true);
