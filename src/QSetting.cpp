@@ -22,6 +22,7 @@ MA  02110-1301, USA.
 #include <Qt/qtooltip.h>
 
 #include "QCamVGroupBox.hpp"
+#include "QGridBox.hpp"
 #include "QSetting.hpp"
 #include "QCamUtilities.hpp"
 #include "SettingsBackup.hpp"
@@ -40,13 +41,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    int cameraNumber;
    int telescopeNumber;
    remoteCTRL_= new QCamVBox(parent);
-   //remoteCTRL_->setSpacing(4);
 
-   padding3=new QWidget(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(padding3,5);
    // video device box
    videoBox=new QCamHGroupBox("Camera",remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(videoBox,0);
    camLabel=new QLabel("Camera : ",videoBox);
 #if HAVE_USB_H
    cameraNumber=4;
@@ -65,16 +62,10 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    videoDeviceChooser=new QFileChooser(videoBox,DEVICE_FILE);
    videoDeviceChooser->setToolTip(tr("Selects video device"));
 
-   padding6=new QWidget(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(padding6,5);
    // telescope box
    telescopeBox=new QCamVGroupBox("Telescope control",remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(telescopeBox,0);
    lineOne=new QCamHBox(telescopeBox);
-   padding0=new QWidget(lineOne);
-   //lineOne->setStretchFactor(padding0,5);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
-   //lineOne->setStretchFactor(telescopeListLabel,0);
 #if HAVE_USB_H
    telescopeNumber=12;
    int telescopeTable[]={0,1,2,3,4,5,6,7,8,9,10,11};
@@ -86,80 +77,57 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 #endif
    telescopeList=new QCamComboBox("telescope type : ",lineOne,telescopeNumber,telescopeTable,telescopeLabel);
    telescopeList->setToolTip(tr("Telescope protocol to use for guiding"));
-   //lineOne->setStretchFactor(telescopeList,10);
-   padding1=new QWidget(lineOne);
-   //lineOne->setStretchFactor(padding1,5);
    telescopeLevels=new QCheckBox("Invert levels",lineOne);
    telescopeLevels->setToolTip(tr("Shale we invert TTL levels ?"));
-   padding2=new QWidget(lineOne);
-   //lineOne->setStretchFactor(padding2,5);
+
    lineTwo=new QCamHBox(telescopeBox);
    telescopeDeviceLabel=new QLabel("Telescope device/file : ",lineTwo);
    telescopeDeviceLabel->setToolTip(tr("Device to use for telescope guiding"));
    telescopeDeviceEntry=new QLineEdit(lineTwo);
    telescopeDeviceChooser=new QFileChooser(lineTwo);
 
-   padding7=new QWidget(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(padding7,5);
    // long exposure box
    lxBox=new QCamHGroupBox("Long exposure",remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(lxBox,0);
    lxDeviceLabel=new QLabel("Long exposure device : ",lxBox);
    lxDeviceEntry=new QLineEdit(lxBox);
-   lxDeviceEntry->setMinimumWidth(72);
+   //lxDeviceEntry->setMinimumWidth(72);
    lxDeviceEntry->setToolTip(tr("Device to use for long exposure control"));
    lxDeviceChooser=new QFileChooser(lxBox,DEVICE_FILE);
    lxDeviceChooser->setToolTip(tr("Selects long exposure device"));
    lxLevels=new QCheckBox("Invert levels",lxBox);
    lxLevels->setToolTip(tr("Shale we invert TTL levels ? (applies to 'toucam led' also)"));
 
-   padding9=new QWidget(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(padding9,5);
    // modules box
    modulesBox=new QCamVGroupBox("Modules",remoteCTRL_);
    modulesBox->setToolTip(tr("Modules to activate"));
-   //remoteCTRL_->setStretchFactor(modulesBox,0);
-   lineFive=new QCamHBox(modulesBox);
-   modulesAdd=new QCheckBox("Frame stacking module",lineFive);
-   modulesAlign=new QCheckBox("Align frames",lineFive);
-   lineSix=new QCamHBox(modulesBox);
-   modulesMax=new QCheckBox("Frame 'ghost' module",lineSix);
-   modulesKing=new QCheckBox("King method module",lineSix);
+   QGridBox* modulesGrid=new QGridBox(modulesBox,Qt::Vertical,2);
+   modulesAdd=new QCheckBox("Frame stacking module",modulesGrid);
+   modulesAlign=new QCheckBox("Align frames",modulesGrid);
+   modulesMax=new QCheckBox("Frame 'ghost' module",modulesGrid);
+   modulesKing=new QCheckBox("King method module",modulesGrid);
 
-   padding8=new QWidget(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(padding8,5);
    // options box
    optionsBox=new QCamVGroupBox("Options",remoteCTRL_);
    optionsBox->setToolTip(tr("Options to activate"));
-   //remoteCTRL_->setStretchFactor(optionsBox,0);
-   lineThree=new QCamHBox(optionsBox);
+   QGridBox* optionsGrid=new QGridBox(optionsBox,Qt::Vertical,2);
 #if HAVE_SDL_H
-   optionsSdl=new QCheckBox("Use SDL",lineThree);
+   optionsSdl=new QCheckBox("Use SDL",optionsGrid);
 #endif
-   optionsExpert=new QCheckBox("Use expert mode",lineThree);
-   lineFour=new QCamHBox(optionsBox);
-   optionsLog=new QCheckBox("Write log file",lineFour);
-   optionsNightVision=new QCheckBox("Night vision mode",lineFour);
-   lineSeven=new QCamHBox(optionsBox);
-   optionsRegistax=new QCheckBox("Registax AVI compatibility",lineSeven);
+   optionsExpert=new QCheckBox("Use expert mode",optionsGrid);
+   optionsLog=new QCheckBox("Write log file",optionsGrid);
+   optionsNightVision=new QCheckBox("Night vision mode",optionsGrid);
+   optionsRegistax=new QCheckBox("Registax AVI compatibility",optionsGrid);
    libBox=new QCamHBox(optionsBox);
    libpathLabel=new QLabel("Library path : ",libBox);
    libpathEntry=new QLineEdit(libBox);
    libpathChooser=new QDirectoryChooser(libBox);
 
-   padding4=new QWidget(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(padding4,5);
    // buttons
    buttonsBox=new QCamHBox(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(buttonsBox,5);
    save=new QPushButton("Save",buttonsBox);
    save->setEnabled(false);
    restore= new QPushButton("Restore",buttonsBox);
    restore->setEnabled(false);
-
-   // padding
-   padding5=new QWidget(remoteCTRL_);
-   //remoteCTRL_->setStretchFactor(padding5,5);
 
    // fill all the fields
    fillFields();
