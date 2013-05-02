@@ -112,7 +112,6 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    v4l2_fmtdesc fmtdesc;
    int _index=0;
    // palettes vars
-   //
    paletteNumber=0;
    // init defaults value
    buffNumber=BUFF_NUMBER;
@@ -126,6 +125,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    remoteCTRLcolor_=NULL;
    remoteCTRLwhiteness_=NULL;
    sizeTable_=NULL;
+   guessFrameRate_=false;
 #if HAVE_JPEG_H
    jpegImageBuffer=NULL;
    jpegCopyBuffer=NULL;
@@ -367,10 +367,15 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
       }
    }
    if(frameRate_<=0) {
+      guessFrameRate_=true;
+      frameRateCounter_=0;
+      frameRateTimer_.setSingleShot(true);
+      frameRateTimer_.setInterval(5000);
+      connect(&frameRateTimer_,SIGNAL(timeout()),this,SLOT(framesCounted()));
+
       cout << "unable to get video frame rate" << endl;
       frameRate_=10;
-      cout <<  "Using default Framerate: " << frameRate_ << " fps" << endl;
-
+      cout <<  "We will try to guess the real frameRate, or we will use the default Framerate: " << frameRate_ << " fps" << endl;
       cout << endl;
    } else
       cout <<  "Using Framerate : " << frameRate_ << " fps" << endl << endl;
@@ -425,6 +430,10 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    setProperty("CameraName",string((char*)v4l2_cap_.card));
    setProperty("FrameRateSecond",frameRate_);
    label((char*)v4l2_cap_.card);
+
+   // start frame rate counter timer
+   if(guessFrameRate_)
+      frameRateTimer_.start();
 }
 
 // resize the stream
@@ -756,6 +765,10 @@ bool QCamV4L2::updateFrame() {
    }
    // if we have a frame...
    if(res&&(tmpBuffer_!=NULL)) {
+      // try to guess frame rate
+      if(guessFrameRate_)
+         frameRateCounter_++;
+
       setTime();
       // ...dependings on the palette...
       switch (supported_palettes[palette].index) {
@@ -1323,4 +1336,13 @@ double QCamV4L2::getTime() {
    t=(float)tv.tv_usec/(float)1000000;
    t+=tv.tv_sec;
    return(t);
+}
+
+// counter for frame rate guess
+void QCamV4L2::framesCounted() {
+   if(frameRateCounter_==0)
+      frameRate_=10;
+   else
+      frameRate_=frameRateCounter_/4;
+   guessFrameRate_=false;
 }

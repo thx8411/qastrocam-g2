@@ -32,6 +32,7 @@ MA  02110-1301, USA.
 #include <Qt/qlineedit.h>
 #include <Qt/qpushbutton.h>
 #include <Qt/qwidget.h>
+#include <Qt/qtimer.h>
 
 #include "QCamVBox.hpp"
 #include "QCam.hpp"
@@ -159,6 +160,9 @@ protected:
    double getTime();
    // framerate
    int frameRate_;
+   int frameRateCounter_;
+   QTimer frameRateTimer_;
+   bool guessFrameRate_;
 
 private:
    // inputs
@@ -230,6 +234,8 @@ public slots:
 protected slots:
    // a new frame is up
    virtual bool updateFrame();
+   // frames can be counted
+   void framesCounted();
 signals:
    // controls
    void contrastChange(int);
