@@ -140,9 +140,11 @@ void QCamAutoGuidage::track(bool mode) {
    QPalette greenPalette;
    QPalette greyPalette;
 
-   redPalette.setColor(QPalette::Background, Qt::red);
-   greenPalette.setColor(QPalette::Background, Qt::green);
-   greyPalette.setColor(QPalette::Background, Qt::lightGray);
+   if(alert_) {
+      redPalette.setColor(alert_->backgroundRole(), Qt::red);
+      greenPalette.setColor(alert_->backgroundRole(), Qt::green);
+      greyPalette.setColor(alert_->backgroundRole(), Qt::lightGray);
+   }
 
    if (!(cam_ && tracker_ && telescope_)) {
       if(alert_) {
@@ -178,17 +180,16 @@ void QCamAutoGuidage::track(bool mode) {
 
 QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    QPalette greyPalette;
-   greyPalette.setColor(QPalette::Background, Qt::lightGray);
 
-   QCamVBox * mainBox = new QCamVBox(parent);
+   QCamVBox* mainBox = new QCamVBox(parent);
 
    QCamUtilities::registerWidget(mainBox);
 
    if (parent == 0) {
       QCamUtilities::setQastrocamIcon(mainBox);
    }
-   QCamHBox * buttons=new QCamHBox(mainBox);
-   QPushButton * trackButton = new QPushButton(tr("track"),buttons);
+   QCamHBox* buttons=new QCamHBox(mainBox);
+   QPushButton* trackButton = new QPushButton(tr("track"),buttons);
    trackButton->setCheckable(true);
    connect(trackButton,SIGNAL(toggled(bool)),this,SLOT(track(bool)));
 
@@ -196,13 +197,13 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    track(false);
    //
 
-   QPushButton * resetButton = new QPushButton(tr("reset"),buttons);
+   QPushButton* resetButton = new QPushButton(tr("reset"),buttons);
    connect(resetButton,SIGNAL(pressed()),tracker_,SLOT(reset()));
 
    // visual alert
-   QCamHBox* state=new QCamHBox(mainBox);
-   //QLabel* label1=new QLabel("State : ",state);
-   alert_=new QLabel("Idle",state);
+   alert_=new QLabel("Idle",mainBox);
+   alert_->setAutoFillBackground(true);
+   greyPalette.setColor(alert_->backgroundRole(), Qt::lightGray);
    alert_->setPalette(greyPalette);
    alert_->setAlignment(Qt::AlignHCenter);
 
@@ -266,7 +267,8 @@ void QCamAutoGuidage::moveAlt(MoveDir NSmove) {
 void QCamAutoGuidage::startAlert(int d) {
    QPalette redPalette;
 
-   redPalette.setColor(QPalette::Background, Qt::red);
+   if(alert_)
+      redPalette.setColor(alert_->backgroundRole(), Qt::red);
 
    if(!(alertAscOn_||alertAltOn_)) {
 
@@ -298,8 +300,10 @@ void QCamAutoGuidage::stopAlert(int d) {
    QPalette greenPalette;
    QPalette greyPalette;
 
-   greenPalette.setColor(QPalette::Background, Qt::green);
-   greyPalette.setColor(QPalette::Background, Qt::gray);
+   if(alert_) {
+      greenPalette.setColor(alert_->backgroundRole(), Qt::green);
+      greyPalette.setColor(alert_->backgroundRole(), Qt::gray);
+   }
 
    if(d==GUIDE_ASC)
       alertAscOn_=false;
