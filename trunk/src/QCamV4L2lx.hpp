@@ -53,7 +53,6 @@ private:
    QLineEdit * lxTime;
    QPushButton * lxSet;
    QProgressBar * lxBar;
-   QWidget* padding;
    QTimer * lxTimer;
    // lx mode vars
    SCmod* lxControler;

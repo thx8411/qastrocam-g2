@@ -720,6 +720,7 @@ int main(int argc, char ** argv) {
    QCamUtilities::setQastrocamIcon(&mainWidget);
    mainWindow.show();
    mainWindow.adjustSize();
+   mainWindow.setFixedSize(mainWindow.size());
 
    // test settings version
    if(!settings.haveKey("CONF_VERSION")||QString(settings.getKey("CONF_VERSION"))!=_CONF_VERSION_) {
