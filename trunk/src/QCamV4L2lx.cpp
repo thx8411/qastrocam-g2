@@ -70,11 +70,15 @@ bool QCamV4L2lx::updateFrame() {
          // resetting dropped frames counter
          lxFrameCounter=0;
          // resetting progress bar
-         lxBar->reset();
+         if(lxBar) lxBar->reset();
          lxControler->startAccumulation();
       }
    }
    QCamV4L2::updateFrame();
+
+   // update framerate
+   if(!lxEnabled)
+      lxRate->setText(QString().sprintf("%i",frameRate_));
 }
 
 QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
