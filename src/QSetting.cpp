@@ -77,6 +77,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 #endif
    telescopeList=new QCamComboBox("telescope type : ",lineOne,telescopeNumber,telescopeTable,telescopeLabel);
    telescopeList->setToolTip(tr("Telescope protocol to use for guiding"));
+   QWidget* padding=new QWidget(lineOne);
    telescopeLevels=new QCheckBox("Invert levels",lineOne);
    telescopeLevels->setToolTip(tr("Shale we invert TTL levels ?"));
 
