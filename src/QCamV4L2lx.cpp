@@ -111,8 +111,6 @@ QWidget * QCamV4L2lx::buildGUI(QWidget * parent) {
    lxBar->setMinimum(0);
    lxBar->setMaximum(1);
    lxBar->reset();
-   // blink
-   padding=new QWidget(remoteCTRL);
    // tips
    lxRate->setToolTip("Current frame rate");
    lxSelector->setToolTip("Long exposure mode");
