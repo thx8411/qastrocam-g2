@@ -687,12 +687,8 @@ int main(int argc, char ** argv) {
          camSrc=autoAlignCam;
       }
 
-      if (tracker) {
-         if (autoAlign) {
-            tracker->buildGUI(camSrc->gui());
-         } else {
-            tracker->buildGUI();
-         }
+      if(tracker) {
+         tracker->buildGUI();
       }
 
       // accumulation module

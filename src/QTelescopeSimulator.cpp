@@ -115,6 +115,8 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
 
    simulatorArrows_->show();
    simulatorWidget_->show();
+
+   simulatorWidget_->setFixedSize(simulatorWidget_->size());
 }
 
 void QTelescopeSimulator::goE(float shift) {

@@ -82,14 +82,15 @@ bool QKingClient::findShift(ShiftInfo & shift) {
    }
 }
 
-QWidget * QKingClient::buildGUI(QWidget * parent) {
-   QWidget *w=QCamFindShift_hotSpot::buildGUI(parent);
+QWidget* QKingClient::buildGUI(QWidget* parent) {
+   QWidget* w=QCamFindShift_hotSpot::buildGUI(parent);
 
    QCamUtilities::registerWidget(w);
 
-   QPushButton * resetCenter = new QPushButton("reset",w);
+   QPushButton* resetCenter = new QPushButton("reset",w);
    connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
 
    statusBar_=new QStatusBar(w);
+
    return w;
 }
