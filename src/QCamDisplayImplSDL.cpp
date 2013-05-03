@@ -22,6 +22,8 @@ MA  02110-1301, USA.
 // do we have the SDL library ?
 #if HAVE_SDL_H
 
+#include <math.h>
+
 #include <Qt/qpainter.h>
 #include <Qt/qpen.h>
 #include <Qt/qmessagebox.h>
@@ -30,6 +32,7 @@ MA  02110-1301, USA.
 
 #include "yuv.hpp"
 
+#include "QCam.hpp"
 #include "QCamDisplay.hpp"
 #include "QCamDisplayImplSDL.hpp"
 
@@ -368,11 +371,31 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          break;
    }
 
+   // small annotation (King method)
+   if (camClient_.cam().annotationEnabled_) {
+      int x=(int)round(camClient_.cam().annotationPos_.x());
+      int y=(int)round(camClient_.cam().annotationPos_.y());
+      if (x<0) x=4;
+      else if (x>=camClient_.cam().size().width()) {
+         x=camClient_.cam().size().width()-1-4;
+      }
+      if (y<0) y=4;
+      else if (y>=camClient_.cam().size().height()) {
+         y=camClient_.cam().size().height()-1-4;
+      }
+      for(int i=x-10;i<x+10;i++)
+         SDL_DrawPixel(screen_, i, y, (Uint8)crossLum_, 0x00, 0x00);
+      for(int j=y-10;j<y+10;j++)
+         SDL_DrawPixel(screen_, x, j, (Uint8)crossLum_, 0x00, 0x00);
+   }
+
    // unlock the surface
    SDL_UnlockSurface(screen_);
 
    // display the frame
    SDL_Flip(screen_);
 }
+
+
 
 #endif
