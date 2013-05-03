@@ -38,7 +38,7 @@ class QCamFindShift_hotSpot : public QCamFindShift {
 public:
    QCamFindShift_hotSpot();
    QCamFindShift_hotSpot(QTelescope*);
-   QWidget * buildGUI(QWidget *);
+   QWidget * buildGUI(QWidget* parent=NULL);
    virtual QCamFrame image() const;
 public slots:
    /** only pixel above this value (tresh) are taken in account */

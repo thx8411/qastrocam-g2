@@ -39,7 +39,7 @@ public:
    QCamFindShift(QTelescope * scope);
    virtual QCamFrame image() const;
    ShiftInfo currentShift() const { return currentShift_;}
-   virtual QWidget * buildGUI(QWidget *parent);
+   virtual QWidget * buildGUI(QWidget* parent=NULL);
 public slots:
    /** forget current reference */
    void reset();
