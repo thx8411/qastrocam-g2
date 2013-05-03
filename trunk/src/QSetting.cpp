@@ -114,7 +114,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 #if HAVE_SDL_H
    optionsSdl=new QCheckBox("Use SDL",optionsGrid);
 #endif
-   optionsExpert=new QCheckBox("Use expert mode",optionsGrid);
+#if KERNEL_2
+   optionsExpert=new QCheckBox("Use Vesta expert mode",optionsGrid);
+#endif
    optionsLog=new QCheckBox("Write log file",optionsGrid);
    optionsNightVision=new QCheckBox("Night vision mode",optionsGrid);
    optionsRegistax=new QCheckBox("Registax AVI compatibility",optionsGrid);
@@ -155,7 +157,9 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
 #if HAVE_SDL_H
    connect(optionsSdl,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
 #endif
+#if KERNEL_2
    connect(optionsExpert,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
+#endif
    connect(optionsLog,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(optionsRegistax,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
    connect(modulesAdd,SIGNAL(toggled(bool)),this,SLOT(hasChanged()));
@@ -238,10 +242,12 @@ void QSetting::fillFields() {
    else
       hasChanged();
 #endif
+#if KERNEL_2
    if(settings.haveKey("EXPERT"))
       optionsExpert->setChecked(string(settings.getKey("EXPERT"))=="yes");
    else
       hasChanged();
+#endif
    if(settings.haveKey("LOG"))
       optionsLog->setChecked(string(settings.getKey("LOG"))=="yes");
    else
@@ -310,11 +316,13 @@ void QSetting::saveSettings() {
       temp="no";
    settings.setKey("SDL",temp.toLatin1());
 #endif
+#if KERNEL_2
    if(optionsExpert->isChecked())
       temp="yes";
    else
       temp="no";
    settings.setKey("EXPERT",temp.toLatin1());
+#endif
    if(optionsLog->isChecked())
       temp="yes";
    else
