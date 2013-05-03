@@ -24,6 +24,7 @@ MA  02110-1301, USA.
 #define _QCamClient_hpp_
 
 #include <Qt/qobject.h>
+#include <Qt/qpushbutton.h>
 
 class QCam;
 
@@ -59,6 +60,9 @@ public:
    /** build the GUI related tgo the camera client.
        buildGUI of base class should also be called */
    QWidget * buildGUI(QWidget *parent);
+
+   // GUI stuff
+   QPushButton* pauseCapture_;
 
    /** return the quick description of this client */
    virtual const QString & label() const { static QString aLabel="A Camera Client"; return aLabel;}

@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -19,17 +19,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
+#include <math.h>
+#include <time.h>
 
 #include <Qt/qpushbutton.h>
 #include <Qt/qstatusbar.h>
-#include <math.h>
+
 #include "QKingClient.hpp"
 #include "QCam.hpp"
-
 #include "QCamUtilities.hpp"
 
-#include <math.h>
-#include <time.h>
 
 QKingClient::QKingClient() {
    timeFirstFrame_=0;
@@ -69,10 +68,7 @@ bool QKingClient::findShift(ShiftInfo & shift) {
          QString stat;
          stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
                       (int)firstHotSpot_.x(),(int)firstHotSpot_.y(),
-                      dt,
-                      dx,
-                      dy,
-                      rightPos.x(),rightPos.y());
+                      dt,dx,dy,rightPos.x(),rightPos.y());
          statusBar_->showMessage(stat);
       }
       cam().annotate(firstHotSpot_+rightPos);
@@ -88,9 +84,22 @@ QWidget* QKingClient::buildGUI(QWidget* parent) {
    QCamUtilities::registerWidget(w);
 
    QPushButton* resetCenter = new QPushButton("reset",w);
-   connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
+   connect(resetCenter,SIGNAL(pressed()),this,SLOT(kingReset()));
 
    statusBar_=new QStatusBar(w);
 
+   kingReset();
+
    return w;
+}
+
+void QKingClient::kingReset() {
+   reset();
+   if (statusBar_) {
+         QString stat;
+         stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
+                      (int)firstHotSpot_.x(),(int)firstHotSpot_.y(),
+                      0,0.0,0.0,0.0,0.0);
+         statusBar_->showMessage(stat);
+   }
 }

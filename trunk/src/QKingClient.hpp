@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -23,8 +23,10 @@ MA  02110-1301, USA.
 #ifndef __QKingClient_hpp_
 #define __QKingClient_hpp_
 
-#include "QCamFindShift_hotSpot.hpp"
 #include <time.h>
+
+#include "QCamFindShift_hotSpot.hpp"
+
 
 class QStatusBar;
 
@@ -32,14 +34,16 @@ class QKingClient : public QCamFindShift_hotSpot {
    Q_OBJECT
 public:
    QKingClient();
-   QWidget * buildGUI(QWidget *parent);
+   QWidget* buildGUI(QWidget *parent);
 protected:
    bool registerFirstFrame();
    bool findShift(ShiftInfo & shift);
+protected slots:
+   void kingReset();
 private:
    /** time in second of the firts frame */
    time_t timeFirstFrame_;
-   QStatusBar * statusBar_;
+   QStatusBar* statusBar_;
 };
 
 #endif
