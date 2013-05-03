@@ -75,7 +75,7 @@ QCamAutoAlign::QCamAutoAlign() {
    }
 }
 
-QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
+QWidget* QCamAutoAlign::buildGUI(QWidget * parent) {
    QSizePolicy sizePolicyMax;
    sizePolicyMax.setVerticalPolicy(QSizePolicy::Expanding);
    sizePolicyMax.setHorizontalPolicy(QSizePolicy::Expanding);
@@ -84,11 +84,11 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    sizePolicyMin.setVerticalPolicy(QSizePolicy::Minimum);
    sizePolicyMin.setHorizontalPolicy(QSizePolicy::Minimum);
 
-   QWidget * remoteCTRL= QCam::buildGUI(parent);
+   QWidget* remoteCTRL= QCam::buildGUI(parent);
 
    QCamUtilities::registerWidget(remoteCTRL);
 
-   QPushButton * resetCenter = new QPushButton(tr("reset"),remoteCTRL);
+   QPushButton* resetCenter = new QPushButton(tr("reset"),remoteCTRL);
    connect(resetCenter,SIGNAL(pressed()),this,SLOT(reset()));
    findShiftWidget_=new QCamHGroupBox(tr("Find Shift Ctrl"),remoteCTRL);
    if (tracker_) {
@@ -102,8 +102,7 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    cropSlider_->setValue((int)round(cropValue_*100));
    cropSlider_->setToolTip(tr("% of image to keep when crooping"));
    centerButton_=new QCheckBox(tr("Center image"),remoteCTRL);
-   connect(centerButton_,SIGNAL(toggled(bool)),
-           this,SLOT(setImageCenter(bool)));
+   connect(centerButton_,SIGNAL(toggled(bool)),this,SLOT(setImageCenter(bool)));
    centerButton_->setToolTip(tr("Center shifted images on the center of the frame"));
 
 #if ONE_MAP
@@ -114,8 +113,7 @@ QWidget * QCamAutoAlign::buildGUI(QWidget * parent) {
    shiftMap_= new QVectorMap(remoteCTRL);
    shiftMap_->setSizePolicy(sizePolicyMax);
    shiftMap_->setMode(DrawLine);
-   connect(scaleSlider_, SIGNAL(valueChange(int)),
-           shiftMap_,SLOT(setScale(int)));
+   connect(scaleSlider_, SIGNAL(valueChange(int)),shiftMap_,SLOT(setScale(int)));
    shiftMap_->setToolTip(tr("Show the history of the frame shift"));
 #else
    shiftXhisto_ = new QHistogram(remoteCTRL);

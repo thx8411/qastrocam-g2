@@ -221,6 +221,8 @@ QWidget * QCamAutoGuidage::buildGUI(QWidget *parent) {
    }
 
    mainBox->show();
+   mainBox->setFixedSize(mainBox->size());
+
    return mainBox;
 }
 

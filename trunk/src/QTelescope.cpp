@@ -165,13 +165,15 @@ void QTelescope::buildGUI(QWidget * parent) {
 
    connect(speedSlider_,SIGNAL(valueChanged(int)),this,SLOT(speedChanged(int)));
    speedBox->show();
+
+   mainWidget_->setFixedSize(mainWidget_->size());
 }
 
 QTelescope::~QTelescope() {
    QCamUtilities::removeWidget(mainWidget_);
 }
 
-QWidget * QTelescope::widget() {
+QWidget* QTelescope::widget() {
    return mainWidget_;
 }
 

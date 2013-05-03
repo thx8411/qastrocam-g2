@@ -32,7 +32,7 @@ QCamVBox::QCamVBox(QWidget* parent):QWidget(parent) {
    widgetLayout=new QVBoxLayout();
 
    // setting margin and spacing
-   widgetLayout->setContentsMargins(0,0,0,0);
+   widgetLayout->setContentsMargins(2,2,2,2);
    widgetLayout->setSpacing(0);
 
    setLayout(widgetLayout);
