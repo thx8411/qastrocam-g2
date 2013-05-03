@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -17,18 +17,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-
-#include "QTelescopeFile.hpp"
-
+#include <sys/time.h>
+#include <math.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
 #include <stdio.h>
+
 #include <iostream>
-#include <sys/time.h>
-#include <math.h>
+
+#include "QTelescopeFile.hpp"
 
 using namespace std;
 
@@ -121,4 +121,10 @@ QTelescopeFile::QTelescopeFile(const char * filePath) :
    filePathy=filePathy + '-' + buff + '-' + "y.dat";
    // tracking set to stop
    tracking_=false;
+}
+
+// GUI
+void QTelescopeFile::buildGUI(QWidget* parent) {
+   // nothing to be done here
+   // telescope controls are useless for fifo
 }
