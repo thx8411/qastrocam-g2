@@ -52,27 +52,6 @@ QCamAutoAlign::QCamAutoAlign() {
    findShiftWidget_=NULL;
    center_=false;
    cropValue_=0.8;
-   fifoName_="/tmp/qastrocam-g2_shift.fifo";
-   cout << "trying fifo "<<fifoName_<<"..."<<flush;
-   fifo_=NULL;
-   int fifoDescriptor=open(fifoName_.c_str(),O_RDWR|O_NONBLOCK);
-   if (fifoDescriptor != -1) {
-      struct stat fifoStats;
-      fstat(fifoDescriptor,&fifoStats);
-      if (S_ISFIFO(fifoStats.st_mode)) {
-         fifo_=fdopen(fifoDescriptor,"r+");
-         cout << "done"<<endl;
-      } else {
-         cout << "not a fifo"<<endl;
-         close(fifoDescriptor);
-      }
-   } else {
-      mkfifo(fifoName_.c_str(),S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
-      fifoDescriptor=open(fifoName_.c_str(),O_RDWR|O_NONBLOCK);
-      if(fifoDescriptor==-1) {
-         perror(fifoName_.c_str());
-      }
-   }
 }
 
 QWidget* QCamAutoAlign::buildGUI(QWidget * parent) {
@@ -204,16 +183,7 @@ void QCamAutoAlign::shifted(const ShiftInfo & shift) {
       setProperty("shift rotation",shift.angle());
       setProperty("Center X",shift.center().x());
       setProperty("Center Y",shift.center().y());
-      if (fifo_) {
-         int res=fprintf(fifo_,"%f %f\n",shift.shift().x(),shift.shift().y());
-         if (res >= 0) {
-            fflush(fifo_);
-         } else {
-            char buff[30];
-            snprintf(buff,30,"writting fifo (%d)",res);
-            perror(buff);
-         }
-      }
+
       newFrameAvaible();
    }
 }

@@ -43,8 +43,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130503")
-set(BUILD_VERSION "187")
+set(PATCH_VERSION "beta20130504")
+set(BUILD_VERSION "188")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 
@@ -351,10 +351,6 @@ if(AVIFILE_FOUND)
    install(FILES lib/huffyuv.dll DESTINATION /usr/lib/win32)
    install(FILES lib/huffyuv_readme.txt DESTINATION /usr/share/qastrocam-g2)
 endif(AVIFILE_FOUND)
-
-# install file node
-install(CODE "execute_process(COMMAND \"rm -f /tmp/qastrocam-g2_shift.fifo\")")
-install(CODE "execute_process(COMMAND \"mkfifo /tmp/qastrocam-g2_shift.fifo\")")
 
 
 ######################

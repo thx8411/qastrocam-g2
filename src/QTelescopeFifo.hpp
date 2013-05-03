@@ -33,6 +33,10 @@ public:
    QTelescopeFifo(const char * fifoPath);
    ~QTelescopeFifo();
    virtual int telescopeType() { return(TELESCOPE_FIFO); }
+   // build gui
+   void buildGUI(QWidget* parent=0);
+   // update shitfing value when a new frame comes
+   virtual void Update(double x, double y);
 public slots:
    virtual void goE(float shift) {}
    virtual void goW(float shift) {}

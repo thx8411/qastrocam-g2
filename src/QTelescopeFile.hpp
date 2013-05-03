@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -32,7 +32,9 @@ using namespace std;
 class QTelescopeFile : public QTelescope {
    Q_OBJECT
 public:
-   QTelescopeFile(const char * filePath);
+   QTelescopeFile(const char* filePath);
+   // gui
+   virtual void buildGUI(QWidget* parent=0);
    // update shitfing value when a new frame comes
    virtual void Update(double x, double y);
    // creat new files when the tracker is reset
