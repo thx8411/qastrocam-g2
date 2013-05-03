@@ -274,31 +274,46 @@ QCamFrame QCamFindShift_hotSpot::image() const {
 }
 
 void QCamFindShift_hotSpot::computeCenterImg(int size,const Vector2D & center) {
-   if (size%4) {size+=(4-size%4);}
+   unsigned char* lineY;
+   unsigned char* lineU;
+   unsigned char* lineV;
+
+   if (size%4)
+      size+=(4-size%4);
 
    centerImg_.setSize(QSize(size,size));
    centerImg_.clear();
+   centerImg_.setMode(cam().yuvFrame().getMode());
+
    int minX=(int)center.x()-size/2;
    int minY=(int)center.y()-size/2;
-   centerImg_.copy(cam().yuvFrame(),
-            minX,minY,
-            minX+size-1,
-            minY+size-1,
-            0,0);
+   centerImg_.copy(cam().yuvFrame(),minX,minY,minX+size-1,minY+size-1,0,0);
    int low=(size/6);
    int high=size-(size/6);
    for (int j=low;j<high;j+=binning_) {
-      unsigned char * lineY = centerImg_.YLineForUpdate(j);
-      unsigned char * lineU = centerImg_.ULineForUpdate(j);
-      unsigned char * lineV = centerImg_.VLineForUpdate(j);
+      lineY = centerImg_.YLineForUpdate(j);
+      if(centerImg_.getMode()!=GreyFrame) {
+         lineU = centerImg_.ULineForUpdate(j);
+         lineV = centerImg_.VLineForUpdate(j);
+      }
       for(int i=low;i<high;i+=binning_) {
          int val=computePixelWeight(lineY[i]);
-         if (val<0) {
-            continue;
-         } else {
+         if (val>=0) {
             lineY[i]=val/255;
-            lineU[i/2]=lineV[i/2]=0;
+            if(centerImg_.getMode()!=GreyFrame) {
+               lineU[i]=128;
+               lineV[i]=128;
+            }
          }
       }
    }
+}
+
+int QCamFindShift_hotSpot::computePixelWeight(int pixelVal) const {
+   pixelVal-=seuil_;
+   if(pixelVal>0) {
+      pixelVal=pixelVal*255/(255-seuil_);
+      pixelVal*=pixelVal;
+   }
+   return pixelVal;
 }
