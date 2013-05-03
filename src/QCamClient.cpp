@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 MA  02110-1301, USA.
 *******************************************************************/
 
-#include <Qt/qpushbutton.h>
 #include <Qt/qtooltip.h>
 #include <Qt/qpixmap.h>
 
@@ -30,11 +29,13 @@ MA  02110-1301, USA.
 QCamClient::QCamClient(): cam_(NULL) {
    paused_=true;
    cam_=NULL;
+   pauseCapture_=NULL;
 }
 
 QCamClient::QCamClient(QCam & theCam) {
    paused_=true;
    cam_=NULL;
+   pauseCapture_=NULL;
    connectCam(theCam);
 }
 
@@ -67,18 +68,22 @@ void QCamClient::pause() {
    if (!paused_) {
       paused_=true;
       disconnect(cam_,SIGNAL(newFrame()),this,SLOT(newFrame()));
+      if(pauseCapture_)
+         pauseCapture_->setChecked(true);
    }
 }
 void QCamClient::resume() {
-   if (paused_) {
+   if(paused_) {
       paused_=false;
       connect(cam_,SIGNAL(newFrame()),this,SLOT(newFrame()));
+      if(pauseCapture_)
+         pauseCapture_->setChecked(false);
    }
 }
 
 QWidget * QCamClient::buildGUI(QWidget *parent) {
    QIcon* tmpIcon;
-   QPushButton* pauseCapture_=new QPushButton(parent);
+   pauseCapture_=new QPushButton(parent);
    pauseCapture_->setToolTip("Suspend the current capture");
    pauseCapture_->setCheckable(true);
    tmpIcon=QCamUtilities::getIcon("movie_pause.png");
@@ -87,6 +92,8 @@ QWidget * QCamClient::buildGUI(QWidget *parent) {
       delete tmpIcon;
    } else
       pauseCapture_->setText("Pause");
+   if(paused_)
+      pauseCapture_->setChecked(true);
    connect(pauseCapture_,SIGNAL(toggled(bool)),this,SLOT(disable(bool)));
    return parent;
 }
