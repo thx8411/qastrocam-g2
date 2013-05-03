@@ -70,14 +70,7 @@ private:
    double findHotSpot(const Vector2D & from,
                       Vector2D & center);
    int computeSeuil() const;
-   int computePixelWeight(int pixelVal) const {
-      pixelVal-=seuil_;
-      if (pixelVal>0) {
-         pixelVal=pixelVal*255/(255-seuil_);
-         pixelVal*=pixelVal;
-      }
-      return pixelVal;
-   }
+   int computePixelWeight(int pixelVal) const;
    double computeBarycenter(const Vector2D & from,
                             int seuil,int step,
                             int size,
