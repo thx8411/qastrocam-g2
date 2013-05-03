@@ -235,7 +235,7 @@ QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    connect(binning,SIGNAL(change(int)),this,SLOT(setBinning(int)));
    binning->setToolTip(tr("seting a high binning will speedup\nthe processing with big box size"));
 
-   bigBoxSlider_=new QCamSlider("Boxsize",false,vbox,1,200,false,false);
+   bigBoxSlider_=new QCamSlider("Boxsize",false,vbox,12,200,false,false);
    connect(bigBoxSlider_,SIGNAL(valueChange(int)),this,SLOT(setSearchBoxSize(int)));
    connect(this,SIGNAL(searchBoxSizeChanged(int)),bigBoxSlider_,SLOT(setValue(int)));
 
