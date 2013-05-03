@@ -60,6 +60,7 @@ CamHistogram::CamHistogram(QCam & theCam) :
    sizePolicyMin.setHorizontalPolicy(QSizePolicy::Minimum);
    mainWindow_->setSizePolicy(sizePolicyMin);
 
+   // focus
    focusGroup_ = new QCamVGroupBox(tr("Focus - Seeing"), mainWindow_);
    focusArea_ = new QHistogram(focusGroup_);
    focusArea_->setDataSize(focusHistorySize_);
@@ -78,8 +79,9 @@ CamHistogram::CamHistogram(QCam & theCam) :
    seeingLevel_->setMinimum(0);
    seeingLevel_->setMaximum(100);
    seeingLevel_->setToolTip(tr("Shown an evaluation of the seeing by looking how\nthe contrast changes between frames."));
-
    connect(resetFocus_,SIGNAL(pressed()),focusArea_,SLOT(reset()));
+
+   // histogram
    histoGroup_ = new QCamVGroupBox(tr("Histogram"), mainWindow_);
    histogramArea_ = new QHistogram(histoGroup_);
    histogramArea_->setDataSize(256);
@@ -89,12 +91,15 @@ CamHistogram::CamHistogram(QCam & theCam) :
    histoGroup_->setSizePolicy(sizePolicyMin);
    histogramArea_->setSizePolicy(sizePolicyMax);
    histogramArea_->setToolTip(tr("show an histogram of the image.\n0 on the left, 255 on the right"));
+
+   // show all
    focusGroup_->show();
    histoGroup_->show();
    histogramArea_->show();
    focusArea_->show();
    mainWindow_->show();
 
+   // forwards the close event
    connect(mainWindow_,SIGNAL(windowClosed()),this,SLOT(childClosed()));
 }
 
