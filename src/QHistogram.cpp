@@ -171,18 +171,18 @@ void QHistogram::paintEvent(QPaintEvent * ev) {
    p.begin(&buffer);
    p.initFrom(this);
    p.setPen(*normPen_);
+
    for(int i=0;i<dataSize_;++i) {
-      p.drawLine(pivot +reverse*i*w/dataSize_,h-1,
-                 pivot +reverse*i*w/dataSize_,h-1-((int)round(value(i)*h/max())));
+      p.drawLine(pivot+reverse*i*w/dataSize_, h-1, pivot+reverse*i*w/dataSize_, h-1-((int)round(value(i)*h/max())));
    }
-   p.setPen(*averagePen_);
    if (average()) {
+      p.setPen(*averagePen_);
       for(int i=average();i<dataSize_-average()-1;++i) {
          double first,second;
          first=value(i-average(),i+average());
          second=value(i-average()+1,i+average()+1);
-         p.drawLine(pivot +reverse*i*w/dataSize_,h-1-(int)(first*h/max()),
-                    pivot +reverse*(i+1)*w/dataSize_,h-1-(int)(second*h/max()));
+         p.drawLine(pivot+reverse*i*w/dataSize_,h-1-(int)(first*h/max()),
+                    pivot+reverse*(i+1)*w/dataSize_,h-1-(int)(second*h/max()));
       }
    }
    p.end();
