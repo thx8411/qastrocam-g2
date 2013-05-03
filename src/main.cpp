@@ -577,7 +577,7 @@ int main(int argc, char ** argv) {
    if(cam!=NULL) {
       addRemoteCTRL(cam);
       cam->setCaptureFile("raw");
-      QCam * camSrc=cam;
+      QCam* camSrc=cam;
 
       // adding stack tab
       camStack=new QCamStack();
@@ -665,12 +665,9 @@ int main(int argc, char ** argv) {
       }
 
       // alignement object
-      if (theTelescope || autoAlign) {
-         //QCamFindShift * baryShift=new QCamFindShift_barycentre();
+      if (theTelescope) {
          findShift=new QCamFindShift_hotSpot(theTelescope);
          findShift->connectCam(*camSrc);
-      }
-      if (theTelescope) {
          tracker = new QCamAutoGuidageSimple();
          tracker->setCam(camSrc);
          tracker->setTracker(findShift);
@@ -680,7 +677,10 @@ int main(int argc, char ** argv) {
       }
       // autoaligne creation
       if (autoAlign) {
-         assert(findShift);
+         if(!findShift) {
+            findShift=new QCamFindShift_hotSpot();
+            findShift->connectCam(*camSrc);
+         }
          autoAlignCam=new QCamAutoAlign();
          autoAlignCam->setTracker(findShift);
          addRemoteCTRL(autoAlignCam);
