@@ -32,13 +32,13 @@ extern settingsBackup settings;
 
 #define _SIMULATOR_WIDTH_	640
 #define _SIMULATOR_HEIGHT_	480
-#define _SIMULATOR_EXPOSURE_	1000
 
 QCamSimulator::QCamSimulator() {
    // set cam label
    label(QString("Simulator"));
 
    // init
+   timer_=NULL;
    sizeTable_=NULL;
    sizeTable=getAllowedSize();
    starPositionX_=_SIMULATOR_WIDTH_/2;
@@ -47,6 +47,8 @@ QCamSimulator::QCamSimulator() {
    decSpeed_=0.0;
    raMove_=_SIMULATOR_STOP_;
    decMove_=_SIMULATOR_STOP_;
+   exposure_=1000;
+   progressCounter_=0;
 
    // set frame
    yuvBuffer_.setMode(GreyFrame);
@@ -170,6 +172,12 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    } else
       decCenter_->setText("Center");
 
+   // Exposure zone
+   QCamHGroupBox* expZone=new QCamHGroupBox(QString("Exposure"),settingsBox);
+   expSpeedSlider_=new QCamSlider(QString("Exposure (s) : "),false,expZone,1,60,false,false);
+   progress_=new QProgressBar(expZone);
+   progress_->setMinimum(0);
+
    // connexions
    connect(raLeft_,SIGNAL(toggled(bool)),this,SLOT(moveLeft(bool)));
    connect(raRight_,SIGNAL(toggled(bool)),this,SLOT(moveRight(bool)));
@@ -177,6 +185,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    connect(decDown_,SIGNAL(toggled(bool)),this,SLOT(moveDown(bool)));
    connect(raSpeedSlider_,SIGNAL(valueChange(int)),this,SLOT(setRaSpeed(int)));
    connect(decSpeedSlider_,SIGNAL(valueChange(int)),this,SLOT(setDecSpeed(int)));
+   connect(expSpeedSlider_,SIGNAL(valueChange(int)),this,SLOT(setExpSpeed(int)));
    connect(raStop_,SIGNAL(pressed()),this,SLOT(stopRa()));
    connect(decStop_,SIGNAL(pressed()),this,SLOT(stopDec()));
    connect(raCenter_,SIGNAL(pressed()),this,SLOT(centerRa()));
@@ -187,6 +196,7 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    decSpeedSlider_->setValue(1);
    setRaSpeed(1);
    setDecSpeed(1);
+   setExpSpeed(1);
 
    // tooltips
    raSpeedSlider_->setToolTip(tr("RA speed (pixels/frame)"));
@@ -203,8 +213,18 @@ QWidget* QCamSimulator::buildGUI(QWidget * parent) {
    // set the first timer shot
    timer_=new QTimer(this);
    connect(timer_,SIGNAL(timeout()),this,SLOT(updateFrame()));
-   timer_->setSingleShot(true);
-   timer_->start(_SIMULATOR_EXPOSURE_);
+   timer_->setSingleShot(false);
+
+   // init timer
+   expSpeedSlider_->setValue(1);
+   setExpSpeed(1);
+   progress_->setMaximum(1);
+
+   // progress timer
+   progressTimer_=new QTimer(this);
+   connect(progressTimer_,SIGNAL(timeout()),this,SLOT(updateProgress()));
+   progressTimer_->setSingleShot(false);
+   progressTimer_->start(1000);
 
    return remoteCTRL;
 }
@@ -216,8 +236,6 @@ bool QCamSimulator::updateFrame() {
    // read picture datas
    setTime();
    // gives a new shot for the timer
-   timer_->setSingleShot(true);
-   timer_->start(_SIMULATOR_EXPOSURE_);
    // fill the frame
    memset(YBuff,0,_SIMULATOR_WIDTH_*_SIMULATOR_HEIGHT_);
    // compute the new star position
@@ -240,6 +258,11 @@ bool QCamSimulator::updateFrame() {
    YBuff[(int)(starPositionY_-1)*_SIMULATOR_WIDTH_+(int)starPositionX_+1]=0x40;
    YBuff[(int)(starPositionY_+1)*_SIMULATOR_WIDTH_+(int)starPositionX_-1]=0x40;
    YBuff[(int)(starPositionY_+1)*_SIMULATOR_WIDTH_+(int)starPositionX_+1]=0x40;
+
+   // progress bar
+   if(progress_)
+      progress_->setValue(0);
+   progressCounter_=0;
 
    // publish the frame
    newFrameAvaible();
@@ -301,10 +324,27 @@ void QCamSimulator::setDecSpeed(int s) {
    decSpeed_=s;
 }
 
+void QCamSimulator::setExpSpeed(int s) {
+   exposure_=s*1000;
+   if(timer_)
+      timer_->start(exposure_);
+   if(progress_) {
+      progress_->setMaximum(s);
+      progress_->setValue(0);
+   }
+   progressCounter_=0;
+}
+
 void QCamSimulator::centerRa() {
   starPositionX_=_SIMULATOR_WIDTH_/2;
 }
 
 void QCamSimulator::centerDec() {
    starPositionY_=_SIMULATOR_HEIGHT_/2;
+}
+
+void QCamSimulator::updateProgress() {
+   progressCounter_++;
+   if(progress_)
+      progress_->setValue(progressCounter_);
 }

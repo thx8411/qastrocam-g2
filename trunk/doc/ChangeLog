@@ -18,6 +18,7 @@
   - some GUI fixes
   - try to guess V4L2 frame rate if not available
   - use telescope instead of frame alignment module for fifo
+  - camera simulator enhanced
 
 4.9
 

@@ -26,6 +26,7 @@ MA  02110-1301, USA.
 #include <Qt/qobject.h>
 #include <Qt/qlabel.h>
 #include <Qt/qpushbutton.h>
+#include <Qt/qprogressbar.h>
 
 #include "QCamSlider.hpp"
 #include "QCam.hpp"
@@ -52,10 +53,13 @@ protected:
 private:
    QCamFrame yuvBuffer_;
    QTimer* timer_;
+   QTimer* progressTimer_;
+   int progressCounter_;
    double starPositionX_;
    double starPositionY_;
    double raSpeed_;
    double decSpeed_;
+   int exposure_;
    int raMove_;
    int decMove_;
    // GUI
@@ -69,6 +73,8 @@ private:
    QPushButton* decCenter_;
    QCamSlider* raSpeedSlider_;
    QCamSlider* decSpeedSlider_;
+   QCamSlider* expSpeedSlider_;
+   QProgressBar* progress_;
 private slots :
    void moveLeft(bool s);
    void moveRight(bool s);
@@ -78,8 +84,10 @@ private slots :
    void stopDec();
    void setRaSpeed(int s);
    void setDecSpeed(int s);
+   void setExpSpeed(int s);
    void centerRa();
    void centerDec();
+   void updateProgress();
 public slots:
    virtual bool updateFrame();
 signals:
