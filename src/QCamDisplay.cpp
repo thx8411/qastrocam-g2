@@ -375,6 +375,8 @@ void QCamDisplayImpl::annotate(QPainter & painter) {
    }
 
    if (camClient_.cam().annotationEnabled_) {
+      pen_->setColor(QColor(0,0xFF,0));
+      painter.setPen(*pen_);
       int x=(int)round(camClient_.cam().annotationPos_.x());
       int y=(int)round(camClient_.cam().annotationPos_.y());
       if (x<0) x=4;
@@ -387,5 +389,6 @@ void QCamDisplayImpl::annotate(QPainter & painter) {
       }
       painter.drawLine(x,y-10,x,y+10);
       painter.drawLine(x-10,y,x+10,y);
+      pen_->setColor(QColor(QCamDisplay::defaultLum_,0,0));
    }
 }

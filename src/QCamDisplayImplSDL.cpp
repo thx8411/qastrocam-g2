@@ -48,7 +48,6 @@ MA  02110-1301, USA.
 //
 
 // sets a pixel
-// CAUTION : it doesn't check borders !!
 void SDL_DrawPixel(SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B) {
    Uint32 color = SDL_MapRGB(screen->format, R, G, B);
 
@@ -386,9 +385,9 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          y=camClient_.cam().size().height()-1-4;
       }
       for(int i=x-10;i<x+10;i++)
-         SDL_DrawPixel(screen_, i, y, (Uint8)crossLum_, 0x00, 0x00);
+         SDL_DrawPixel(screen_, i, y, 0x00, 0xFF, 0x00);
       for(int j=y-10;j<y+10;j++)
-         SDL_DrawPixel(screen_, x, j, (Uint8)crossLum_, 0x00, 0x00);
+         SDL_DrawPixel(screen_, x, j, 0x00, 0xFF, 0x00);
    }
 
    // unlock the surface
