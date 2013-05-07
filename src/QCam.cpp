@@ -66,7 +66,9 @@ MA  02110-1301, USA.
 // external settings
 extern settingsBackup settings;
 
-QCam::QCam() {
+QCam::QCam(char* name) {
+   if(name)
+      label(QString(name));
    doCapture_=false;
    capturePaused_=false;
    captureFile_="qcam";
