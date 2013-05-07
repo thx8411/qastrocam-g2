@@ -30,12 +30,14 @@ QCamClient::QCamClient(): cam_(NULL) {
    paused_=true;
    cam_=NULL;
    pauseCapture_=NULL;
+   pauseHidden_=false;
 }
 
 QCamClient::QCamClient(QCam & theCam) {
    paused_=true;
    cam_=NULL;
    pauseCapture_=NULL;
+   pauseHidden_=false;
    connectCam(theCam);
 }
 
@@ -81,19 +83,25 @@ void QCamClient::resume() {
    }
 }
 
-QWidget * QCamClient::buildGUI(QWidget *parent) {
-   QIcon* tmpIcon;
-   pauseCapture_=new QPushButton(parent);
-   pauseCapture_->setToolTip("Suspend the current capture");
-   pauseCapture_->setCheckable(true);
-   tmpIcon=QCamUtilities::getIcon("movie_pause.png");
-   if(tmpIcon!=NULL) {
-      pauseCapture_->setIcon(*tmpIcon);
-      delete tmpIcon;
-   } else
-      pauseCapture_->setText("Pause");
-   if(paused_)
-      pauseCapture_->setChecked(true);
-   connect(pauseCapture_,SIGNAL(toggled(bool)),this,SLOT(disable(bool)));
+QWidget* QCamClient::buildGUI(QWidget *parent) {
+   if(!pauseHidden_) {
+      QIcon* tmpIcon;
+      pauseCapture_=new QPushButton(parent);
+      pauseCapture_->setToolTip("Suspend the current capture");
+      pauseCapture_->setCheckable(true);
+      tmpIcon=QCamUtilities::getIcon("movie_pause.png");
+      if(tmpIcon!=NULL) {
+         pauseCapture_->setIcon(*tmpIcon);
+         delete tmpIcon;
+      } else
+         pauseCapture_->setText("Pause");
+      if(paused_)
+         pauseCapture_->setChecked(true);
+      connect(pauseCapture_,SIGNAL(toggled(bool)),this,SLOT(disable(bool)));
+   }
    return parent;
+}
+
+void QCamClient::hidePause(bool b) {
+   pauseHidden_=b;
 }

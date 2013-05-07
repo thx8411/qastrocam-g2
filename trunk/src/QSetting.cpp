@@ -63,7 +63,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    videoDeviceChooser->setToolTip(tr("Selects video device"));
 
    // telescope box
-   telescopeBox=new QCamVGroupBox("Telescope control",remoteCTRL_);
+   telescopeBox=new QCamVGroupBox("Mount control",remoteCTRL_);
    lineOne=new QCamHBox(telescopeBox);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
 #if HAVE_USB_H
@@ -75,15 +75,15 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    int telescopeTable[]={0,1,2,3,4,5,6,7,8,9};
    const char* telescopeLabel[]={"none","autostar","lx200","nexstar","mcu","mts","apm","fifo","file","simulator"};
 #endif
-   telescopeList=new QCamComboBox("telescope type : ",lineOne,telescopeNumber,telescopeTable,telescopeLabel);
-   telescopeList->setToolTip(tr("Telescope protocol to use for guiding"));
+   telescopeList=new QCamComboBox("Mount type : ",lineOne,telescopeNumber,telescopeTable,telescopeLabel);
+   telescopeList->setToolTip(tr("Mount protocol to use for guiding"));
    QWidget* padding=new QWidget(lineOne);
    telescopeLevels=new QCheckBox("Invert levels",lineOne);
    telescopeLevels->setToolTip(tr("Shale we invert TTL levels ?"));
 
    lineTwo=new QCamHBox(telescopeBox);
-   telescopeDeviceLabel=new QLabel("Telescope device/file : ",lineTwo);
-   telescopeDeviceLabel->setToolTip(tr("Device to use for telescope guiding"));
+   telescopeDeviceLabel=new QLabel("Mount device/file : ",lineTwo);
+   telescopeDeviceLabel->setToolTip(tr("Device to use for mount guiding"));
    telescopeDeviceEntry=new QLineEdit(lineTwo);
    telescopeDeviceChooser=new QFileChooser(lineTwo);
 

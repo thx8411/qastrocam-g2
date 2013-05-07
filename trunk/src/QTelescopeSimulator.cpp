@@ -44,9 +44,10 @@ void QTelescopeSimulator::buildGUI(QWidget* parent) {
    QPixmap* tmpIcon;
 
    QString speed_="Speed : ";
-   widget()->setWindowTitle("Simulator");
+   widget()->setWindowTitle("Mount simulator");
 
-   simulatorWidget_=new QCamVGroupBox("Telescope Simulator",NULL);
+   simulatorWidget_=new QCamVBox(NULL);
+   simulatorWidget_->setWindowTitle("Mount simulator");
 
    QCamUtilities::registerWidget(simulatorWidget_);
    QCamUtilities::setQastrocamIcon(simulatorWidget_);

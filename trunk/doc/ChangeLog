@@ -15,7 +15,7 @@
   - use SDL for sound alert by default
   - better frame display management
   - more V4L2 palettes supported (GBRG, GRBG, RGGB)
-  - some GUI fixes
+  - some GUI fix and cleaning
   - try to guess V4L2 frame rate if not available
   - use telescope instead of frame alignment module for fifo
   - camera simulator enhanced

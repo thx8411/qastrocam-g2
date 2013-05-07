@@ -39,7 +39,7 @@ private:
 public:
    FrameId(QCamTrans* cam);
    bool transform(const QCamFrame in, QCamFrame & out);
-   QString label() const {return("Output");}
+   QString label() const {return("Pre-process");}
    QWidget * allocGui(QWidget * parent) const {
       return new Widget(parent,this);
    }

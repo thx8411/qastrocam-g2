@@ -223,13 +223,14 @@ void QCamAutoGuidageSimple::setCenter(bool center) {
    }
 }
 
-QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
-   QWidget * mainBox = QCamAutoGuidage::buildGUI(parent);
+QWidget* QCamAutoGuidageSimple::buildGUI(QWidget* parent) {
+   QWidget* mainBox=QCamAutoGuidage::buildGUI(parent);
+   mainBox->setWindowTitle("Auto Guiding");
 
-   QCamHBox * buttons=new QCamHBox(mainBox);
+   QCamHBox* buttons=new QCamHBox(mainBox);
 
    // RA inversion checkbutton
-   QCheckBox * swapEWb = new QCheckBox(tr("swap E/W"),buttons);
+   QCheckBox* swapEWb=new QCheckBox(tr("swap E/W"),buttons);
    if(settings.haveKey("GUIDE_RA_INVERSION")) {
       if(QString(settings.getKey("GUIDE_RA_INVERSION"))=="yes") {
          swapEWb->setChecked(true);
@@ -239,7 +240,7 @@ QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    connect(swapEWb,SIGNAL(toggled(bool)),this,SLOT(swapEW(bool)));
 
    // DEC inversion checkbutton
-   QCheckBox* swapNSb = new QCheckBox(tr("swap N/S"),buttons);
+   QCheckBox* swapNSb=new QCheckBox(tr("swap N/S"),buttons);
    if(settings.haveKey("GUIDE_DEC_INVERSION")) {
       if(QString(settings.getKey("GUIDE_DEC_INVERSION"))=="yes") {
          swapNSb->setChecked(true);
@@ -249,7 +250,7 @@ QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    connect(swapNSb,SIGNAL(toggled(bool)),this,SLOT(swapNS(bool)));
 
    // center mode checkbox
-   QCheckBox* centerb = new QCheckBox(tr("Center"),buttons);
+   QCheckBox* centerb=new QCheckBox(tr("Center"),buttons);
    if(settings.haveKey("GUIDE_CENTER")) {
       if(QString(settings.getKey("GUIDE_CENTER"))=="yes") {
          centerb->setChecked(true);
@@ -258,14 +259,14 @@ QWidget * QCamAutoGuidageSimple::buildGUI(QWidget *parent) {
    }
    connect(centerb,SIGNAL(toggled(bool)),this,SLOT(setCenter(bool)));
 
-   TrackingControl * trAlt = new TrackingControl(tr("DEC"),mainBox);
+   TrackingControl* trAlt=new TrackingControl(tr("DEC"),mainBox);
    connect(this,SIGNAL(shiftAlt(double)),trAlt,SLOT(setShift(double)));
    connect(trAlt,SIGNAL(minChanged(double)),this,SLOT(setAltMinShift(double)));
    connect(trAlt,SIGNAL(maxChanged(double)),this,SLOT(setAltMaxShift(double)));
    connect(this,SIGNAL(altMove(MoveDir)),trAlt,SLOT(setMoveDir(MoveDir)));
    trAlt->init();
 
-   TrackingControl * trAsc = new TrackingControl(tr("RA"),mainBox);
+   TrackingControl* trAsc=new TrackingControl(tr("RA"),mainBox);
    connect(this,SIGNAL(shiftAsc(double)),trAsc,SLOT(setShift(double)));
    connect(trAsc,SIGNAL(minChanged(double)),this,SLOT(setAscMinShift(double)));
    connect(trAsc,SIGNAL(maxChanged(double)),this,SLOT(setAscMaxShift(double)));

@@ -86,7 +86,7 @@ protected:
    unsigned char * U() { return (mode_!=YuvFrame)?UVGreyBuff():uFrame_;}
    unsigned char * V() { return (mode_!=YuvFrame)?UVGreyBuff():vFrame_;}
 
-   // added to avid all these messy consts...
+   // added to avoid all these messy consts...
    unsigned char * Yfree() const { return yFrame_; }
    int sizeXfree() const { return size_.width(); }
    int sizeYfree() const { return size_.height(); }
