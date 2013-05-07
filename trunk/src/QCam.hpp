@@ -42,7 +42,6 @@ MA  02110-1301, USA.
 class QWidget;
 class QPushButton;
 class QImage;
-class QLabel;
 class QCamComboBox;
 class QLCDNumber;
 class QLineEdit;
@@ -65,21 +64,21 @@ using namespace std;
 class QCam : public QObject {
    Q_OBJECT
 public:
-   QCam();
+   QCam(char* name=NULL);
    /** return the frame in yuv 420P format.
        it is the native format used by all algoithms.
    */
    virtual QCamFrame yuvFrame() const = 0;
    /** return the size of the current frame. */
-   virtual const QSize & size() const =0;
+   virtual const QSize& size() const =0;
    /** try to resize the current frame.
        it can faile. size() must be called to know the real
        new size. */
-   virtual void resize(const QSize & s)=0;
+   virtual void resize(const QSize& s)=0;
    /** return an array of supported size of th capture window.
        The las entry of the table must be a null size (=QSize(0,0)).
        A minimal empty emplementation is given for no resizable QCam */
-   virtual const QSize * getAllowedSize() const =0;
+   virtual const QSize* getAllowedSize() const =0;
    virtual ~QCam();
    int getY(int x, int y) const {
       return yuvFrame().Y()[x+size().width()*y];
@@ -111,11 +110,12 @@ public:
    /** get reference on properties */
    const map<string,string> & getProperties() const;
    /** build the GUI */
-   virtual QWidget* buildGUI(QWidget * parent);
+   virtual QWidget* buildGUI(QWidget* parent);
    /** indicate the GUI have been build */
    bool guiBuild() const { return remoteCTRL_ != NULL; }
-   QWidget * gui() { return remoteCTRL_;}
+   QWidget* gui() { return remoteCTRL_;}
    const QString & label() const;
+   void label(QString label);
    /** write the properties associated to the camera */
    void writeProperties(const string & fileName) const;
    /** save the current frame with the current selected format */
@@ -138,7 +138,7 @@ public slots:
    void releaseDisplay();
 protected:
    // resizing mode
-   QCamComboBox * cropCombo;
+   QCamComboBox* cropCombo;
    QLabel* cropLabel;
    int croppingMode;
    /** Must be called when a new YUV frame is
@@ -146,7 +146,6 @@ protected:
        from YUV to QImage.
    */
    void newFrameAvaible();
-   void label(QString label);
    string getFileName() const;
    /** when called, will set the date of the frame to current date */
    void setTime();
@@ -159,35 +158,35 @@ private:
    bool hideButtons_;
    bool hideFile_;
    //
-   QWidget * remoteCTRL_;
+   QWidget* remoteCTRL_;
    void resetCaptureDir() const;
    mutable string seqenceFileName_;
    mutable bool doCapture_;
    mutable bool capturePaused_;
    string captureFile_;
    const char* getSaveFormat() const;
-   const char ** fileFormatList_;
+   const char** fileFormatList_;
    int fileFormatCurrent_;
    int maxCaptureInSequence_;
-   QGridBox * buttonBox_;
-   QPushButton * displayFramesButton_;
-   QCamDisplay * displayWindow_;
-   QPushButton * displayHistogramButton_;
-   CamHistogram * displayHistogramWindow_;
-   QDirectoryChooser * dirChooser_;
-   QCamComboBox * imgFormatBox_;
-   QCamComboBox * sizeCombo;
-   QPushButton * snapshot_;
-   QPushButton * pauseCapture_;
-   QPushButton * capture_;
-   QLCDNumber * capturedFrame_;
-   QLineEdit * fileNameW_;
-   QLineEdit * maxCaptureInSequenceW_;
-   QCamComboBox * periodicCaptureW_;
+   QGridBox* buttonBox_;
+   QPushButton* displayFramesButton_;
+   QCamDisplay* displayWindow_;
+   QPushButton* displayHistogramButton_;
+   CamHistogram* displayHistogramWindow_;
+   QDirectoryChooser* dirChooser_;
+   QCamComboBox* imgFormatBox_;
+   QCamComboBox* sizeCombo;
+   QPushButton* snapshot_;
+   QPushButton* pauseCapture_;
+   QPushButton* capture_;
+   QLCDNumber* capturedFrame_;
+   QLineEdit* fileNameW_;
+   QLineEdit* maxCaptureInSequenceW_;
+   QCamComboBox* periodicCaptureW_;
    int timebetweenCapture_;
-   QLineEdit * timebetweenCaptureW_;
-   QTimer * periodicCaptureT_;
-   QCamHBox * buttons_;
+   QLineEdit* timebetweenCaptureW_;
+   QTimer* periodicCaptureT_;
+   QCamHBox* buttons_;
    mutable string oldFileName_;
    mutable int fileSeqenceNumber_;
    string directory_;

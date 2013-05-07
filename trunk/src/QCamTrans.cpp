@@ -32,6 +32,7 @@ QCamTrans::QCamTrans():
    algoWidget_(NULL) {
    mode_=Off;
    hideMode_=false;
+   //label("None");
 }
 
 void QCamTrans::connectCam(QCam & theCam) {
@@ -41,7 +42,6 @@ void QCamTrans::connectCam(QCam & theCam) {
    cam_=&theCam;
    connect(cam_,SIGNAL(newFrame()),this,SLOT(transNewFrame()));
    mode_=algo_?On:Copy;
-   label("None");
 }
 
 void QCamTrans::disconnectCam() {
