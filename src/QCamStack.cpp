@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 
 
 QCamStack::QCamStack() {
-   label_=QString("Pre-Process");
+   label_=QString("Pre-process");
    camIndex=0;
 }
 

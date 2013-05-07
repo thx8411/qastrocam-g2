@@ -50,7 +50,8 @@ QTelescope::QTelescope() {
 
 void QTelescope::buildGUI(QWidget * parent) {
    QIcon* tmpIcon;
-   mainWidget_=new QCamVGroupBox("Telescope CTRL",parent);
+   mainWidget_=new QCamVGroupBox("Mount CTRL",parent);
+   mainWidget_->setWindowTitle("Telescope control");
 
    QCamUtilities::registerWidget(mainWidget_);
 

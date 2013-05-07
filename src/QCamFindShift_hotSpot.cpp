@@ -208,30 +208,30 @@ bool QCamFindShift_hotSpot::findShift(ShiftInfo & shift) {
    }
 }
 
-QWidget * QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
+QWidget* QCamFindShift_hotSpot::buildGUI(QWidget *parent) {
    mainBox_= new QCamVGroupBox("Hot Spot",parent);
 
    QCamUtilities::registerWidget(mainBox_);
 
    QCamUtilities::setQastrocamIcon(mainBox_);
-   QCamHBox * hbox=new QCamHBox(mainBox_);
+   QCamHBox* hbox=new QCamHBox(mainBox_);
    dispImgCenter_ = new QFrameDisplay(hbox,"center");
-   QCamVBox * vbox = new QCamVBox (hbox);
+   QCamVBox* vbox = new QCamVBox (hbox);
    seuilSlider_=new QCamSlider("Tresh",false,vbox,0,255,false,false);
    connect(seuilSlider_,SIGNAL(valueChange(int)),this,SLOT(setSeuil(int)));
    connect(this,SIGNAL(seuilChanged(int)),seuilSlider_,SLOT(setValue(int)));
 
-   QCamHBox * hbox2 = new QCamHBox(vbox);
-   QCheckBox * autoSeuil = new QCheckBox(tr("auto-tresh"),hbox2);
+   QCamHBox* hbox2 = new QCamHBox(vbox);
+   QCheckBox* autoSeuil = new QCheckBox(tr("auto-tresh"),hbox2);
    connect(autoSeuil,SIGNAL(toggled(bool)),this,SLOT(setAutoSeuil(bool)));
    connect(this,SIGNAL(autoSeuilChanged(bool)),autoSeuil,SLOT(setChecked(bool)));
    autoSeuil->setToolTip(tr("automaticaly calculate 'optimal' tresh"));
    emit(autoSeuilChanged(autoSeuil_));
 
-   QLabel * binningLabel=new QLabel("Binning:",hbox2);
+   QLabel* binningLabel=new QLabel("Binning:",hbox2);
    int binningValues[5]={1,2,3,4,5};
-   const char * binningLabels[5]={"1x1","2x2","3x3","4x4","5x5"};
-   QCamComboBox * binning =new QCamComboBox("Binning",hbox2,4,binningValues,binningLabels);
+   const char* binningLabels[5]={"1x1","2x2","3x3","4x4","5x5"};
+   QCamComboBox* binning =new QCamComboBox("Binning",hbox2,4,binningValues,binningLabels);
    connect(binning,SIGNAL(change(int)),this,SLOT(setBinning(int)));
    binning->setToolTip(tr("seting a high binning will speedup\nthe processing with big box size"));
 

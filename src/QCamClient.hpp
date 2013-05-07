@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -41,7 +41,7 @@ public:
    QCamClient(QCam & cam);
    virtual ~QCamClient() {};
    /** to connect a new camera. */
-   void connectCam(QCam & cam);
+   virtual void connectCam(QCam & cam);
    /** disconnect the current camera */
    void disconnectCam();
    /** stop the delivery of newFrame signal.*/
@@ -55,11 +55,11 @@ public:
    bool isActive() const { return isConnected() && !paused_;}
    /** return the connected QCam object.
        Must not be called if no QCam object is connected. */
-   QCam & cam() const {return *cam_;}
+   QCam& cam() const {return *cam_;}
 
    /** build the GUI related tgo the camera client.
        buildGUI of base class should also be called */
-   QWidget * buildGUI(QWidget *parent);
+   QWidget* buildGUI(QWidget *parent);
 
    // GUI stuff
    QPushButton* pauseCapture_;
@@ -74,13 +74,17 @@ protected:
    virtual void camDisconnected(){};
    /** is called whne the current cam is deconnected. */
    virtual void camConnected(){};
+   // hidde the pause button
+   void hidePause(bool b);
 protected slots:
    /** Slot to implement.
        is is called for every new frame.
        Use cam().yuvFrame() to acces the to frame.*/
    virtual void newFrame()=0;
 private:
-   QCam * cam_;
+   QCam* cam_;
    bool paused_;
+   bool pauseHidden_;
 };
+
 #endif

@@ -57,9 +57,8 @@ bool QCamDisplay::SDL_on_=false;
 // class QCamDisplay
 //
 
-QCamDisplay::QCamDisplay(QWidget * parent) :
-   QCamClient(),
-   yuvFrame_() {
+QCamDisplay::QCamDisplay(QWidget* parent) : QCamClient(), yuvFrame_() {
+   mainWidget_=NULL;
    commonInit(parent);
 }
 
@@ -71,9 +70,8 @@ QCamDisplay::~QCamDisplay() {
    delete widget_;
 }
 
-QCamDisplay::QCamDisplay(QCam &theCam,QWidget * parent) :
-   QCamClient(theCam),
-   yuvFrame_() {
+QCamDisplay::QCamDisplay(QCam &theCam,QWidget* parent) : QCamClient(theCam), yuvFrame_() {
+   mainWidget_=NULL;
    commonInit(parent);
    setWindowTitle();
 }
@@ -89,46 +87,46 @@ void QCamDisplay::setWindowTitle() {
       labelPrefix="QT ";
    }
 
-   if (isConnected() && view_) {
-      view_->setWindowTitle(labelPrefix+cam().label());
+   if (isConnected() && mainWidget_) {
+      mainWidget_->setWindowTitle(labelPrefix+cam().label());
    }
 }
 
-void QCamDisplay::commonInit(QWidget * parent) {
+void QCamDisplay::commonInit(QWidget* parent) {
    mainWidget_=new QCamVBox(parent);
 
-   buttonsContainer_ = new QCamHBox(mainWidget_);
+   buttonsContainer_=new QCamHBox(mainWidget_);
 
    int displayValues[]={Color,Gray,Negate,FalseColor};
-   const char * displayValuesLabel[]={"RGB","Gray","Negated", "False Color"};
-   displayModeButton_ = new QCamComboBox("Display type",buttonsContainer_,4,
+   const char* displayValuesLabel[]={"RGB","Gray","Negated", "False Color"};
+   displayModeButton_=new QCamComboBox("Display type",buttonsContainer_,4,
                                          displayValues,
                                          displayValuesLabel);
    connect(displayModeButton_,SIGNAL(change(int)),this,SLOT(setDisplayMode(int)));
 
-   crossLabel_= new QLabel("Reticle : ",buttonsContainer_);
+   crossLabel_=new QLabel("Reticle : ",buttonsContainer_);
    crossLabel_->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
    int crossValues[]={None,Cross,Circle};
-   const char * crossValuesLabel[]={"none","cross","circle"};
-   crossButton_ = new QCamComboBox("Cross type",buttonsContainer_,3,
+   const char* crossValuesLabel[]={"none","cross","circle"};
+   crossButton_=new QCamComboBox("Cross type",buttonsContainer_,3,
                                    crossValues,crossValuesLabel);
    connect(crossButton_,SIGNAL(change(int)),this,SLOT(setCross(int)));
 
-   crossLumSlider_ = new QCamSlider("Lum.",false,mainWidget_,10,255,false,false);
+   crossLumSlider_=new QCamSlider("Lum.",false,mainWidget_,10,255,false,false);
    crossLumSlider_->setToolTip("set the brightness of the reticule");
    crossLumSlider_->setEnabled(false);
 #if HAVE_SDL_H
    if (!SDL_on_ && QCamUtilities::useSDL()) {
       SDL_on_=true;
       use_SDL_=true;
-      widget_= new QCamDisplayImplSDL(*this,mainWidget_);
+      widget_=new QCamDisplayImplSDL(*this,mainWidget_);
    } else {
-      widget_= new QCamDisplayImplQT(*this,mainWidget_);
+      widget_=new QCamDisplayImplQT(*this,mainWidget_);
       use_SDL_=false;
    }
 #else
-   widget_= new QCamDisplayImplQT(*this,mainWidget_);
+   widget_=new QCamDisplayImplQT(*this,mainWidget_);
 #endif
    widget_->setToolTip("Double click to set center of the reticule");
    connect(crossLumSlider_,SIGNAL(valueChange(int)),this,SLOT(setCrossLum(int)));
@@ -138,7 +136,7 @@ void QCamDisplay::commonInit(QWidget * parent) {
    widget_->setSizePolicy(policy);
 
    // scroll area
-   view_ = new QScrollArea(mainWidget_);
+   view_ =new QScrollArea(mainWidget_);
    // frames aren't resisable
    view_->setWidgetResizable(FALSE);
    // center the frame
@@ -215,7 +213,7 @@ void QCamDisplay::camConnected() {
    setWindowTitle();
 }
 
-QWidget & QCamDisplay::widget() {
+QWidget& QCamDisplay::widget() {
    return *mainWidget_;
 }
 

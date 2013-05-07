@@ -1054,8 +1054,8 @@ void QCamV4L2::refreshPictureSettings() {
    if (options_ & haveWhiteness) emit whitenessChange(getWhiteness());
 }
 
-QWidget * QCamV4L2::buildGUI(QWidget * parent) {
-   QWidget * remoteCTRL=QCam::buildGUI(parent);
+QWidget* QCamV4L2::buildGUI(QWidget* parent) {
+   QWidget* remoteCTRL=QCam::buildGUI(parent);
 
    // source box
    infoBox=new QCamHBox(sourceGroup);
