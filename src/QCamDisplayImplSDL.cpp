@@ -48,7 +48,7 @@ MA  02110-1301, USA.
 //
 
 // sets a pixel
-void SDL_DrawPixel(SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B) {
+void SDL_DrawPixel(SDL_Surface* screen, int x, int y, Uint8 R, Uint8 G, Uint8 B) {
    Uint32 color = SDL_MapRGB(screen->format, R, G, B);
 
    if(x>=0 && x < screen->w && y >=0 && y < screen->h) {
@@ -86,8 +86,62 @@ void SDL_DrawPixel(SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B)
    }
 }
 
+// draws a line
+void SDL_DrawLine(SDL_Surface* surface, int x1, int y1, int x2, int y2, Uint8 R, Uint8 G, Uint8 B) {
+   int incx, incy, inc1, inc2;
+   int i, e, x, y;
+
+   int dx = x2 - x1;
+   int dy = y2 - y1;
+
+   if(dx < 0)
+      dx = -dx;
+   if(dy < 0)
+      dy = -dy;
+   incx = 1;
+   if(x2 < x1)
+      incx = -1;
+   incy = 1;
+   if(y2 < y1)
+      incy = -1;
+   x=x1;
+   y=y1;
+
+   if(dx > dy) {
+      SDL_DrawPixel(surface, x, y, R, G, B);
+      e = 2*dy - dx;
+      inc1 = 2*( dy -dx);
+      inc2 = 2*dy;
+      for(i = 0; i < dx; i++) {
+         if(e >= 0) {
+            y += incy;
+            e += inc1;
+         }
+         else
+            e += inc2;
+         x += incx;
+         SDL_DrawPixel(surface, x, y, R, G, B);
+      }
+   } else {
+      SDL_DrawPixel(surface, x, y, R, G, B);
+      e = 2*dx - dy;
+      inc1 = 2*( dx - dy);
+      inc2 = 2*dx;
+      for(i = 0; i < dy; i++) {
+        if(e >= 0) {
+           x += incx;
+           e += inc1;
+        }
+        else
+           e += inc2;
+        y += incy;
+        SDL_DrawPixel(surface, x, y, R, G, B);
+    }
+  }
+}
+
 // draws a circle
-void SDL_DrawCircle(SDL_Surface *surface, int n_cx, int n_cy, int radius, Uint8 R, Uint8 G, Uint8 B) {
+void SDL_DrawCircle(SDL_Surface* surface, int n_cx, int n_cy, int radius, Uint8 R, Uint8 G, Uint8 B) {
 
    // if the first pixel in the screen is represented by (0,0) (which is in sdl)
    // remember that the beginning of the circle is not in the middle of the pixel
@@ -373,9 +427,9 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
    }
 
    // small annotation (King method)
-   if (camClient_.cam().annotationEnabled_) {
-      int x=(int)round(camClient_.cam().annotationPos_.x());
-      int y=(int)round(camClient_.cam().annotationPos_.y());
+   if (camClient_.cam().annotated()) {
+      int x=(int)round(camClient_.cam().annotationPos().x());
+      int y=(int)round(camClient_.cam().annotationPos().y());
       if (x<0) x=4;
       else if (x>=camClient_.cam().size().width()) {
          x=camClient_.cam().size().width()-1-4;
@@ -388,6 +442,9 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
          SDL_DrawPixel(screen_, i, y, 0x00, 0xFF, 0x00);
       for(int j=y-10;j<y+10;j++)
          SDL_DrawPixel(screen_, x, j, 0x00, 0xFF, 0x00);
+      SDL_DrawLine(screen_,(int)round(camClient_.cam().annotationOri().x()),
+                   (int)round(camClient_.cam().annotationOri().y()),
+                   x,y, 0x00, 0xFF, 0x00);
    }
 
    // unlock the surface

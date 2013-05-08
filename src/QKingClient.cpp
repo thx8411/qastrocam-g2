@@ -28,15 +28,19 @@ MA  02110-1301, USA.
 
 
 QKingClient::QKingClient() {
-   //
-   //
-   //
-
+   // init
    statusBar_=NULL;
    hidePause(true);
+
+   // timer init
+   kingTimer_=new QTimer();
+   kingTimer_->setSingleShot(false);
+   kingTimer_->setInterval(1000);
+   connect(kingTimer_,SIGNAL(timeout()),this,SLOT(kingRefresh()));
 }
 
 QKingClient::~QKingClient() {
+   delete kingTimer_;
    kingCam_->disconnectCam();
    delete(kingCam_);
 }
@@ -78,6 +82,7 @@ QWidget* QKingClient::buildGUI(QWidget* parent) {
    return w;
 }
 
+// start slot
 void QKingClient::kingStart() {
    // update GUI
    if(kingStartButton)
@@ -89,15 +94,22 @@ void QKingClient::kingStart() {
 
    registerFirstFrame();
    firstFrameDate_=time(NULL);
+
+   kingTimer_->start();
 }
 
+// stop slot
 void QKingClient::kingStop() {
+
+   // stoptimer
+   kingTimer_->stop();
    // update GUI
    if(kingStartButton)
       kingStartButton->setDisabled(false);
    if(kingStopButton)
       kingStopButton->setDisabled(true);
 
+   // find the shift
    if(findShift(frameShift_)) {
       Vector2D correctPos;
       int dt=(time(NULL)-firstFrameDate_);
@@ -108,10 +120,17 @@ void QKingClient::kingStop() {
       double dx=frameShift_.shift().x();
       double dy=frameShift_.shift().y();
 
+      // compute the translation vector
+
+      //
+      // TO CHECK !
+      //
       if (dt != 0) {
          correctPos=Vector2D(0.5*(dx+dy*sin(angle)/(1.0-cos(angle))),
                              0.5*(dy-dx*sin(angle)/(1-cos(angle))));
       }
+
+      // refresh display
       if (statusBar_) {
          QString stat;
          stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
@@ -119,19 +138,26 @@ void QKingClient::kingStop() {
                       dt,dx,dy,correctPos.x(),correctPos.y());
          statusBar_->setText(stat);
       }
-      kingCam_->annotate(firstHotSpot_-correctPos);
+
+      // annotate the cam
+      kingCam_->annotate(firstHotSpot_+Vector2D(dx,dy),firstHotSpot_-correctPos);
    }
 }
 
+// reset slot
 void QKingClient::kingReset() {
+   // stop timer
+   kingTimer_->stop();
    // update GUI
    if(kingStartButton)
       kingStartButton->setDisabled(false);
    if(kingStopButton)
       kingStopButton->setDisabled(true);
 
+   // reset FindShift
    reset();
 
+   // refresh display
    if (statusBar_) {
          QString stat;
          stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
@@ -139,5 +165,18 @@ void QKingClient::kingReset() {
                       0,0.0,0.0,0.0,0.0);
          statusBar_->setText(stat);
    }
+
+   // remove annotations
    kingCam_->annotate(false);
+}
+
+// timedtask
+void QKingClient::kingRefresh() {
+   int dt=(time(NULL)-firstFrameDate_);
+   // refresh display
+   QString stat;
+   stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
+                   (int)firstHotSpot_.x(),(int)firstHotSpot_.y(),
+                   dt,0.0,0.0,0.0,0.0);
+   statusBar_->setText(stat);
 }

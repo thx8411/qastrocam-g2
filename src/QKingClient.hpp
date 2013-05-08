@@ -27,6 +27,7 @@ MA  02110-1301, USA.
 
 #include <Qt/qlabel.h>
 #include <Qt/qpushbutton.h>
+#include <Qt/qtimer.h>
 
 #include "QCamTrans.hpp"
 #include "QCamFindShift_hotSpot.hpp"
@@ -53,6 +54,9 @@ private:
    QPushButton* kingStopButton;
    QLabel* statusBar_;
    QCamTrans* kingCam_;
+   QTimer* kingTimer_;
+private slots:
+   void kingRefresh();
 };
 
 #endif
