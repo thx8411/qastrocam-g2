@@ -61,19 +61,18 @@ QCamFindShift_hotSpot::QCamFindShift_hotSpot(QTelescope* scope) : QCamFindShift(
    dispImgCenter_=NULL;
 }
 
-double QCamFindShift_hotSpot::computeBarycenter(const Vector2D & from,
-                                                int seuil,int step,
-                                                int size,
-                                                Vector2D & bary,
-                                                double maximalCoverage) const {
-   const unsigned char * img=cam().yuvFrame().Y();
+double QCamFindShift_hotSpot::computeBarycenter(const Vector2D & from,int seuil,int step,
+                           int size,Vector2D& bary,double maximalCoverage) const {
+
+   const unsigned char* img=cam().yuvFrame().Y();
    double imgSum=0;
    int pixelFound=0;
    int shift=size/2;
-   int minX=(int)(from.x()-shift),
-       minY=(int)(from.y()-shift),
-       maxX=(int)(from.x()+shift),
-       maxY=(int)(from.y()+shift);
+   int minX=(int)(from.x()-shift);
+   int minY=(int)(from.y()-shift);
+   int maxX=(int)(from.x()+shift);
+   int maxY=(int)(from.y()+shift);
+
    if (minX<0) minX=0;
    else if (maxX>cam().size().width()) maxX=cam().size().width();
    if (minY<0) minY=0;
@@ -102,7 +101,7 @@ double QCamFindShift_hotSpot::computeBarycenter(const Vector2D & from,
 }
 
 int QCamFindShift_hotSpot::computeSeuil() const {
-   const unsigned char * img=cam().yuvFrame().Y();
+   const unsigned char* img=cam().yuvFrame().Y();
    int max=0, average=0;
    for(int j=cam().size().height()-1;
        j>=0;--j) {

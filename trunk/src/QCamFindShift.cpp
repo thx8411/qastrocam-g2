@@ -40,7 +40,8 @@ void QCamFindShift::reset() {
 
    cout << "reset tracker"<<endl;
    firstFrameRegistered_=false;
-   if (scope_!=NULL) scope_->Reset();
+   if(scope_!=NULL)
+      scope_->Reset();
 }
 
 void QCamFindShift::camDisconnected() {
@@ -88,6 +89,6 @@ QCamFrame QCamFindShift::image() const {
    return img;
 }
 
-QWidget* QCamFindShift::buildGUI(QWidget *parent) {
+QWidget* QCamFindShift::buildGUI(QWidget* parent) {
    return QCamClient::buildGUI(parent);
 }

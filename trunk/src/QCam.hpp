@@ -122,6 +122,7 @@ public:
    bool saveFrame(const string& file) const;
    /** put a small annotation on the frame */
    void annotate(const Vector2D & pos) const;
+   void annotate(bool b=true) const;
    // hide gui
    void hideButtons(bool v) { hideButtons_=v; }
    void hideFile(bool v) { hideFile_=v; }

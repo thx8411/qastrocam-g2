@@ -22,84 +22,122 @@ MA  02110-1301, USA.
 #include <math.h>
 #include <time.h>
 
-#include <Qt/qpushbutton.h>
-#include <Qt/qstatusbar.h>
-
+#include "QCamHBox.hpp"
 #include "QKingClient.hpp"
-#include "QCam.hpp"
 #include "QCamUtilities.hpp"
 
 
 QKingClient::QKingClient() {
-   timeFirstFrame_=0;
+   //
+   //
+   //
+
    statusBar_=NULL;
+   hidePause(true);
 }
 
-bool QKingClient::registerFirstFrame() {
-   if (QCamFindShift_hotSpot::registerFirstFrame()) {
-      timeFirstFrame_=time(NULL);
-      return true;
-   } else {
-      return false;
-   }
-}
-
-bool QKingClient::findShift(ShiftInfo & shift) {
-   if (QCamFindShift_hotSpot::findShift(shift)) {
-
-      // calculate misalignment
-      /*
-        X= x1 + dx/2 - dy/(C.dt)
-        Y= y1 + dx/(C.dt)+dy/2
-      */
-
-      Vector2D rightPos;
-      int dt=(time(NULL)-timeFirstFrame_);
-
-      static const double C=0.000072722;
-      double dx=round(shift.shift().x()*10.0)/10.0;
-      double dy=round(shift.shift().y()*10.0)/10.0;
-
-      if (dt != 0) {
-         rightPos+=Vector2D((dx/2.0)-dy/(C*dt),
-                           dx/(C*dt)+(dy/2.0));
-      }
-      if (statusBar_) {
-         QString stat;
-         stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
-                      (int)firstHotSpot_.x(),(int)firstHotSpot_.y(),
-                      dt,dx,dy,rightPos.x(),rightPos.y());
-         statusBar_->showMessage(stat);
-      }
-      cam().annotate(firstHotSpot_+rightPos);
-      return true;
-   } else {
-      return false;
-   }
+QKingClient::~QKingClient() {
+   kingCam_->disconnectCam();
+   delete(kingCam_);
 }
 
 QWidget* QKingClient::buildGUI(QWidget* parent) {
    QWidget* w=QCamFindShift_hotSpot::buildGUI(parent);
+   w->setWindowTitle("King module");
 
    QCamUtilities::registerWidget(w);
 
-   QPushButton* resetCenter = new QPushButton("reset",w);
-   connect(resetCenter,SIGNAL(pressed()),this,SLOT(kingReset()));
+   QCamHBox* kingButtons=new QCamHBox(w);
 
-   statusBar_=new QStatusBar(w);
+   kingStartButton=new QPushButton("start",kingButtons);
+   connect(kingStartButton,SIGNAL(pressed()),this,SLOT(kingStart()));
+
+   kingStopButton=new QPushButton("stop",kingButtons);
+   kingStopButton->setDisabled(true);
+   connect(kingStopButton,SIGNAL(pressed()),this,SLOT(kingStop()));
+
+   QPushButton* kingResetButton=new QPushButton("reset",kingButtons);
+   connect(kingResetButton,SIGNAL(pressed()),this,SLOT(kingReset()));
+
+   statusBar_=new QLabel(w);
+
+   QString stat;
+   stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
+                (int)firstHotSpot_.x(),(int)firstHotSpot_.y(),
+                 0,0.0,0.0,0.0,0.0);
+
+   kingCam_=new QCamTrans();
+   kingCam_->label("King display");
+   kingCam_->connectCam(cam());
+   kingCam_->hideMode(true);
+   kingCam_->hideFile(true);
+   kingCam_->buildGUI(w);
 
    kingReset();
 
    return w;
 }
 
-void QKingClient::kingReset() {
+void QKingClient::kingStart() {
+   // update GUI
+   if(kingStartButton)
+      kingStartButton->setDisabled(true);
+   if(kingStopButton)
+      kingStopButton->setDisabled(false);
+
    reset();
+
+   registerFirstFrame();
+   firstFrameDate_=time(NULL);
+}
+
+void QKingClient::kingStop() {
+   // update GUI
+   if(kingStartButton)
+      kingStartButton->setDisabled(false);
+   if(kingStopButton)
+      kingStopButton->setDisabled(true);
+
+   if(findShift(frameShift_)) {
+      Vector2D correctPos;
+      int dt=(time(NULL)-firstFrameDate_);
+
+      // sideral speed in rad/s
+      double sideralSpeed=0.0000727;
+      double angle=sideralSpeed*dt;
+      double dx=frameShift_.shift().x();
+      double dy=frameShift_.shift().y();
+
+      if (dt != 0) {
+         correctPos=Vector2D(0.5*(dx+dy*sin(angle)/(1.0-cos(angle))),
+                             0.5*(dy-dx*sin(angle)/(1-cos(angle))));
+      }
+      if (statusBar_) {
+         QString stat;
+         stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
+                      (int)firstHotSpot_.x(),(int)firstHotSpot_.y(),
+                      dt,dx,dy,correctPos.x(),correctPos.y());
+         statusBar_->setText(stat);
+      }
+      kingCam_->annotate(firstHotSpot_-correctPos);
+   }
+}
+
+void QKingClient::kingReset() {
+   // update GUI
+   if(kingStartButton)
+      kingStartButton->setDisabled(false);
+   if(kingStopButton)
+      kingStopButton->setDisabled(true);
+
+   reset();
+
    if (statusBar_) {
          QString stat;
          stat.sprintf("Orig:%d,%d time=%d shift=%1.1f,%1.1f move=%1.1f,%1.1f",
                       (int)firstHotSpot_.x(),(int)firstHotSpot_.y(),
                       0,0.0,0.0,0.0,0.0);
-         statusBar_->showMessage(stat);
+         statusBar_->setText(stat);
    }
+   kingCam_->annotate(false);
 }
