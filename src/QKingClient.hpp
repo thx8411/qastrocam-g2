@@ -25,8 +25,11 @@ MA  02110-1301, USA.
 
 #include <time.h>
 
-#include "QCamFindShift_hotSpot.hpp"
+#include <Qt/qlabel.h>
+#include <Qt/qpushbutton.h>
 
+#include "QCamTrans.hpp"
+#include "QCamFindShift_hotSpot.hpp"
 
 class QStatusBar;
 
@@ -34,16 +37,22 @@ class QKingClient : public QCamFindShift_hotSpot {
    Q_OBJECT
 public:
    QKingClient();
+   ~QKingClient();
    QWidget* buildGUI(QWidget *parent);
-protected:
-   bool registerFirstFrame();
-   bool findShift(ShiftInfo & shift);
 protected slots:
+   void kingStart();
+   void kingStop();
    void kingReset();
 private:
-   /** time in second of the firts frame */
-   time_t timeFirstFrame_;
-   QStatusBar* statusBar_;
+   // time in second of the firts frame
+   time_t firstFrameDate_;
+   // positions and shift
+   ShiftInfo frameShift_;
+   // GUI
+   QPushButton* kingStartButton;
+   QPushButton* kingStopButton;
+   QLabel* statusBar_;
+   QCamTrans* kingCam_;
 };
 
 #endif

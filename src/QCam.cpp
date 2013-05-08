@@ -67,6 +67,7 @@ MA  02110-1301, USA.
 extern settingsBackup settings;
 
 QCam::QCam(char* name) {
+   annotationPos_=Vector2D(0,0);
    if(name)
       label(QString(name));
    doCapture_=false;
@@ -745,8 +746,15 @@ void QCam::setTime() {
 }
 
 void QCam::annotate(const Vector2D & pos) const {
-   annotationEnabled_=true;
-   annotationPos_=pos;
+      annotationEnabled_=true;
+      annotationPos_=pos;
+}
+
+void QCam::annotate(bool b) const {
+   if(b)
+      annotationEnabled_=true;
+   else
+      annotationEnabled_=false;
 }
 
 void QCam::setSizeFromAllowed(int index) {
