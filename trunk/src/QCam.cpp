@@ -68,6 +68,7 @@ extern settingsBackup settings;
 
 QCam::QCam(char* name) {
    annotationPos_=Vector2D(0,0);
+   annotationOri_=Vector2D(0,0);
    if(name)
       label(QString(name));
    doCapture_=false;
@@ -745,16 +746,14 @@ void QCam::setTime() {
    setProperty("TIME",buff);
 }
 
-void QCam::annotate(const Vector2D & pos) const {
+void QCam::annotate(const Vector2D& ori,const Vector2D & pos) {
       annotationEnabled_=true;
       annotationPos_=pos;
+      annotationOri_=ori;
 }
 
-void QCam::annotate(bool b) const {
-   if(b)
-      annotationEnabled_=true;
-   else
-      annotationEnabled_=false;
+void QCam::annotate(bool b) {
+   annotationEnabled_=b;
 }
 
 void QCam::setSizeFromAllowed(int index) {

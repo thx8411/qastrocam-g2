@@ -372,11 +372,11 @@ void QCamDisplayImpl::annotate(QPainter & painter) {
       break;
    }
 
-   if (camClient_.cam().annotationEnabled_) {
+   if (camClient_.cam().annotated()) {
       pen_->setColor(QColor(0,0xFF,0));
       painter.setPen(*pen_);
-      int x=(int)round(camClient_.cam().annotationPos_.x());
-      int y=(int)round(camClient_.cam().annotationPos_.y());
+      int x=(int)round(camClient_.cam().annotationPos().x());
+      int y=(int)round(camClient_.cam().annotationPos().y());
       if (x<0) x=4;
       else if (x>=camClient_.cam().size().width()) {
          x=camClient_.cam().size().width()-1-4;
@@ -387,6 +387,9 @@ void QCamDisplayImpl::annotate(QPainter & painter) {
       }
       painter.drawLine(x,y-10,x,y+10);
       painter.drawLine(x-10,y,x+10,y);
+      painter.drawLine((int)round(camClient_.cam().annotationOri().x()),
+                       (int)round(camClient_.cam().annotationOri().y()),
+                       x,y);
       pen_->setColor(QColor(QCamDisplay::defaultLum_,0,0));
    }
 }

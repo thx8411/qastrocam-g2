@@ -114,15 +114,18 @@ public:
    /** indicate the GUI have been build */
    bool guiBuild() const { return remoteCTRL_ != NULL; }
    QWidget* gui() { return remoteCTRL_;}
-   const QString & label() const;
+   const QString& label() const;
    void label(QString label);
    /** write the properties associated to the camera */
-   void writeProperties(const string & fileName) const;
+   void writeProperties(const string& fileName) const;
    /** save the current frame with the current selected format */
    bool saveFrame(const string& file) const;
    /** put a small annotation on the frame */
-   void annotate(const Vector2D & pos) const;
-   void annotate(bool b=true) const;
+   void annotate(const Vector2D& ori,const Vector2D& pos);
+   void annotate(bool b=true);
+   bool annotated() const { return(annotationEnabled_); };
+   Vector2D annotationPos() const { return(annotationPos_); };
+   Vector2D annotationOri() const { return(annotationOri_); };
    // hide gui
    void hideButtons(bool v) { hideButtons_=v; }
    void hideFile(bool v) { hideFile_=v; }
@@ -200,9 +203,10 @@ private:
    QCamMovie* movieWritterAvi_;
    QCamMovie* movieWritterAviLossless_;
 #endif
- public:
-   mutable Vector2D annotationPos_;
-   mutable bool annotationEnabled_;
+ protected:
+   Vector2D annotationPos_;
+   Vector2D annotationOri_;
+   bool annotationEnabled_;
  signals:
    void newFrame();
  private slots:
