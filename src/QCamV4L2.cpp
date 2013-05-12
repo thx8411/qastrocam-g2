@@ -1189,8 +1189,10 @@ void QCamV4L2::setPalette(int val) {
    updatePalette();
    allocBuffers();
    // updating mmap
-   if(useMmap)
+   if(useMmap) {
+      mmapRelease();
       useMmap=mmapInit();
+   }
    // setting controls back
    updatePictureSettings();
    // gui update
