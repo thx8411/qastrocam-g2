@@ -142,7 +142,7 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    // ************************************
    // opening the video device (non block)
    // ************************************
-   if (-1 == (device_=open(devpath_.c_str(),O_RDONLY | ((options_ & ioNoBlock)?O_NONBLOCK:0)))) {
+   if (-1 == (device_=open(devpath_.c_str(),O_RDWR | O_NONBLOCK,0))) {
       perror(devpath);
    }
    // ************************
@@ -1248,6 +1248,7 @@ bool QCamV4L2::mmapInit() {
       mmapRelease();
       return(false);
    }
+
    // mmap and enqueue each buffer
    for(int i=0;i<mmap_reqbuf.count;i++) {
       struct v4l2_buffer buffer;
@@ -1265,8 +1266,7 @@ bool QCamV4L2::mmapInit() {
       }
       // mmap buf
       buffers[i].length=buffer.length;
-      buffers[i].start=mmap(NULL, buffer.length, PROT_READ,MAP_SHARED,device_,buffer.m.offset);
-
+      buffers[i].start=mmap(NULL, buffer.length, PROT_READ | PROT_WRITE,MAP_SHARED, device_, buffer.m.offset);
       if(buffers[i].start==MAP_FAILED) {
          perror("mmap buf");
          cout << "Mmap mapping fails, using read/write" << endl;
