@@ -19,6 +19,7 @@
   - try to guess V4L2 frame rate if not available
   - use telescope instead of frame alignment module for fifo
   - camera simulator enhanced
+  - V4L2 mmap bug fixed
 
 4.9
 

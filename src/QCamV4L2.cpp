@@ -342,7 +342,9 @@ QCamV4L2::QCamV4L2(const char * devpath, unsigned long options /* cf QCamV4L::op
    // ********************************************
    // v4l2
    if(ioctl(device_,VIDIOC_G_STD,&_id)==-1) {
-      perror("Getting Standard");
+      // not really an error, some devices doesn't support it
+      //perror("Getting Standard");
+      cout << "Can't guess framerate unsing standard, VIDIOC_G_STD not supported for this device" << endl;
    }
    // iterate to find the used video standard
    standard.index=0;
