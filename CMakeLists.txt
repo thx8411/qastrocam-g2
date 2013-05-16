@@ -82,7 +82,7 @@ endif(NOT USB_FOUND)
 #
 # libjpeg recommended
 #
-find_package(JPEG REQUIRED)
+find_package(JPEG)
 if(NOT JPEG_FOUND)
    message(STATUS "JPEG not found, jpeg cameras won't work...")
 endif(NOT JPEG_FOUND)
