@@ -4,7 +4,7 @@
 #       under GPL v3 License       #
 ####################################  
 
-cmake_minimum_required(VERSION 2.6.8)
+cmake_minimum_required(VERSION 2.6.0)
 
 
 ####################
