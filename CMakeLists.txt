@@ -12,6 +12,11 @@ cmake_minimum_required(VERSION 2.6.0)
 ####################
 
 #
+# project name
+#
+project(qastrocam-g2)
+
+#
 # distribution detection
 #
 find_file(DEBIAN_FOUND debian_version debconf.conf PATHS /etc)
@@ -31,11 +36,6 @@ if(KERNEL_VERSION STREQUAL "2")
 else(KERNEL_VERSION STREQUAL "2")
    add_definitions("-D KERNEL_2=0")
 endif(KERNEL_VERSION STREQUAL "2")
-
-#
-# project name
-#
-project(qastrocam-g2)
 
 #
 # version
