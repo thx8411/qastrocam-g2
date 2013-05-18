@@ -121,12 +121,12 @@ const QImage & QCamFrameCommon::grayImage() const {
    if (!grayImage_) {
       static QVector<QRgb>* grayTable=NULL;
       if (grayTable == NULL) {
-         grayTable=new QVector<QRgb>(256);
+         grayTable=new QVector<QRgb>;
          for (int i=0;i<256;++i) {
             grayTable->insert(i,qRgb(i,i,i));
          }
       }
-      grayImage_=new QImage(const_cast<uchar *>(Y()),size_.width(),size_.height(),size_.width(),QImage::Format_Indexed8);
+      grayImage_=new QImage((uchar *)(Y()),size_.width(),size_.height(),size_.width(),QImage::Format_Indexed8);
       grayImage_->setColorTable(*grayTable);
    }
    return *grayImage_;
