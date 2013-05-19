@@ -24,9 +24,6 @@ MA  02110-1301, USA.
 #include <stdio.h>
 
 #include <Qt/qpushbutton.h>
-#include <Qt/qprogressbar.h>
-#include <Qt/qcheckbox.h>
-#include <Qt/qradiobutton.h>
 #include <Qt/qmessagebox.h>
 #include <Qt/qtooltip.h>
 #include <Qt/qboxlayout.h>
@@ -245,6 +242,7 @@ QCamAdd::QCamAdd(QCam* cam) :
    minYValue_=0;
    maxYValueAuto_=true;
    minYValueAuto_=true;
+   useFullStackedFrames_=false;
 #ifdef QCAM_ADD_COLOR
    maxCrValueAutoSaturated_=false;
    maxCrValue_=0;
@@ -267,7 +265,6 @@ QCamAdd::QCamAdd(QCam* cam) :
 
 QCamAdd::~QCamAdd() {
    // release buffers
-   //clear();
    free(integrationBuff_);
    delete [] frameHistory_;
 }
@@ -290,7 +287,6 @@ void QCamAdd::integration2yuv(const void * integration,
       double dInterval=funcDisplay_(maxYValue_)-funcDisplay_(minYValue_);
       double logMin=funcDisplay_(minYValue_);
       for (i=0;i<Ysize;++i) {
-         //value=(src[i]-minYValue_)*255/interval;
          if (src[i]>0) {
             value=(int)rint((funcDisplay_(src[i])-logMin)*255/dInterval);
             if (value <= 0) {
@@ -331,7 +327,6 @@ void QCamAdd::integration2yuv(const void * integration,
    if (mode_==YuvFrame) {
       uB=yuv.UforUpdate();
       for (i=0;i<Usize;++i) {
-         //value=(src[i+Ysize]-shiftCr)*128/maxCrValue;
          value=src[i+Ysize]*128/maxCrValue_;
          if (value <= -128) {
             uB[i]=0;
@@ -344,7 +339,6 @@ void QCamAdd::integration2yuv(const void * integration,
 
       vB=yuv.VforUpdate();
       for (i=0;i<Vsize;++i) {
-         //value=(src[i+Ysize+Usize]-shiftCr)*128/maxCrValue;
          value=src[i+Ysize+Usize]*128/maxCrValue_;
          if (value <= -128) {
             vB[i]=0;
@@ -480,18 +474,12 @@ QCamFrame QCamAdd::yuvFrame() const {
       }
       newIntegrationBuff_=false;
    }
-   //computedFrame_=cam_->yuvFrame();
    return computedFrame_;
 }
 
 // process a new frame
 void QCamAdd::addNewFrame() {
    addFrame(cam_->yuvFrame());
-   /*
-   if (!computedFrame_.empty()) {
-      emit (newFrame());
-   }
-   */
 }
 
 // clears buffer
@@ -540,7 +528,7 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
    if ((curSize_ != cam_->size())||(mode_!= frame.getMode())) {
       curSize_= cam_->size();
       mode_=frame.getMode();
-      allocBuff( cam_->size());
+      allocBuff(cam_->size());
       resetBufferFill();
       return;
    }
@@ -579,7 +567,6 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
          if (minYValueAuto_) {
             minYValue_=tmpMin;
          }
-         //emit(numOfBufferChange(numOfActivatedBuffers_));
          emit(maxYValueChange(maxYValue_));
          emit(minYValueChange(minYValue_));
          break;
@@ -590,17 +577,14 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
          }
          frameHistory_[curBuff_]=frame;
          averageFrame(frameHistory_[curBuff_]);
-         //emit(numOfBufferChange(numOfActivatedBuffers_));
          break;
+      // median frame
       case QCAM_ADD_MEDIAN :
-         //
          if(bufferFull) {
             removeMedianFrame(frameHistory_[curBuff_]);
          }
          frameHistory_[curBuff_]=frame;
          medianFrame(frameHistory_[curBuff_]);
-         //emit(numOfBufferChange(numOfActivatedBuffers_));
-         //
          break;
    }
 
@@ -614,7 +598,18 @@ void QCamAdd::addFrame(const QCamFrame & frame) {
       bufferFill_->setValue(numOfActiveBuffers_);
    }
    newIntegrationBuff_=true;
-   newFrameAvaible();
+
+   // only show full stacked frames
+   if(useFullStackedFrames_) {
+      if(bufferFull) {
+         newFrameAvaible();
+         allocBuff(cam_->size());
+         resetBufferFill();
+      }
+   } else {
+      // shows each stacked frame
+      newFrameAvaible();
+   }
 }
 
 // change buffer size
@@ -656,8 +651,8 @@ void QCamAdd::setMinYvalue(int val) {
 }
 
 // gui
-QWidget * QCamAdd::buildGUI(QWidget * parent) {
-   QWidget * remoteCTRL=QCam::buildGUI(parent);
+QWidget* QCamAdd::buildGUI(QWidget* parent) {
+   QWidget* remoteCTRL=QCam::buildGUI(parent);
 
    //
    // method gui
@@ -668,21 +663,26 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    frameSum=new QRadioButton(tr("Sum"),methodWidget_);
    frameAverage=new QRadioButton(tr("Average"),methodWidget_);
    frameMedian=new QRadioButton(tr("Median"),methodWidget_);
+   frameFullStack=new QCheckBox(tr("Full stack"),methodWidget_);
 
    methodWidget_layout->addWidget(frameSum);
    methodWidget_layout->addWidget(frameAverage);
    methodWidget_layout->addWidget(frameMedian);
+   methodWidget_layout->addWidget(frameFullStack);
    methodWidget_->setLayout(methodWidget_layout);
 
    frameSum->setChecked(true);
+   frameFullStack->setChecked(false);
 
    connect(frameSum,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
    connect(frameAverage,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
    connect(frameMedian,SIGNAL(toggled(bool)),this,SLOT(methodChanged(bool)));
+   connect(frameFullStack,SIGNAL(toggled(bool)),this,SLOT(fullStackChanged(bool)));
 
    frameSum->setToolTip(tr("Adds the frames in live"));
    frameAverage->setToolTip(tr("Produce a 'mean' frame for calibration"));
    frameMedian->setToolTip(tr("Produce a 'median' frame for calibration\n(uses a huge amount of memory)"));
+   frameFullStack->setToolTip(tr("Only reports full stacked frames"));
 
    //
    // accumulation gui
@@ -743,16 +743,12 @@ QWidget * QCamAdd::buildGUI(QWidget * parent) {
    connect(this,SIGNAL(minYValueChange(int)),remoteCTRLminYvalue_,SLOT(setValue(int)));
    connect(remoteCTRLminYvalue_,SIGNAL(valueChange(int)),this,SLOT(setMinYvalue(int)));
 
-   //remoteCTRLnumOfActiveBuffer_->setCurrentItem(4);
-
    remoteCTRLnumOfActiveBuffer_->show();
    bufferFill_->show();
    accumulationWidget_->show();
    accumulationWidget_->resize(accumulationWidget_->minimumSizeHint());
    remoteCTRLmaxYvalue_->show();
    remoteCTRLminYvalue_->show();
-
-   //remoteCTRL->setWindowTitle("accumulation");
 
    return remoteCTRL;
 }
@@ -799,7 +795,6 @@ void QCamAdd::modeDisplay(int val) {
       funcDisplay_=newFuncDisplay_;
       newIntegrationBuff_=true;
       newFrameAvaible();
-      //emit (newFrame());
    }
 }
 
@@ -818,4 +813,11 @@ void QCamAdd::methodChanged(bool b) {
    else
       displayOptions_->setEnabled(true);
 
+}
+
+// full stack changed
+void QCamAdd::fullStackChanged(bool b) {
+   useFullStackedFrames_=frameFullStack->isChecked();
+   allocBuff(cam_->size());
+   resetBufferFill();
 }

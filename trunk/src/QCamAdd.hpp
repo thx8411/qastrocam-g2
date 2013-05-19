@@ -32,6 +32,7 @@ MA  02110-1301, USA.
 #include <Qt/qprogressbar.h>
 #include <Qt/qgroupbox.h>
 #include <Qt/qradiobutton.h>
+#include <Qt/qcheckbox.h>
 
 #include "QCamVGroupBox.hpp"
 #include "QCamHGroupBox.hpp"
@@ -58,6 +59,7 @@ class QCheckBox;
 /** Stacks a serie of frame from an other QCam object.*/
 class QCamAdd : public QCam {
    Q_OBJECT
+private:
    QCam* cam_;
    /** num total of buffer currently activated (they can
        not be all in use) */
@@ -81,6 +83,8 @@ class QCamAdd : public QCam {
 #endif
    bool maxYValueAuto_;
    bool minYValueAuto_;
+
+   bool useFullStackedFrames_;
 
    int method_;
 
@@ -118,6 +122,7 @@ class QCamAdd : public QCam {
    QRadioButton* frameSum;
    QRadioButton* frameAverage;
    QRadioButton* frameMedian;
+   QCheckBox* frameFullStack;
 
    QCamHGroupBox* accumulationWidget_;
    QCamComboBox* remoteCTRLnumOfActiveBuffer_;
@@ -160,6 +165,7 @@ public slots:
  private slots:
    void addNewFrame();
    void methodChanged(bool b);
+   void fullStackChanged(bool b);
 };
 
 #endif
