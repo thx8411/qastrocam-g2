@@ -3,8 +3,8 @@
   - builds now with cmake
   - cmake handles the rpm package generation
   - useless philips cameras controls on kernel 3 disabled
-  - forbidden libjpeg detection during build added
-  - forbidden libX11 detection during build added
+  - forgot libjpeg detection during build added
+  - forgot libX11 detection during build added
   - some source code cleaning
   - libcfitsio not required any more for building, just recommended
   - libjpeg not required any more for building, just recommended
@@ -20,6 +20,7 @@
   - use telescope instead of frame alignment module for fifo
   - camera simulator enhanced
   - V4L2 mmap bug fixed
+  - choice between partially or fully stacked frames in stack module added
 
 4.9
 
