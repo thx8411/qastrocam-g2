@@ -69,7 +69,9 @@ void QTelescopeFifo::Update(double x, double y) {
    // sends shifts to the fifo
    if(descriptor_>0) {
       sprintf(buffer,"%f %f\n",x,y);
-      write(descriptor_,buffer,strlen(buffer));
+      if(write(descriptor_,buffer,strlen(buffer))!=strlen(buffer)) {
+         cout << "QTelescopeFifo::Update error : can't write in the fifo\n" << endl;
+      }
    }
 }
 
