@@ -6,7 +6,7 @@ Linux kernel 3 and higher don't support
 V4L1 any more. The V4L2 port of the pwc driver
 (for Philips cameras and clones) is still
 incomplete. Thus, the Philips camera's special 
-features of the won't work on recent kernels.
+features won't work on recent kernels.
 
 If you use Philips cameras, I advise you to use
 the last distribution of your choice using a 2.x
