@@ -3,7 +3,7 @@ Please look at sourceforge for an up-to-date version of this list
 TODO IN NEXT RELEASES
 
 5.0 - help file in html
-5.0 - fix the King module
+5.0 - fix the King module -> DONE, to be tested
 5.0 - enhance the camera simulator
 5.0 - better support for V4L2 frame interval
 
