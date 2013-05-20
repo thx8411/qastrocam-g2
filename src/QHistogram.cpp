@@ -134,8 +134,8 @@ void QHistogram::setAutoShift(bool val) {
 }
 
 double QHistogram::value(int pos) const {
-   if (pos>=dataSize_) {
-      cerr << "index "<<pos<<" out of range in QHistogram::value()"<<endl;
+   if(pos >= dataSize_) {
+      cerr << "index " << pos << " out of range in QHistogram::value()" << endl;
       return 0;
    }
    return conv2displayMode(dataTable_[(currentPos_+pos)%dataSize_]);
@@ -170,12 +170,17 @@ void QHistogram::paintEvent(QPaintEvent * ev) {
       buffer.fill();
    p.begin(&buffer);
    p.initFrom(this);
-   p.setPen(*normPen_);
+   //p.setPen(*normPen_);
 
    for(int i=0;i<dataSize_;++i) {
-      p.drawLine(pivot+reverse*i*w/dataSize_, h-1, pivot+reverse*i*w/dataSize_, h-1-((int)round(value(i)*h/max())));
+      normPen_->setColor(QColor(i*224/dataSize_,i*224/dataSize_,i*224/dataSize_));
+      p.setPen(*normPen_);
+      p.drawRect(pivot+reverse*i*w/dataSize_,h-1-((int)round(value(i)*h/max())),
+            reverse*w/dataSize_,(int)round(value(i)*h/max()));
+      p.fillRect(pivot+reverse*i*w/dataSize_,h-1-((int)round(value(i)*h/max())),
+            reverse*w/dataSize_,(int)round(value(i)*h/max()),QColor(i*224/dataSize_,i*224/dataSize_,i*224/dataSize_));
    }
-   if (average()) {
+   if(average()) {
       p.setPen(*averagePen_);
       for(int i=average();i<dataSize_-average()-1;++i) {
          double first,second;
@@ -196,18 +201,18 @@ void QHistogram::displayMode(DisplayMode mode) {
 
 double QHistogram::conv2displayMode(double val) const {
    switch(dispMode_) {
-   case NormalDisplay:
-      return val;
-   case SqrtDisplay:
-      return sqrt(val);
-   case LogDisplay:
-      return log(val+1);
-   case Power2Display:
-      return val*val;
-   case ExpDisplay:
-      return exp(val);
-   default:
-      cerr << "invalid display mode "<<dispMode_<<" in QHistogram::conv2displayMode"<<endl;
-      return val;
+      case NormalDisplay:
+         return val;
+      case SqrtDisplay:
+         return sqrt(val);
+      case LogDisplay:
+         return log(val+1);
+      case Power2Display:
+         return val*val;
+      case ExpDisplay:
+         return exp(val);
+      default:
+         cerr << "invalid display mode "<<dispMode_<<" in QHistogram::conv2displayMode"<<endl;
+         return val;
    }
 }
