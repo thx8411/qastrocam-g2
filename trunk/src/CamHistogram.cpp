@@ -118,21 +118,21 @@ const QWidget & CamHistogram::widget() const  {
 void CamHistogram::newFrame() {
    // 1) collect histogram
    double distSum=0;
+   int i;
    int w=cam().size().width();
    int h=cam().size().height();
    int wh=w*h;
-   const uchar * tab=cam().yuvFrame().Y();
+   const uchar* tab=cam().yuvFrame().Y();
 
-   for (int i=0;i<256;++i) {
+   for (i=0;i<256;++i) {
       histogram_[i]=0;
    }
 
-   for(int i=(wh-1);
-       i>=0;--i) {
-      ++histogram_[tab[i]];
+   for(i=0;i<wh;i++) {
+      histogram_[tab[i]]++;
    }
-   for (int i=0;i<256;++i) {
-     histogramArea_->setValue(histogram_[i],i);
+   for(i=0;i<256;i++) {
+     histogramArea_->setValue((double)histogram_[i],i);
    }
    histogramArea_->update();
 

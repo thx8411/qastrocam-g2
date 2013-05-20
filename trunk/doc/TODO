@@ -3,17 +3,17 @@ Please look at sourceforge for an up-to-date version of this list
 TODO IN NEXT RELEASES
 
 5.0 - help file in html
-5.0 - clean the histogram
 5.0 - fix the King module
-5.0 - stack module should give "full stacked frames"
 5.0 - enhance the camera simulator
+5.0 - better support for V4L2 frame interval
 
-5.1 - port qastrocam-g2 to big-endian archs
 5.1 - add support for IIDC cameras
 5.1 - source files re-org (sub-directories for Cameras, Telescopes, etc.)
 
 DONE :
 
+DONE - 5.0   - clean the histogram
+DONE - 5.0   - stack module should give "full stacked frames"
 DONE - 5.0   - migrate to Qt4
 DONE - 5.0   - enable fifo telescope
 DONE - 5.0   - remove libavifile and replace with libav
