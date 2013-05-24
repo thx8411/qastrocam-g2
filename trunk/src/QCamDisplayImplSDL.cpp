@@ -244,6 +244,7 @@ void QCamDisplayImplSDL::showEvent(QShowEvent* ev) {
       putenv(winIdEnv_);
       cout << "WinId used : " << winIdEnv_ << endl;
 
+      // base flags
       sdlFlags_=SDL_HWPALETTE | SDL_RLEACCEL;
 
       if(SDL_WasInit(SDL_INIT_VIDEO)==0) {
@@ -287,7 +288,7 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
    if(RGBImage_)
       SDL_FreeSurface(RGBImage_);
    if(screen_)
-   SDL_FreeSurface(screen_);
+      SDL_FreeSurface(screen_);
 
    // unset SDL_WINDOWID trick
    unsetenv("SDL_WINDOWID");
@@ -295,6 +296,7 @@ QCamDisplayImplSDL::~QCamDisplayImplSDL() {
    // SDL is off
    QCamDisplay::SDL_on_=false;
 
+   // leave SDL video
    SDL_QuitSubSystem(SDL_INIT_VIDEO);
 }
 
@@ -365,9 +367,8 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
    QCamFrame frame=camClient_.yuvFrame();
 
    // sanity check
-   if (frame.empty() || screen_==NULL) {
+   if (frame.empty() || screen_==NULL)
       return;
-   }
 
    // SDL clip zone
    SDL_Rect dst;
@@ -398,9 +399,10 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
                                              frame.size().height(), 8,
                                              frame.size().width(),
                                              0, 0, 0, 0);
-         if (!GreyImage_) {
+         if (GreyImage_==NULL) {
+            QMessageBox::information(0,"Qastrocam-g2","CreatGreySurface failed\nLeaving...");
             cout << "Unable to create grey surface : " << SDL_GetError() << endl;
-            return;
+            exit(1);
          }
          setPalette();
       } else {
