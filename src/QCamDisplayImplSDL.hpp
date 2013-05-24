@@ -38,21 +38,28 @@ MA  02110-1301, USA.
 class QCamDisplayImplSDL : public QCamDisplayImpl {
    Q_OBJECT
 private:
-   QCamDisplayImplSDL(QCamDisplay &, QWidget * parent);
+   QCamDisplayImplSDL(QCamDisplay &, QWidget* parent);
    virtual ~QCamDisplayImplSDL();
 protected:
-   void paintEvent(QPaintEvent * ev);
-   void resizeEvent(QResizeEvent*ev);
+   void paintEvent(QPaintEvent* ev);
+   void resizeEvent(QResizeEvent* ev);
+   void showEvent(QShowEvent* ev);
    void setPalette();
 private:
+   bool windowUp_;
+   static char winIdEnv_[64];
+   char driverName_[64];
+   const SDL_VideoInfo* sdlInfos_;
+   int sdlFlags_;
+
    SDL_Color* colors;
    SDL_Color  greyPalette[256];
    SDL_Color  negatePalette[256];
    SDL_Color  falsePalette[256];
 
-   SDL_Surface *screen_;
-   SDL_Surface * RGBImage_;
-   SDL_Surface * GreyImage_;
+   SDL_Surface* screen_;
+   SDL_Surface* RGBImage_;
+   SDL_Surface* GreyImage_;
    friend class QCamDisplay;
 protected slots:
     virtual void setDisplayMode(QCamDisplay::DisplayMode);

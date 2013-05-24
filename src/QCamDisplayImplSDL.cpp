@@ -188,6 +188,8 @@ void SDL_DrawCircle(SDL_Surface* surface, int n_cx, int n_cy, int radius, Uint8 
 // class implementation
 //
 
+char QCamDisplayImplSDL::winIdEnv_[64];
+
 QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent):
          QCamDisplayImpl(camClient,parent),
          screen_(NULL),
@@ -230,21 +232,61 @@ QCamDisplayImplSDL::QCamDisplayImplSDL(QCamDisplay & camClient,QWidget * parent)
 
    // init attribute
    crossLum_=0xFF;
+   windowUp_=false;
+}
 
-   // SDL init
-   if(SDL_WasInit(SDL_INIT_VIDEO)==0)
-      SDL_InitSubSystem(SDL_INIT_VIDEO);
+void QCamDisplayImplSDL::showEvent(QShowEvent* ev) {
+   if(!windowUp_) {
+      // SDL init
+
+      // SDL_WINDOWID trick
+      sprintf(winIdEnv_,"SDL_WINDOWID=0x%lx", winId());
+      putenv(winIdEnv_);
+      cout << "WinId used : " << winIdEnv_ << endl;
+
+      sdlFlags_=SDL_HWPALETTE | SDL_RLEACCEL;
+
+      if(SDL_WasInit(SDL_INIT_VIDEO)==0) {
+         if(SDL_InitSubSystem(SDL_INIT_VIDEO)<0) {
+            QMessageBox::information(0,"Qastrocam-g2","Unable init SDL video\nLeaving...");
+            cout << "Unable to init SDL video" << endl;
+            exit(1);
+         }
+      }
+
+      // sdl driver name
+      if(SDL_VideoDriverName(driverName_, sizeof(64)))
+         cout << "SDL driver : "<< driverName_ << endl;
+
+      // sdl driver infos
+      sdlInfos_=SDL_GetVideoInfo();
+      if(sdlInfos_->wm_available)
+         cout << "Window manager available" << endl;
+      if(sdlInfos_->hw_available) {
+         cout << "Hardware surfaces available (" << sdlInfos_->video_mem << "Ko)" << endl;
+         sdlFlags_ |= SDL_HWSURFACE;
+         sdlFlags_ |= SDL_DOUBLEBUF;
+      } else {
+         cout << "Hardware surfaces unavailable, using software" << endl;
+         sdlFlags_ |= SDL_SWSURFACE;
+      }
+      if(sdlInfos_->blit_hw) {
+         cout << "Hardware blits accelerated" << endl;
+         sdlFlags_ |= SDL_ASYNCBLIT;
+      }
+      // set video mode
+      screen_=SDL_SetVideoMode(width(), height(), 0, sdlFlags_);
+      windowUp_=true;
+   }
 }
 
 QCamDisplayImplSDL::~QCamDisplayImplSDL() {
-   // SDL_WINDOWID trick
-   static char variable[64];
-   sprintf(variable, "SDL_WINDOWID=0x%lx", winId());
-   putenv(variable);
-
    // release SDL stuff
-   SDL_FreeSurface(GreyImage_);
-   SDL_FreeSurface(RGBImage_);
+   if(GreyImage_)
+      SDL_FreeSurface(GreyImage_);
+   if(RGBImage_)
+      SDL_FreeSurface(RGBImage_);
+   if(screen_)
    SDL_FreeSurface(screen_);
 
    // unset SDL_WINDOWID trick
@@ -260,38 +302,34 @@ void QCamDisplayImplSDL::resizeEvent(QResizeEvent*ev) {
    QCamDisplayImpl::resizeEvent(ev);
 
    // size changed, release SDL surfaces
-   if (RGBImage_) {
+   if(RGBImage_) {
       SDL_FreeSurface(RGBImage_);
       RGBImage_=NULL;
-
    }
-   if (GreyImage_) {
+   if(GreyImage_) {
       SDL_FreeSurface(GreyImage_);
       GreyImage_=NULL;
    }
-   if (screen_) {
+   if(screen_) {
       SDL_FreeSurface(screen_);
-      screen_ = NULL;
+      screen_=NULL;
+   }
+
+   // quit and restart SDL in order to sync it with Qt
+   if(SDL_WasInit(SDL_INIT_VIDEO))
+      SDL_QuitSubSystem(SDL_INIT_VIDEO);
+
+   if(SDL_InitSubSystem(SDL_INIT_VIDEO)<0) {
+      QMessageBox::information(0,"Qastrocam-g2","Unable init SDL video\nLeaving...");
+      cout << "Unable to init SDL video" << endl;
+      exit(1);
    }
 
    // Set the new video mode with the new window size
-
-   // SDL_WINDOWID trick
-   static char variable[64];
-   sprintf(variable, "SDL_WINDOWID=0x%lx", winId());
-   putenv(variable);
-
-   // reset SDL
-   SDL_QuitSubSystem(SDL_INIT_VIDEO);
-   if ( SDL_InitSubSystem(SDL_INIT_VIDEO) < 0 ) {
-      QMessageBox::information(0,"Qastrocam-g2","Unable to init SDL\nLeaving...");
-      fprintf(stdout, "Unable to init SDL: %s\n", SDL_GetError());
-      exit(1);
-   }
-   screen_ = SDL_SetVideoMode(0/*width()*/, 0/*height()*/, 0 /*32*/, SDL_HWPALETTE | SDL_SWSURFACE | SDL_RLEACCEL);
-   if ( ! screen_ ) {
+   screen_ = SDL_SetVideoMode(width(), height(), 0, sdlFlags_);
+   if (!screen_) {
       QMessageBox::information(0,"Qastrocam-g2","Unable to set SDL video mode\nLeaving...");
-      fprintf(stdout, "Unable to set video mode: %s\n", SDL_GetError());
+      cout << "Unable to set video mode : " << SDL_GetError() << endl;
       exit(1);
    }
 }
@@ -360,8 +398,8 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
                                              frame.size().height(), 8,
                                              frame.size().width(),
                                              0, 0, 0, 0);
-         if ( ! GreyImage_ ) {
-            fprintf(stderr, "Unable to create grey surface: %s\n", SDL_GetError());
+         if (!GreyImage_) {
+            cout << "Unable to create grey surface : " << SDL_GetError() << endl;
             return;
          }
          setPalette();
@@ -386,7 +424,7 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
                                           rmask, gmask, bmask, 0);
          if(RGBImage_ == NULL) {
             QMessageBox::information(0,"Qastrocam-g2","CreateRGBSurface failed\nLeaving...");
-            fprintf(stdout, "CreateRGBSurface failed: %s\n", SDL_GetError());
+            cout << "CreateRGBSurface failed : " << SDL_GetError() << endl;
             exit(1);
          }
       }
@@ -453,7 +491,5 @@ void QCamDisplayImplSDL::paintEvent(QPaintEvent * ev) {
    // display the frame
    SDL_Flip(screen_);
 }
-
-
 
 #endif
