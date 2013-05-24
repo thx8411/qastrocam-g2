@@ -21,6 +21,7 @@
   - camera simulator enhanced
   - V4L2 mmap bug fixed
   - choice between partially or fully stacked frames in stack module added
+  - SDL bugs fixed, works on Raspberry Pi/Raspbian now
 
 4.9
 
