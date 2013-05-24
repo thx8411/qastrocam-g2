@@ -98,7 +98,7 @@ QPixmap* QCamUtilities::getPixmap(const char * pixmapBaseName) {
 }
 
 void QCamUtilities::setQastrocamIcon(QWidget *widget) {
-   static QPixmap * iconNb=QCamUtilities::getPixmap("qastrocam-icon-nb.png");
+   static QPixmap * iconNb=QCamUtilities::getPixmap("qastrocam-g2-icon-nb.png");
    if(iconNb)
       widget->setWindowIcon(*iconNb);
 }
