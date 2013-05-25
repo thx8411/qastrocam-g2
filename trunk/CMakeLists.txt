@@ -211,7 +211,7 @@ QT4_WRAP_CPP(qastrocam-g2_MOC_CPP ${qastrocam-g2_MOC_HEADERS} OPTIONS ${qastroca
 
 
 ############################
-# handling libraries datas #
+# Handling libraries datas #
 ############################
 
 #
@@ -371,7 +371,7 @@ set(CPACK_PACKAGE_VERSION_PATCH ${PATCH_VERSION})
 
 
 ##################
-# source package #
+# Source package #
 ##################
 
 #
@@ -383,7 +383,7 @@ set(CPACK_SOURCE_PACKAGE_FILE_NAME "qastrocam-g2_${FULL_VERSION}_src" CACHE INTE
 
 
 #####################
-# binaries packages #
+# Binaries packages #
 #####################
 
 # global directives for debian and rpm packages
@@ -398,7 +398,7 @@ set(CPACK_STRIP_FILES qastrocam-g2)
 
 
 ##################
-# debian package #
+# Debian package #
 ##################
 
 if(DEBIAN_FOUND)
@@ -478,7 +478,7 @@ endif(DEBIAN_FOUND)
 
 
 ###############
-# rpm package #
+# Rpm package #
 ###############
 
 if(FEDORA_FOUND OR MAGEIA_FOUND)
@@ -507,10 +507,6 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
    #
    # dependencies
    #
-
-   #-----------------------------------------#
-   #- TODO : package names have to be fixed -#
-   #-----------------------------------------#
    if(ARCHITECTURE STREQUAL "x86_64")
 
       # base dependencies
@@ -579,3 +575,10 @@ endif(FEDORA_FOUND OR MAGEIA_FOUND)
 # package module
 #
 include(CPack)
+
+
+#########
+# TESTS #
+#########
+
+include(CTest)
