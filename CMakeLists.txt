@@ -17,27 +17,6 @@ cmake_minimum_required(VERSION 2.6.0)
 project(qastrocam-g2)
 
 #
-# distribution detection
-#
-find_file(DEBIAN_FOUND debian_version debconf.conf PATHS /etc)
-find_file(FEDORA_FOUND fedora-release PATHS /etc)
-find_file(MAGEIA_FOUND mageia-release PATHS /etc)
-
-#
-# kernel detection
-#
-execute_process(COMMAND  uname -r
-	OUTPUT_VARIABLE KERNEL_OUTPUT
-	OUTPUT_STRIP_TRAILING_WHITESPACE)
-string(REGEX MATCH "[0-9]+" KERNEL_VERSION ${KERNEL_OUTPUT})
-message(STATUS "Kernel detection : version ${KERNEL_VERSION}")
-if(KERNEL_VERSION STREQUAL "2")
-   add_definitions("-D KERNEL_2=1")
-else(KERNEL_VERSION STREQUAL "2")
-   add_definitions("-D KERNEL_2=0")
-endif(KERNEL_VERSION STREQUAL "2")
-
-#
 # version
 #
 set(DEB_EPOCH 0)
@@ -47,6 +26,40 @@ set(PATCH_VERSION "beta20130531")
 set(BUILD_VERSION "195")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
+message(STATUS "Building qastrocam-g2 ${FULL_VERSION}")
+
+#
+# distribution detection
+# 
+find_file(DEBIAN_FOUND debian_version debconf.conf PATHS /etc)
+find_file(FEDORA_FOUND fedora-release PATHS /etc)
+find_file(MAGEIA_FOUND mageia-release PATHS /etc)
+
+set(DISTRIBUTION "Unknown")
+if(DEBIAN_FOUND)
+   set(DISTRIBUTION "Debian based")
+endif(DEBIAN_FOUND)
+if(FEDORA_FOUND)
+   set(DISTRIBUTION "Fedora based")
+endif(FEDORA_FOUND)
+if(MAGEIA_FOUND)
+   set(DISTRIBUTION "Mageia based")
+endif(MAGEIA_FOUND)
+message(STATUS "Host distribution : ${DISTRIBUTION}")
+
+#
+# kernel detection
+#
+execute_process(COMMAND  uname -r
+        OUTPUT_VARIABLE KERNEL_OUTPUT
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+string(REGEX MATCH "[0-9]+" KERNEL_VERSION ${KERNEL_OUTPUT})
+message(STATUS "Kernel detection : version ${KERNEL_VERSION}")
+if(KERNEL_VERSION STREQUAL "2")
+   add_definitions("-D KERNEL_2=1")
+else(KERNEL_VERSION STREQUAL "2")
+   add_definitions("-D KERNEL_2=0")
+endif(KERNEL_VERSION STREQUAL "2")
 
 #
 # destdir for binary packages
