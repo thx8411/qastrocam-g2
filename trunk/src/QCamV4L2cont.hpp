@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009   Blaise-Florentin Collin
+Copyright (C) 2009-2013   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -18,9 +18,17 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 
-#include "QCamV4L2fi.hpp"
+#ifndef _QCamV4L2cont_hpp_
+#define _QCamV4L2cont_hpp_
 
-QCamV4L2fi::QCamV4L2fi(const char * devpath):
-   QCamV4L2(devpath,ioNoBlock|ioUseSelect|haveBrightness|haveContrast|haveHue|haveColor) {
-}
+#include "QCamV4L2.hpp"
 
+/** enhance QCamV4L2 to handle continuous frame interval devices */
+
+class QCamV4L2cont : public QCamV4L2 {
+   Q_OBJECT
+public:
+   QCamV4L2cont(const char* devpath="/dev/video0");
+};
+
+#endif
