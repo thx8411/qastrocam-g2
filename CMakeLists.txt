@@ -314,6 +314,18 @@ add_executable(qastrocam-g2 ${qastrocam-g2_SOURCES} ${qastrocam-g2_MOC_CPP})
 target_link_libraries(qastrocam-g2 ${LIBRARIES_LIST})
 
 #
+# add a target to generate API documentation with Doxygen
+#
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+   add_custom_target(doc ALL ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Generating API documentation with Doxygen" VERBATIM
+      )
+endif(DOXYGEN_FOUND)
+
+#
 # installation
 #
 
