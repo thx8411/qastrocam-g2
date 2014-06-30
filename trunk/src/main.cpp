@@ -2,7 +2,7 @@
 Qastrocam
 Copyright (C) 2003-2009   Franck Sicard
 Qastrocam-g2
-Copyright (C) 2009-2013   Blaise-Florentin Collin
+Copyright (C) 2009-2014   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -487,7 +487,7 @@ int main(int argc, char ** argv) {
    // capture module creation
    QCam* cam = NULL;
    // test QHY5
-#if HAVE_USB_H
+#if (HAVE_USB_H && HAVE_PTHREADS_H)
    if(cameraName=="qhy5") {
       if(QHY5cam::plugged())
          cam = new QCamQHY5();
@@ -503,7 +503,7 @@ int main(int argc, char ** argv) {
          cout << "QHY6 camera not detected" << endl;
       }
    } else
-#endif /* HAVE_USB_H */
+#endif /* HAVE_USB_H && HAVE_PTHREADS_H */
    if(cameraName=="simulator") {
          cam = new QCamSimulator();
    } else {
@@ -535,12 +535,12 @@ int main(int argc, char ** argv) {
          theTelescope = new QTelescopeMTS(telescopeDeviceName.c_str());
       } else if (telescopeType=="file") {
 	 theTelescope = new QTelescopeFile(telescopeDeviceName.c_str());
-#if HAVE_USB_H
+#if (HAVE_USB_H && HAVE_PTHREADS_H)
       } else if (telescopeType=="qhy5") {
          theTelescope = new QTelescopeQHY5();
       } else if (telescopeType=="qhy6") {
          theTelescope = new QTelescopeQHY6();
-#endif /* HAVE_USB_H */
+#endif /* HAVE_USB_H && HAVE_PTHREADS_H */
       } else if (telescopeType=="simulator") {
          theTelescope = new QTelescopeSimulator();
       } else {

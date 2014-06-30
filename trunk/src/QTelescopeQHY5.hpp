@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2009-2013   Blaise-Florentin Collin
+Copyright (C) 2009-2014   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -22,7 +22,7 @@ MA  02110-1301, USA.
 #define _QTelescopeQHY5_hpp_
 
 // only available is have usb
-#if HAVE_USB_H
+#if (HAVE_USB_H && HAVE_PTHREADS_H)
 
 #include "QTelescope.hpp"
 
@@ -51,6 +51,6 @@ private:
    QHY5cam* cam_;
 };
 
-#endif /* HAVE_USB_H */
+#endif /* HAVE_USB_H && HAVE_PTHREADS_H */
 
 #endif
