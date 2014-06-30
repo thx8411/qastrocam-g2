@@ -22,4 +22,7 @@ libjpeg, libavifile and SDL are recommended.
 
    >make package
 
+NOTE : To get a clean package regarding to the Debian standard,
+please set your umask to 022 before package generation.
+
 Best regards !
