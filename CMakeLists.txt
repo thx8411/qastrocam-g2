@@ -90,7 +90,9 @@ endif(NOT QT_FOUND)
 find_package(Threads)
 if(NOT Threads_FOUND)
    message(STATUS "Libpthreads not found, QHY5 and QHY6 camera's won't be supported...")
-endif(NOT Threads_FOUND)
+else(NOT Threads_FOUND)
+   message(STATUS "Found libpthreads")
+endif(NOT Threads_FOUND) 
 
 #
 # Libusb recommended
@@ -219,7 +221,7 @@ endif(KERNEL_VERSION STREQUAL "2")
 
 # we use threads
 if(Threads_FOUND)
-   set(qastrocam-g2_MOC_DEFINITIONS "${qastrocam-g2_MOC_DEFINITIONS}-DHAVE_THREADS_H=1;")
+   set(qastrocam-g2_MOC_DEFINITIONS "${qastrocam-g2_MOC_DEFINITIONS}-DHAVE_PTHREADS_H=1;")
 endif(Threads_FOUND)
 
 # we use usb
@@ -258,10 +260,10 @@ if(JPEG_FOUND)
 endif(JPEG_FOUND)
 
 #
-# we use Libpthreads
+# we use libpthreads
 #
 if(Threads_FOUND)
-   set(THREADS_DEFINITIONS "-D HAVE_THREADS_H=1")
+   set(THREADS_DEFINITIONS "-D HAVE_PTHREADS_H=1")
    add_definitions(${THREADS_DEFINITIONS})
    set(LIBRARIES_LIST ${LIBRARIES_LIST} "-lpthread")
 endif(Threads_FOUND)
@@ -495,11 +497,16 @@ if(DEBIAN_FOUND)
    endif(CFITSIO_FOUND)
 
    if(LIBAV_FOUND)
-      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libavformat52 | libavformat-extra-52 | libavformat53 | libavformat-extra-53")
-      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libavcodec52 | libavcodec-extra-52 | libavcodec53 | libavcodec-extra-53")
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libavformat52 | libavformat-extra-52") 
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}| libavformat53 | libavformat-extra-53") 
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}| libavformat54 | libavformat-extra-54")
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libavcodec52 | libavcodec-extra-52")
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}| libavcodec53 | libavcodec-extra-53") 
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}| libavcodec54 | libavcodec-extra-54")
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libavutil49 | libavutil-extra-49")
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}| libavutil50 | libavutil-extra-50")
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}| libavutil51 | libavutil-extra-51")
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}| libavutil52 | libavutil-extra-52")
    endif(LIBAV_FOUND)
 
    if(AVIFILE_FOUND)

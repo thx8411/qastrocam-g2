@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 // the timed moves until stop
 
 // only if usb available
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
 
 #include <sys/time.h>
 #include <stdlib.h>

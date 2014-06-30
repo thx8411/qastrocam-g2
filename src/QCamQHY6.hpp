@@ -21,7 +21,7 @@ MA  02110-1301, USA.
 #define _QCamQHY6_hpp_
 
 // only available if have usb
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
 
 #include <stdio.h>
 #include <stdlib.h>
