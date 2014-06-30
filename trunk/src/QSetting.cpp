@@ -45,7 +45,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    // video device box
    videoBox=new QCamHGroupBox("Camera",remoteCTRL_);
    camLabel=new QLabel("Camera : ",videoBox);
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
    cameraNumber=4;
    int cameraTable[]={0,1,2,3};
    const char* cameraLabel[]={"simulator","qhy5","qhy6","v4l(2)"};
@@ -66,7 +66,7 @@ QWidget *QSetting::buildGUI(QWidget * parent) {
    telescopeBox=new QCamVGroupBox("Mount control",remoteCTRL_);
    lineOne=new QCamHBox(telescopeBox);
    telescopeListLabel=new QLabel("Protocol : ",lineOne);
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
    telescopeNumber=12;
    int telescopeTable[]={0,1,2,3,4,5,6,7,8,9,10,11};
    const char* telescopeLabel[]={"none","qhy5","qhy6","autostar","lx200","nexstar","mcu","mts","apm","fifo","file","simulator"};

@@ -18,7 +18,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 // only available is have usb
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
 
 #include <math.h>
 

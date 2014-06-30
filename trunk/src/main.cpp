@@ -487,7 +487,7 @@ int main(int argc, char ** argv) {
    // capture module creation
    QCam* cam = NULL;
    // test QHY5
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
    if(cameraName=="qhy5") {
       if(QHY5cam::plugged())
          cam = new QCamQHY5();
@@ -535,7 +535,7 @@ int main(int argc, char ** argv) {
          theTelescope = new QTelescopeMTS(telescopeDeviceName.c_str());
       } else if (telescopeType=="file") {
 	 theTelescope = new QTelescopeFile(telescopeDeviceName.c_str());
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
       } else if (telescopeType=="qhy5") {
          theTelescope = new QTelescopeQHY5();
       } else if (telescopeType=="qhy6") {

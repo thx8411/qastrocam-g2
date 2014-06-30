@@ -28,7 +28,7 @@ MA  02110-1301, USA.
 #define _QHY6CAM_HPP_
 
 // only if usb available
-#if (HAVE_USB_H && HAVE_PTHREADS_H)
+#if HAVE_USB_H && HAVE_PTHREADS_H
 
 // threaded code must be re-entrant
 #ifndef _REENTRANT
