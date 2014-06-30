@@ -401,6 +401,12 @@ if(AVIFILE_FOUND)
    install(FILES lib/huffyuv_readme.txt DESTINATION /usr/share/qastrocam-g2)
 endif(AVIFILE_FOUND)
 
+# install QHY driver
+install(FILES qhy_driver/86-qhyccd.rules DESTINATION /etc/udev/rules.d)
+install(FILES qhy_driver/QHY5.HEX DESTINATION /usr/share/qastrocam-g2/qhy_driver)
+install(FILES qhy_driver/QHY5LOADER.HEX DESTINATION /usr/share/qastrocam-g2/qhy_driver)
+install(FILES qhy_driver/QHY6.HEX DESTINATION /usr/share/qastrocam-g2/qhy_driver)
+install(FILES qhy_driver/LICENSE DESTINATION /usr/share/qastrocam-g2/qhy_driver)
 
 ######################
 # PACKAGE GENERATION #
@@ -488,9 +494,11 @@ if(DEBIAN_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libjpeg62")
    endif(JPEG_FOUND)
 
-   if(USB_FOUND)
+   if(USB_FOUND AND Threads_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libusb-0.1-4")
-   endif(USB_FOUND)
+      # we need fxload for the qhy driver
+      set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, fxload")
+   endif(USB_FOUND AND Threads_FOUND)
 
    if(CFITSIO_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libcfitsio3")
@@ -534,6 +542,12 @@ endif(DEBIAN_FOUND)
 ###############
 # Rpm package #
 ###############
+
+#
+# TODO :
+# - update libav deps
+# - add fxload
+#
 
 if(FEDORA_FOUND OR MAGEIA_FOUND)
 

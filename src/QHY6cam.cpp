@@ -252,7 +252,7 @@ bool QHY6cam::plugged() {
    // look for the device
    for(bus = usb_busses; bus; bus = bus->next) {
       for(device = bus->devices; device; device=device->next) {
-         if((device->descriptor.idVendor == 0x16c0)&&(device->descriptor.idProduct == 0x081D)) {
+         if((device->descriptor.idVendor == 0x16c0)&&(device->descriptor.idProduct == 0x081d)) {
             //
             cerr << "QHY6cam::plugged() : is the cam plugged ? -> yes" << endl;
             //
