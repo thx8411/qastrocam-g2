@@ -442,7 +442,7 @@ set(CPACK_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}It handles any V4L de
 set(CPACK_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION} Many special modules like guiding and stacking are provided.")
 set(CPACK_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION} This version is a fork from the F. Sicard's qastrocam.")
 set(CPACK_PACKAGE_VENDOR "Thx8411")
-set(CPACK_PACKAGE_CONTACT "thx8411@users.sourceforge.net")
+set(CPACK_PACKAGE_CONTACT "Blaise-Florentin Collin <thx8411@users.sourceforge.net>")
 set(CPACK_STRIP_FILES qastrocam-g2)
 
 
