@@ -1,8 +1,8 @@
-####################################
-#   CMakeLists for qastrocam-g2    #
-# (c) Blaise-Florentin Collin 2013 #
-#       under GPL v3 License       #
-####################################  
+#########################################
+#      CMakeLists for qastrocam-g2      #
+# (c) Blaise-Florentin Collin 2013-2014 #
+#          under GPL v3 License         #
+#########################################
 
 cmake_minimum_required(VERSION 2.6.0)
 
@@ -22,8 +22,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20130531")
-set(BUILD_VERSION "195")
+set(PATCH_VERSION "beta20140630")
+set(BUILD_VERSION "196")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 message(STATUS "Building qastrocam-g2 ${FULL_VERSION}")
@@ -83,6 +83,14 @@ find_package(Qt4 REQUIRED QtCore QtGui)
 if(NOT QT_FOUND)
    message(FATAL_ERROR "Qt4 not found, generation stopped")
 endif(NOT QT_FOUND)
+
+#
+# Libpthread recommended
+#
+find_package(Threads)
+if(NOT Threads_FOUND)
+   message(STATUS "Libpthreads not found, QHY5 and QHY6 camera's won't be supported...")
+endif(NOT Threads_FOUND)
 
 #
 # Libusb recommended
@@ -185,7 +193,7 @@ else(KERNEL_VERSION STREQUAL "2")
    list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamV4L.hpp" "src/QCamVestaK2.hpp")
 endif(KERNEL_VERSION STREQUAL "2")
 
-if(NOT USB_FOUND)
+if(NOT (USB_FOUND AND Threads_FOUND))
    list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamQHY5.hpp"
        "src/QCamQHY6.hpp"
        "src/QHY5cam.hpp"
@@ -193,7 +201,7 @@ if(NOT USB_FOUND)
        "src/QTelescopeQHY5.hpp"
        "src/QTelescopeQHY6.hpp"
    )
-endif(NOT USB_FOUND)
+endif(NOT (USB_FOUND AND Threads_FOUND))
 
 if(NOT SDL_FOUND)
    list(REMOVE_ITEM qastrocam-g2_MOC_HEADERS "src/QCamDisplayImplSDL.hpp")
@@ -208,6 +216,11 @@ set(qastrocam-g2_MOC_DEFINITIONS "")
 if(KERNEL_VERSION STREQUAL "2")
    set(qastrocam-g2_MOC_DEFINITIONS "${qastrocam-g2_MOC_DEFINITIONS}-DKERNEL_2=1;")
 endif(KERNEL_VERSION STREQUAL "2")
+
+# we use threads
+if(Threads_FOUND)
+   set(qastrocam-g2_MOC_DEFINITIONS "${qastrocam-g2_MOC_DEFINITIONS}-DHAVE_THREADS_H=1;")
+endif(Threads_FOUND)
 
 # we use usb
 if(USB_FOUND)
@@ -243,6 +256,15 @@ if(JPEG_FOUND)
    add_definitions(${JPEG_DEFINITIONS})
    set(LIBRARIES_LIST ${LIBRARIES_LIST} ${JPEG_LIBRARIES})
 endif(JPEG_FOUND)
+
+#
+# we use Libpthreads
+#
+if(Threads_FOUND)
+   set(THREADS_DEFINITIONS "-D HAVE_THREADS_H=1")
+   add_definitions(${THREADS_DEFINITIONS})
+   set(LIBRARIES_LIST ${LIBRARIES_LIST} "-lpthread")
+endif(Threads_FOUND)
 
 #
 # we use Libusb

@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010-2013 Blaise-Florentin Collin
+Copyright (C) 2010-2014 Blaise-Florentin Collin
 Thanks to Geoffrey Hausheer and Clive
 
 This program is free software; you can redistribute it and/or
@@ -27,7 +27,7 @@ MA  02110-1301, USA.
 // the timed moves until stop
 
 // only if usb available
-#if HAVE_USB_H
+#if (HAVE_USB_H && HAVE_PTHREADS_H)
 
 #include <sys/time.h>
 #include <stdlib.h>
@@ -475,4 +475,4 @@ unsigned long QHY5cam::getTime() {
    return(t);
 }
 
-#endif /* HAVE_USB_H */
+#endif /* HAVE_USB_H && HAVE_PTHREADS_H */

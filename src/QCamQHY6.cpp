@@ -1,6 +1,6 @@
 /******************************************************************
 Qastrocam-g2
-Copyright (C) 2010-2013   Blaise-Florentin Collin
+Copyright (C) 2010-2014   Blaise-Florentin Collin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License v2
@@ -18,7 +18,7 @@ MA  02110-1301, USA.
 *******************************************************************/
 
 // only available if have usb
-#if HAVE_USB_H
+#if (HAVE_USB_H && HAVE_PTHREADS_H)
 
 #include <math.h>
 
@@ -395,4 +395,4 @@ bool QCamQHY6::updateFrame() {
    }
 }
 
-#endif /* HAVE_USB_H */
+#endif /* HAVE_USB_H && HAVE_PTHREADS_H */
