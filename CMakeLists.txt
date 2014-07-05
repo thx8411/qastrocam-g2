@@ -123,6 +123,10 @@ endif(NOT CFITSIO_FOUND)
 #
 find_package(LibAV REQUIRED)
 if(NOT LIBAV_FOUND)
+   message(STATUS "")
+   message(STATUS "On Fedora, libav is in the ffmpeg-compat-devel package on rpmfusion")
+   message(STATUS "Try to add the '/usr/lib64/ffmpeg-compat/pkgconfig' in the PKG_CONFIG_PATH env var")
+   message(STATUS "")
    message(STATUS "LibAv not found, trying libavifile...")
    #
    # looking for libavifile
