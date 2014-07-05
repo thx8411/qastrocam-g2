@@ -547,12 +547,6 @@ endif(DEBIAN_FOUND)
 # Rpm package #
 ###############
 
-#
-# TODO :
-# - update libav deps
-# - add fxload
-#
-
 if(FEDORA_FOUND OR MAGEIA_FOUND)
 
    #
@@ -579,67 +573,84 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
    #
    # dependencies
    #
-   if(ARCHITECTURE STREQUAL "x86_64")
 
-      # base dependencies
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}lib64qtcore4, lib64qtgui4")
+   if(MAGEIA_FOUND)
 
-      # recommended dependencies
-      if(JPEG_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64jpeg62")
-      endif(JPEG_FOUND)
+      if(ARCHITECTURE STREQUAL "x86_64")
 
-      if(USB_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64usb-compat0.1_4")
-      endif(USB_FOUND)
+         #
+         # TO BE UPDATED
+         # (don't forget fxload)
+         #
 
-      if(CFITSIO_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64cfitsio0")
-      endif(CFITSIO_FOUND)
+         # base dependencies
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}lib64qtcore4, lib64qtgui4")
 
-      if(LIBAV_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avformat53, lib64avcodec53, lib64avutil51")
-      endif(LIBAV_FOUND)
+         # recommended dependencies
+         if(JPEG_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64jpeg62")
+         endif(JPEG_FOUND)
 
-      if(AVIFILE_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avifile-0.7c2")
-      endif(AVIFILE_FOUND)
+         if(USB_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64usb-compat0.1_4")
+         endif(USB_FOUND)
 
-      if(SDL_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64SDL1.2_0")
-      endif(SDL_FOUND)
+         if(CFITSIO_FOUND)
+           set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64cfitsio0")
+         endif(CFITSIO_FOUND)
 
-   else(ARCHITECTURE STREQUAL "x86_64")
+         if(LIBAV_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avformat53, lib64avcodec53, lib64avutil51")
+         endif(LIBAV_FOUND)
 
-      # base dependencies
-      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}libqtcore4, libqtgui4")
+         if(AVIFILE_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avifile-0.7c2")
+         endif(AVIFILE_FOUND)
 
-      # recommended dependencies
-      if(JPEG_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
-      endif(JPEG_FOUND)
+         if(SDL_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64SDL1.2_0")
+         endif(SDL_FOUND)
 
-      if(USB_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-compat0.1_4")
-      endif(USB_FOUND)
+      else(ARCHITECTURE STREQUAL "x86_64")
 
-      if(CFITSIO_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio0")
-      endif(CFITSIO_FOUND)
+         # base dependencies
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}libqtcore4, libqtgui4")
 
-      if(LIBAV_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavformat53, libavcodec53, libavutil51")
-      endif(LIBAV_FOUND)
+         # recommended dependencies
+         if(JPEG_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
+         endif(JPEG_FOUND)
 
-      if(AVIFILE_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
-      endif(AVIFILE_FOUND)
+         if(USB_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-compat0.1_4")
+         endif(USB_FOUND)
 
-      if(SDL_FOUND)
-         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libSDL1.2_0")
-      endif(SDL_FOUND)
+         if(CFITSIO_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio0")
+         endif(CFITSIO_FOUND)
 
-   endif(ARCHITECTURE STREQUAL "x86_64")
+         if(LIBAV_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavformat53, libavcodec53, libavutil51")
+         endif(LIBAV_FOUND)
+
+         if(AVIFILE_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
+         endif(AVIFILE_FOUND)
+
+         if(SDL_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libSDL1.2_0")
+         endif(SDL_FOUND)
+
+      endif(ARCHITECTURE STREQUAL "x86_64")
+
+   else(MAGEIA_FOUND)
+
+      #
+      # ADD DEPENDENCIES
+      # (don't forget ffmpeg-compat and fxload)
+      #
+
+   endif(MAGEIA_FOUND)
 
 endif(FEDORA_FOUND OR MAGEIA_FOUND)
 
