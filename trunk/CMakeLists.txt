@@ -668,6 +668,9 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, SDL")
       endif(SDL_FOUND)
 
+      # defined for cmake 2.8.10 ?
+      set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST /etc /usr /usr/bin /usr/share /usr/share/applications /usr/share/icons /etc/udev /etc/udev/rules.d)
+
    endif(MAGEIA_FOUND)
 
 endif(FEDORA_FOUND OR MAGEIA_FOUND)
