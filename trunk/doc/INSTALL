@@ -3,7 +3,7 @@ Installing qastrocam-g2 5.0 (building form sources)
 	Qastrocam now uses cmake for building. You will need cmake 2.6.8 or
 higher. In order to build from source, you will also need the developpement
 packages for Qt4. Developement packages for libpthread, libusb, cfitsio,
-libjpeg, libavifile and SDL are recommended.
+libjpeg, libav (ffmpeg-compat) or libavifile and SDL are recommended.
 
 	Recommended commands :
 

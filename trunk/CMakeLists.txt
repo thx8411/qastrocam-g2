@@ -578,11 +578,6 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
 
       if(ARCHITECTURE STREQUAL "x86_64")
 
-         #
-         # TO BE UPDATED
-         # (don't forget fxload)
-         #
-
          # base dependencies
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}lib64qtcore4, lib64qtgui4")
 
@@ -591,16 +586,16 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
             set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64jpeg62")
          endif(JPEG_FOUND)
 
-         if(USB_FOUND)
-            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64usb-compat0.1_4")
-         endif(USB_FOUND)
+         if(USB_FOUND AND Threads_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64usb-compat0.1_4, fxload")
+         endif(USB_FOUND AND Threads_FOUND)
 
          if(CFITSIO_FOUND)
-           set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64cfitsio0")
+           set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64cfitsio1")
          endif(CFITSIO_FOUND)
 
          if(LIBAV_FOUND)
-            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avformat53, lib64avcodec53, lib64avutil51")
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64avformat55, lib64avcodec55, lib64avutil52")
          endif(LIBAV_FOUND)
 
          if(AVIFILE_FOUND)
@@ -621,16 +616,16 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
             set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg62")
          endif(JPEG_FOUND)
 
-         if(USB_FOUND)
-            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-compat0.1_4")
-         endif(USB_FOUND)
+         if(USB_FOUND AND Threads_FOUND)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-compat0.1_4", fxload)
+         endif(USB_FOUND AND Threads_FOUND)
 
          if(CFITSIO_FOUND)
-            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio0")
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libcfitsio1")
          endif(CFITSIO_FOUND)
 
          if(LIBAV_FOUND)
-            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavformat53, libavcodec53, libavutil51")
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavformat55, libavcodec55, libavutil52")
          endif(LIBAV_FOUND)
 
          if(AVIFILE_FOUND)
@@ -645,10 +640,33 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
 
    else(MAGEIA_FOUND)
 
-      #
-      # ADD DEPENDENCIES
-      # (don't forget ffmpeg-compat and fxload)
-      #
+      # base dependencies
+      set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}qt, qt-x11")
+
+      # recommended dependencies
+      if(JPEG_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libjpeg-turbo")
+      endif(JPEG_FOUND)
+
+      if(USB_FOUND AND Threads_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb, fxload")
+      endif(USB_FOUND AND Threads_FOUND)
+
+      if(CFITSIO_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, cfitsio")
+      endif(CFITSIO_FOUND)
+
+      if(LIBAV_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, ffmpeg-compat")
+      endif(LIBAV_FOUND)
+
+      if(AVIFILE_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libavifile-0.7c2")
+      endif(AVIFILE_FOUND)
+
+      if(SDL_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, SDL")
+      endif(SDL_FOUND)
 
    endif(MAGEIA_FOUND)
 
