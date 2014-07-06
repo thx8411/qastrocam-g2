@@ -617,7 +617,7 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
          endif(JPEG_FOUND)
 
          if(USB_FOUND AND Threads_FOUND)
-            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-compat0.1_4", fxload)
+            set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libusb-compat0.1_4, fxload")
          endif(USB_FOUND AND Threads_FOUND)
 
          if(CFITSIO_FOUND)
