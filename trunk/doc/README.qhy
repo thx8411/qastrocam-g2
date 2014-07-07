@@ -1,0 +1,12 @@
+/*************/
+/* IMPORTANT */
+/*************/
+
+In order to get the QHY cameras working, don't
+forget to add your user account in the video
+group.
+
+The qastrocam-g2 QHY driver may conflict with
+the indi one. To fix this, just remove the
+'qhyccd.rules' file form '/etc/udev/rules.d'
+
