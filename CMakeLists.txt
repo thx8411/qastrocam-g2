@@ -394,6 +394,7 @@ install(FILES doc/ChangeLog DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/License.txt DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/README DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/README.philips DESTINATION /usr/share/qastrocam-g2)
+install(FILES doc/README.qhy DESTINATION /usr/share/qastrocam-g2)
 install(FILES doc/dev-notes DESTINATION /usr/share/qastrocam-g2)
 
 # install desktop entry
