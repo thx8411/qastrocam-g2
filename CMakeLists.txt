@@ -524,14 +524,20 @@ if(DEBIAN_FOUND)
 
    if(AVIFILE_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libavifile-0.7c2")
+      # recommended for lossless video compression
+      set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "avifile-win32-plugin")
    endif(AVIFILE_FOUND)
 
    if(SDL_FOUND)
       set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libsdl1.2debian")
+   else(SDL_FOUND)
+      # recommended for AutoGuiding sound alerts
+      if(AVIFILE_FOUND)
+         set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "${CPACK_DEBIAN_PACKAGE_RECOMMENDS}, nas")
+      else(AVIFILE_FOUND)
+         set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "nas")
+      endif(AVIFILE_FOUND)
    endif(SDL_FOUND)
-
-   # other recommended dependencies (not needed for build)
-   set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "avifile-win32-plugin, nas")
 
    #
    # package infos
