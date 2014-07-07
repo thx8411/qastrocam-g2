@@ -1,0 +1,23 @@
+#
+# Simple rules for the QHY5 and QHY6 cameras
+# Added by qastrocam-g2
+# (c) 2014 Blaise-Florentin Collin
+# Under GPLv3 License
+#
+
+ACTION!="add", GOTO="qhy_cameras_end"
+SUBSYSTEM!="usb", GOTO="qhy_cameras_end"
+
+# load firmware
+ATTRS{idVendor}=="1618", ATTRS{idProduct}=="0901", RUN+="/sbin/fxload -t fx2 -I /usr/share/qastrocam-g2/qhy_driver/QHY5.HEX -D $env{DEVNAME} -s /usr/share/qastrocam-g2/qhy_driver/QHY5LOADER.HEX"
+ATTRS{idVendor}=="1618", ATTRS{idProduct}=="1002", RUN+="/sbin/fxload -t fx2 -I /usr/share/qastrocam-g2/qhy_driver/QHY5.HEX -D $env{DEVNAME} -s /usr/share/qastrocam-g2/qhy_driver/QHY5LOADER.HEX"
+ATTRS{idVendor}=="0547", ATTRS{idProduct}=="1002", RUN+="/sbin/fxload -t fx2 -I /usr/share/qastrocam-g2/qhy_driver/QHY5.HEX -D $env{DEVNAME} -s /usr/share/qastrocam-g2/qhy_driver/QHY5LOADER.HEX"
+ATTRS{idVendor}=="1618", ATTRS{idProduct}=="0259", RUN+="/sbin/fxload -t fx2 -I /usr/share/qastrocam-g2/qhy_driver/QHY6.HEX -D $env{DEVNAME}"
+
+LABEL="qhy_cameras_set"
+
+# Device settings
+ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="296d", OWNER="root", GROUP="video", MODE="0660"
+ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="081d", OWNER="root", GROUP="video", MODE="0660"
+
+LABEL="qhy_cameras_end"

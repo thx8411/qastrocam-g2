@@ -23,6 +23,7 @@
   - choice between partially or fully stacked frames in stack module added
   - SDL bugs fixed, works on Raspberry Pi/Raspbian now
   - much easier QHY driver install
+  - rpm generation now supporting Fedora 20
 
 4.9
 
