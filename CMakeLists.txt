@@ -406,7 +406,7 @@ if(AVIFILE_FOUND)
 endif(AVIFILE_FOUND)
 
 # install QHY driver
-install(FILES qhy_driver/86-qhyccd.rules DESTINATION /etc/udev/rules.d)
+install(FILES qhy_driver/qhyccd.rules DESTINATION /etc/udev/rules.d)
 install(FILES qhy_driver/QHY5.HEX DESTINATION /usr/share/qastrocam-g2/qhy_driver)
 install(FILES qhy_driver/QHY5LOADER.HEX DESTINATION /usr/share/qastrocam-g2/qhy_driver)
 install(FILES qhy_driver/QHY6.HEX DESTINATION /usr/share/qastrocam-g2/qhy_driver)
