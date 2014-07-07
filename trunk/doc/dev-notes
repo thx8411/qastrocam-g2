@@ -1,3 +1,5 @@
 Don't forget to :
 
 - finish QCamVestaK3
+- deprecated avcodec_encode_video API calls should'nt be removed yet for old kernels compatibility (Ubuntu 10.04)
+
