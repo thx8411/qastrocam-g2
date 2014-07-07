@@ -22,8 +22,8 @@ project(qastrocam-g2)
 set(DEB_EPOCH 0)
 set(MAJOR_VERSION "5")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "beta20140630")
-set(BUILD_VERSION "196")
+set(PATCH_VERSION "beta20140707")
+set(BUILD_VERSION "197")
 set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}${PATCH_VERSION}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D BINARY_VERSION=\\\"${FULL_VERSION}\\\" -D BUILD_VERSION=${BUILD_VERSION}")
 message(STATUS "Building qastrocam-g2 ${FULL_VERSION}")
@@ -548,6 +548,12 @@ endif(DEBIAN_FOUND)
 # Rpm package #
 ###############
 
+
+#
+# TODO :
+# check for avifile-win32-plugin and nas on mageia and fedora
+#
+
 if(FEDORA_FOUND OR MAGEIA_FOUND)
 
    #
@@ -669,7 +675,7 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, SDL")
       endif(SDL_FOUND)
 
-      # defined for cmake 2.8.10 ?
+      # TODO : defined for cmake 2.8.10 and above only ?
       set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST /etc /usr /usr/bin /usr/share /usr/share/applications /usr/share/icons /etc/udev /etc/udev/rules.d)
 
    endif(MAGEIA_FOUND)
