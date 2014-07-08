@@ -617,6 +617,8 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
 
          if(SDL_FOUND)
             set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, lib64SDL1.2_0")
+         else(SDL_FOUND)
+       	    set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, nas")
          endif(SDL_FOUND)
 
       else(ARCHITECTURE STREQUAL "x86_64")
@@ -647,6 +649,8 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
 
          if(SDL_FOUND)
             set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, libSDL1.2_0")
+         else(SDL_FOUND)
+       	    set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, nas")
          endif(SDL_FOUND)
 
       endif(ARCHITECTURE STREQUAL "x86_64")
@@ -679,6 +683,8 @@ if(FEDORA_FOUND OR MAGEIA_FOUND)
 
       if(SDL_FOUND)
          set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, SDL")
+      else(SDL_FOUND)
+         set(CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, nas")
       endif(SDL_FOUND)
 
       # TODO : defined for cmake 2.8.10 and above only ?
