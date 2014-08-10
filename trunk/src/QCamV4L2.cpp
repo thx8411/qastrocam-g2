@@ -1305,6 +1305,7 @@ uchar* QCamV4L2::mmapCapture() {
    buffer.memory=V4L2_MEMORY_MMAP;
    // enqueue previous buffer
    if(ioctl(device_, VIDIOC_QBUF,&buffer)!=0)
+      perror("QBUF");
    // dequeue new buffer
    if(ioctl(device_, VIDIOC_DQBUF,&buffer)!=0)
       perror("DQBUF");
