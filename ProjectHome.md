@@ -1,0 +1,1 @@
+Linux modified webcam capture software for astronomy. This project is a fork from the great Qastrocam, written by F. Sicard (http://qastrocam.sourceforge.net/). It adds some features I wrote for myself.
