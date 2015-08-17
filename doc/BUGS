@@ -1,5 +1,9 @@
 Known Bugs :
 
+vers. 5.0.0
+
+ - V4L2 capture : DMA buffers usage not clean, preventing usage of pwc cams with the new V4L2 kernel driver
+
 vers. 4.8beta20100221 :
 
  - flat pre-process isn't accurate with color frames
