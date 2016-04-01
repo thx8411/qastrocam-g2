@@ -7,5 +7,6 @@ install:
 script:
     - cmake ./CMakeLists.txt
     - make
+    - make install
     - make package_source
     - make package
