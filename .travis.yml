@@ -2,7 +2,7 @@ sudo: required
 dist: trusty
 install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq libqt4-dev libpthread-dev libusb-dev libjpeg-dev
+    - sudo apt-get install -qq libqt4-dev libpthread-stubs0-dev libusb-dev libjpeg-dev
     - sudo apt-get install -qq cfitsio-dev doxygen graphviz libavcodec-dev libavformat-dev libavutil-dev libsd1.2-dev
 script:
     - cmake ./CMakeLists.txt
