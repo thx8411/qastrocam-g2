@@ -5,6 +5,8 @@ higher. In order to build from source, you will also need the developpement
 packages for Qt4. Developement packages for libpthread, libusb, cfitsio,
 libjpeg, libav (ffmpeg-compat) or libavifile and SDL are recommended.
 
+	To build documentation, you will need doxygen, graphviz and texlive-font-utils
+
 	Recommended commands :
 
    >gzip -d qastrocam-g2_5.0_src.tar.gz
