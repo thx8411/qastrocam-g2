@@ -7,6 +7,6 @@ install:
 script:
     - cmake ./CMakeLists.txt
     - make
-    - make install
+    - sudo make install
     - make package_source
     - make package
